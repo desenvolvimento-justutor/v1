@@ -1,0 +1,17 @@
+{% extends 'email/_base.html' %}
+{% block titulo1 %}Sua correção foi excluída!{% endblock %}
+
+{% block texto1 %}
+    <p>Informamos que, por incompatibilidade com a política de uso do JusTutor,
+        sua correção <a href="{{ dominio }}{{ correcao.get_absolute_url }}">{{ correcao }}</a>
+        à resposta <a href="{{ dominio }}{{ correcao.resposta.get_absolute_url }}">{{ correcao.resposta }}</a>,
+        relativa ao enunciado <a href="{{ dominio }}{{ correcao.resposta.enunciado.get_absolute_url }}">{{ correcao.resposta.enunciado }}</a>, foi excluída do site.
+    </p>
+{% endblock %}
+
+{% block titulo2 %}Justificativa da equipe JusTutor{% endblock %}
+
+{% block texto2 %}
+    <blockquote><p>{{ correcao.excluir_motivo|safe }}</p></blockquote>
+    <p><small>Para maiores informações sobre o uso do site, confira nossa <a href="{{ dominio }}/institucional/politica-de-uso/">POLÍTICA DE USO</a>.</small></p>
+{% endblock %}

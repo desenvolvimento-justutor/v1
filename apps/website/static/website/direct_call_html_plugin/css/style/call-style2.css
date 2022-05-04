@@ -1,0 +1,186 @@
+/*======================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 8, Sep 2019
+@version: 1.0
+
+========================================================*/
+
+/* Click To Call Main Panel */
+.cc-style2{
+	letter-spacing: 0.1px;
+	font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+	z-index: 9999;
+}
+.cc-style2 .cc-panel{
+  	position: fixed;
+  	bottom: 0;
+	right: 1em;
+  	height: 70px;
+}
+
+/* Click To Call Chat List */
+.cc-style2 .cc-panel ul{
+	position: absolute;
+    right: 55px;
+    left: auto;
+    top: 17px;
+    height: 100%;
+    width: 500px;
+    list-style: none;
+    text-align: right;
+    transform: translateY(-50%);
+}
+.cc-style2 .cc-panel ul li{
+  	display: inline-block;
+  	margin-right: 50px;
+}
+.cc-style2 .cc-panel .cc-list{
+  	display: inline-block;
+    position: absolute;
+    text-align: center;
+    border-radius: 100%;
+    cursor: pointer;
+}
+.cc-style2 .cc-panel .cc-list img{
+	padding: 1px;
+	width: 40px;
+	border-radius: 50%;
+}
+
+/* Common CSS */
+.cc-style2 .cc-panel .cc-button,
+.cc-style2 .cc-panel .cc-list,
+.cc-style2 .cc-panel .cc-list:hover img{
+    -webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+}
+.cc-style2 .cc-panel .cc-button,
+.cc-style2 .cc-panel .cc-list img{
+	box-shadow: 0 0 10px rgba(12, 12, 12, 0.3);
+}
+.cc-style2 .cc-panel .cc-button:hover,
+.cc-style2 .cc-panel .cc-list:hover img{
+	box-shadow: 0px 0px 10px rgba(12, 12, 12, 0.5);
+}
+
+/* Scal Transition Effect */
+.cc-style2 .cc-panel .scale-transition{ 
+	transition: transform 0.3s cubic-bezier(0.53, 0.01, 0.36, 1.63) !important; 
+}
+.cc-style2 .cc-panel .scale-transition.scale-out{
+  	transform: scale(0);
+  	transition: transform 0.2s !important;
+}
+.cc-style2 .cc-panel .scale-transition.scale-in{ 
+	transform: scale(1); 
+}
+
+/* Click To Call Floating Button */
+.cc-style2 .cc-panel .cc-button{
+	display: inline-block;
+  	width: 50px;
+  	height: 50px;
+  	text-align: center;
+  	font-size: 25px;
+  	line-height: 48px;
+  	border: 1px solid #fff;
+  	border-radius: 50%;
+  	cursor: pointer;
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (max-width: 768px){
+	
+	.cc-style2 .cc-panel ul{
+		display: grid;
+		right: -30px;
+		top: -240px;
+		width: 500px;
+	}
+	.cc-style2 .cc-panel ul li{
+	    padding: 30px;
+	    margin-right: 46px;
+	    margin-top: -10px;
+	}
+
+	/* Common CSS */
+	.cc-style2 .cc-panel .cc-list i,
+	.cc-style2 .cc-panel .cc-list .tooltiptext{
+	  	display: none;
+	}
+}
+
+/* Large devices (laptops/desktops, 768px and up) */
+@media screen and (min-width: 768px){
+
+	.cc-style2 .cc-panel .cc-list:hover i{
+		display: block;
+	}
+
+	/* Tooltip On Profile Hover */
+	.cc-style2 .cc-panel .cc-list .tooltiptext{
+	  	visibility: hidden;
+	    position: absolute;
+	  	padding: 5px;
+	    width: 95px;
+	    bottom: 115%;
+	    left: -28px;
+	    font-size: 12px;
+	    color: #fff;
+	    text-align: center;
+	    border-radius: 6px;
+	    background-color: #000;
+	    height: 25px;
+	    line-height: 15px;
+	    z-index: 1;	    
+	}
+	.cc-style2 .cc-panel .cc-list .tooltiptext::after{
+	  	content: "";
+	  	position: absolute;
+	  	margin-left: -5px;
+	  	top: 100%;
+	  	left: 50%;
+	  	border-width: 5px;
+	  	border-style: solid;
+	  	border-color: black transparent transparent transparent;
+	}
+	.cc-style2 .cc-panel .cc-list:hover .tooltiptext{
+	  	visibility: visible;
+	}
+
+	/* Common CSS */
+	.cc-style2 .cc-panel .cc-list:hover i,
+	.cc-style2 .cc-panel .cc-list:hover .tooltiptext{
+	  	-webkit-animation: wc-fadein 1s;
+	    -moz-animation: wc-fadein 1s;
+	    -ms-animation: wc-fadein 1s;
+	    -o-animation: wc-fadein 1s;
+	    animation: wc-fadein 1s;
+	}
+}
+
+@keyframes wc-fadein{
+    from{ opacity: 0; }
+    to { opacity: 1; }
+}
+@-webkit-keyframes wc-fadein{
+    from{ opacity: 0; }
+    to { opacity: 1; }
+}
+@-moz-keyframes wc-fadein{
+    from{ opacity: 0; }
+    to { opacity: 1; }
+}
+@-ms-keyframes wc-fadein{
+    from{ opacity: 0; }
+    to { opacity: 1; }
+}
+@-o-keyframes wc-fadein{
+    from{ opacity: 0; }
+    to { opacity: 1; }
+}

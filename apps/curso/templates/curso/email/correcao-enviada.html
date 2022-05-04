@@ -1,0 +1,11 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    Sua Atividade foi corrigida!
+{% endblock %}
+{% block texto1 %}
+    <p>A Atividade da <strong>{{ tarefa.atividade }}</strong> do curso <strong>{{ tarefa.atividade.curso }}</strong> está disponível para você.</p>
+{% endblock %}
+
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}<p><a href="{{ dominio }}/aluno/cursos/">Clique aqui</a> para ir para a área do aluno no JusTutor e conferir a correção.</p>{% endblock %}

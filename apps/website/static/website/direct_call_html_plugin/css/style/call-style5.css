@@ -1,0 +1,115 @@
+/*======================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 8, Sep 2019
+@version: 1.0
+
+========================================================*/
+
+/* WhatsChat Main Panel */ 
+.cc-style5{
+	font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Slide Contact List */
+.cc-style5 ul{
+	margin-bottom: 0;
+	list-style-type: none;
+}
+.cc-style5 ul li .cc-list{
+	display: flex;
+	padding: 0;
+	list-style-type: none;
+}
+.cc-style5 ul .cc-list{
+	position: fixed;
+    right: -135px;
+    text-align: left;
+    width: 185px;
+    font-size: 20px;
+    text-decoration: none;
+}
+.cc-style5 ul .cc-list:hover{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* User Profile */
+.cc-style5 .cc-list .cc-img-cont{
+	position: relative;
+}
+.cc-style5 .cc-list .cc-user-img{
+    display: block;
+    width: 50px;
+    height: 50px;
+}
+.cc-style5 .cc-list .cc-status-icon{
+	position: absolute;
+	height: 12px;
+    width: 12px;
+    bottom: 1px;
+    right: 0px;
+    border-radius: 10px 0 0 0;
+}
+.cc-style5 .cc-list .cc-user-info{
+	padding-left: 25px;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-left: -15px;
+	width: 100%;
+	line-height: 25px;
+}
+.cc-style5 .cc-list:hover .cc-user-info{
+	border-radius: 15px 0 0 15px;
+	box-shadow: 0px 0px 10px #ccc;
+}
+.cc-style5 .cc-user-info .cc-user-name{
+	font-size: 14px;
+    font-weight: bold;
+    color: transparent;
+}
+.cc-style5 .cc-user-info p{
+	padding-top: 5px;
+	font-size: 11px;
+	line-height: 0px;
+	color: transparent;
+}
+
+/* CSS For Each Slide From Top */
+.cc-style5 ul li .user-1{
+  	top: 140px;
+}
+.cc-style5 ul li .user-2{
+  	top: 192px;
+}
+.cc-style5 ul li .user-3{
+  	top: 244px;
+}
+.cc-style5 ul li .user-4{
+  	top: 296px;
+}
+.cc-style5 ul li .user-5{
+  	top: 348px;
+}
+
+/* Common CSS */
+.cc-style5 ul li .cc-list,
+.cc-style5 .cc-list:hover .cc-user-img,
+.cc-style5 .cc-list .cc-user-info,
+.cc-style5 .cc-user-info .cc-user-name,
+.cc-style5 .cc-user-info p{
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+}
+
+/* Media Css for Smaller Device */
+@media(min-width: 576px){
+
+	.cc-style5 ul .cc-list:hover{
+	    right: 0;
+	}
+}

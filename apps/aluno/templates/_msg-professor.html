@@ -1,0 +1,133 @@
+{% load thumbnail static %}
+<div class="row">
+    <div class="col-lg-4 col-md-5 col-sm-5">
+        <div class="main-box feed">
+            <div class="main-box-body clearfix">
+                <ul>
+                    <li class="clearfix">
+                        <div class="title" style="margin-left: 0px">
+{#                            <a href="{% url 'aluno:mensagens' %}">Todas as mensagens</a>#}
+                            <button class="btn btn-link btn-sm fa" data-pid="false" data-curso="{% if msg_tipo == 'st' %}st{% else %}{{ submenu.id }}{% endif %}" data-name="ver"> Todas as mensagens</button>
+                        </div>
+                        <!--div class="post-time"  style="margin-left: 0px">
+                            <a href="#modal-msg" class="btn btn-info btn-sm fa fa-send-o"> Enviar</a>
+                            <button class="btn btn-success btn-sm fa fa-eye" data-id="{{ row.aluno.id }}" data-name="ver"> Ver</button>
+                        </div-->
+                        <div class="time-ago">
+                            <span class="label label-info">{{ todas_msg.count }}</span>
+                        </div>
+                    </li>
+
+                    {% for professor in professores %}
+                    <li class="clearfix">
+                        <div class="img">
+                            {% thumbnail professor.foto "50x50" crop="center" as im %}
+                                <img src="{{ im.url }}" alt="{{ professor }}">
+                            {% empty %}
+                                <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ professor }}"/>
+                            {% endthumbnail %}
+                        </div>
+                        <div class="title">
+                            {{ professor }}
+                        </div>
+                        <div class="post-time">
+                            {% thumbnail professor.foto "50x50" crop="center" as im %}
+                                <button data-pid="{{ professor.id }}" data-nome="{{ professor.nome }}" data-image="{{ im.url }}" data-toggle="send"
+                                        class="btn btn-danger btn-sm fa fa-send-o"> Enviar</button>
+                            {% empty %}
+                                <button data-pid="{{ professor.id }}" data-nome="{{ professor.nome }}" data-toggle="send"
+                                        data-image="{% static 'images/logos/icone24-borda.svg' %}"
+                                        class="btn btn-danger btn-sm fa fa-send-o"> Enviar</button>
+                            {% endthumbnail %}
+
+{#                            <button onclick="$('#exampleInputEmail1').val('{{ professor }}');$('#pid').val('{{ professor.id }}')" data-toggle="modal" href="#modal-msg" class="btn btn-info btn-sm fa fa-send-o"> Enviar</button>#}
+                            <button class="btn btn-success btn-sm fa fa-eye" data-pid="{{ professor.id }}" data-curso="{% if msg_tipo == 'st' %}st{% else %}{{ submenu.id }}{% endif %}" data-name="ver"> Ver</button>
+                        </div>
+{#                        <div class="time-ago">#}
+{#                            <span id="id-msg-count-{{ professor.id }}" class="label label-danger">{{ row.nao_lidos }}</span>#}
+{#                        </div>#}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- MENSAGENS -->
+    <div class="col-lg-8">
+        <div class="main-box clearfix">
+            <header class="main-box-header clearfix">
+                <h2>Mensagem</h2>
+            </header>
+            <div class="main-box-body clearfix">
+                <div class="conversation-wrapper">
+                    <div class="conversation-content">
+                        <div class="conversation-inner" id="msg-inner">
+                            {% for mensagem in  todas_msg %}
+                            <div class="conversation-item item-{% if mensagem.is_professor %}right{% else %}left{% endif %} clearfix">
+                                <div class="conversation-user">
+                                    {% if not mensagem.is_professor %}
+                                        {% thumbnail mensagem.aluno.foto "50x50" crop="center" as im %}
+                                            <img src="{{ im.url }}" alt="{{ aluno }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                        {% endthumbnail %}
+                                    {% else %}
+                                        {% thumbnail mensagem.professor.foto "50x50" crop="center" as im %}
+                                            <img src="{{ im.url }}" alt="{{ aluno }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                        {% endthumbnail %}
+                                    {% endif %}
+                                </div>
+                                <div class="conversation-body">
+                                    <div class="name">
+                                        {% if mensagem.is_professor %}
+                                            <a href="#">{{ mensagem.professor }}</a>
+                                        {% else %}
+                                            <a href="{{ mensagem.aluno.get_absolute_url }}">{{ mensagem.aluno }}</a>
+                                        {% endif %}<!doctype html>
+                                        <html lang="me">
+                                        <head>
+                                            <meta charset="UTF-8">
+                                            <meta name="viewport"
+                                                  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+                                            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                                            <title>Document</title>
+                                        </head>
+                                        <body>
+
+                                        </body>
+                                        </html>
+                                    </div>
+
+                                    <div class="time hidden-xs">
+                                        {{ mensagem.str_data }}
+                                    </div>
+                                    <div id="icone-lido-{{ mensagem.id }}">
+                                        {% if not mensagem.is_professor %}
+                                            {% if mensagem.lido %}
+                                                <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor leu sua mensagem." class="fa fa-eye fa-lg pull-right text-success"></i></a>
+                                            {% else %}
+                                                <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor não leu sua mensagem." class="fa fa-eye-slash fa-lg pull-right text-danger"></i></a>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if mensagem.lido %}
+                                                <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Marcada como lidar" class="fa fa-check fa-lg pull-right text-success"></i></a>
+                                            {% else %}
+                                                <a href="javascript:void(0)" onclick="startLoad();Dajaxice.apps.professor.msg_set_lido(Dajax.process, {mid:'{{ mensagem.pk }}'});"><i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i></a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="text">
+                                        {{ mensagem.html }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

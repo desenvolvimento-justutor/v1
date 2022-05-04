@@ -1,0 +1,17 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    <h2 style="text-align: center">Atenção</h2><br>
+    <p>Amanhã, dia <b>{{ tomorrow|date:'d/m/Y' }}, vence o prazo para a entrega da(s) seguinte(s) atividade(s).</p>
+    <ul>
+        {% for atividade in atividades %}
+            <li>{{ atividade }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+{% block texto1 %}
+<p>Lembramos que, como regra do JusTutor, os prazos vencem às 23h59min do dia final, não havendo previsão de prorrogação ou de envio da tarefa por outro meio.</p>
+{% endblock %}
+
+{% block titulo2 %}Acesse a área do curso{% endblock %}
+{% block texto2 %}<p><a href="{{ dominio }}/aluno/cursos/?videos={{ checkout.pk }}">Clique aqui</a> para ir para a área do aluno no JusTutor e conferir as novidades do curso.</p>{% endblock %}

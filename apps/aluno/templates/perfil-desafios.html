@@ -1,0 +1,153 @@
+{% extends '_base.html' %}
+{% block banner %} {% endblock %}
+{% block section %}
+    <div class="container">
+        <div class="col-sm-8">
+            <div class="cabecalho-cursos"><h1>Meus Dados</h1>
+
+                <div class="linha-breadcrumb">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'website:index' %}">Home</a></li>
+                        <li href="{% url 'aluno:perfil' %}">Aluno</li>
+                        <li class="active">Meus Desafios</li>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="tabela-desafio">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <td>Nº</td>
+                            <td>Questão</td>
+                            <td>Tipo</td>
+                            <td>Término</td>
+                            <td>Participantes</td>
+                            <td>Vencedor</td>
+                            <td>Aceitar</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Nº</td>
+                            <td>
+                                GV - 2015 - OAB - Exame de Ordem
+                                Unificado - XVII - Primeira Fase
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <div class="cg-laranja">
+                                        <img src="{{ STATIC_URL }}assets/img/icon-sentenca-white.svg">
+                                    </div>
+                                    <div class="clear"></div>
+                                </a>
+                            </td>
+                            <td>
+                                10/02/2015
+                                15h35
+                            </td>
+                            <td>
+                                <a href="#perfil">Lucas*</a><br>
+                                <a href="#perfil">Jorge</a><br>
+                                <a href="#perfil">Marcos Gama</a><br>
+                                <a href="#perfil">Ernesto Brito</a><br>
+                            </td>
+                            <td>
+                                <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                        <g>
+                                            <g>
+                                            <defs>
+                                            <rect id="SVGID_1_" x="1.458" y="1.811" width="17.169" height="15.897"></rect>
+                                            </defs>
+                                            <clipPath id="SVGID_2_">
+                                            <use xlink:href="#SVGID_1_" overflow="visible"></use>
+                                            </clipPath>
+                                            <path clip-path="url(#SVGID_2_)" fill="#148d42" d="M18.274,2.416c-0.761-0.633-1.941-1.034-3.468,0.186c-0.003-0.186-0.005-0.367-0.011-0.561
+                                            H5.078C5.07,2.235,5.07,2.418,5.067,2.602c-1.526-1.22-2.706-0.819-3.466-0.186l-0.143,0.12l0.008,0.181
+                                            c0.009,0.179,0.229,4.348,2.517,6.239c0.8,0.659,1.752,0.965,2.831,0.901c-0.073,0.233-0.218,0.55-0.386,0.833l0.635,0.381
+                                            c0.118-0.2,0.318-0.565,0.437-0.937c0.844,0.682,1.581,0.89,1.581,1.395c0,1.138-2.815,1.878-2.916,2.592H5.773v0.3H5.355v2.984
+                                            h9.069v-2.984H14.06v-0.3h-0.351c-0.1-0.714-2.916-1.454-2.916-2.592c0-0.508,0.738-0.713,1.581-1.395
+                                            c0.119,0.371,0.318,0.736,0.438,0.937l0.634-0.381c-0.168-0.282-0.313-0.6-0.388-0.833c1.082,0.064,2.034-0.242,2.833-0.901
+                                            c2.287-1.891,2.507-6.063,2.516-6.239l0.01-0.184L18.274,2.416z M4.457,8.386c-1.78-1.47-2.166-4.699-2.236-5.514
+                                            C3.06,2.279,3.996,2.515,5.07,3.596c0.006,0.14,0.014,0.272,0.021,0.407C4.829,4.251,4.48,4.577,4.159,4.866l0.497,0.548
+                                            c0.191-0.17,0.359-0.323,0.504-0.458c0.217,2.026,0.763,3.307,1.379,4.16C5.748,9.117,5.047,8.872,4.457,8.386L4.457,8.386z
+                                            M13.08,16.782H6.874v-1.517h6.207V16.782z M15.417,8.386c-0.589,0.486-1.291,0.729-2.082,0.731
+                                            c0.615-0.854,1.161-2.134,1.378-4.16c0.148,0.134,0.313,0.285,0.505,0.458l0.497-0.548c-0.321-0.29-0.673-0.615-0.93-0.866
+                                            c0.006-0.132,0.014-0.264,0.019-0.404c1.071-1.081,2.008-1.316,2.85-0.724C17.583,3.687,17.197,6.913,15.417,8.386L15.417,8.386z
+                                            M15.417,8.386"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                <div>
+                                    Lucas
+                                </div>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nº</td>
+                            <td>Questão</td>
+                            <td>
+                                <a href="#">
+                                    <div class="cg-verde">
+                                        <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg">
+                                    </div>
+                                    <div class="clear"></div>
+                                </a>
+                            </td>
+                            <td>
+                                10/02/2015
+                                15h35
+                            </td>
+                            <td>
+                                <a href="#perfil">Lucas</a><br>
+                                <a href="#perfil">Jorge</a><br>
+                                <a href="#perfil">Marcos Gama*</a><br>
+                                <a href="#perfil">Ernesto Brito</a><br>
+                            </td>
+                            <td></td>
+                            <td>
+                                <a href="#perfil" class="btn2 btn-success">ACEITAR</a><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nº</td>
+                            <td>Questão</td>
+                            <td>
+                                <a href="#">
+                                    <div class="cg-azul">
+                                        <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg">
+                                    </div>
+                                    <div class="clear"></div>
+                                </a>
+
+                            </td>
+                            <td>
+                                10/02/2015
+                                15h35
+                            </td>
+                            <td>
+                                <a href="#perfil">Lucas*</a><br>
+                                <a href="#perfil">Jorge</a><br>
+                                <a href="#perfil">Marcos Gama</a><br>
+                                <a href="#perfil">Ernesto Brito</a><br>
+                            </td>
+                            <td></td>
+                            <td><a href="#perfil" class="btn2 btn-danger">sair</a><br></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="clear"></div>
+                    <div>*administrador do desafio</div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        {% include '_perfil-painel.html' %}
+    </div>
+    </div>
+{% endblock %}
+{% block busca %} {% endblock %}

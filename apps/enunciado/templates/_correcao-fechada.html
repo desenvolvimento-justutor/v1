@@ -1,0 +1,43 @@
+<div class="titulo-home">
+    <h4 class="pd-home titulo-home bold">Corrigido por <smal>{% if request.user.aluno.id == correcao.aluno.id %} Você {% else %} <a href="{{ correcao.aluno.get_absolute_url }}">{{ correcao.aluno }}</a>{% endif %}</smal></h4>
+    <div class="linha-aba"></div>
+</div>
+
+<div class="enunciado-total">
+    <div >
+        <div class="alert-message alert-message-warning">
+            <h4><i class="fa fa-check"></i> Sua correção foi finalizada!</h4>
+            <p><a href="{{ minha_correcao.get_absolute_url }}">Clique aqui</a> para visualizar sua correção.</p>
+        </div>
+        <div class="clear"></div>
+        <div class="estatistica-questao">
+            <ul class="nav nav-pills nav-stacked nav-pills-stacked-example">
+                <li role="presentation" class="bg-warning"><a href="#">Estatística de Pontos</a></li>
+                  <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Responder<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_respondidos }}</span></a></li>
+                  <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Corrigir<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_corrigir }}</span></a></li>
+                  <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Corrigirem suas Respostas<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_corrigirem }}</span></a></li>
+                  <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Correções Úteis<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_avaliacao }}</span></a></li>
+                  <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Total de Pontos<span class="label label-success pull-right">{{ request.user.aluno.get_pontos_total }}</span></a></li>
+                </ul>
+            </div>
+
+            <ul class="nav nav-pills nav-stacked nav-pills-stacked-example">
+              <li role="presentation" class="bg-success"><a href="#">Estatística da Correção</a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-calendar-o"></i> Data da Correção<span class="label label-warning pull-right">{{ correcao.data|date }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-thumbs-o-up"></i> Avaliações Positivas<span class="label label-warning pull-right">{{ correcao.get_avaliacao_positiva }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-commenting-o"></i> Comentários<span class="label label-warning pull-right">{{ correcao.comentariocorrecao_set.all.count }}</span></a></li>
+            </ul>
+            <ul class="nav nav-pills nav-stacked nav-pills-stacked-example">
+              <li role="presentation" class="bg-info"><a href="#">Estatística da resposta</a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-user-md"></i> Pessoas que responderam está questão<span class="label label-info pull-right">{{ enunciado.get_respostas.count }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-check"></i> Correções<span class="label label-info pull-right">{{ resposta.correcao_set.all.count }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-pencil-square-o"></i> A nota média é de<span class="label {{ resposta.get_css_class.1 }} pull-right">{{ resposta.get_media }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-star-half-o"></i> A sua nota para essa resposta foi<span class="label label-info pull-right">{{ nota|stringformat:".1f" }}</span></a></li>
+              <li data-toggle="tooltip" data-original-title="Minutos.Segundos" role="presentation"><a href="javascript:void(0)"><i class="fa fa-clock-o"></i> A media de tempo para responder é de<span class="label label-danger pull-right">{{ enunciado.media_tempo|stringformat:".2f" }}</span></a></li>
+            </ul>
+
+        </div>
+        <div class="clear"></div>
+        <br>
+    </div>
+</div>

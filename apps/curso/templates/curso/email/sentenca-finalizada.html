@@ -1,0 +1,11 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    Nova sentença disponível para correção
+{% endblock %}
+{% block texto1 %}
+    <p>Uma nova sentença está disponível para correção.</p>
+{% endblock %}
+
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}<p><a href="{{ dominio }}/professor/sentencas/">Clique aqui</a> para ir para a área do professor e fazer a correção.</p>{% endblock %}

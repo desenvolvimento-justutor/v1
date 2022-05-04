@@ -1,0 +1,38 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail aluno_tags %}
+
+{% block panel_content %}
+    <div class="main-box clearfix">
+        <header class="main-box-header clearfix">
+        </header>
+        <div class="main-box-body clearfix">
+            {% with aluno.get_cupons_ativos as cupons %}
+                {% if cupons %}
+                    <div class="alert alert-danger">
+                      <strong>Caso você tenha recebido mais de um cupom para o mesmo produto, utilize aquele que dê a você
+                      o maior desconto. Os cupons não podem ser utilizados de forma acumulada.</strong>
+                    </div>
+                    {% for cupom in cupons %}
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="main-box infographic-box colored green-bg">
+                                <i class="fa fa-tag"></i>
+                                <span class="value" style="padding-bottom: 8px"><span style="font-size: 20px" class="label label-primary">{{ cupom.codigo }}</span> </span>
+                                <span class="value">{{ cupom.get_valor }}</span>
+                                <hr>
+                                <span class="headline">
+                                    <p>Validade: <span class="label label-danger">{{ cupom.data_limite|date:"SHORT_DATETIME_FORMAT" }}</span> </p>
+                                    <a style="color: white" target="_blank" href="{{ cupom.curso.get_absolute_url }}">{{ cupom.curso }}</a>
+                                </span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                      <strong>Você não possui cupons ativos</strong>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+{% endblock %}
+

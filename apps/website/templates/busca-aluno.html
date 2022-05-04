@@ -1,0 +1,217 @@
+{% extends "_base.html" %}
+{% block extra_css %}
+<style>
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input .glyphicon-search{
+    font-size: 23px;
+}
+</style>
+<style>
+    .twPc-div {
+        background: #ffffff none repeat scroll 0 0;
+        border: 2px solid #e1e8ed;
+        border-radius: 6px;
+        height: 200px;
+
+    }
+    .twPc-bg {
+        background: #85ff7d 0 50%;
+        background-size: 100% auto;
+        border-bottom: 2px solid #e1e8ed;
+        border-radius: 4px 4px 0 0;
+        height: 45px;
+        width: 100%;
+    }
+    .twPc-block {
+        display: block !important;
+    }
+    .twPc-button {
+        margin: -35px -10px 0;
+        text-align: right;
+        width: 100%;
+    }
+    .twPc-avatarLink {
+        background-color: #fff;
+        border-radius: 6px;
+        display: inline-block !important;
+        float: left;
+        margin: -30px 5px 0 8px;
+        max-width: 100%;
+        padding: 1px;
+        vertical-align: bottom;
+    }
+    .twPc-avatarImg {
+        border: 2px solid #fff;
+        border-radius: 7px;
+        box-sizing: border-box;
+        color: #fff;
+        height: 72px;
+        width: 72px;
+    }
+    .twPc-divUser {
+        margin: 5px 0 0;
+    }
+    .twPc-divName {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 21px;
+    }
+    .twPc-divName a {
+        color: inherit !important;
+    }
+    .twPc-divStats {
+        margin-left: 11px;
+        padding: 10px 0;
+    }
+    .twPc-Arrange {
+        box-sizing: border-box;
+        display: table;
+        margin: 0;
+        min-width: 100%;
+        padding: 0;
+        table-layout: auto;
+    }
+    ul.twPc-Arrange {
+        list-style: outside none none;
+        margin: 0;
+        padding: 0;
+    }
+    .twPc-ArrangeSizeFit {
+        display: table-cell;
+        padding: 0;
+        vertical-align: top;
+    }
+    .twPc-ArrangeSizeFit a:hover {
+        text-decoration: none;
+    }
+    .twPc-StatValue {
+        display: block;
+        font-size: 18px;
+        font-weight: 500;
+        transition: color 0.15s ease-in-out 0s;
+    }
+    .twPc-StatLabel {
+        color: #8899a6;
+        font-size: 10px;
+        letter-spacing: 0.02em;
+        overflow: hidden;
+        text-transform: uppercase;
+        transition: color 0.15s ease-in-out 0s;
+    }
+</style>
+{% endblock %}
+{% block  section %}
+    <section class="interna">
+        <div class="container">
+            <div class="caminho-do-site mb-bot20">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'website:busca-aluno' %}">Busca Aluno</a>
+                    </li>
+                </ol>
+            </div>
+        </div><br>
+        <div class="container">
+            <section id="questoes-destaque" class="col-sm-12">
+                <div class="titulo-home  mg-bot20">
+                    <h4 class="pd-home titulo-home bold">Buscar Aluno</h4>
+                    <div class="linha-aba"></div>
+                </div>
+                <div class="mg-top20"></div>
+                 <div id="custom-search-input">
+                     <form method="post">
+                         {% csrf_token %}
+                         <div class="input-group col-md-12">
+                             <input type="text" class="form-control input-lg" placeholder="Buscar" name="q"/>
+                             <span class="input-group-btn">
+                                 <button class="btn btn-info btn-lg" type="button">
+                                     <i class="glyphicon glyphicon-search"></i>
+                                 </button>
+                             </span>
+                         </div>
+                     </form>
+                 </div>
+                <div class="mg-top20"></div>
+                {% if alunos %}
+                <div class="row">
+                    {% for aluno in alunos %}
+                    <div class="col-sm-4" style="margin-bottom: 10px">
+                        <div class="twPc-div">
+                            <a class="twPc-bg twPc-block"></a>
+                            <div>
+                                <a title="{{ aluno }}" href="{{ aluno.get_absolute_url }}" class="twPc-avatarLink">
+                                    <img alt="{{ aluno }}" src="{{ aluno.foto_url }}" class="twPc-avatarImg">
+                                </a>
+
+                                <div class="twPc-divUser">
+                                    <div class="twPc-divName">
+                                        <a href="{{ aluno.get_absolute_url }}">{{ aluno.nome_resumido|truncatechars:25 }}</a>
+                                    </div>
+                                    <div style="margin-bottom: 2px"></div>
+                                    <span>
+                                        <span class="label label-info">{{ aluno.get_pontos_total }}</span> pontos.
+                                    </span>
+                                </div>
+
+                                <div class="twPc-divStats">
+                                    <ul class="twPc-Arrange">
+                                        <li class="twPc-ArrangeSizeFit">
+                                            <a href="{{ aluno.get_absolute_url }}" title="{{ aluno.resposta_set.all.count }} Respostas">
+                                                <span class="twPc-StatLabel twPc-block">Respostas</span>
+                                                <span class="twPc-StatValue">{{ aluno.resposta_set.all.count }}</span>
+                                            </a>
+                                        </li>
+                                        <li class="twPc-ArrangeSizeFit">
+                                            <a href="{{ aluno.get_absolute_url }}" title="{{ aluno.minhas_correcoes.count }} Correções">
+                                                <span class="twPc-StatLabel twPc-block">Correções</span>
+                                                <span class="twPc-StatValue">{{ aluno.minhas_correcoes.count }}</span>
+                                            </a>
+                                        </li>
+                                        <li class="twPc-ArrangeSizeFit">
+                                            <a href="{{ aluno.get_absolute_url }}" title="{{ aluno.get_pontos_avaliacao }} Likes">
+                                                <span class="twPc-StatLabel twPc-block">Likes</span>
+                                                <span class="twPc-StatValue">{{ aluno.get_pontos_avaliacao }}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </section>
+        </div>
+    </section>
+{% endblock %}

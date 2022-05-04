@@ -1,0 +1,322 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail static %}
+{% block css %}
+    {{ block.super }}
+    	<!-- Click To Call Layout CSS  (required) -->
+	<link rel="stylesheet" type="text/css" href="{% static 'website/direct_call_html_plugin/css/animate.min.css' %}"/>
+
+	<!-- Click To Call Layout CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'website/direct_call_html_plugin/css/call-layout.css' %}"/>
+	<!-- Click To Call Custom Style-1 CSS  (required) -->
+	<link rel="stylesheet" type="text/css" href="{% static 'website/direct_call_html_plugin/css/style/call-style7.css' %}"/>
+	<!-- Click To Call Color CSS (This is only for Live Demo) -->
+	<link id="call-color" rel="stylesheet" href="{% static 'website/direct_call_html_plugin/css/colors/color-green.css' %}">
+{% endblock %}
+{% block panel_content %}
+    <div class="row" id="user-profile" xmlns="http://www.w3.org/1999/html">
+{#        {% include '_widget-user-profile.html' %}#}
+
+        <div class="col-lg-4 col-md-5 col-sm-5">
+            <div class="main-box feed">
+                <div class="main-box-body clearfix">
+                    <ul>
+                        <li class="clearfix">
+                            <div class="title" style="margin-left: 0px">
+                                <a href="{% url 'aluno:mensagens' %}">Todas as mensagens</a>
+                            </div>
+                            <!--div class="post-time"  style="margin-left: 0px">
+                                <a href="#modal-msg" class="btn btn-info btn-sm fa fa-send-o"> Enviar</a>
+                                <button class="btn btn-success btn-sm fa fa-eye" data-id="{{ row.aluno.id }}" data-name="ver"> Ver</button>
+                            </div-->
+                            <div class="time-ago">
+                                <span class="label label-info">{{ todas_msg.count }}</span>
+                            </div>
+                        </li>
+
+                        {% for row in de_alunos_msg %}
+                        {% with row.aluno as aluno %}
+                        <li class="clearfix">
+                            <div class="img">
+                                {% thumbnail aluno.foto "50x50" crop="center" as im %}
+                                    <img src="{{ im.url }}" alt="{{ aluno }}">
+                                {% empty %}
+                                    <img src="{% static 'images/logos/icone24-borda.svg' %}" alt="{{ aluno }}"/>
+                                {% endthumbnail %}
+                            </div>
+                            <div class="title">
+                                <a href="{{ aluno.get_absolute_url }}">{{ aluno }}</a>
+                            </div>
+                            <div class="post-time">
+                                {% thumbnail aluno.foto "50x50" crop="center" as im %}
+                                    <button data-pk="{{ aluno.id }}" data-nome="{{ aluno.nome }}" data-image="{{ im.url }}" data-toggle="send"
+                                            class="btn btn-danger btn-sm fa fa-send-o"> Enviar</button>
+                                {% empty %}
+                                    <button data-pk="{{ aluno.id }}" data-nome="{{ aluno.nome }}" data-image="{% static 'images/logos/icone24-borda.svg' %}"
+                                            class="btn btn-danger btn-sm fa fa-send-o"> Enviar</button>
+                                {% endthumbnail %}
+{#                                <button onclick="$('#exampleInputEmail1').val('{{ aluno }}');$('#aid').val('{{ aluno.id }}')" data-toggle="modal" href="#modal-msg" class="btn btn-info btn-sm fa fa-send-o"> Enviar</button>#}
+                                <button class="btn btn-success btn-sm fa fa-eye" data-id="{{ row.aluno.id }}" data-name="ver"> Ver</button>
+                            </div>
+                            <div class="time-ago">
+                                <span id="id-msg-count-{{ aluno.id }}" class="label label-danger">{{ row.nao_lidos }}</span>
+                            </div>
+                        </li>
+                        {% endwith %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>Mensagem</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="conversation-wrapper">
+                        <div class="conversation-content">
+                            <div class="conversation-inner" id="msg-inner">
+                                {% for mensagem in  todas_msg %}
+                                <div class="conversation-item item-{% if mensagem.de_aluno == aluno %}right{% else %}left{% endif %} clearfix">
+                                    <div class="conversation-user">
+                                        {% thumbnail mensagem.de_aluno.foto "50x50" crop="center" as im %}
+                                            <img src="{{ im.url }}" alt="{{ aluno }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                        {% endthumbnail %}
+                                    </div>
+                                    <div class="conversation-body">
+                                        <div class="name">
+                                            {% if mensagem.de_aluno.id != aluno.id %}
+                                                <a data-pk="{{ mensagem.de_aluno.id }}" data-nome="{{ mensagem.de_aluno.nome }}"
+                                                        data-image="{{ mensagem.de_aluno.foto_url }}" data-toggle="send"
+                                                        class="btn btn-link btn-sm fa fa-send-o">
+                                                </a>
+                                            {% endif %}
+                                            <a href="{{ mensagem.de_aluno.get_absolute_url }}">{{ mensagem.de_aluno }}</a>{% if mensagem.de_aluno == aluno %}&rightarrow; <small><a href="{{ mensagem.para_aluno.get_absolute_url }}">{{ mensagem.para_aluno }}</a></small>{% endif %}
+                                        </div>
+
+                                        <div class="time hidden-xs">
+                                            {{ mensagem.str_data }}
+                                        </div>
+                                        <div id="icone-lido-{{ mensagem.id }}">
+                                            {% if mensagem.lido %}
+                                                <span class="text-success"><i data-placement="left" data-toggle="tooltip" title="Marcada como visualizada" class="fa fa-check fa-lg pull-right"></i></span>
+                                            {% else %}
+                                                {% if mensagem.de_aluno.id == aluno.id %}
+                                                    <a href="javascript:void(0)">
+                                                        <i data-placement="left" data-toggle="tooltip" title="Aluno não leu sua mensagem." class="fa fa-eye-slash fa-lg pull-right text-danger"></i>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="javascript:void(0)" onclick="startLoad();Dajaxice.apps.aluno.msg_set_lido(Dajax.process, {'mid': {{ mensagem.id }} });">
+                                                        <i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i>
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="text">
+                                            {{ mensagem.mensagem|linebreaksbr }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-msg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <input type="hidden" value="" id="aid">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Enviar Mensagem</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="form-msg">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Para</label>
+                            <input disabled class="form-control" id="exampleInputEmail1" value="{{ aluno_view }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="text-msg">Mensagem</label>
+                            <textarea class="form-control" id="text-msg" rows="3" placeholder="Texto da mensagem"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger fa fa-remove" data-dismiss="modal"> Cancelar</button>
+                    <button type="submit" onclick="enviarMensagem2()" class="btn btn-primary fa fa-send"> Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="cc-style7">
+		<!-- Chat Panel -->
+		<div class="cc-panel">
+			<!-- Panel Header Content -->
+			<div class="cc-header">
+				<!-- Profile Picture -->
+				<div class="cc-img-cont">
+					<img class="cc-user-img" src="" alt="" />
+				</div>
+				<!-- Display Name & Last Seen -->
+				<div class="cc-user-info">
+					<strong>Gustavo Soratto Uliano</strong>
+				</div>
+                <a class="cc-button closer" id="cc-close">
+                    <i class="fa fa-close red" aria-hidden="true" style="display: inline-block;"></i>
+                </a>
+			</div>
+			<!-- Panel Body Content -->
+			<div class="cc-body">
+				<div class="cc-content">
+				    <textarea placeholder="Digite sua mensagem..." id="text-message" autofocus></textarea>
+                    <input type="hidden" id="input-pk">
+                </div>
+			</div>
+			<!-- Panel Footer Content -->
+			<div class="cc-footer">
+				<!-- Start Single Contact List -->
+				<a class="cc-list" id="btnEnviar">
+					<i class="fa fa-paper-plane-o" aria-hidden="true"></i><p>Enviar</p>
+				</a>
+			</div>
+		</div>
+
+	</div>
+{% endblock %}
+
+{% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <!-- Call Layout JS Library -->
+    <script src="{% static 'website/direct_call_html_plugin/js/call-layout.js' %}"></script>
+    <!-- Click To Call Style7 JS Library (required) -->
+    <script src="{% static 'website/direct_call_html_plugin/js/call-style7.js' %}"></script>
+    <script>
+        $('#text-message').slimScroll({
+            height: '300px',
+            size: '15px',
+            alwaysVisible: true,
+            railVisible: true,
+            color: '#100f2e',
+            wheelStep: 5,
+            start: 'bottom',
+            allowPageScroll: false
+
+        });
+        $('#table-respostas').slimScroll({
+            height: '400px',
+        });
+        $('#table-correcoes').slimScroll({
+            height: '400px',
+        });
+        $('#msg-inner').slimScroll({
+            height: '450px',
+        });
+        $("[data-name='ver']").click(function (e) {
+            var elm = $(e.target);
+            var aluno_id = {{ aluno.id }};
+
+            $.getJSON("{% url 'aluno:get_message' %}?id=" + elm.data('id'), function (data) {
+                var items = [];
+                $.each(data, function (key, val) {
+                    /*items.push("<li id='" + key + "'>" + val + "</li>");*/
+                    console.log('KEY', key, val);
+                    var css = 'left';
+                    var btn = '';
+                    if (val.aluno_id == aluno_id) {
+                        var css = 'right';
+                    } else {
+                        var btn = '<a data-toggle="send2" class="btn-link btn btn-sm" title="Enviar mensagem para o aluno"' +
+                            'data-toggle="send" data-pk="' + val.aluno_id + '"' + 'data-nome="' + val.aluno + '"' +
+                            'data-image="' + val + '"' +
+                            '><i class="fa fa-send-o"></i></a>';
+                    }
+                    items.push('<div class="conversation-item item-' + css + ' clearfix">');
+                    items.push('    <div class="conversation-user">');
+                    items.push('        <img src="' + val.img_url + '"/>');
+                    items.push('    </div>');
+                    items.push('    <div class="conversation-body">');
+                    items.push('        <div class="name">');
+                    items.push(btn);
+                    items.push('            <a href="' + val.aluno_url + '">' + val.aluno + '</a>');
+                    items.push('        </div>');
+                    items.push('        <div class="time hidden-xs">');
+                    items.push(val.data);
+                    items.push('        </div>');
+                    items.push('        <div id="icone-lido-' + val.mensagem_id + '">');
+                    if (val.lido == true) {
+                        items.push('            <span class="text-success"><i data-placement="left" data-toggle="tooltip" title="Marcada como visualizada" class="fa fa-check fa-lg pull-right"></i></span>')
+                    } else {
+                        if (val.aluno_id == aluno_id) {
+                            items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Aluno não leu sua mensagem." class="fa fa-eye-slash fa-lg pull-right text-danger"></i></a>')
+                        } else {
+                            items.push('            <a href="javascript:void(0)" onclick="startLoad();Dajaxice.apps.aluno.msg_set_lido(Dajax.process, {mid:' + val.mensagem_id + '});"><i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i></a>')
+                        }
+                    }
+                    items.push('        </div>');
+                    items.push('        <div class="text">');
+                    items.push(val.texto);
+                    items.push('        </div>');
+                    items.push('    </div>');
+                    items.push('</div>');
+                });
+                var html = items.join("");
+
+                console.log("v", html);
+                $('#msg-inner').html(html);
+                /*$("<ul/>", {
+                    "class": "my-new-list",
+                    html: items.join("")
+                }).appendTo("body");*/
+            });
+        });
+
+        // ENVIAR MENSAGEM
+        function enviarMensagem2() {
+            var texto = $('#text-msg').val();
+            var aid = $('#aid').val();
+            if (texto == "") {
+                notif('Informe o texto da mensagem', 'error');
+                $('#modal-msg').blur();
+            } else {
+                $("#modal-msg").modal("hide");
+                $("#text-msg").val("");
+                startLoad();
+                Dajaxice.apps.aluno.enviar_mensagem(Dajax.process, {'aid': aid, 'mensagem': texto});
+            }
+        }
+        // ENVIAR MENSAGEM
+        $('#btnEnviar').on('click', function () {
+            clear();
+            var texto = $('#text-message').val();
+            var aid =  $('#input-pk').val();
+            if (texto == "") {
+                $('#input-pk').notify(
+                  "Digite a mensagem!",
+                  { position:"top" }
+                );
+                $(".cc-panel").addClass("animated shake");
+            } else {
+                $("#text-message").val("");
+                $.unblockUI();
+                startLoad();
+                $(".cc-panel").addClass("animated zoomOutUp");
+                Dajaxice.apps.aluno.enviar_mensagem(Dajax.process, {'aid': aid, 'mensagem': texto});
+
+                setTimeout(() => {
+                    var run = '[data-id="' + aid + '"],[data-name="ver"]';
+                    $(run).click();
+                    msgToastr('Mensagens atualizadas')
+                    }, 2000);
+                    stopLoad();
+            }
+        })
+
+    </script>
+{% endblock %}

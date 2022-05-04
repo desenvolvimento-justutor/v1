@@ -1,0 +1,8 @@
+<strong class="text-success" style="margin-bottom: 4px">
+    Você possui um código para desbloqueio da compra deste curso. Clique em <span class="text-info">COMPRAR ESTE {% if curso.categoria.tipo == 'B' %}PACOTE{% else %}CURSO{% endif %}</span> para utilizá-lo
+</strong>
+<a onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ curso.id }}, 'codigo': '{{ codigo }}'});block()"
+   href="javascript:void(0);" class="btn btn-pricing" style="margin-top: 10px">
+    <i class="fa fa-cart-plus"></i> COMPRAR ESTE {% if curso.categoria.tipo == 'B' %}Pacote{% else %}Curso{% endif %}
+</a>
+

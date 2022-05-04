@@ -1,0 +1,72 @@
+{% extends '_base.html' %}
+{% block extra_css %}
+<style>
+    .invoice-title h2, .invoice-title h3 {
+        display: inline-block;
+    }
+
+    .table > tbody > tr > .no-line {
+        border-top: none;
+    }
+
+    .table > thead > tr > .no-line {
+        border-bottom: none;
+    }
+
+    .table > tbody > tr > .thick-line {
+        border-top: 2px solid;
+    }
+</style>
+{% endblock %}
+{% block section %}
+<div class="jumbotron">
+    {% if data.transaction.paymentLink %}
+    <div class="alert alert-danger" role="alert">Caso o seu navegador não tenha aberto a janela para efetuar o pagamento, <a target="_blank" href="{{ data.transaction.paymentLink }}">CLIQUE AQUI PARA PAGAR</a></div>
+    {% endif %}
+    <h2 class="mg-bot20 text-success">Pedido efetuado com sucesso!</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Transação: <span class="text-primary">{{ code }}</span></strong> <span class="label label-warning pull-right">{{ status }}</span></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <td><strong>Curso</strong></td>
+                                    <td class="text-center"><strong>Quantidade</strong></td>
+                                    <td class="text-right"><strong>Preço Unt.</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- foreach ($order->lineItems as $line) or some such thing here -->
+                                {% for key, item in data.transaction.items.iteritems %}
+                                <tr>
+                                    <td>{{ item.description }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-right"><span class="pull-left">R$</span>{{ item.amount }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% comment %}<tr>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line no-line text-center"><strong>Taxa</strong></td>
+                                    <td class="thick-line no-line text-right"><span class="pull-left">R$</span>{{ data.transaction.feeAmount }}</td>
+                                </tr>{% endcomment %}
+                                <tr>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line text-center"><strong>Total</strong></td>
+                                    <td class="thick-line text-right"><span class="pull-left">R$</span>{{ data.transaction.grossAmount }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p><a class="btn btn-success btn-lg fa fa-chevron-circle-left" href="{% url 'aluno:cursos' %}" role="button"> Ir para os cursos</a></p>
+</div>
+<!-- / -->
+{% endblock %}

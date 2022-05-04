@@ -1,0 +1,84 @@
+{% load autor %}
+
+{% with resposta_questionario_aluno.questao as questao %}
+    <div class="col-sm-12 mrg-t-md">
+        <div class="main-box clearfix project-box green-box">
+            <div class="main-box-body clearfix">
+                <input type="hidden" value="{{ resposta_questionario_aluno.pk }}" id="rpid">
+
+                <div class="project-box-footer clearfix">
+                    <a href="#" id="q-title-questao">
+                        <span class="label">Questão</span>
+                        <span class="value">
+                            {{ resposta_questionario_aluno.questao_grupo }}</span>
+                    </a>
+                    <a href="#" id="q-title-disciplina">
+                        <span class="label">Disciplina</span>
+                        <span class="value">
+                            {{ resposta_questionario_aluno.questao_grupo.disciplina_grupo }}
+                        </span>
+                    </a>
+
+                    {% if  resposta_questionario_aluno.questionario_aluno.tempo_esgotado or resposta_questionario_aluno.questionario_aluno.data_conclusao or simulado.encerrado %}
+                        {% simulado_aluno_status  simulado  as simulado_aluno%}
+                          <a href="#" id="q-title-temposimulado">
+                              <span class="label">Tempo de prova</span>
+                              <span class="value">
+                                  <strong class="text-success">
+                                        {{ simulado.duracao }}
+                                    </strong>
+                            </span>
+                          </a>
+                        <a href="#" id="q-title-prazo" style="width: 40%; padding: unset">
+                            <span class="value">
+                                <div class="alert alert-{{ simulado_aluno.flags_simulado.tag }} fade in"
+                                     style="margin: unset">
+                                    {{ simulado_aluno.message }}
+                                </div>
+                              </span>
+                        </a>
+                    {% else %}
+                        <a href="#" id="q-title-cronometro" style="width: 20%; padding: unset">
+                            <div class="clock-container">
+
+                                        <div class="clock-col">
+                                            <p class="clock-hours clock-timer">
+                                            </p>
+                                        </div>
+                                        <div class="clock-col">
+                                            <p class="clock-minutes clock-timer">
+                                            </p>
+                                        </div>
+                                        <div class="clock-col">
+                                            <p class="clock-seconds clock-timer">
+                                            </p>
+                                        </div>
+                                    </div>
+                        </a>
+                        <a href="#" id="q-title-temposimulado">
+                            <span class="label">Tempo de prova</span>
+                            <span class="value"><strong class="text-success">
+                                {{ simulado.duracao }}
+                            </strong></span>
+                        </a>
+                        <a href="#" id="q-title-prazo">
+                            <span class="label">Encerramento do simulado </span>
+                            <span class="value"><strong class="text-success" id="prazo_left">
+                                {{ simulado.data_fim.date|date:"SHORT_DATE_FORMAT" }} às {{ simulado.data_fim.time }}
+                            </strong></span>
+                        </a>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-9">
+        {% include 'autor/elements/box-questoes.html' %}
+    </div>
+    <div class="col-sm-3">
+      <div id="render-lista">
+            {% include 'autor/lista-de-questoes.html' with simulado=simulado resposta_questionario_aluno=resposta_questionario_aluno questionario_aluno=questionario_aluno%}
+        </div>
+    </div>
+{% endwith %}

@@ -1,0 +1,109 @@
+{% extends '_base-enunciado.html' %}
+{% block extra_css %}
+<style>
+    .notice {
+        padding: 15px;
+        background-color: #fafafa;
+        border-left: 6px solid #7f7f84;
+        margin-bottom: 10px;
+        -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+           -moz-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+                box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+    }
+    .notice-sm {
+        padding: 10px;
+        font-size: 80%;
+    }
+    .notice-lg {
+        padding: 35px;
+        font-size: large;
+    }
+    .notice-success {
+        border-color: #80D651;
+    }
+    .notice-success>strong {
+        color: #80D651;
+    }
+    .notice-info {
+        border-color: #45ABCD;
+    }
+    .notice-info>strong {
+        color: #45ABCD;
+    }
+    .notice-warning {
+        border-color: #FEAF20;
+    }
+    .notice-warning>strong {
+        color: #FEAF20;
+    }
+    .notice-danger {
+        border-color: #d73814;
+    }
+    .notice-danger>strong {
+        color: #d73814;
+    }
+</style>
+{% endblock %}
+{% block bloco_dir_lg %}4{% endblock %}
+{% block cabecalho %}
+    <div class="titulo-home mg-bot20">
+        <h4 class="pd-home titulo-home bold">Enunciados mais populares do JusTutor</h4>
+        <div class="linha-aba mg-bot20"></div>
+    </div>
+{% endblock %}
+
+{% block bloco_esq %}
+    <section id="questoes-destaque" class="col-sm-8">
+        <!-- Últimas Respostas -->
+        <div class="containner">
+            {% for enunciado in enunciados %}
+            <div class="col-sm-6">
+                <a href="{{ enunciado.get_absolute_url }}">
+                <div class="notice {% if enunciado.classificacao == 'ST' %}notice-warning{% elif enunciado.classificacao == 'QD' %}notice-info{% else %}notice-success{% endif %}">
+                    <strong>{{ enunciado }}</strong> <span class="label label-success pull-right">{{ enunciado.count_respostas }}</span>
+                    <span style="display: block">{{ enunciado.disciplina }}</span>
+                </div>
+                </a>
+            </div>
+            {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block centro %}
+    <div class="col-sm-12 containner text-center">
+         <ul class="pagination">
+            {% if tags.has_previous %}
+              <li><a href="?page={{ tags.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled"><a href="#">&laquo;</a></li>
+            {% endif %}
+
+            {% for num in tags.paginator.page_range %}
+              {% ifequal num tags.number %}
+                <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+              {% else %}
+                <li><a href="?page={{ num }}">{{ num }}</a></li>
+              {% endifequal %}
+            {% endfor %}
+
+            {% if tags.has_next %}
+              <li><a href="?page={{ tags.next_page_number }}">&raquo;</a></li>
+            {% else %}
+              <li class="disabled"><a href="#">&raquo;</a></li>
+            {% endif %}
+         </ul>
+    </div>
+{% endblock %}
+{% block bloco_dir %}
+    <div class="enunciado-destaque">
+        <a href="#" class="faixa-vermelha">
+            Veja as respostas já elaboradas <span class="fonte-amarela">para este enunciado</span>
+        </a>
+    </div>
+    {% include '_widget-anuncio.html' %}
+{% endblock %}
+
+{% block busca %}
+    {% include 'busca.html' %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends '_base.html' %}
+{% block section_attrs %}id="cursos"{% endblock %}
+{% block section %}
+<div class="container">
+    <div class="col-sm-12">
+        <div class="cabecalho-cursos">
+            <h1>{{ serie }}</h1>
+            <div class="linha-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li >Cursos Grátis</li>
+                    <li class="active">
+                        <a href="{{ serie.get_absolute_url }}">{{ serie }}</a>
+                    </li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+<div class="container">
+        {% for curso in series %}
+            {% include '_bloco-series.html' %}
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}

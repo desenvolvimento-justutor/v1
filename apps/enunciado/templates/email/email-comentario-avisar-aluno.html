@@ -1,0 +1,16 @@
+{% extends 'email/_base.html' %}
+{% block titulo1 %}O debate ajuda na construção do conhecimento!{% endblock %}
+{% block texto1 %}
+    <p>Sua correção à resposta nº <a href="{{ dominio }}{{ correcao.resposta.get_absolute_url }}">{{ correcao.resposta }}</a>
+        do enunciado <a href="{{ dominio }}{{ correcao.resposta.enunciado.get_absolute_url }}">{{ correcao.resposta.enunciado }}</a>
+        acaba de receber um comentário!
+    </p>
+{% endblock %}
+{% block titulo2 %}Comentário{% endblock %}
+{% block texto2 %}
+    <p>{{ comentario }}</p>
+    <hr>
+    <p><small>
+    Acesse o site do JusTutor para ler o comentário e aprimorar ainda mais os seus conhecimentos. E, se quiser, lembre-se que você também pode fazer comentários.
+    </small></p>
+{% endblock %}

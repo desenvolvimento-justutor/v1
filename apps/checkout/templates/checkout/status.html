@@ -1,0 +1,196 @@
+{% extends 'checkout/base.html' %}
+{% load thumbnail %}
+{% load carton_tags %}
+{% load curso %}
+{% load static %}
+
+{% block section_title %}
+{% endblock %}
+{% block section_body_content %}
+    {% if checkout %}
+    <div class="section-body center">
+        <div class="thankyou">
+            <div class="thankyou-icon">
+                {% static 'checkout/assets/img/' as images_path %}
+                <img src="{{ images_path }}{{ checkout.get_transaction_status_display|slugify }}.svg" width="30%">
+            </div> <!-- /.thankyou-icon -->
+            <div class="section-title">
+                <span class="text-{{ checkout.status_color }}" id="status">{{ checkout.get_transaction_status_display }}</span>
+                {% if checkout.transaction_status == 7 and checkout.transaction_cancellation_source %}
+                    <p><small>Origem do cancelamento:
+                        <strong>{{ checkout.get_transaction_cancellation_source_display }}</strong></small></p>
+                {% endif %}
+            </div>
+            <p class="section-p">
+                {% if checkout.transaction_payment_method_type == 1 %}
+                    Enviamos um email para confirmar a sua compra!
+                {% else %}
+                    Um comprovante e o boleto do seu pedido foi enviado para o e-mail<br/>
+                    <a href="mailto:{{ checkout.transaction_sender_email }}">{{ checkout.transaction_sender_email }}</a>
+                {% endif %}
+            </p>
+            <div class="line sm"></div>
+            <div class="thankyou-inner text-left">
+                <div class="thankyou-description">
+                    {% if checkout.transaction_payment_method_type == 2 %}
+                        <p>
+                            <span class="text-bold">Falta pouco!</span><br>
+                            Pague o seu boleto para que o pagamento seja confirmado:
+                        </p>
+                        <a target="_blank" class="btn btn-sm btn-primary" href="{{ checkout.link }}">Clique aqui para
+                            visualizar o boleto.</a>
+                    {% endif %}
+                </div> <!-- /.thankyou-description -->
+                <div class="section-subtitle">Detalhes</div>
+                <div class="items">
+                    {% for item in checkout.checkoutitens_set.all %}
+                        <div class="item">
+                            <div class="item-inner">
+                                <figure>
+                                    <a href="#">
+                                        {% thumbnail item.curso.imagem "100x100" crop="center" as im %}
+                                            <img src="{{ im.url }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                                        {% endthumbnail %}
+                                    </a>
+                                </figure>
+                                <div class="item-details">
+                                    <div class="item-title"><a href="#">{{ item.curso }}</a></div>
+                                    <div class="item-description">
+                                        {% if item.curso.aluno %}
+                                            Pacote montado por você
+                                        {% else %}
+                                            {{ item.curso.categoria.nome }}
+                                        {% endif %}
+                                    </div>
+                                </div> <!-- /.item-details -->
+                                <div class="item-price">
+                                    <div class="value">R${{ item.valor|moeda_nosymbol }}</div>
+                                    <div class="quantity">
+                                        <div class="control count"><span>1</span>x</div>
+                                    </div> <!-- /.quantity -->
+                                </div> <!-- /.item-price -->
+                            </div> <!-- /.item-inner -->
+                        </div> <!-- /.item -->
+                    {% endfor %}
+                </div> <!-- /.items -->
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="section-subtitle">{{ checkout.get_transaction_payment_method_type_display }}</div>
+                        <div class="block-body">
+                            <div class="section-p">
+                                {% if checkout.transaction_payment_method_type == 1 %}
+                                    <img src="{% static 'website/checkout/assets/img/cartao-de-credito.png' %}"
+                                         width="50">
+                                    <p><span class="text-bold">{{ checkout.get_card_name }}</span>
+                                        ({{ checkout.transaction_installment_count }}
+                                        parcela{{ checkout.transaction_installment_count|pluralize }})</p>
+                                {% else %}
+                                    <img src="{% static 'website/checkout/assets/img/codigo-de-barras.png' %}"
+                                         width="50">
+                                    <p><span class="text-bold">Boleto</span></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="section-subtitle">Valores</div>
+                        <div class="total-info">
+                            <div class="total-item">
+                                <div class="total-name">Valor total</div>
+                                <div class="total-value" id="total-order" data-price>{{ checkout.total|moeda }}</div>
+                            </div> <!-- /.total-item -->
+                            <div class="total-item" data-calculate-min="true">
+                                <div class="total-name">Desconto</div>
+                                <div class="total-value" id="total-discount"
+                                     data-price>{{ checkout.transaction_extra_amount|moeda }}</div>
+                            </div> <!-- /.total-item -->
+                            <div class="total-item total">
+                                <div class="total-name">Subtotal</div>
+                                <div class="total-value" data-price>{{ checkout.transaction_gross_amount|moeda }}</div>
+                            </div> <!-- /.total-item -->
+                        </div> <!-- /.total-info -->
+                    </div> <!-- /.col-md-6 -->
+                </div> <!-- /.row -->
+                <div class="thankyou-cta">
+                    <a data-href="{% url 'website:index' %}" class="btn btn-primary btn-outline"><i
+                            class="ion-android-arrow-back"></i> Ir para a home</a>
+                </div> <!-- /.thankyou-cta -->
+            </div> <!-- /.thankyou-inner -->
+        </div> <!-- /.thankyou -->
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block section_footer %}{% endblock %}
+
+{% block section_cta %}
+{% endblock %}
+{% block js %}
+    <script>
+        let checkout = $('#status').text();
+        $(document).ready(function () {
+            function checkCheckout(code) {
+                let timerInterval;
+                window.showProgress = false;
+                unblockUI();
+                Swal.fire({
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    icon: 'info',
+                    title: 'Processando!',
+                    html: 'Aguardando retorno do Pagseguro...',
+                    timer: 15000,
+                    timerProgressBar: true,
+                    width: 600,
+                    onBeforeOpen: () => {
+                        Swal.showLoading();
+                        timerInterval = setInterval(() => {
+                            $.ajax({
+                                method: "GET",
+                                url: "{% url 'checkout:ajax_check_checkout' %}",
+                                data: {code: code}
+                            })
+                                .done(function (response) {
+                                    var code = response.checkout;
+                                    console.log('code', code);
+                                    if (code !== false) {
+                                        Swal.close();
+                                        window.showProgress = true;
+                                        window.location.reload()
+                                    }
+                                    //if (count === 10) {
+                                    //   $('#overlay').toggleClass();
+                                    //   clearInterval(check);
+                                    //}
+                                }).fail(function (err) {
+                                window.showProgress = false;
+                                checkout = true;
+                                //$('#overlay').toggleClass();
+                                //console.log('err', err);
+                                //clearInterval(check);
+                            });
+                        }, 1000)
+                    },
+                    onClose: () => {
+                        clearInterval(timerInterval);
+                        window.showProgress = false;
+                    }
+                }).then((result) => {
+                    if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.timer
+                    ) {
+                        console.log('I was closed by the timer') // eslint-disable-line
+                    }
+                    ;
+                });
+                $('#overlay').removeClass('hide');
+            }
+            if (checkout == 'None') {
+                checkCheckout('{{ code }}')
+            }
+        });
+    </script>
+{% endblock %}

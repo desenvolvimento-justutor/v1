@@ -1,0 +1,103 @@
+{% extends 'professor/_base.html' %}
+{% load thumbnail curso %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2>Filtro {{ professor_id }}</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <form class="form-inline" role="form">
+                        <div class="form-group">
+                            <div class="checkbox-nice checkbox-inline">
+                                <input type="checkbox" name="status_solicitado" id="checkbox-inl-1"
+                                       {% if 'solicitado' in status %}checked{% endif %}>
+                                <label for="checkbox-inl-1">
+                                    Recurso Solicitado
+                                </label>
+                            </div>
+                            <div class="checkbox-nice checkbox-inline">
+                                <input type="checkbox" name="status_analise" id="checkbox-inl-2"
+                                       {% if 'analise' in status %}checked{% endif %}>
+                                <label for="checkbox-inl-2">
+                                    Recurso em Análise
+                                </label>
+                            </div>
+                            <div class="checkbox-nice checkbox-inline">
+                                <input type="checkbox" name="status_analisado" id="checkbox-inl-3"
+                                       {% if 'analisado' in status %}checked{% endif %}>
+                                <label for="checkbox-inl-3">
+                                    Recurso Analisado
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="professor_id">
+                                <option value="T">Todos</option>
+                                {% for professor in professores %}
+                                    <option value="{{ professor.id }}" {% ifequal professor.pk|slugify professor_id|slugify %}selected{% endifequal %}>{{ professor.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Filtrar</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>Recursos</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <ul class="widget-users row">
+                        {% for tabela in tabelas %}
+                        <li class="col-md-4" style="margin-right: 10px">
+                            <div class="img">
+                                {% thumbnail tabela.aluno.foto "50x50" crop="center" as im %}
+                                    <img src="{{ im.url }}" alt="{{ aluno }}">
+                                {% empty %}
+                                    <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ tabela.aluno }}"/>
+                                {% endthumbnail %}
+                            </div>
+                            <div class="details">
+                                <div class="name">
+                                    <a href="{{ tabela.aluno.get_absolute_url }}">{{ tabela.aluno.nome_resumido }}</a>
+                                    {% get_tarefa tabela.formulario.atividade tabela.aluno as tarefa %}
+                                    {% get_sentenca tabela.formulario.sentenca_avulca tabela.aluno as sentenca_c %}
+                                    {% if tarefa %}
+                                        <a href="{% url 'professor:formulario-correcao' tarefa.pk %}" class="table-link pull-right">
+                                            <span class="fa-stack" data-toggle="tooltip" data-original-title="Formulário de correção">
+                                                <i class="fa fa-square fa-stack-2x" style="color: #2980B9"></i>
+                                                <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    {% elif sentenca_c %}
+                                        <a href="{% url 'professor:formulario-correcao-sentenca' sentenca_c.pk %}" class="table-link pull-right">
+                                            <span class="fa-stack" data-toggle="tooltip" data-original-title="Formulário de correção">
+                                                <i class="fa fa-square fa-stack-2x" style="color: #6bb960"></i>
+                                                <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="time">
+                                    <span class="label label-{{ tabela.status_color }}">{{ tabela.get_status_display }}</span>
+                                    {% if tabela.data_solicitacao %}
+                                    <span class="label label-info">{{ tabela.data_solicitacao|date:"SHORT_DATETIME_FORMAT" }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="actions">
+                                    <small style="color: #1ABC9C; font-size: 0.75em">({{ tabela.formulario.tipo_display }})</small>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

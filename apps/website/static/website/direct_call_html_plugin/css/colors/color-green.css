@@ -1,0 +1,517 @@
+/*======================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 8, Sep 2019
+@version: 1.0 
+ 
+========================================================*/
+
+/*======================================================
+[Table of Contents For Green Gradiant Color]
+* Click To Call Main Layout CSS
+* Click To Call Sidebar Togle CSS
+* DropDown List for Click To Call Style10 Button CSS
+* Click To Call Style1 CSS
+* Click To Call Style2 CSS
+* Click To Call Style3 CSS
+* Click To Call Style4 CSS
+* Click To Call Style5 CSS
+* Click To Call Style6 CSS
+* Click To Call Style7 CSS
+* Click To Call Style8 CSS
+* Click To Call Style9 CSS
+* Click To Call Style10 CSS
+========================================================*/ 
+
+/*==================================================
+    Click To Call Main Layout CSS
+====================================================*/
+.layout .layout-features i{
+    color: #09e072;
+}
+.layout .layout-funcation .layout-funcation-odd{
+    background: #eee;
+} 
+
+/* Common CSS */
+.layout .title,
+.layout .wrapper .div-dot:after{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.layout .layout-heading h2,
+.layout .layout-heading p{
+    color: #fff;
+} 
+.layout .layout-style-title h3,
+.layout .layout-button-title h3,
+.layout .layout-features-title h3,
+.layout .layout-funcation-title h3,
+.layout .layout-features h4,
+.layout .layout-funcation h4{
+    color: #555;
+}
+.layout .layout-style-title p,
+.layout .layout-button-title p,
+.layout .layout-features-title p,
+.layout .layout-funcation-title p,
+.layout .layout-features p,
+.layout .layout-funcation p{
+    color: #8c8c8c;
+}
+
+/*==================================================
+    Click To Call Sidebar Togle CSS (Left Slide Panel)
+====================================================*/
+.cc-header{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+
+/* Common CSS */
+.cc-setting .icon,
+.cc-setting .link a{
+    color: #555;
+}
+.cc-setting .icon i,
+.cc-setting .link a:hover{
+    color: #09e072;
+}
+
+
+/*==================================================
+    DropDown List for Click To Call Style10 Button CSS
+====================================================*/
+.cc-dropdown .new-select{
+    color: #444;
+}
+.cc-dropdown .new-select .selection{
+    border: 1px solid #09e072;
+}
+.cc-dropdown .new-select .selection:hover p, 
+.cc-dropdown .new-select .selection.open p{
+    color: #383838;
+}
+.cc-dropdown .new-select .selection > span{
+    border-color: #09e072 transparent transparent transparent;
+}
+.cc-dropdown .new-select .selection.open > span{
+    border-color: transparent transparent #bbb transparent;
+}
+.cc-dropdown .new-option.reveal:hover{
+    color: #f5f5f5;
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);    
+}
+
+/* Common CSS */
+.cc-dropdown .new-select .selection,
+.cc-dropdown .new-option{
+    background-color: #fff;
+}
+
+/*==================================================
+    Start Click To Call Style1 CSS
+====================================================*/
+.cc-style1 .cc-panel{
+	background-color: #fff;
+}
+
+/* Common CSS */
+.cc-style1 .cc-panel .cc-header,
+.cc-style1 .cc-footer .cc-call-button:before,
+.cc-style1 .cc-footer .cc-call-button:hover:before,
+.cc-style1 .cc-button{
+	background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.cc-style1 .cc-body p,
+.cc-style1 .cc-footer .cc-call-button span{
+    color: #3c3c3c;
+}
+.cc-style1 .cc-panel .cc-header,
+.cc-style1 .cc-footer .cc-call-button:hover span,
+.cc-style1 .cc-button i{
+	color: #fff;
+}
+.cc-style1 .cc-footer .cc-call-button svg{
+    stroke: #3c3c3c;
+}
+.cc-style1 .cc-footer .cc-call-button:hover svg{
+    stroke: #fff;
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (max-width: 768px){
+    
+    .cc-style1 .cc-footer .cc-call-button:before{
+        background: linear-gradient(to right, #26C281, #09e072);
+    }
+}
+
+/*==================================================
+    End Click To Call Style1 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style2 CSS
+====================================================*/
+.cc-style2 .cc-panel .cc-button{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.cc-style2 .cc-panel .cc-list{
+    border: 2px solid #09e072;
+}
+.cc-style2 .cc-panel .cc-list img{
+    background: #fff;
+}
+
+/* Common CSS */
+.cc-style2 .cc-panel .cc-button,
+.cc-style2 .cc-panel .cc-button:hover{
+    color: #fff;
+}
+/*==================================================
+    End Click To Call Style2 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style3 CSS
+====================================================*/
+.cc-style3 .cc-button i{
+    color: #09e072;
+}
+.cc-style3 .cc-panel,
+.cc-style3 .cc-button{
+    background-color: #fff;
+}
+
+/* Common CSS */
+.cc-style3 .cc-panel .cc-header,
+.cc-style3 .cc-footer .cc-call-button{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.cc-style3 .cc-body p{
+    color: #3c3c3c;
+}
+.cc-style3 .cc-panel .cc-header,
+.cc-style3 .cc-footer .cc-call-button{
+    color: #fff;
+}
+/*==================================================
+    End Click To Call Style3 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style4 CSS
+====================================================*/
+.cc-style4 .cc-content{
+    background: #fff;
+    z-index: 1;
+}
+.cc-style4 .cc-body p{
+    color: #3c3c3c;
+}
+
+/* Common CSS */
+.cc-style4 .cc-panel .cc-header,
+.cc-style4 .cc-panel .cc-call-button,
+.cc-style4 .cc-button i{
+    color: #fff;
+}
+.cc-style4 .cc-panel .cc-header,
+.cc-style4 .cc-footer .cc-call-button,
+.cc-style4 .cc-button{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/*==================================================
+    End Click To Call Style4 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style5 CSS
+====================================================*/
+.cc-style5 .cc-list .cc-online{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.cc-style5 .cc-list .cc-offline{
+    background-color: #b1b1b1;
+}
+.cc-style5 .cc-list .cc-user-img{
+    border: 2px solid #09e072;
+}
+.cc-style5 .cc-list:hover strong{
+    color: #383838;
+}
+.cc-style5 .cc-list:hover .cc-user-info p{
+    color: #8c8c8c;
+}
+
+/* Common CSS */
+.cc-style5 .cc-list .cc-user-img,
+.cc-style5 .cc-list:hover .cc-user-info{
+    background: #fff;
+}
+/*==================================================
+    End Click To Call Style5 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style6 CSS
+====================================================*/
+.cc-style6 .cc-panel{
+    background: #fff;
+}
+
+/* Common CSS */
+.cc-style6 .cc-panel .cc-header,
+.cc-style6 .cc-header img,
+.cc-style6 .cc-footer .cc-call-button,
+.cc-style6 .cc-button{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.cc-style6 .cc-body p{
+    color: #3c3c3c;
+}
+.cc-style6 .cc-panel .cc-header,
+.cc-style6 .cc-footer .cc-call-button,
+.cc-style6 .cc-button i{
+    color: #fff;
+}
+/*==================================================
+    End Click To Call Style6 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style7 CSS
+====================================================*/
+.cc-style7 .cc-content .cc-bubble span{
+    color: rgba(0,0,0,0.4);
+}
+
+/* Common CSS */
+.cc-style7 .cc-header,
+.cc-style7 .cc-button,
+.cc-style7 .cc-footer .cc-list{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.cc-style7 .cc-panel,
+.cc-style7 .cc-content .cc-bubble,
+.cc-style7 .cc-footer{
+    background-color: #fff;
+}
+.cc-style7 .cc-panel .cc-header,
+.cc-style7 .cc-button i,
+.cc-style7 .cc-user-info,
+.cc-style7 .cc-list p,
+.cc-style7 .cc-list i{
+    color: #fff;
+}
+/*==================================================
+    End Click To Call Style7 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style8 CSS
+====================================================*/
+.cc-style8 .cc-list .cc-user-img{
+    border: 2px solid #09e072;
+}
+
+/* Common CSS */
+.cc-style8 .cc-panel .cc-button i,
+.cc-style8 .cc-panel ul .cc-list{
+    color: #fff;
+}
+.cc-style8 .cc-panel .cc-button,
+.cc-style8 .cc-list .cc-user-img,
+.cc-style8 .cc-list .cc-user-info{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/*==================================================
+    End Click To Call Style8 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style9 CSS
+====================================================*/
+.cc-style9 .cc-button i{
+    color: #fff;
+}
+
+/* Common CSS */
+.cc-style9:after,
+.cc-style9 .cc-button{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/*==================================================
+    End Click To Call Style9 CSS
+====================================================*/
+
+/*==================================================
+    Start Click To Call Style10 CSS
+====================================================*/
+/* Start Click To Call Button Style 1 */
+.cc-style10 .cc-button1 span{
+    color: #fff;
+}
+.cc-style10 .cc-button1 .social-link:hover{
+    border: 2px solid #fff;
+}
+.cc-style10 .cc-button1,
+.cc-style10 .cc-button1:before,
+.cc-style10 .cc-button1:after,
+.cc-style10 .cc-button1:hover{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/* End Click To Call Button Style 1 */
+
+/* Start Click To Call Button Style 2 */
+.cc-style10 .cc-button2 .cc-chat-icon i{
+    border: 2px solid #fff;
+}
+.cc-style10 .cc-button2 .cc-chat-icon i,
+.cc-style10 .cc-button2 p{
+    color: #fff;    
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/* End Click To Call Button Style 2 */
+
+/* Start Click To Call Button Style 3 */
+.cc-style10 .cc-button3{
+    border: 2px solid #fff;    
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+.cc-style10 .cc-button3 i,
+.cc-style10 .cc-button3 span{
+    color: #fff;
+}
+/* End Click To Call Button Style 3 */
+
+/* Start Click To Call Button Style 4 */
+.cc-style10 .cc-button4:hover{
+    background: #fff;
+}
+.cc-style10 .cc-button4:hover span{
+    color: #09e072;
+}
+.cc-style10 .cc-button4 span,
+.cc-style10 .cc-button4 .fa-phone{
+    color: #fff;
+}
+.cc-style10 .cc-button4,
+.cc-style10 .cc-button4 .fa-phone{
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/* End Click To Call Button Style 4 */
+
+/* Start Click To Call Button Style 5 */
+.cc-style10 .cc-button5 i{
+    border: 2px solid #fff;
+}
+.cc-style10 .cc-button5 i,
+.cc-style10 .cc-button5 .fa-whatsapp{
+    color: #fff;    
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/* End Click To Call Button Style 5 */
+
+/* Start Click To Call Button Style 6 */
+.cc-style10 .cc-button6 i{
+    color: #fff;    
+    border: 2px solid #fff;
+    background: -webkit-linear-gradient(to right, #26C281, #09e072);
+    background: -moz-linear-gradient(to right, #26C281, #09e072);
+    background: -ms-linear-gradient(to right, #26C281, #09e072);
+    background: -o-linear-gradient(to right, #26C281, #09e072);
+    background: linear-gradient(to right, #26C281, #09e072);
+}
+/* End Click To Call Button Style 6 */
+
+/* Start Click To Call Button Style 7 */
+.cc-style10 .cc-button7 a{
+    background: #09e072;
+}
+.cc-style10 .cc-button7:hover a{
+    background: transparent;
+}
+.cc-style10 .cc-button7 a img{
+    border: 2px solid #09e072;
+}
+.cc-style10 .cc-button7:before, 
+.cc-style10 .cc-button7:after {
+    background: #fff;
+}
+.cc-style10 .cc-button7:hover:before, 
+.cc-style10 .cc-button7:hover:after {
+    background: transparent;
+}
+/* End Click To Call Button Style 7 */
+/*==================================================
+    Start Click To Call Style10 CSS
+====================================================*/

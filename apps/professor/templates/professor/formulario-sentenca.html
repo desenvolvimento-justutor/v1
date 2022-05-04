@@ -1,0 +1,426 @@
+{% extends 'professor/_base.html' %}
+{% load  thumbnail curso %}
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}v2/website/assets/plugins/select2/css/select2.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.css"/>
+{% endblock %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>
+                        <strong>{{ sentenca.sentenca_avulsa }}</strong>
+                        {% if tabela_correcao.status != 'corrigido' %}
+                        <span id="span_status" class="pull-right label label-{{ tabela_correcao.status_color }}">{{ tabela_correcao.get_status_display }}</span>
+                        {% endif %}
+                    </h2>
+                    <a href="{{ sentenca.aluno.get_absolute_url }}" target="_blank" class="text-primary"><i class="fa fa-user"></i> {{ sentenca.aluno.get_nome }} <small class="text-info">&lt;{{ sentenca.aluno.email }}&gt;</small></a>
+                    <div class="icon-box pull-right">
+                        <a href="/professor/sentencas/" class="btn" data-toggle="tooltip" title="Voltar para sentenças">
+                            <i class="fa fa-long-arrow-left"></i> Voltar
+                        </a>
+                        <a href="javascript:" class="btn" data-toggle="tooltip" title="Salvar"
+                           onclick="$.notify('Correção atualizada.', 'info');">
+                            <i class="fa fa-save"></i>
+                        </a>
+                        {% if tabela_correcao.status != 'corrigido' %}
+                        <form method="post" style="display: contents;" id="form_finalizar_recurso">
+                            {% csrf_token %}
+                            <input type="hidden" name="tabela-pk" value="{{ tabela_correcao.pk }}">
+                            <input type="hidden" name="action" value="finalizar_recurso">
+                            <a class="btn" data-toggle="tooltip" title="Finalizar Recurso"
+                               onclick="$('#form_finalizar_recurso').submit()">
+                                <i class="fa fa-check"></i>
+                            </a>
+                        </form>
+                        {% endif %}
+                    </div>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="content">
+                        {% if not formulario %}
+                            <div class="alert alert-warning">
+                                <i class="fa fa-warning fa-fw fa-lg"></i>
+                                <strong>Aviso!</strong> Não a formulário criado para essa sentenca.
+                            </div>
+                        {% else %}
+                            <div class="panel-group accordion" id="accordion">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                                               href="#collapseOne" aria-expanded="false">
+                                                Comentário final {% if tabela_correcao.professor %}: cat tes<strong>{{ tabela_correcao.professor }}</strong>{% endif %}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false"
+                                         style="">
+                                        <div class="panel-body">
+                                            <form class="form-horizontal" role="form" id="formComentario" method="post">
+                                                {% csrf_token %}
+                                                <textarea class="form-control ckeditor" id="comentarioProfessor" name="comentario-professor" rows="3">{{ tabela_correcao.texto|default_if_none:"" }}</textarea>
+                                                <input type="hidden" name="tabela-pk" value="{{ tabela_correcao.pk }}">
+                                                <input type="hidden" name="action" value="comentar">
+                                                <div class="row" style="padding-top: 20px; padding-left: 10px">
+                                                    <div class="col-sm-4">
+                                                        <div class="checkbox-nice">
+                                                            <input type="checkbox" id="checkbox-1" name="finalizar"
+                                                                   {% if tabela_correcao.corrigido %}checked="checked"{% endif %}>
+                                                            <label for="checkbox-1">
+                                                                Marque essa opção para finalizar a correção.
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <button onclick="$('#formComentario').submit()" class="btn btn-success">Salvar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                                               href="#collapseAtv" aria-expanded="false">
+                                                Resposta do Aluno
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseAtv" class="panel-collapse collapse" aria-expanded="false"
+                                         style="">
+                                        <div class="panel-body" id="slimscroll">
+                                            <div class="row">
+                                            {% if sentenca.arquivo %}
+                                                <div class="col-sm-12" style="margin-bottom: 10px">
+                                                    <a target="_blank" href="/admin/curso/sentencaavulsaaluno/{{ sentenca.pk }}" class="pull-left btn btn-sm btn-info">
+                                                        <i class="fa fa-eye"></i> Ver no admin.
+                                                    </a>
+                                                    <a target="_blank" href="{{ sentenca.arquivo.url }}" class="pull-right btn btn-sm btn-danger">
+                                                        <i class="fa fa-download"></i> Baixar arquivo com a resposta
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            <div class="col-sm-12">
+                                                {{ sentenca.resposta|safe }}
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table user-list table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th><span>Item</span></th>
+                                        <th><span class="text-center">Valor</span></th>
+                                        <th><span class="text-center">Notas</span></th>
+                                        <th></th>
+                                        <th><span>Nota</span></th>
+                                        <th><span></span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <form method="post" id="formTabelaCorrecao">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="nota">
+                                        {% for tabela in tabelas %}
+                                        <input type="hidden" name="tabela-{{ tabela.pk }}" value="{{ tabela.pk }}">
+                                        <tr id="block{{ tabela.pk }}">
+                                            <td  style="width: 36%">
+                                                <a target="_blank" href="/admin/formulario_correcao/tabela/{{ tabela.tabela.pk }}/">{{ tabela.tabela }}</a>
+                                            </td>
+                                            <td class="text-center"  style="width: 5%">
+                                                <label class="label label-info" style="font-size: 16px">{{ tabela.tabela.valor }}</label>
+                                            </td>
+                                            <td class="text-center status green" name="notas"  style="width: 35%">
+                                            {% with tabela.get_notas as notas %}
+                                                <select data-action="onchange" data-pk={{ tabela.pk }} id="sel2Multi{{ tabela.pk }}" name="notas-{{ tabela.pk }}" class="nota" multiple style="width: 300px">
+                                                    {% for nota in notas %}
+                                                    <option value="{{ nota.nota.pk }}" data-pk={{ tabela.pk }} {% if nota.ativo %}selected{% endif %}>{{ nota.nota }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                {% if notas %}
+                                                <a href="#" rel="popover" data-popover-content="#myPopover{{ tabela.pk }}">
+                                                    <span class="glyphicon glyphicon-question-sign"></span>
+                                                </a>
+                                                <div id="myPopover{{ tabela.pk }}" class="hide">
+                                                    {% for nota in notas %}
+                                                        <h5>{{ nota.nota }}</h5>
+                                                        {{ nota.title|safe }}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            {% endwith %}
+                                            </td>
+                                            <td class="text-center" style="width: 4%">
+                                                <div class="checkbox checkbox-nice checkbox-inline" data-toggle="tooltip" style="margin-top: 0px !important; padding-left: 0px !important;"
+                                                     title="Se marcar essa opção, o sistema ira salvar a nota informada no campo nota a sua direita.">
+                                                    <input data-action="onchange" data-pk={{ tabela.pk }} type="checkbox" id="renderizar{{ tabela.pk }}" name="renderizar-{{ tabela.pk }}" {% if tabela.nota_calc %}checked="" value="on"{% else %}value="off"{% endif %}>
+                                                    <label for="renderizar{{ tabela.pk }}"></label>
+                                                </div>
+                                            </td>
+                                            <td  style="width: 10%">
+                                                <input data-action="onchange" data-pk={{ tabela.pk }} type="number" class="form-control" step="0.1" id="nota{{ tabela.pk }}"
+                                                       name="nota-{{ tabela.pk }}" value="{{ tabela.get_dot_nota|default_if_none:"0" }}" max="{{ tabela.tabela.get_dot_valor }}">
+                                            </td>
+                                            <td style="width: 10%">
+{#                                                <button type="button" class="btn btn-primary btn-sm"  title="Salvar"#}
+{#                                                        onclick="salvar_tabela({{ tabela.pk }})">#}
+{#                                                    <span class="fa fa-save"></span>#}
+{#                                                </button>#}
+                                                <button type="button" class="btn btn-{% if tabela.texto %}success{% else %}warning{% endif %} btn-sm"  title="Editar texto"
+                                                        data-target="#modal-editor" data-toggle="modal" id="btn_comentar_{{ tabela.pk }}"
+                                                        data-titulo="{{ tabela.tabela }}" data-pk="{{ tabela.pk }}">
+                                                    <span class="fa fa-edit"></span>
+                                                </button>
+                                                {% if tabela.texto_recurso and tabela_correcao.status != 'corrigido' %}
+                                                <button type="button" class="btn btn-sm btn-{% if tabela.texto_justificativa %}success{% else %}warning{% endif %}"  title="Justificar"
+                                                        data-target="#modal-recurso" data-toggle="modal" id="btn_justificar_{{ tabela.pk }}"
+                                                        data-titulo="{{ tabela.tabela }}" data-pk="{{ tabela.pk }}">
+                                                    <span class="fa fa-gavel"></span>
+                                                </button>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+
+                                        {% endfor %}
+                                        <td></td>
+                                        <td class="text-center"><strong class="label label-primary" style="font-size: 16px">{{ tabela_correcao.total.valor }}</strong></td>
+                                        <td class="text-center"></td>
+                                        <td></td>
+                                        <td class="text-center"><span id="totalID" class="label label-success" style="font-size: 16px">{{ tabela_correcao.total.nota }}</span></td>
+                                        <td></td>
+                                    </form>
+                                    </tbody>
+                                </table>
+                            </div>
+{#                        <form method="post">#}
+{#                            {% csrf_token %}#}
+{#                              <textarea id="edt" name="editordata" class="summernote"></textarea>#}
+{#                              <textarea id="edt1" name="editordata" class="summernote"></textarea>#}
+{#                            <button type="submit">Enviar</button>#}
+{#                        </form>#}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="modal-editor">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Modal title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalBody">
+                            <form method="post" id="formTextoTabela">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="texto-tabela">
+                                <input type="hidden" name="tabela-correcao-pk" value="">
+                                <textarea id="textoTabela" name="texto-corecao"></textarea>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+                        <button type="button" onclick="salvar_correcao('salvar_comentario')" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
+        <!-- MODAL RECURSO-->
+        <div class="modal fade" tabindex="-1" role="dialog" id="modal-recurso">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Modal title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalBody">
+                            <form method="post" id="formTextoRecorrer">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="texto-tabela">
+                                <input type="hidden" name="tabela-recurso-pk" value="">
+                                <div class="form-group">
+                                    <label for="texto-recurso-id">Recurso</label>
+                                    <textarea class="form-control" id="texto-recurso-id" readonly="readonly"
+                                              name="texto-recurso" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="justificativa-recurso-id">Observação do professor</label>
+                                    <textarea class="form-control" id="justificativa-recurso-id"
+                                              name="justificativa-recurso" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+                        <button type="button" onclick="salvar_correcao('salvar_justificativa')" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ STATIC_URL }}v2/website/assets/plugins/select2/js/select2.min.js"></script>
+    <script src="{{ STATIC_URL }}assets/ckeditor4/ckeditor/ckeditor.js"></script>
+    <script src="{{ STATIC_URL }}assets/ckeditor4/ckeditor/lang/pt-br.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            CKEDITOR.replace('comentarioProfessor');
+            CKEDITOR.replace('textoTabela');
+        });
+        $('.nota').select2({
+            placeholder: 'Selecione um nota',
+            allowClear: true
+        });
+        $('#modal-editor').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var titulo = button.data('titulo');
+            var pk = button.data('pk');
+            $('[name=tabela-correcao-pk]').val(pk);
+
+            var modal = $(this);
+            modal.find('.modal-title').text(titulo);
+            $.getJSON("{% url 'professor:correcao-get-data' %}?pk=" + pk, function (json) {
+                CKEDITOR.instances['textoTabela'].setData(json.texto);
+                console.log(json.texto)
+            });
+        });
+        $('#modal-recurso').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var titulo = button.data('titulo');
+            var pk = button.data('pk');
+            $('[name=tabela-recurso-pk]').val(pk);
+            var modal = $(this);
+            modal.find('.modal-title').text(titulo);
+            $.getJSON("{% url 'professor:correcao-get-data' %}?pk=" + pk, function (json) {
+                $('#texto-recurso-id').val(json.texto_recurso);
+                $('#justificativa-recurso-id').val(json.texto_justificativa);
+            });
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+        // SALVAR TABELA
+        function salvar_tabela(pk) {
+            var notas = $('#sel2Multi' + pk).val();
+            var renderizar = $('#renderizar' + pk).val();
+            var nota = $('#nota' + pk).val();
+            // Send the data using post
+            var send = {
+                pk: pk,
+                notas: notas,
+                renderizar: renderizar,
+                nota: nota
+            };
+            var posting = $.post('{% url 'professor:post-salvar-tabela' %}', send );
+            {#$.blockUI({ message: 'aguarde' });#}
+            posting.done(function( data ) {
+                //$.unblockUI();
+                if (data.erro) {
+                    toastr.error(data.message, 'Erro');
+                } else {
+                    $('#nota' + pk).val(data.nota);
+                    $('#totalID').text(data.total);
+                    //toastr.info(data.message, 'Informação');
+                    $.notify(data.message, 'info');
+                    console.log(data)
+                }
+            });
+        }
+        // SALVAR CORREÇÃO
+        function salvar_correcao(action) {
+            // Send the data using post
+            if (action == 'salvar_justificativa') {
+                texto = $('#justificativa-recurso-id').val();
+                pk = $('[name="tabela-recurso-pk"]').val()
+            } else {
+                texto =  CKEDITOR.instances.textoTabela.getData();
+                pk = $('[name="tabela-correcao-pk"]').val()
+            }
+            var send = {
+                action: action,
+                pk: pk,
+                texto: texto
+            };
+            var posting = $.post('{% url 'professor:post-salvar-comentario' %}', send );
+            {#$.blockUI({ message: 'aguarde' });#}
+            posting.done(function( data ) {
+                //$.unblockUI();
+                if (data.erro) {
+                    toastr.error(data.message, 'Erro');
+                } else {
+                    $.notify(data.message, 'info');
+                    if (action == 'salvar_justificativa') {
+                        $('#span_status').attr('class', 'pull-right label label-' + data.color);
+                        $('#span_status').html(data.status);
+                        if (data.texto) {
+                            $('#btn_justificar_' + pk).removeClass('btn-warning');
+                            $('#btn_justificar_' + pk).addClass('btn-success')
+                        } else {
+                            $('#btn_justificar_' + pk).addClass('btn-warning');
+                            $('#btn_justificar_' + pk).removeClass('btn-success')
+                        }
+                    } else {
+                        if (data.texto) {
+                            $('#btn_comentar_' + pk).removeClass('btn-warning');
+                            $('#btn_comentar_' + pk).addClass('btn-success')
+                        } else {
+                            $('#btn_comentar_' + pk).addClass('btn-warning');
+                            $('#btn_comentar_' + pk).removeClass('btn-success')
+                        }
+                    }
+                }
+            });
+        }
+        // CHECKBOX
+        $('input[type="checkbox"]').on('click', function () {
+            console.log($(this));
+            if ($(this).is(':checked')) {
+                $(this).val('on')
+            }
+            else {
+                $(this).val('off')
+            }
+        });
+        $('[data-action="onchange"]').on('change', function () {
+            pk = $(this).data('pk');
+            salvar_tabela(pk)
+        });
+        $(function(){
+            $('[rel="popover"]').popover({
+                container: 'body',
+                html: true,
+                placement: 'left',
+                content: function () {
+                    var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
+                    return clone;
+                }
+            }).click(function (e) {
+                e.preventDefault();
+            });
+        });
+
+    </script>
+{% endblock %}

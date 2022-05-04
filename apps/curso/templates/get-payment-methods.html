@@ -1,0 +1,35 @@
+<script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+<script type="text/javascript">
+    PagSeguroDirectPayment.setSessionId('{{ session_id }}');
+
+    function PaymentsMethod(value) {
+        PagSeguroDirectPayment.getPaymentMethods({
+            amount: value,
+            success: function (response) {
+                console.log('meios de pagamento disponíveis', response)
+                $.ajax({
+                    type: "POST",
+                    //the url where you want to sent the userName and password to
+                    url: '{% url 'curso:carrinho-pagamento' %}',
+                    dataType: 'json',
+                    async: false,
+                    //json object to sent to the authentication url
+                    data: {
+                        'payments': JSON.stringify(response),
+                    },
+                    success: function () {
+                        alert("Thanks!");
+                    }
+                })
+            },
+            error: function (response) {
+                console.log('tratamento do erro')
+            },
+            complete: function (response) {
+                console.log('tratamento comum para todas chamadas')
+            }
+        });
+    };
+
+    PaymentsMethod({{ proc_curso.cart.total }});
+</script>

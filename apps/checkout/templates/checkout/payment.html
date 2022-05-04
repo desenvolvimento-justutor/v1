@@ -1,0 +1,75 @@
+{% extends 'checkout/base.html' %}
+{% load thumbnail %}
+{% load carton_tags %}
+{% load curso %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'checkout/card-master/dist/card.css' %}">
+{% endblock %}
+{% block section_navigation %}
+    <div class="section-nav-group">
+        <div class="section-nav back" data-href="{% url 'checkout:cart' %}">
+            <i class="ion-android-arrow-back"></i>
+            <div>Voltar</div>
+        </div> <!-- /.section-nav.back -->
+    </div>
+{% endblock %}
+{% block section_body_content %}
+    <div class="account-form">
+        {% include 'checkout/widgets/resume.html' %}
+        <div class="section-subtitle">Como quer pagar?</div>
+        <div class="payment-method-list">
+            <label class="payment-method-item active" data-target="creditcard" data-toggle="creditcard">
+                <div class="payment-method-checkbox">
+                    <input type="radio" name="payment_method" checked="checked">
+                </div> <!-- /.payment-method-checkbox -->
+                <div class="payment-method-details">
+                    <div class="title">Cartão de Crédito</div>
+                    <div class="description">
+                        <img src="{% static 'website/checkout/assets/img/cartao-de-credito.png' %}">
+                    </div>  <!-- /.description -->
+                </div>  <!-- /.payment-method-details -->
+            </label> <!-- /.payment-method-item -->
+            <label class="payment-method-item" data-target="creditcard" data-toggle="boleto">
+                <div class="payment-method-checkbox">
+                    <input type="radio" name="payment_method">
+                </div> <!-- /.payment-method-checkbox -->
+                <div class="payment-method-details">
+                    <div class="title">Boleto</div>
+                    <div class="description">
+                        <img src="{% static 'website/checkout/assets/img/codigo-de-barras.png' %}">
+                    </div> <!-- /.description -->
+                </div> <!-- /.payment-method-details -->
+            </label> <!-- /.payment-method -->
+        </div> <!-- /.payment-method-list -->
+
+        <div class="payment-method-form show" id="creditcard">
+            <div class="payment-method-form-inner">
+                {% include 'checkout/includes/payment_form_creditcard.html' %}
+            </div> <!-- /.payment-method-form-inner -->
+        </div> <!-- /.payment-method-form -->
+        <div class="payment-method-form" id="boleto">
+            <div class="payment-method-form-inner">
+{#                {% include 'checkout/includes/payment_form_boleto.html' %}#}
+                <div class="section-p">O boleto bancário será exibido e disponível para pagamento dentro do prazo de
+                    validade em qualquer agência bancária, internet banking ou casas lotéricas.
+                </div>
+            </div> <!-- /.payment-method-form-inner -->
+        </div> <!-- /.payment-method-form -->
+    </div> <!-- /.account-form -->
+{% endblock %}
+
+{% block section_footer %}{% endblock %}
+
+{% block section_cta_content %}
+    <button type="submit" class="btn btn-primary" name="confirmar" value="creditcard">Continuar
+        <i class="ion-ios-arrow-thin-right"></i>
+    </button>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    {% include 'checkout/includes/payment.js.html' %}
+{% endblock %}

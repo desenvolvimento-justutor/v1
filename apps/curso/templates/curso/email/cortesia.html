@@ -1,0 +1,18 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+     Seu código de cortesia já está disponível!
+     <h2><strong>{{ codigo }}</strong></h2>
+{% endblock %}
+{% block texto1 %}
+    <p>Estamos felizes em comunicar que seu acesso de cortesia para <strong>{{ simulado }}</strong> já está disponível!</p>
+{% endblock %}
+
+{% block titulo2 %}Instruções:{% endblock %}
+{% block texto2 %}
+    <ul>
+        <li>Faça seu cadastro no JusTutor. Basta acessar www.justutor.com.br e preencher os dados solicitados.</li>
+        <li>Depois do cadastro, faça login no site e <a href="{{ dominio }}{{ simulado.get_absolute_url }}">clique aqui</a>.</li>
+        <li>Clique no campo “Possui um código de cortesia?” e digite o seguinte código: <code><strong>{{ codigo }}</strong></code></li>
+    </ul>
+{% endblock %}

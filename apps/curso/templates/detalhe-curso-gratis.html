@@ -1,0 +1,113 @@
+{% extends '_base.html' %}
+{% block section %}
+<div class="container">
+    <div class="col-sm-12">
+        <div class="cabecalho-cursos">
+            <h1>{{ curso }}</h1>
+            <div class="linha-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Cursos</a>
+                    </li>
+                    <li>
+                        <a href="{{ curso.serie.get_absolute_url }}">{{ curso.serie }}</a>
+                    </li>
+                    <li class="active">{{ curso }}</li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" id="cvideo">
+    <div class="col-sm-7">
+        <div class="video" id="video">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/{{ curso.video_code }}" frameborder="0" allowfullscreen></iframe>
+        </div>
+        {% comment %}
+        <div class="avalie-video">
+            <div class="avalie-x">
+                Avalie:
+            </div>
+            <a href="#id_otimo" onclick="Dajaxice.apps.curso.avaliar(Dajax.process, {'curso_id': {{ curso.id }}, 'avaliacao': 'O'});" class="avalia01 icone-verde">
+                <div id="id_otimo" class="valor-avalie">{{ avaliacao.otimo }}</div>
+                <div class="icone-avalie01 ">
+                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <path d="M12,4c-4.398,0-8,3.602-8,8c0,4.398,3.602,8,8,8c4.398,0,8-3.602,8-8C20,7.602,16.398,4,12,4L12,4z M14.801,8.801 C15.441,8.801,16,9.359,16,10s-0.559,1.199-1.199,1.199S13.602,10.641,13.602,10S14.16,8.801,14.801,8.801L14.801,8.801z M9.199,8.801c0.641,0,1.199,0.558,1.199,1.199s-0.558,1.199-1.199,1.199C8.559,11.199,8,10.641,8,10S8.559,8.801,9.199,8.801 L9.199,8.801z M12,16.801c-2.078,0-3.84-1.359-4.48-3.199h8.96C15.84,15.441,14.078,16.801,12,16.801L12,16.801z M12,16.801"></path> </g><!---emoticon-otimo--> </svg>
+                </div>
+                <div class="texto-avalie01">Ótimo</div>
+                <div class="clear"></div>
+            </a>
+            <a href="#id_bom" onclick="Dajaxice.apps.curso.avaliar(Dajax.process, {'curso_id': {{ curso.id }}, 'avaliacao': 'B'});" class="avalia01 icone-laranja">
+                <div id="id_bom" class="valor-avalie">{{ avaliacao.bom }}</div>
+                <div class="icone-avalie01">
+                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <path d="M12,4.025c-4.404,0-7.975,3.571-7.975,7.975c0,4.404,3.57,7.975,7.975,7.975s7.975-3.57,7.975-7.975 C19.975,7.596,16.404,4.025,12,4.025L12,4.025z M13.993,15.986h-3.987v-0.995h3.987V15.986z M14.991,8.013 c0.549,0,0.995,0.446,0.995,0.996c0,0.551-0.446,0.998-0.995,0.998c-0.552,0-0.998-0.447-0.998-0.998 C13.993,8.459,14.439,8.013,14.991,8.013L14.991,8.013z M9.009,8.013c0.551,0,0.997,0.446,0.997,0.996 c0,0.551-0.446,0.998-0.997,0.998c-0.55,0-0.996-0.447-0.996-0.998C8.013,8.459,8.459,8.013,9.009,8.013L9.009,8.013z M9.009,8.013 "></path> </g> </svg>
+                </div>
+                <div class="texto-avalie01">Bom</div>
+                <div class="clear"></div>
+            </a>
+            <a href="#id_ruim" onclick="Dajaxice.apps.curso.avaliar(Dajax.process, {'curso_id': {{ curso.id }}, 'avaliacao': 'R'});" class="avalia01 icone-vermelho">
+                <div id="id_ruim" class="valor-avalie">{{ avaliacao.ruim }}</div>
+                <div class="icone-avalie01">
+                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <path d="M12,3.988c-4.425,0-8.012,3.588-8.012,8.012c0,4.422,3.587,8.012,8.012,8.012c4.426,0,8.012-3.59,8.012-8.012 C20.012,7.576,16.426,3.988,12,3.988L12,3.988z M14.149,8.958c0.505,0,0.916,0.412,0.916,0.918s-0.41,0.917-0.916,0.917 c-0.507,0-0.918-0.411-0.918-0.917S13.643,8.958,14.149,8.958L14.149,8.958z M9.991,8.958c0.506,0,0.916,0.412,0.916,0.918 s-0.41,0.917-0.916,0.917s-0.917-0.411-0.917-0.917S9.484,8.958,9.991,8.958L9.991,8.958z M15.316,15.684 c-0.225,0.098-0.485-0.006-0.583-0.23c-0.428-0.988-1.439-1.629-2.576-1.629c-1.164,0-2.181,0.641-2.591,1.629 c-0.071,0.168-0.236,0.271-0.41,0.271c-0.057,0-0.114-0.01-0.17-0.033c-0.227-0.096-0.333-0.355-0.24-0.58 c0.549-1.322,1.888-2.174,3.411-2.174c1.491,0,2.821,0.85,3.391,2.164C15.646,15.324,15.542,15.586,15.316,15.684L15.316,15.684z M15.316,15.684"></path> </g> </svg>
+                </div>
+                <div class="texto-avalie01">Ruim</div>
+                <div class="clear"></div>
+            </a>
+            {% if avaliacao.total == 1 %}
+                <div class="pull-right"><span id="aval-total" class="badge bg-azul">{{ avaliacao.total }}</span> Avaliação</div>
+            {% else %}
+                <div class="pull-right"><span id="aval-total" class="badge bg-azul">{{ avaliacao.total }}</span> Avaliaram</div>
+            {% endif %}
+            <div class="clear"></div>
+        </div>
+        {% endcomment %}
+        <div class="clear"></div>
+        <section class="conteudo-curso mg-top20">
+            <h3>Vídeos do Curso</h3><br>
+            {% for video in videos %}
+            <table class="table table-striped tabela-curso mg-bot20">
+                <thead>
+                    <tr>
+                        <td style="width: 30px">{{ forloop.revcounter|stringformat:"02d" }}</td>
+                        <td><a href="#body" onclick="playVideo('{{ video.code }}')" class="page-scroll btn btn-danger fa fa-play"></a> {{ video }}
+                            {% if video.descricao %}<p><small style="font-weight: 100; color: white">{{ video.descricao }}</small></p>{% endif %}
+                            {% if video.data_ini %}<small class="pull-right"><i class="fa fa-clock-o"></i> {{ video.data_ini }}</small>{% endif %}<br>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            {% endfor %}
+        </section>
+    </div>
+    <div class="col-sm-5">
+        <h3 class="mg-top10">Sobre o Curso</h3>
+        <hr class="no-pd mg-top10">
+        <div class="conteudo-vantagens">
+            {{ curso.descricao }}
+        </div>
+        <div class="clear"></div>
+        <div class="clear"></div>
+        <div class="clear"></div>
+        <div class="mg-top20">
+            {% include '_widget-anuncio.html' %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        function playVideo(videoId) {
+            var logged = checkLogin();
+            if ( logged == true) {
+                var elm = $('#video');
+                elm.html('<iframe width="100%" height="315" src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" frameborder="0" allowfullscreen></iframe>');
+            } else {
+                login();
+            }
+        }
+    </script>
+{% endblock %}

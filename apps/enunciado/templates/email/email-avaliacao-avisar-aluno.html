@@ -1,0 +1,10 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}Parabéns!{% endblock %}
+{% block texto1 %}
+    <p>{{ avaliacao.aluno }} acabou de curtir sua Correção <a href="{{ dominio }}{{ avaliacao.correcao.get_absolute_url }}">#{{ avaliacao.correcao }}</a> à Resposta <a href="{{ dominio }}{{ avaliacao.correcao.resposta.get_absolute_url }}"> {{ avaliacao.correcao.resposta }}</a>
+    do Enunciado <a href="{{ dominio }}{{ avaliacao.correcao.resposta.enunciado.get_absolute_url }}"> {{ avaliacao.correcao.resposta.enunciado }}</a>.
+    </p>
+{% endblock %}
+
+{% block section2 %}{% endblock %}

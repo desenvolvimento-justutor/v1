@@ -1,0 +1,687 @@
+/*BASE*/
+
+/*LOADER BOX*/
+.loader {
+  height: 150px;
+  width: 200px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #a0a0a0;
+  position: relative;
+}
+
+.loader span {
+  font-size: 12px;
+  position: absolute;
+  bottom: 16px;
+}
+
+@media only screen and (min-width: 861px) {
+  .row:nth-child(odd) .loader:nth-child(odd),
+  .row:nth-child(even) .loader:nth-child(even) {
+    background: #1e1e1e;
+  }
+
+  .row:nth-child(odd) .loader:nth-child(even),
+  .row:nth-child(even) .loader:nth-child(odd) {
+    background: #2a2a2a;
+  }
+}
+
+@media only screen and (max-width: 860px) {
+  .row .loader:first-child,
+  .row .loader:last-child {
+    background: #2a2a2a;
+  }
+
+  .row .loader {
+    background: #1e1e1e;
+  }
+}
+
+@media only screen and (max-width: 460px) {
+  .row .loader:nth-child(odd) {
+    background: #2a2a2a;
+  }
+  .row .loader:nth-child(even) {
+    background: #1e1e1e;
+  }
+}
+
+/*** LOADERS ***/
+
+/* COMMON ANIMATIONS */
+@keyframes spinBasic {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spinBasicReverse {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes rotateWithBoost {
+    0% {
+        transform: rotate(0deg);
+    }
+    60% {
+        transform: rotate(180deg);
+    }
+    90%,
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* LOADER 1 */
+@keyframes loader1rect1 {
+  10% {
+    height: 30px;
+    transform: translateY(0);
+  }
+  20%,
+  40% {
+    height: 39px;
+    transform: translateY(-4.5px);
+  }
+  50%,
+  100% {
+    height: 30px;
+    transform: translateY(0);
+  }
+}
+@keyframes loader1rect2 {
+  30% {
+    height: 30px;
+    transform: translateY(0);
+  }
+  40%,
+  60% {
+    height: 39px;
+    transform: translateY(-4.5px);
+  }
+  70%,
+  100% {
+    height: 30px;
+    transform: translateY(0);
+  }
+}
+@keyframes loader1rect3 {
+  50% {
+    height: 30px;
+    transform: translateY(0);
+  }
+  60%,
+  80% {
+    height: 39px;
+    transform: translateY(-4.5px);
+  }
+  90%,
+  100% {
+    height: 30px;
+    transform: translateY(0);
+  }
+}
+
+.loader1 rect {
+  animation-timing-function: steps(100, end);
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+.loader1 rect:nth-child(1) {
+  animation-name: loader1rect1;
+}
+.loader1 rect:nth-child(2) {
+  animation-name: loader1rect2;
+}
+.loader1 rect:nth-child(3) {
+  animation-name: loader1rect3;
+}
+
+/* LOADER 2*/
+@keyframes loader2dot1 {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-15px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes loader2dot2 {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(15px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.loader2 svg {
+  overflow: visible;
+}
+
+.loader2 svg circle:first-of-type {
+  animation: loader2dot1 .8s linear infinite;
+}
+
+.loader2 svg circle:last-of-type {
+  left: 0;
+  animation: loader2dot2 .8s linear infinite;
+}
+
+/*LOADER 3*/
+@keyframes loader3path {
+  5% {
+    width: 8px;
+    opacity: 1;
+  }
+  25% {
+    width: 23px;
+    x: 0;
+  }
+  50% {
+    width: 8px;
+    x: 15;
+  }
+  75% {
+    width: 23px;
+    x: 15;
+  }
+  95% {
+    width: 8px;
+    x: 30;
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    x: 30;
+  }
+}
+
+.loader3 svg rect {
+  opacity: 0;
+  animation: loader3path 2s ease-in-out infinite;
+}
+
+/*LOADER 5*/
+@keyframes loader5 {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    stroke-width: 3;
+  }
+  60% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(5);
+    stroke-width: 0;
+  }
+}
+
+.loader5 svg circle {
+  transform-origin: center center;
+  transform: scale(1);
+  animation: loader5 1.5s linear infinite;
+}
+
+/*LOADER 6*/
+@keyframes loader6dot1 {
+  0% {
+    fill: #3a3a3a;
+    transform: scale(1);
+  }
+  16% {
+    transform: scale(1.5);
+    fill: #4fb95c;
+  }
+  70%,
+  100% {
+    transform: scale(1);
+    fill: #3a3a3a;
+  }
+}
+
+@keyframes loader6dot2 {
+  0%,
+  30% {
+    transform: scale(1);
+    fill: #3a3a3a;
+  }
+  47% {
+    transform: scale(1.5);
+    fill: #4fb95c;
+  }
+  75%,
+  100% {
+    transform: scale(1);
+    fill: #3a3a3a;
+  }
+}
+
+@keyframes loader6dot3 {
+  0%,
+  47% {
+    transform: scale(1);
+    fill: #3a3a3a;
+  }
+  83% {
+    transform: scale(1.5);
+    fill: #4fb95c;
+  }
+  100% {
+    transform: scale(1);
+    fill: #3a3a3a;
+  }
+}
+.loader6 svg {
+  overflow: visible;
+}
+
+.loader6 circle:first-of-type {
+  transform-origin: 5px center;
+  animation: loader6dot1 1.5s ease infinite;
+}
+.loader6 circle:nth-child(2) {
+  transform-origin: center;
+  animation: loader6dot2 1.5s ease infinite;
+}
+.loader6 circle:nth-child(3) {
+  transform-origin: 35px center;
+  animation: loader6dot3 1.5s ease infinite;
+}
+
+/*LOADER 9*/
+.loader9 svg {
+  animation: 1.5s linear rotateWithBoost infinite;
+}
+
+/*LOADER 4,7,8,16*/
+.loader4 svg,
+.loader7 svg,
+.loader8 svg,
+.loader16 svg {
+  animation: 1s linear spinBasic infinite;
+}
+
+/*LOADER 10*/
+@keyframes loader10svg {
+  0%,
+  25% {
+    transform: rotate(0deg);
+  }
+  45%,
+  100% {
+    transform: rotate(-180deg);
+  }
+}
+@keyframes loader10dot {
+  0% {
+    transform: rotate(0deg);
+  }
+  20%,
+  50% {
+    transform: rotate(180deg);
+  }
+  70%,
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader10 svg {
+  overflow: visible;
+  transform-origin: center center;
+  animation: 1.5s linear loader10svg infinite;
+}
+
+.loader10 svg circle:nth-of-type(2),
+.loader10 svg circle:nth-of-type(3) {
+  transform-origin: 26.5px center;
+  animation: 1.5s linear loader10dot infinite;
+}
+
+/*LOADER 11*/
+@keyframes loader11 {
+  0% {
+    y: 20;
+  }
+  10% {
+    y: 20;
+  }
+  20% {
+    y: 0;
+  }
+  45% {
+    y: -20;
+  }
+  65% {
+    y: -20;
+  }
+  80% {
+    y: 0;
+  }
+  100% {
+    y: 20;
+  }
+}
+
+.loader11 rect {
+  animation: 2s ease loader11 infinite;
+}
+.loader11 rect:first-of-type {
+  animation-delay: .3s;
+}
+.loader11 rect:nth-of-type(2) {
+  animation-delay: .25s;
+}
+.loader11 rect:nth-of-type(3) {
+  animation-delay: .2s;
+}
+.loader11 rect:nth-of-type(4) {
+  animation-delay: .15s;
+}
+.loader11 rect:nth-of-type(5) {
+  animation-delay: .1s;
+}
+.loader11 rect:nth-of-type(6) {
+  animation-delay: .05s;
+}
+
+/*LOADER 12*/
+.loader12 svg path:first-of-type {
+    transform-origin: center center 0;
+    animation: 1.5s linear spinBasicReverse infinite;
+}
+
+.loader12 svg path:last-of-type {
+    transform-origin: center center 0;
+    animation: 1.5s linear spinBasic infinite;
+}
+
+/*LOADER 13*/
+@keyframes loader13dot1 {
+  0%,
+  45% {
+    cx: 6;
+    cy: 6;
+  }
+  55%,
+  80% {
+    cx: 2;
+    cy: 2;
+  }
+  90%,
+  100% {
+    cx: 6;
+    cy: 6;
+  }
+}
+@keyframes loader13dot2 {
+  0%,
+  45% {
+    cx: 6;
+    cy: 24;
+  }
+  55%,
+  80% {
+    cx: 2;
+    cy: 28;
+  }
+  90%,
+  100% {
+    cx: 6;
+    cy: 24;
+  }
+}
+
+@keyframes loader13dot3 {
+  0%,
+  45% {
+    cx: 24;
+    cy: 6;
+  }
+  55%,
+  80% {
+    cx: 28;
+    cy: 2;
+  }
+  90%,
+  100% {
+    cx: 24;
+    cy: 6;
+  }
+}
+
+@keyframes loader13dot4 {
+  0%,
+  45% {
+    cx: 24;
+    cy: 24;
+  }
+  55%,
+  80% {
+    cx: 28;
+    cy: 28;
+  }
+  90%,
+  100% {
+    cx: 24;
+    cy: 24;
+  }
+}
+
+.loader13 svg {
+  overflow: visible;
+  animation: 1.5s rotateWithBoost linear infinite;
+}
+
+.loader13 svg circle:first-of-type {
+  animation: 1.5s loader13dot1 linear infinite;
+}
+.loader13 svg circle:nth-of-type(2) {
+  animation: 1.5s loader13dot2 linear infinite;
+}
+.loader13 svg circle:nth-of-type(3) {
+  animation: 1.5s loader13dot3 linear infinite;
+}
+.loader13 svg circle:last-of-type {
+  animation: 1.5s loader13dot4 linear infinite;
+}
+
+/*LOADER 14*/
+@keyframes loader14rect1 {
+  20% {
+    height: 24px;
+  }
+  25%,
+  40% {
+    height: 12px;
+  }
+  50%,
+  60% {
+    height: 24px;
+  }
+  75%,
+  90% {
+    height: 7px;
+  }
+  100% {
+    height: 24px;
+  }
+}
+@keyframes loader14rect2 {
+  20% {
+    height: 18px;
+  }
+  25%,
+  40% {
+    height: 22px;
+  }
+  50%,
+  60% {
+    height: 18px;
+  }
+  75%,
+  90% {
+    height: 9px;
+  }
+  100% {
+    height: 18px;
+  }
+}
+@keyframes loader14rect3 {
+  20% {
+    height: 20px;
+  }
+  25%,
+  40% {
+    height: 16px;
+  }
+  50%,
+  60% {
+    height: 20px;
+  }
+  75%,
+  90% {
+    height: 12px;
+  }
+  100% {
+    height: 20px;
+  }
+}
+@keyframes loader14rect4 {
+  20% {
+    height: 11px;
+  }
+  25%,
+  40% {
+    height: 23px;
+  }
+  50%,
+  60% {
+    height: 11px;
+  }
+  75%,
+  90% {
+    height: 20px;
+  }
+  100% {
+    height: 11px;
+  }
+}
+@keyframes loader14rect5 {
+  20% {
+    height: 22px;
+  }
+  25%,
+  40% {
+    height: 13px;
+  }
+  50%,
+  60% {
+    height: 22px;
+  }
+  75%,
+  90% {
+    height: 9px;
+  }
+  100% {
+    height: 22px;
+  }
+}
+
+.loader14 svg {
+  transform: rotate(180deg);
+}
+.loader14 rect {
+  animation-duration: 1.5s;
+  animation-timing-function: steps(100, end);
+  animation-iteration-count: infinite;
+}
+.loader14 rect:nth-child(1) {
+  animation-name: loader14rect1;
+}
+.loader14 rect:nth-child(2) {
+  animation-name: loader14rect2;
+}
+.loader14 rect:nth-child(3) {
+  animation-name: loader14rect3;
+}
+.loader14 rect:nth-child(4) {
+  animation-name: loader14rect4;
+}
+.loader14 rect:nth-child(5) {
+  animation-name: loader14rect5;
+}
+
+/*LOADER 15*/
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(.5);
+  }
+  40%,
+  70% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(.5);
+  }
+}
+
+@keyframes heartBeat2 {
+  0%,
+  30% {
+    transform: scale(.3);
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.2;
+  }
+  80% {
+    transform: scale(1.1);
+    opacity: 0.1;
+  }
+  90% {
+    transform: scale(.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(.3);
+  }
+}
+
+.loader15 svg {
+  overflow: visible;
+}
+
+.loader15 svg path {
+  transform-origin: center center 0;
+}
+
+.loader15 svg path:first-of-type {
+  animation: 1.5s ease heartBeat2 infinite;
+}
+
+.loader15 svg path:last-of-type {
+  animation: 1.5s ease heartBeat infinite;
+}

@@ -1,0 +1,175 @@
+{% extends 'quizz/painel-quizz.html' %}
+{% load  thumbnail aluno_tags quizz_tags humanize %}
+
+{% block side_rigth %}
+    <div class="main-box clearfix project-box green-box">
+        <div class="main-box-body clearfix">
+            <div class="project-box-header green-bg">
+                <div class="name" style="background-color: darkgreen;">
+                    <a href="#">
+                        {{ questao }}
+                    </a>
+                </div>
+            </div>
+            <div class="project-box-content" style="text-align: left">
+                <form method="post" id="idForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {% for opcao in questao.opcoes.all %}
+                            <div class="radio">
+                                <input type="radio" name="resposta" {% if resposta_aluno %}disabled{% endif %}
+                                       id="opcao_{{ opcao.pk }}" value="{{ opcao.pk }}"
+                                       {% if opcao == resposta_aluno.resposta %}checked{% endif %}>
+                                <label for="opcao_{{ opcao.pk }}">
+                                    {% if resposta_aluno and opcao.correta %}
+                                        <i class="fa fa-check text-success"></i>{% elif resposta_aluno and not opcao.correta %}
+                                        <i class="fa fa-remove text-danger"></i>{% endif %}
+                                    {{ opcao }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </form>
+            </div>
+            {% if not resposta_aluno %}
+                <div class="project-box-ultrafooter clearfix">
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-success" onclick="$('#idForm').submit()">Responder</button>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                {% get_proxima bloco questao as proxima %}
+                <div class="project-box-ultrafooter clearfix">
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            {% if proxima %}
+                                <a href="{% url 'quizz:questao' bloco.pk proxima.pk %}" class="btn btn-primary clearfix">Próxima</a>
+                            {% else %}
+                                <a href="{% url 'quizz:quizz' bloco.pk %}" class="btn btn-success clearfix">Resumo do seu desempenho</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if questao %}
+        {% with questao.comentarios.all as comentarios %}
+            {% get_resposta questao as resposta_aluno %}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="main-box clearfix">
+                        <header class="main-box-header clearfix">
+                            <h2>Comentário{{ comentarios|pluralize }} <span class="label label-success">{{ comentarios.count }}</span>
+                                {% if questao.comentario and resposta_aluno %}
+                                <button class="btn btn-info pull-right"
+                                        data-toggle="modal" data-target="#modalComentario">Ver comentário do professor</button></h2>
+                                {% endif %}
+                        </header>
+                        <div class="main-box-body clearfix">
+                        {% if resposta_aluno %}
+                        <div class="conversation-new-message">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <textarea name="comentario" class="form-control" rows="2" placeholder="Envie seu comentario..."></textarea>
+                                </div>
+                                <div class="clearfix">
+                                    <button type="submit" class="btn btn-success pull-right">Enviar</button>
+                                </div>
+                            </form>
+                        </div>
+                        {% endif %}
+                        <div class="conversation-wrapper">
+                            <div class="conversation-content">
+                                <div class="conversation-inner">
+                                {% if comentarios and resposta_aluno%}
+                                {% for mensagem in comentarios %}
+                                    <div class="conversation-item item-left clearfix">
+                                        <div class="conversation-user">
+                                            {% thumbnail mensagem.aluno.foto "50x50" crop="center" as im %}
+                                                <img src="{{ im.url }}" alt="{{ aluno }}">
+                                            {% empty %}
+                                                <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                            {% endthumbnail %}
+                                        </div>
+                                        <div class="conversation-body">
+                                            <div class="name">
+                                                {{ mensagem.aluno }}
+                                            </div>
+                                            <div class="time hidden-xs">
+                                                {{ mensagem.data|naturaltime }}
+                                            </div>
+                                            <div class="text">
+                                                {{ mensagem }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% elif comentarios and not resposta_aluno %}
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle fa-fw fa-lg"></i>
+                                    <strong>Quer ver os comentários?</strong> Responda a Questão!
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle fa-fw fa-lg"></i>
+                                    <strong>Sem Comentários.</strong> Seja o primeiro a comentar!
+                                </div>
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START::MODAL -->
+            <div class="modal fade" id="modalComentario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Comentário do Professor</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="scroll">
+                            {{ questao.comentario|safe }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END::MODAL -->
+            <script>
+            $('.conversation-inner').slimScroll({
+                height: '352px',
+                alwaysVisible: false,
+                railVisible: true,
+                wheelStep: 5,
+                allowPageScroll: false
+            });
+            </script>
+        {% endwith %}
+    {% endif %}
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script>
+        $('.scroll').slimScroll({
+            height: '400px',
+            alwaysVisible: true,
+            railVisible: true,
+            wheelStep: 5,
+            allowPageScroll: true
+        });
+    </script>
+{% endblock %}
+

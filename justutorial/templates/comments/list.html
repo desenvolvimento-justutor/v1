@@ -1,0 +1,36 @@
+{% load thumbnail threadedcomments_tags %}
+
+
+<div class="comments">
+    {% for comment in comment_list reversed %}
+            <div class="comment conversation-item item-left clearfix" id="c{{ comment.id }}">
+                <div class="conversation-user">
+                    {% thumbnail comment.user.aluno.foto "50x50" crop="center" as im %}
+                        <img src="{{ im.url }}">,
+                    {% empty %}
+                        <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg">'
+                    {% endthumbnail %}
+                </div>
+                <div class="conversation-body" {% if request.user == comment.user %}style="background-color: #DCEFFC" {% endif %}>
+                    <div class="name">
+                        <a href="{{ comment.user.aluno.get_absolute_url }}">{{ comment.user.aluno }}</a>
+                    </div>
+                    <div class="time hidden-xs">
+                        {{ comment.submit_date }}
+                    </div>
+                    {% if comment.parent %}
+                    <div class="text">
+                        <span class="text-muted"><i class="fa fa-pencil"></i> Resposta ao comentário <a href="#c{{ comment.parent.id }}">#{{ comment.parent.id }}</a> do(a) aluno(a) <a href="{{ comment.parent.user.aluno.get_absolute_url }}">{{ comment.parent.user.aluno }}</a></span>
+                    </div>
+                    {% endif %}
+                    <div class="text">
+                        {{ comment.comment|linebreaksbr }}
+                    </div>
+                    <a href="#c{{ comment.id }}" data-comment-id="{{ comment.id }}" class="comment_reply_link"><i class="fa fa-pencil-square-o"></i>  Responder</a>
+                    <span class="label label-success pull-right">#{{ comment.id }}</span>
+                </div>
+            </div>
+
+
+    {% endfor %}
+</div>

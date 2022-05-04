@@ -1,0 +1,186 @@
+{% load autor %}
+{% with questionario_estatisticas as estatisticas %}
+{% comment %}    <div id="invoice-companies" class="row" style="margin: -8px -8px">
+        <div class="col-sm-4 invoice-box">
+            <div class="invoice-icon hidden-sm green">
+                <i class="fa fa-check green"></i> Corretas
+            </div>
+            <div class="invoice-company">
+                <h4>{{ estatisticas.corretas }}</h4>
+            </div>
+        </div>
+        <div class="col-sm-4 invoice-box">
+            <div class="invoice-icon hidden-sm">
+                <i class="fa fa-truck"></i> To
+            </div>
+            <div class="invoice-company">
+
+            </div>
+        </div>
+        <div class="col-sm-4 invoice-box invoice-box-dates main-box clearfix project-box " style="border: unset">
+            <div class="main-box-body clearfix">
+                <div class="project-box-content">
+                            <span class="chart" data-percent="{{ estatisticas.porcento|floatformat:".2d" }}" data-bar-color="#2ecc71">
+                            <span class="percent"></span>%<br/>
+                            <span class="lbl">completed</span>
+                            </span>
+                </div>
+                <div class="project-box-footer clearfix">
+                    <a href="#">
+                        <span class="value">{{ estatisticas.corretas }}</span>
+                        <span class="label">Corretas</span>
+                    </a>
+                    <a href="#">
+                        <span class="value">{{ estatisticas.erradas }}</span>
+                        <span class="label">Erradas</span>
+                    </a>
+                    <a href="#">
+                        <span class="value">{{ estatisticas.total_questoes }}</span>
+                        <span class="label">Questões</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>{% endcomment %}
+
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="main-box-body clearfix">
+                <div class="panel-group accordion" id="accordion{{ accordion_id }}">
+                    {% for grupo in estatisticas.grupos %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle{% if not forloop.first %} collapsed{% endif %}"
+                                       data-toggle="collapse" data-parent="#accordion{{ accordion_id }}"
+                                       href="#collapse-{{ grupo.grupo.pk }}{{ accordion_id }}" aria-expanded="{{ forloop.first|escape }}" aria-controls="collapse-{{ grupo.grupo.pk }}{{ accordion_id }}">
+                                        <i class="fa fa-circle fa-fw {{ grupo.aprovado|yesno:"green,red" }}"></i>
+                                        <strong>{{ grupo.grupo }}</strong>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse-{{ grupo.grupo.pk }}{{ accordion_id }}"
+                                 class="panel-collapse collapse{% if forloop.first %} in{% endif %}">
+                                <div class="panel-body">
+                                    <div class="invoice-summary row" style="padding-top: unset">
+                                        <div class="col-md-2 col-sm-4 col-12">
+                                            <div class="invoice-summary-item" style="min-height: 62px">
+                                                <span>Total de questões</span>
+                                                <div>{{ grupo.total_questoes }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 col-12">
+                                            <div class="invoice-summary-item" style="min-height: 62px">
+                                                <span>Nota mínima</span>
+                                                <div>{{ grupo.nota_minima|stringformat:".2f" }}%</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 col-12">
+                                            <div class="invoice-summary-item" style="min-height: 62px">
+                                                <span>Respostas corretas</span>
+                                                <div>{{ grupo.respostas_corretas }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 col-12">
+                                            <div class="invoice-summary-item" style="min-height: 62px">
+                                                <span>Pontos</span>
+                                                <div>{{ grupo.pontos }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 col-12">
+                                            <div class="invoice-summary-item green-bg" style="min-height: 62px">
+                                                <span>Acertos</span>
+                                                <div>{{ grupo.porcentage_acertos|stringformat:".2f" }}%</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 col-12">
+                                            <div class="invoice-summary-item {{ grupo.aprovado_grupo|yesno:"green,red" }}-bg" style="min-height: 62px">
+                                                <span></span>
+                                                <div>
+                                                    <strong style="color: white; padding-left: 4px; padding-right: 4px; padding-top: 4px">
+                                                        {{ grupo.aprovado_grupo|yesno:"Superou nota mínima,Não superou nota mínima" }}
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="map-stats">
+                                        <div class="table-responsive">
+                                            <table class="table table-condensed table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th><span>Disciplina</span></th>
+                                                    <th class="text-center"><span>Qtda. de Questões</span></th>
+                                                    <th class="text-center"><span>Peso</span></th>
+                                                    <th class="text-center"><span>Nota mínima</span></th>
+                                                    <th class="text-center"><span>Corretas</span></th>
+                                                    <th class="text-center"><span>Acertos</span></th>
+                                                    <th class="text-center"><span>Pontos</span></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for disciplina in grupo.disciplinas %}
+                                                <tr>
+                                                    <td>
+                                                        {{ disciplina.disciplina  }}
+                                                    </td>
+                                                    <td class="text-center status gray">
+                                                        {{ disciplina.total_questoes  }}
+                                                    </td>
+                                                    <td class="text-center status gray">
+                                                        {{ disciplina.peso  }}
+                                                    </td>
+                                                    <td class="text-center status gray">
+                                                        {{ disciplina.nota_minima|stringformat:".2f"  }}%
+                                                    </td>
+                                                    <td class="text-center status gray  ">
+                                                        {{ disciplina.respostas_corretas }}
+                                                    </td>
+                                                    <td class="text-center status gray  ">
+                                                        {{ disciplina.porcentage_acertos|stringformat:".2f"  }}%
+                                                    </td>
+                                                    <td class="text-center status {{ disciplina.aprovado|yesno:"green,red"  }}">
+                                                        {{ disciplina.pontos  }}<i class="fa fa-level-{{ disciplina.aprovado|yesno:"up,down"  }} fa-fw"></i>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="text-center">
+                                                        <td></td>
+                                                        <td class="text-center status gray">
+                                                            {{ grupo.total_questoes }}
+                                                        </td>
+                                                        <td class="text-center status gray">
+                                                            {{ grupo.peso_total  }}
+                                                        </td>
+                                                        <td class="text-center status gray">
+                                                            {{ grupo.peso_total }}
+                                                        </td>
+                                                        <td class="text-center status gray">
+                                                            {{ grupo.respostas_corretas }}
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td class="text-center status {{ grupo.aprovado_grupo|yesno:"green,red"  }}">
+                                                            {{ grupo.pontos  }}<i class="fa fa-level-{{ grupo.aprovado_grupo|yesno:"up,down"  }} fa-fw"></i>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endwith %}

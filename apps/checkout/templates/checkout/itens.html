@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <script type="text/javascript" src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+</head>
+<body>
+    <a href="#" onclick="consulta()">teste</a>
+    <ul id="trasacoes">
+
+    </ul>
+    <script>
+        let email0 = "gabriel@jdsystem.com.br";
+        let token0 = "48BDAEBF8A0F4E85A39F6A32DFDEEC8A";
+        consulta = () => {
+            var data = JSON.stringify(false);
+
+            var xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
+
+            xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === this.DONE) {
+                console.log(this.responseText);
+            }
+            });
+
+            xhr.open("GET", `https://ws.sandbox.pagseguro.uol.com.br/pre-approvals/186F39009F9F08CEE435CFA13E6A35BE?email=${email0}&token=${token0}`);
+
+            xhr.send(data);
+        }
+
+
+
+
+
+
+        class Ajax {
+            /**
+            * Classe Ajax
+            * Retorna objeto JSON 
+            */
+            constructor() {
+                this.api;
+            }
+            request = (method, url, data, callback) => {
+                let xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if(this.readyState == 4 && this.status == 200) {
+                        return callback(JSON.parse(xhr.response))
+                    }
+                }
+                xhr.open(method, this.api + url, true);
+                xhr.send(data);
+            }
+
+            /**
+            * Método GET
+            * @param {string} url
+            */
+            get (url, data, callback) {this.request("GET", url, data, callback)};
+            
+            /**
+            * Método POST
+            * @param {string} url
+            */
+            post (url, data, callback) {this.request("POST", url, data, callback)};
+
+            /**
+            * Método PUT
+            * @param {string} url
+            */
+            put (url, data, callback) {this.request("PUT", url, data, callback)};
+
+            /**
+            * Método DELETE
+            * @param {string} url
+            */
+            delete (url, data, callback){this.request("DELETE", url, data, callback)};
+        }
+
+
+
+        let aj = new Ajax();
+        //aj.api = "https://jsonplaceholder.typicode.com";
+        aj.api = "https://ws.sandbox.pagseguro.uol.com.br";
+
+
+        //let email = "cristiane@justutor.com.br";
+        //let token = "94CFB2E289C744CCAD0AD2A6383A7B81";
+        let token = '209ac20b-7221-4c2c-9202-afd8a3b1f07807827b734b2998d9c3b629d621c29abd4503-617f-4a5f-83cc-71b7dfb89fb2';
+        let email = 'christian.douglas.alcantara@gmail.com';
+
+        // aj.get('/posts','', (e) => {
+        //     console.log(e);
+        // });
+
+        // aj.get(`/pre-approvals/186F39009F9F08CEE435CFA13E6A35BE?email=${email}&token=${token}`,'',(e) => {
+        //     console.log(e);
+        // })
+
+
+
+
+    // var xhttp = new XMLHttpRequest();
+    // xhttp.onreadystatechange = function() {
+    // if (this.readyState == 4 && this.status == 200) {
+    // // Typical action to be performed when the document is ready:
+    // console.log(xhttp.responseText);
+    // }
+    // };
+    // xhttp.open("GET", "https://jsonplaceholder.typicode.com/posts", true);
+    // xhttp.send();
+
+
+        let SESSION = "2e034103de6a4177a391eda7c827a826";
+
+        let setSession = PagSeguroDirectPayment.setSessionId(SESSION);
+        
+        let getPayment = PagSeguroDirectPayment.getPaymentMethods({
+            amount: 500.00,
+            success: function(response) {
+                console.table(response);
+                // Retorna os meios de pagamento disponíveis.
+            },
+            error: function(response) {
+                // Callback para chamadas que falharam.
+            },
+            complete: function(response) {
+                // Callback para todas chamadas.
+            }
+        });
+
+        let senderHash = PagSeguroDirectPayment.onSenderHashReady(function(response){
+            if(response.status == 'error') {
+                console.log(response.message);
+                return false;
+            }
+            var hash = response.senderHash;
+            console.log("Hash: " + hash); //Hash estará disponível nesta variável.
+        });
+
+        let getCardToken = PagSeguroDirectPayment.createCardToken({
+            cardNumber: '4111111111111111', // Número do cartão de crédito
+            brand: 'visa', // Bandeira do cartão
+            cvv: '123', // CVV do cartão
+            expirationMonth: '12', // Mês da expiração do cartão
+            expirationYear: '2030', // Ano da expiração do cartão, é necessário os 4 dígitos.
+            success: function(response) {
+                console.log("Token do CREDIT_CARD gerado:");
+                console.log(response.card.token);
+                // Retorna o cartão tokenizado.
+            },
+            error: function(response) {
+                        // Callback para chamadas que falharam.
+            },
+            complete: function(response) {
+                    // Callback para todas chamadas.
+            }
+        });
+
+        transacao = () => {
+            var code = '1F69A3CF7878ED9994B3DF9DDC706796';
+            var callback = {
+                success : function(transactionCode) {
+                    //Insira os comandos para quando o usuário finalizar o pagamento. 
+                    //O código da transação estará na variável "transactionCode"
+                    console.log("Compra feita com sucesso, código de transação: " + transactionCode);
+                },
+                abort : function() {
+                    //Insira os comandos para quando o usuário abandonar a tela de pagamento.
+                    console.log("abortado");
+                }
+            };
+        }
+
+    </script>
+</body>
+</html>

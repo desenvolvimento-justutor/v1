@@ -1,0 +1,32 @@
+{% load autor %}
+<h4>
+    <i class="fa fa-circle fa-fw fa-lg {{ simulado.situacao_desc.bg }}"></i>
+    <strong class="text-{{ simulado.situacao_desc.tag }}">{{ simulado.situacao_desc.title }}</strong>
+</h4>
+<div class="alert alert-danger" role="alert" style="margin-top: 14px">
+    <i class="fa fa-warning fa-fw fa-lg"></i>
+    <strong>Atenção:</strong> Leia estas instruções antes de iniciar seu simulado!
+</div>
+{{ simulado.texto|safe }}
+<!-- STATUS -->
+
+<div class="row">
+    <div class="col-lg-offset-2 col-lg-8" style="padding-top: 40px">
+        <div class="alert alert-block alert-{{ simulado_aluno.flags_simulado.tag }} fade in">
+            <h4><i class="fa fa-info-circle fa-fw fa-lg"></i>
+                <strong>Atenção:</strong>
+            </h4>
+            <hr class="mt-5">
+            <p class="text-center"><strong>{{ simulado_aluno.message }}</strong></p>
+            <hr class="mt-5">
+            <div>
+                {% if simulado_aluno.status_simulado != 'Aguardando' %}
+                    <a href="{% if simulado_aluno.create %}javascript:iniciarSimulado(){% else %}{% url 'aluno:simulado:questionario' simulado.pk %}{% endif %}"
+                       class="btn btn-success btn-lg btn-block">
+                        {{ simulado_aluno.btn_title }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

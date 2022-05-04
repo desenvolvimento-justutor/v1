@@ -1,0 +1,216 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail aluno_tags autor %}
+
+{% block panel_content %}
+    <div class="row">
+        {% if checkouts or cortesias %}
+            <div class="col-lg-12">
+                <div class="main-box clearfix">
+                    <header class="main-box-header clearfix">
+                        <a href="#" class="btn btn-primary float-right">
+                            <i class="fa fa-eye fa-lg"></i> Ver apenas simulados em andamento
+                        </a>
+                    </header>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="main-box clearfix">
+                    <div class="main-box-body clearfix">
+                        <div class="table-responsive clearfix">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th><span>Título</span></th>
+                                    <th></th>
+                                    <th><span>Início</span></th>
+                                    <th><span>Término</span></th>
+                                    <th><span>Duração</span></th>
+                                    <th><span>Resolução</span></th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for checkout in checkouts %}
+                                    {% with checkout.curso.simulado as simulado %}
+                                    <tr>
+                                        <td data-checout="{{ checkout.pk }}"><strong><small>{{ simulado }}</small></strong></td>
+                                        <td>
+                                            <span class="label label-{{ simulado.situacao_desc.tag }}">{{ simulado.situacao_desc.title }}</span>
+                                        </td>
+                                        <td>{{ simulado.data_inicio|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                        <td>{{ simulado.data_fim|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                        <td>{{ simulado.duracao }}</td>
+                                        <td>
+                                            {% get_questionario_aluno simulado as questionario %}
+                                            {% if questionario %}
+                                                <span class="label label-{{ questionario.status_flags.tag }}">{{ questionario.status_flags.title }}</span>
+                                            {% else %}
+                                                <span class="label label-danger">Resolução não iniciada</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if checkout.transaction %}
+                                                {% with  checkout.transaction.status as status %}
+                                                    {% if status in 'pago,disponivel' %}
+                                                        <a href="{% url 'aluno:simuladoinfo' pk=simulado.pk %}" data-toggle="tooltip" data-original-title="Detalhes do simulado." class="btn btn-success btn-sm"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;Acessar o simulado</a>
+                                                    {% else %}
+                                                        <span title="{{ checkout.pk }}" class="label label-danger">{{ checkout.transaction.get_status_display }}</span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                                <a class="btn btn-success btn-sm" disabled=""><i class="fa fa-play"></i> Iniciar</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endwith %}
+                                {% endfor %}
+                                {% for cortesia in cortesias %}
+                                    {% with cortesia.curso.simulado as simulado %}
+                                    <tr>
+                                        <td data-checout="{{ checkout.pk }}"><strong><small><i class="fa fa-circle green"></i> {{ simulado }}</small></strong></td>
+                                        <td>
+                                            <span class="label label-{{ simulado.situacao_desc.tag }}">{{ simulado.situacao_desc.title }}</span>
+                                        </td>
+                                        <td>{{ simulado.data_inicio|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                        <td>{{ simulado.data_fim|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                        <td>{{ simulado.duracao }}</td>
+                                        <td>
+                                            {% get_questionario_aluno simulado as questionario %}
+                                            {% if questionario %}
+                                                <span class="label label-{{ questionario.status_flags.tag }}">{{ questionario.status_flags.title }}</span>
+                                            {% else %}
+                                                <span class="label label-danger">Resolução não iniciada</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'aluno:simuladoinfo' pk=simulado.pk %}" data-toggle="tooltip" data-original-title="Detalhes do simulado." class="btn btn-success btn-sm"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;Acessar o simulado</a>
+                                        </td>
+                                    </tr>
+                                    {% endwith %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-danger">
+                <i class="fa fa-times-circle fa-fw fa-lg"></i>
+                <strong>Ops!</strong> Você não possui nenhuma Simulado.
+            </div>
+        {% endif %}
+        <!-- MODAL -->
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    function verTarefa(atividadeID) {
+        $('#modalTarefa').modal('show');
+    }
+    $('#modalTarefa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var titulo = button.data('titulo');
+        var pk = button.data('pk');
+        var stpk = button.data('stpk');
+        var tipo = button.data('tipo');
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this);
+        modal.find('.modal-title').text(titulo);
+
+        if (stpk == 0){
+            $('#btn-tarefa').attr('disabled', 'true');
+        } else {
+            $('#btn-tarefa').removeAttr("disabled");
+            $('#btn-tarefa').prop('href', '/curso/sentenca-oab/responder/' + stpk);
+        }
+        $('#btn-imprimir').prop('href', '/curso/sentenca/imprimir/' + pk + '?tipo=' + tipo);
+        $.getJSON( "{% url 'curso:get-amostra-json' %}?pk=" + pk, function( json ) {
+            modal.find('#modalBody').html($.parseHTML( json.conteudo ));
+            $('#modalBody').slimScroll({
+                start: 'top',
+                height: '400px'
+            });
+        });
+        $('[data-toggle="tooltip"]').tooltip()
+
+    });
+
+    $( "[data-name='ver']" ).click(function(e) {
+        var elm = $(e.target);
+        var aluno_id = {{ aluno.id }};
+
+        $.getJSON("{% url 'professor:get-message' %}?pid=" + elm.data('pid') + '&cid=oab', function (data) {
+            var items = [];
+            $.each(data, function (key, val) {
+                /*items.push("<li id='" + key + "'>" + val + "</li>");*/
+                var css = 'left';
+                if (val.is_professor == true) {
+                    var css = 'right';
+                }
+                items.push('<div class="conversation-item item-' + css + ' clearfix">');
+                items.push('    <div class="conversation-user">');
+                if (val.is_professor == false) {
+                    items.push('        <img src="' + val.img_url + '"/>');
+                } else {
+                    items.push('        <img src="' + val.img_prof_url + '"/>');
+                }
+                items.push('    </div>');
+                items.push('    <div class="conversation-body">');
+                items.push('        <div class="name">');
+                if (val.is_professor == false) {
+                    items.push('            <a href="' + val.aluno_url + '">' + val.aluno + '</a>');
+                } else {
+                    items.push('            <a href="#">' + val.professor + '</a>');
+                }
+                items.push('        </div>');
+                items.push('        <div class="time hidden-xs">');
+                items.push(val.data);
+                items.push('        </div>');
+                items.push('        <div id="icone-lido-' + val.mensagem_id + '">');
+
+                if (val.is_professor == false) {
+                    if (val.lido == true) {
+                        items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor leu sua mensagem." class="fa fa-eye fa-lg pull-right text-success"></i></a>')
+                    } else {
+                        items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor não leu sua mensagem." class="fa fa-eye-slash fa-lg pull-right text-danger"></i></a>')
+                    }
+                } else {
+                    if (val.lido == true) {
+                        items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Marcada como lidar" class="fa fa-check fa-lg pull-right text-success"></i></a>')
+                    } else {
+                        items.push('            <a href="javascript:void(0)" onclick="startLoad();Dajaxice.apps.professor.msg_set_lido(Dajax.process, {mid:' + val.mensagem_id + '});"><i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i></a>')
+
+                    }
+                }
+
+                items.push('        </div>');
+                items.push('        <div class="text">');
+                items.push(val.texto);
+                items.push('        </div>');
+                items.push('    </div>');
+                items.push('</div>');
+            });
+            var html = items.join( "" );
+
+            $('#msg-inner').html(html);
+        });
+    });
+    // ENVIAR MENSAGEM
+    function enviarMensagem2() {
+        var texto = $('#text-msg').val();
+        var pid = $('#pid').val();
+        if (texto == "") {
+            notif('Informe o texto da mensagem', 'error');
+            $('#modal-msg').blur();
+        } else {
+            $("#modal-msg").modal("hide");
+            $("#text-msg").val("");
+            startLoad();
+            Dajaxice.apps.professor.enviar_mensagem(Dajax.process, {'cid': 'oab', 'pid': pid, 'mensagem': texto });
+        }
+    }
+</script>
+{% endblock %}

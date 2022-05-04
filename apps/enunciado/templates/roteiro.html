@@ -1,0 +1,107 @@
+{% extends "_base.html" %}
+{% block  section %}
+    <section class="interna">
+        <div class="container">
+            <div class="caminho-do-site mb-bot20">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>
+                    {% if is_noticia %}
+                        <a href="{% url 'website:noticias-justutor' %}">Notícias</a>
+                    {% else %}
+                        <a href="#">Notícia</a>
+                    {% endif %}
+                    </li>
+                    <li class="active">{{ roteiro }}</li>
+                </ol>
+            </div>
+        </div><br>
+        <div class="container">
+            <section id="questoes-destaque" class="col-sm-8">
+                <div class="titulo-home  mg-bot20">
+                    <h4 class="pd-home titulo-home bold">{{ roteiro }}</h4>
+                    <div class="linha-aba"></div>
+                    <br>
+                    {{ roteiro.nome }}
+                    <br>
+                    {{ roteiro.texto|safe }}
+                </div>
+            </section>
+            <section class="col-sm-4">
+                <div class="titulo-home mg-bot20">
+                    <h4 class="pd-home titulo-home bold">Publicidade</h4>
+                    <div class="linha-aba"></div>
+                    <div class="mg-top20">
+                        {% include '_widget-anuncio.html' %}
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="container">
+            <!-- SOCIAL CURTIR ----->
+            <div class="social-icones mg-top10">
+                <hr class="linha-tracejada">
+                <div class="pull-left mg-r10">
+                    <a href="https://twitter.com/share" class="twitter-share-button"{count} data-text="JusTutor">Tweet</a>
+                </div>
+                <div class="pull-left">
+                    <div class="fb-like" data-share="true"></div>
+                </div>
+                <div class="clear"></div>
+                <hr class="linha-tracejada">
+            </div>
+
+            <nav>
+                <ul class="pager">
+                    {% with  roteiro.get_prev as  proxima %}
+                    <li class="previous{% if not proxima %} disabled{% endif %}">
+                            {% if proxima %}
+                                <a href="{{ proxima.get_absolute_url }}" data-toggle="tooltip" data-original-title="{{ proxima }}"><span aria-hidden="true">&larr;</span> Anterior
+                                    </a>
+                            {% else %}
+                                <a class="disabled" href="#"><span aria-hidden="true">&larr;</span>  Anterior</a>
+                            {% endif %}
+                    </li>
+                    {% endwith %}
+                    <li><a href="{% url 'enunciado:roteiros' %}">Todos os Roteiros</a></li>
+                    {% with  roteiro.get_next as anterior %}
+                    <li class="next{% if not anterior %} disabled{% endif %}">
+                            {% if anterior %}
+                                <a href="{{ anterior.get_absolute_url }}" data-toggle="tooltip" data-original-title="{{ anterior }}">
+                                    Próximo <span aria-hidden="true">&rarr;</span></a>
+                            {% else %}
+                                <a href="#">Próximo <span aria-hidden="true">&rarr;</span></a>
+                            {% endif %}
+                    </li>
+                    {% endwith %}
+              </ul>
+            </nav>
+        </div>
+    </section>
+{% endblock %}
+<div id="fb-root"></div>
+{% block extra_js %}
+    <!-- FACEBOOK -->
+    <script>(function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v2.5&appId=1468206743220800";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <!-- TWITTER --->
+    <script>!function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+        if (!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p + '://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js, fjs);
+        }
+    }(document, 'script', 'twitter-wjs');
+    </script>
+{% endblock %}

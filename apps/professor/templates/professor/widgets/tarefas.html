@@ -1,0 +1,68 @@
+{% load thumbnail curso %}
+
+<div class="main-box clearfix">
+    <header class="main-box-header clearfix">
+        <h2>Tarefas concluídas</h2>
+    </header>
+    <div class="main-box-body clearfix">
+        <ul class="widget-users row">
+            {% for tarefa in tarefas %}
+            <li class="col-md-6">
+                <div class="img">
+                    {% thumbnail tarefa.aluno.foto "50x50" crop="center" as im %}
+                        <img src="{{ im.url }}" alt="">
+                    {% empty %}
+                        <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                    {% endthumbnail %}
+                </div>
+                <div class="details">
+                    <div class="name">
+                        <a href="{{ tarefa.aluno.get_absolute_url }}"><span class="text-primary">T{{ tarefa.pk|stringformat:"05d" }}</span> {{ tarefa.aluno }}</a>
+                    </div>
+                    <div class="time">
+                        <i class="fa fa-clock-o"></i> {{ tarefa.data_conclusao|date:'SHORT_DATE_FORMAT' }}&nbsp;&nbsp;
+                        <i class="fa fa-pencil-square-o"></i> {{ tarefa.atividade }}
+                    </div>
+                    <div class="type">
+                        {% comment %}
+                        <a href="#" class="table-link" data-toggle="modal" data-target="#modalUpload" data-titulo="T{{ tarefa.pk|stringformat:"03d" }} {{ tarefa.aluno }}" data-pk="{{ tarefa.pk }}">
+                            <span class="fa-stack" data-toggle="tooltip" data-original-title="Enviar correção">
+                                <i class="fa fa-square fa-stack-2x text-info"></i>
+                                <i class="fa fa-upload fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                        {% endcomment %}
+                        <a href="{% url 'curso:download-tarefa' tarefa.pk %}" class="table-link">
+                            <span class="fa-stack" data-toggle="tooltip" data-original-title="Download da resposta">
+                                <i class="fa fa-square fa-stack-2x text-success"></i>
+                                <i class="fa fa-download fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                        {% if tarefa.arquivo %}
+                        <a target="_blank" href="{{ tarefa.arquivo.url }}" class="table-link">
+                            <span class="fa-stack" data-toggle="tooltip" data-original-title="Download do arquivo: {{ tarefa.data_upload|date:'SHORT_DATETIME_FORMAT' }}">
+                                <i class="fa fa-square fa-stack-2x text-info"></i>
+                                <i class="fa fa-download fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                        {% endif %}
+
+                        <a href="{% url 'professor:redigir-correcao' tarefa.pk %}" class="table-link">
+                            <span class="fa-stack" data-toggle="tooltip" data-original-title="Elaborar sua Correção">
+                                <i class="fa fa-square fa-stack-2x text-primary"></i>
+                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                        <a href="{% url 'professor:formulario-correcao' tarefa.pk %}" class="table-link">
+                            <span class="fa-stack" data-toggle="tooltip" data-original-title="Formulário de correção">
+                                <i class="fa fa-square fa-stack-2x text-danger"></i>
+                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

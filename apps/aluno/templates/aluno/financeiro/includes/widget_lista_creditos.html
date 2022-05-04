@@ -1,0 +1,95 @@
+{% load humanize %}
+<div class="main-box clearfix ">
+    <header class="main-box-header clearfix">
+        <div class="filter-block">
+            <a class="btn btn-info" href="{% url 'aluno:creditos_historico' %}">
+                <i class="fa fa-file-pdf fa-lg fa-fw"></i> Baixar histórico (PDF)
+            </a>
+        </div>
+    </header>
+    <div class="main-box-body clearfix">
+        <div class="map-stats">
+            <div class="table-responsive">
+                <table class="table table-condensed table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                            <span>Cód.</span>
+                        </th>
+                        <th class="text-center">
+                            <span>Data</span>
+                        </th>
+                        <th class="text-right">
+                            <span>Adquiridos</span>
+                        </th>
+                        <th class="text-right">
+                            <span>Utilizados</span>
+                        </th>
+                        <th class="text-right">
+                            <span>Disponíveis</span>
+                        </th>
+                        <th class="text-center">
+                            <span>Situação</span>
+                        </th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for credito in creditos %}
+                        <tr>
+                            <td>
+                                <code>{{ credito }}</code><br>
+                                <span class="label label-default">
+                                    {{ credito.get_origem_display }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <strong class="status-green">{{ credito.created|date:"SHORT_DATE_FORMAT" }}</strong><br>
+                                <strong class="status-red">{{ credito.expire_date|date:"SHORT_DATE_FORMAT" }}</strong>
+                            </td>
+                            <td class="text-center status emerald">
+                                {{ credito.quantidade|intcomma }}
+                            </td>
+                            <td class="text-center status red">
+                                {{ credito.utilizados|intcomma }}
+                            </td>
+                            <td class="text-center status green">
+                                {{ credito.disponivel|intcomma }}
+                            </td>
+                            <td class="text-center">
+                                <span class="label label-{% if credito.status == 'Expirado' %}danger{% else %}success{% endif %}">{{ credito.status }}</span>
+                            </td>
+                            <td style="width: 20px;">
+                                <a class="table-link" href="javascript:void(0);" data-pk="{{ credito.pk }}">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="2" class="text-right">
+                            <strong>Totais:</strong>
+                        </td>
+                        <td class="text-center status emerald">
+                            {{ totais.quantidade|intcomma }}
+                        </td>
+                        <td class="text-center status red">
+                            {{ totais.utilizados|intcomma }}
+                        </td>
+                        <td class="text-center status green">
+                            {{ totais.disponiveis|intcomma }}
+                        </td>
+                        <td colspan="2">
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

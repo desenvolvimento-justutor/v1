@@ -1,0 +1,41 @@
+<div class="row">
+    {% if documentos %}
+        {% for documento in documentos %}
+            <div class="col-lg-4">
+                <div class="main-box clearfix">
+                    <header class="main-box-header clearfix">
+                        <h2><strong>{{ documento }}</strong></h2>
+                    </header>
+                    <div class="main-box-body clearfix">
+                        <div class="infographic-box" style="padding: unset">
+                            <i class="fa {{ documento.fileinfo.icon }} {{ documento.fileinfo.color }}-bg"></i>
+                            <span class="headline text-{% if documento.ativo %}succes{% else %}danger{% endif %}"
+                                  style="font-size: small; font-weight: 600">
+                                {{ documento.data_ativo }}
+                            </span>
+                            <span class="value">
+                                <span class="timer">
+                                     <a {% if documento.ativo %}
+                                         href="{{ documento.file.url }}" target="_blank"
+                                     {% else %}
+                                         href='javascript:toastr["error"]("Aguarde ate dia {{ documento.data_ativo }}, para visualizar o documento.")'
+                                     {% endif %} class="btn btn-info btn-sm"
+                                         style="margin-top: 10px">
+                                        <i class="fa fa-download fa-fw"></i> Abrir
+                                    </a>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-sm-offset-2 col-sm-8">
+            <div class="alert alert-info" role="alert" style="margin-top: 50px">
+                <i class="fa fa-info fa-fw fa-lg"></i>
+                <strong>Atenção:</strong> ainda não foram adicionados arquivos à Biblioteca.
+            </div>
+        </div>
+    {% endif %}
+</div>

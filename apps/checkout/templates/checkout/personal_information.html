@@ -1,0 +1,83 @@
+{% extends 'checkout/base.html' %}
+{% load thumbnail %}
+{% load carton_tags %}
+{% load curso %}
+
+{% block section_navigation %}
+    <div class="section-nav-group">
+        <div class="section-nav back" data-href="{% url 'checkout:cart' %}">
+            <i class="ion-android-arrow-back"></i>
+            <div>Voltar</div>
+        </div> <!-- /.section-nav.back -->
+    </div>
+{% endblock %}
+{% block section_body_content %}
+    <div class="account-form">
+        {% include 'checkout/widgets/resume.html' %}
+        <div class="divider"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Nome Completo<span class="required"></span></label>
+                    <input type="text" name="nome" class="form-control">
+                </div> <!-- /.form-group -->
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label>CPF<span class="required"></span></label>
+                            <input type="text" name="cpf" class="form-control cc-cpf" placeholder="xxx.xxx.xxx-xx">
+                        </div> <!-- /.form-group -->
+                    </div> <!-- /.col-md-6 -->
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label>Data de Nascimento</label>
+                            <input type="text" name="nascimento" class="form-control cc-date" placeholder="dd/mm/aaaa">
+                        </div> <!-- /.form-group -->
+                    </div> <!-- /.col-md-6 -->
+                </div> <!-- /.row -->
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label>Celular <span class="required"></span></label>
+                            <input type="text" name="celular" class="form-control cc-phone" placeholder="xx xxxx xxxx">
+                        </div> <!-- /.form-group -->
+                    </div> <!-- /.col-md-6 -->
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" name="email" class="form-control">
+                        </div> <!-- /.form-group -->
+                    </div> <!-- /.col-md-6 -->
+                </div> <!-- /.row -->
+
+            </div> <!-- /.col-md-12 -->
+        </div> <!-- /.row -->
+    </div> <!-- /.account-form -->
+{% endblock %}
+
+{% block section_footer %}{% endblock %}
+
+{% block section_cta_content %}
+    <button class="btn btn-primary" data-href="{% url 'checkout:payment' %}">Continuar <i class="ion-ios-arrow-thin-right"></i></button>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        var cleave_fone = new Cleave('.cc-phone', {
+            phone: true,
+            delimiter: '-',
+            phoneRegionCode: 'BR'
+        });
+        var cleave_fone = new Cleave('.cc-date', {
+            date: true,
+            delimiter: '/',
+            datePattern: ['d', 'm', 'Y']
+        });
+        var cleave = new Cleave('.cc-cpf', {
+            numericOnly: true,
+            delimiters: ['.', '.', '-'],
+            blocks: [3, 3, 3, 2],
+        });
+    </script>
+{% endblock %}

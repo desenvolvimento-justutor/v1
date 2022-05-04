@@ -1,0 +1,74 @@
+<div class="titulo-home">
+    <h4 class="pd-home titulo-home bold">{% if request.user.aluno.id == resposta.aluno.id %}Minha Resposta{% else %}{{ resposta.aluno }}{% endif %}</h4>
+    <div class="linha-aba"></div>
+</div>
+
+<div class="enunciado-destaque">
+    <div class="linha-opcoes">
+        <a href="{% url 'enunciado:resposta-desativar' resposta.id %}" class="btn btn-danger btn-sm">
+            <i class="fa fa-trash-o"> Apagar</i>
+        </a>
+        <a href="{% url 'enunciado:solicitar-correcao' resposta.id %}" class="btn btn-success btn-sm">
+            <i class="fa fa-pencil"> Solicitar Correção</i>
+        </a>
+        <div class="clear"></div>
+    </div>
+</div>
+<div class="enunciado-total">
+    <div >
+        <div class="alert-message alert-message-success">
+            <h4><i class="fa fa-check"></i> Sua resposta foi finalizada!</h4>
+            <p>Se desejar responder novamente, é necessário apagar esta resposta no botão acima.</p>
+        </div>
+        <div class="clear"></div>
+        <div class="estatistica-questao">
+            <ul class="nav nav-pills nav-stacked nav-pills-stacked-example">
+                <li role="presentation" class="bg-warning"><a href="#">Estatística de Pontos</a></li>
+                <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Responder<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_respondidos }}</span></a></li>
+                <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Corrigir<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_corrigir }}</span></a></li>
+                <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Corrigirem suas Respostas<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_corrigirem }}</span></a></li>
+                <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Pontos por Correções Úteis<span class="label label-warning pull-right">{{ request.user.aluno.get_pontos_avaliacao }}</span></a></li>
+                <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-trophy"></i> Total de Pontos<span class="label label-success pull-right">{{ request.user.aluno.get_pontos_total }}</span></a></li>
+            </ul>
+
+            <ul class="nav nav-pills nav-stacked nav-pills-stacked-example">
+              <li role="presentation" class="active"><a href="#">Estatística da resposta</a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-user-md"></i> Pessoas que responderam está questão<span class="label label-info pull-right">{{ enunciado.get_respostas.count }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-check"></i> Correções<span class="label label-info pull-right">{{ resposta.correcao_set.all.count }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)"><i class="fa fa-pencil-square-o"></i> A nota média é de<span class="label {{ resposta.get_css_class.1 }} pull-right">{{ resposta.get_media }}</span></a></li>
+              <li data-toggle="tooltip" data-original-title="Minutos.Segundos" role="presentation"><a href="javascript:void(0)"><i class="fa fa-clock-o"></i> A media de tempo para responder é de<span class="label label-danger pull-right">{{ enunciado.media_tempo|stringformat:".2f" }}</span></a></li>
+              <li data-toggle="tooltip" data-original-title="Minutos.Segundos" role="presentation"><a href="javascript:void(0)"><i class="fa fa-clock-o"></i> Você gastou<span class="label label-primary  pull-right">{{ resposta.get_minutos|stringformat:".2f" }}</span></a></li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <br>
+    </div>
+</div>
+<!-----------------------------------------modal-----------------desafio--------------------->
+<div class="modal fade" id="myModal" tabindex="-1" role="document" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <div class="clear"></div>
+                <div class="titulo-home">Confirmar Resposta</div>
+                <div class="clear"></div>
+                <hr>
+            </div>
+            <div class="modal-body">
+                Atenção: ao confirmar sua resposta, ela será publicada no site e
+                <span class="fonte-vermelha">você não poderá mais fazer alterações nela.</span>
+                Tem certeza que você deseja publicar esta resposta?
+                <div class="clear"></div>
+                <br><br>
+            </div>
+            <div class="modal-footer">
+                <a href="#" type="button" class="btn btn-danger" data-dismiss="modal">Voltar e conferir</a>
+                <a href="#" class="btn btn-success">
+                    Confirmar e Publicar
+                </a>
+            </div>
+        </div>
+    </div>
+</div><!-----------------------------------------modal-----------------desafio--------------------->

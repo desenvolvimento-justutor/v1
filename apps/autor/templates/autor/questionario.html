@@ -1,0 +1,223 @@
+{% extends '_base-painel-aluno.html' %}
+{% load autor %}
+{% block wrapper_attr %}
+    class="email-inbox-wrapper"
+{% endblock %}
+{% block content-wrapper %}
+    <style>
+  .fa-stack { font-size: 0.5em; }
+  i { vertical-align: middle; }
+</style>
+    {% with resposta_questionario_aluno=resposta_questionario_aluno  questao=resposta_questionario_aluno.questao %}
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="email-box" class="clearfix">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="email-header-mobile" class="visible-xs visible-sm clearfix">
+                                <div id="email-header-title-mobile" class="pull-left">
+                                    {{ resposta_questionario_aluno.questao_grupo }}
+                                </div>
+                                <a href="email-compose.html"
+                                   class="btn btn-success email-compose-btn pull-right">
+                                    <i class="fa fa-pencil-square-o"></i> Compose email
+                                </a>
+                            </div>
+                            <header id="email-header" class="clearfix">
+                                <div id="email-header-title" class="visible-md visible-lg">
+                                    <a href="email-compose.html" class="btn btn-success btn-block">
+                                        <i class="fa fa-pencil-square-o"></i> Finalizar simulado
+                                    </a>
+                                </div>
+                                <div id="email-header-tools">
+                                    <div class="btn-group">
+                                        <button data-toggle="dropdown"
+                                                class="btn btn-primary dropdown-toggle has-tooltip"
+                                                type="button" title="Select">
+                                            <i class="fa fa-square-o"></i> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">All</a></li>
+                                            <li><a href="#">None</a></li>
+                                            <li><a href="#">Read</a></li>
+                                            <li><a href="#">Unread</a></li>
+                                            <li><a href="#">Starred</a></li>
+                                            <li><a href="#">Unstarred</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" type="button" title="Refresh"
+                                                data-toggle="tooltip" data-placement="bottom">
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+                                        <button class="btn btn-primary" type="button" title="Spam"
+                                                data-toggle="tooltip" data-placement="bottom">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                        </button>
+                                        <button class="btn btn-primary" type="button" title="Erase"
+                                                data-toggle="tooltip" data-placement="bottom">
+                                            <i class="fa fa-trash-o"></i>
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button data-toggle="dropdown"
+                                                class="btn btn-primary dropdown-toggle has-tooltip"
+                                                type="button" title="Labels">
+                                            <i class="fa fa-tag"></i> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#"><i class="fa fa-circle green"></i> Work</a></li>
+                                            <li><a href="#"><i class="fa fa-circle red"></i> Home</a></li>
+                                            <li><a href="#"><i class="fa fa-circle yellow"></i> Personal</a>
+                                            </li>
+                                            <li><a href="#"><i class="fa fa-circle purple"></i> Documents</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div id="email-header-pagination" class="pull-right">
+                                    <div class="btn-group pagination pull-right">
+                                        <button class="btn btn-primary" type="button" title="Previous"
+                                                data-toggle="tooltip" data-placement="bottom">
+                                            <i class="fa fa-chevron-left"></i>
+                                        </button>
+                                        <button class="btn btn-primary" type="button" title="Next"
+                                                data-toggle="tooltip" data-placement="bottom">
+                                            <i class="fa fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                    <div class="num-items pull-right">
+                                    {{ resposta_questionario_aluno.questao_grupo }}
+
+                                    </div>
+                                </div>
+                            </header>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="email-navigation" class="email-nav-nano hidden-xs hidden-sm">
+                                <div class="email-nav-nano-content">
+                                    {% include 'autor/lista-de-questoes.html' %}
+                                  {% comment %}  <span class="grupo-title btn-outline-warning">{{ resposta_questionario_aluno.questao_grupo }}</span>
+                                    {% with resposta_questionario_aluno.questao_grupo.disciplina_grupo.grupo_simulado as gr %}
+                                        {% for grupo in simulado.grupos.all %}
+                                        <ul id="email-nav-items" class="clearfix">
+                                            <li class="active">
+                                                <a href="#">
+                                                    &nbsp;
+                                                    &nbsp;
+                                                    {{grupo}}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                            {% for disciplina in grupo.grupo.disciplinas.all %}
+                                            <div id="email-nav-labels-wrapper">
+                                                <div class="email-nav-headline">
+                                                    {{disciplina}}
+                                                </div>
+                                                <ul id="email-nav-labels" class="clearfix">
+                                                    {% for q in disciplina.questoes.all %}
+                                                    {% get_resposta_aluno resposta_questionario_aluno.questionario_aluno q as resposta %}
+                                                    <li>
+                                                        <a href="#">
+                                                            <i class="fa fa-check green"></i>
+                                                            {{q}}
+                                                        </a>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endwith %}
+                                {% endcomment %}
+                                </div>
+                            </div>
+
+                            <div id="email-content" class="email-content-nano">
+                                <div class="email-content-nano-content">
+                                    {% include 'autor/elements/box-questoes.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+
+{% endblock %}
+
+{% block js %}
+    {% include 'autor/includes/js.html' %}
+    <script>
+        $(document).ready(function () {
+            $('#config-tool').addClass('hide');
+            $('#page-wrapper').addClass('nav-small');
+
+            $('#email-list li > .star > a').on('click', function () {
+                $(this).toggleClass('starred');
+            });
+
+            $(".has-tooltip").each(function (index, el) {
+                $(el).tooltip({
+                    placement: $(this).data("placement") || 'bottom'
+                });
+            });
+
+            setHeightEmailContent();
+
+            initEmailScroller();
+
+            $(".clickable-row > div:not(.chbox,.star)").click(function (e) {
+                if ((e.target instanceof HTMLAnchorElement) == true) {
+                    return;
+                }
+
+                var href = $(this).parent().data('href');
+
+                if (href != '' && typeof href != 'undefined') {
+                    window.document.location = href;
+                }
+            });
+        });
+
+        $(window).smartresize(function () {
+            setHeightEmailContent();
+
+            initEmailScroller();
+        });
+
+        function setHeightEmailContent() {
+            if ($(document).width() >= 992) {
+                var windowHeight = $(window).height();
+                var staticContentH = $('#header-navbar').outerHeight() + $('#email-header').outerHeight();
+                staticContentH += ($('#email-box').outerHeight() - $('#email-box').height());
+
+                $('#email-content').css('height', windowHeight - staticContentH);
+            } else {
+                $('#email-content').css('height', '');
+            }
+        }
+
+        function initEmailScroller() {
+            if ($(document).width() >= 992) {
+                $('#email-navigation').nanoScroller({
+                    alwaysVisible: false,
+                    iOSNativeScrolling: false,
+                    preventPageScrolling: true,
+                    contentClass: 'email-nav-nano-content'
+                });
+
+                $('#email-content').nanoScroller({
+                    alwaysVisible: false,
+                    iOSNativeScrolling: false,
+                    preventPageScrolling: true,
+                    contentClass: 'email-content-nano-content'
+                });
+            }
+        }
+    </script>
+{% endblock %}

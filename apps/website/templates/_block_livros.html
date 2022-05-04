@@ -1,0 +1,36 @@
+{% load thumbnail %}
+<div class="col-sm-3">
+    <a href="{{ livro.get_absolute_url }}" class="curso-x">
+        <div class="img-curso">
+
+            <!--div class="alerta-curso" style="background-color: forestgreen">
+                100% VÍDEO
+            </div-->
+
+            {% thumbnail livro.imagem "115x160" crop="center" as im %}
+                <img src="{{ im.url }}">
+            {% empty %}
+                <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+            {% endthumbnail %}
+        </div>
+        <div class="descricao-curso">
+            <h3><small>{{ livro }}</small></h3>
+            <div>
+                {{ livro.descricao|truncatechars:"120" }}
+            </div>
+        </div>
+
+        <div class="categoria-curso text-center">
+            ISBN: {{ livro.isbn }}
+        </div>
+        <div class="preco-curso">
+            <div>Formato {{ livro.get_formato_display }}, {{ livro.edicao }}ª Edição, {{ livro.paginas }} Pág.</div>
+            <div class="preco-geral">
+                <div class="preco-menor-x">R$</div>
+                <div class="preco-maior-x">{{ livro.valor }}</div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </a>
+</div>

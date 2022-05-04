@@ -1,0 +1,12 @@
+{% extends 'email/base.html' %}
+
+{% block texto %}
+    <h4>Erro relatado <a href="{{ dominio }}{{ url }}">{{ tipo }}</a></h4>
+{% endblock %}
+{% block nota %}
+    <strong>Mensagem:</strong>
+    <p>{{ mensagem }}</p>
+    <p>
+    <strong>Aluno:</strong> {% if aluno %}<a href="{{ dominio }}{{ aluno.get_absolute_url }}">{{ aluno }}</a>{% else %}Anônimo{% endif %}
+    </p>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "_base.html" %}
+
+{% block section %}
+    <div class="jumbotron">
+      <h2>{{ titulo }}</h2>
+      <p>{{ mensagem }}</p>
+      <p><a class="btn btn-success" href="{% url 'website:index' %}" role="button">Ir para a página inicial</a></p>
+    </div>
+{% endblock %}
+{% block busca %}{% endblock %}

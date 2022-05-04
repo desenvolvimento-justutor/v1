@@ -1,0 +1,100 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail %}
+
+{% block panel_content %}
+    <div class="row">
+    {% if meus_livros %}
+        {% if senha %}
+            <div class="alert alert-success">
+              <strong>Sua senha é:</strong> {{ senha }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger">
+              <strong>Ops:</strong> <a href="{% url 'aluno:configuracoes' %}">Clique aqui</a> para cadastrar seu CPF e liberar sua senha.
+            </div>
+        {% endif %}
+    {% for checkout in checkouts %}
+        {% with checkout.get_livros as livros %}
+            {% if livros %}
+            <div class="col-sm-6">
+                <div class="main-box clearfix">
+                    <header class="main-box-header clearfix">
+                        <h2>
+                            <i class="fa fa-check-circle" style="color: #8BC34A; cursor: pointer" data-toggle="tooltip" title="Curso em andamento."></i>
+                            <small><strong>ID: </strong></small>{{ checkout }}</h2>
+                        <span class="warranty">
+                            {% if checkout.transaction %}
+                                {% with  checkout.transaction.status as status %}
+                                    {% if status in 'pago,disponivel' %}
+                                        <span class="label label-success">{{ checkout.transaction.get_status_display }}</span>
+                                    {% elif status in 'aguardando,em_analise' %}
+                                        <span class="label label-warning">{{ checkout.transaction.get_status_display }}</span>
+                                    {% else %}
+                                        <span class="label label-danger">{{ checkout.transaction.get_status_display }}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <span class="label label-warning">Aguardando transação do PagSeguro</span>
+                            {% endif %}
+                            <span class="pull-right text-primary">{{ checkout.date|date:"SHORT_DATE_FORMAT" }}</span>
+                        </span>
+
+                    </header>
+                    <div class="main-box-body clearfix">
+                        <ul class="widget-products">
+                            {% for item in livros %}
+                            <li>
+                                <a {% if checkout.transaction.status in 'pago,disponivel' %}href="{% url 'aluno:baixar-livro' item.curso.id %}" onclick="_toastr('Download em andamento. Não atualize a página. O processo pode durar alguns minutos.','top-center','error',false)" {% else %}href="javascript:_toastr('Aguadando liberação do pagamento','top-center','error',false);"{% endif %}>
+                                    <span class="img">
+                                        {% thumbnail item.curso.imagem "48x68" crop="center" as im %}
+                                            <img src="{{ im.url }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                                        {% endthumbnail %}
+                                    </span>
+                                    <span class="product clearfix">
+                                        <span class="name">
+                                            {{ item }}
+                                        </span>
+                                        <span class="price">
+                                            <i class="fa fa-money"></i> {{ item.total }}
+                                        </span>
+                                        <span class="warranty">
+                                            {% if checkout.transaction.status in 'pago,disponivel' %}
+                                                <i class="fa fa-unlock" style="color: green"></i> Liberado
+                                            {% else %}
+                                                <i class="fa fa-lock" style="color: orangered"></i> Bloqueado
+                                            {% endif %}
+                                        </span>
+                                    </span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="pull-right"><strong>Total:</strong> R$ {{ checkout.total }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endwith %}
+    {% endfor %}
+    {% else %}
+        <div class="alert alert-warning">
+            <strong>Você não possui nenhum livro!</strong> Veja abaixo as obras disponíveis em nossa Livraria.
+        </div>
+        {% for categoria in proc_curso.livraria %}
+        <div class="list-group">
+            <a href="{{ categoria.get_absolute_url }}" class="list-group-item active">
+                <h4 class="list-group-item-heading">{{ categoria.nome }}</h4>
+            </a>
+            {% for livro in categoria.curso_set.all %}
+            <a href="{{ livro.get_absolute_url }}" class="list-group-item">
+                <h4 class="list-group-item-heading">{{ livro.nome }}</h4>
+                <p class="list-group-item-text">{{ livro.autor }}</p>
+            </a>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% endblock %}

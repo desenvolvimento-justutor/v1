@@ -1,0 +1,250 @@
+{% extends "_base.html" %}
+{% load mptt_tags %}
+{% block extra_css %}
+<style>
+.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+.tree ul ul {
+    margin-left:.5em
+}
+.tree ul:before {
+    content:"";
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative
+}
+.tree ul li:before {
+    content:"";
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+.indicator {
+    margin-right:5px;
+}
+.tree li a {
+    text-decoration: none;
+    color:#369;
+}
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color:#369;
+    border:none;
+    background:transparent;
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    outline: 0;
+}
+</style>
+{% endblock %}
+{% block  section %}
+    <section class="interna">
+        <div class="container">
+            <div class="caminho-do-site mb-bot20">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Textos & Artigos</a>
+                    </li>
+                </ol>
+            </div>
+        </div><br>
+        <div class="container">
+            <section class="col-sm-4">
+                <div class="titulo-home mg-bot20">
+                    <h4 class="pd-home titulo-home bold">Índice </h4>
+                    <div class="linha-aba mg-bot20"></div>
+                    <form role="search" method="post">
+                        {% csrf_token %}
+                        <div class="input-group pull-right">
+                          <input type="text" class="form-control" placeholder="Buscar um artigo..." name="q">
+                          <span class="input-group-btn" style="top: -1px">
+                            <button class="btn btn-success glyphicon glyphicon-search" type="input"></button>
+                          </span>
+                        </div>
+                    </form>
+                    {% if indice %}
+                        <div class="col-sm-12 mg-top10">
+                        </div>
+                        <a href="{% url 'website:artigo-indice' %}" class="pull-right btn btn-info bt-sm" type="input">Exibir todos os Artigos e outros textos</a>
+                    {% endif %}
+                    <div class="mg-top20">
+                        <ul class="tree">
+                            {% recursetree indices %}
+                                <li>
+                                    {% if node.total_artigos  %}<a href="{% url 'website:artigo-indice' %}?indice={{ node.id }}">{{ node.name }}</a>{% else %}{{ node }}{% endif %}
+                                    {% if not node.is_leaf_node %}
+                                        <ul>
+                                            {% if node.total_artigos  %}<a href="{% url 'website:artigo-indice' %}?indice={{ node.id }}">{{ children }}</a>{% else %}{{ children }}{% endif %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endrecursetree %}
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <section id="questoes-destaque" class="col-sm-8">
+                <div class="titulo-home mg-bot20">
+                    <h4 class="pd-home titulo-home bold">Artigos e outros textos{% if artigo %}<a target="_blank" href="{% url 'website:artigo-imprimir' artigo.id %}" class="btn btn-muted btn-sm pull-right"><span class=" fa fa-print fa-lg"> Imprimir</span></a>{% endif %}</h4>
+                    <div class="linha-aba mg-bot20"></div>
+                    {% if artigo %}
+                            <small class="col-sm-12 mg-bot20">
+                                <span class="text-info pull-left fa fa-calendar"> {{ artigo.data }}</span>
+
+                                <span class="text-info pull-right fa fa-list-ul">
+                                    {% drilldown_tree_for_node artigo.indice as drilldown %}
+                                    {% for x in drilldown %}
+                                        {{ x }}{% if not x.is_leaf_node %} &middot; {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </small>
+                        <div class="titulo-home mg-bot20">
+                        <h5 class="pd-home titulo-home bold">{{ artigo }}</h5>
+                        <div class="linha-aba"></div>
+                        </div>
+
+                        <div class="col-sm-12 mg-bot30">
+                            {{ artigo.conteudo|safe }}
+                        </div>
+                        <small class="bold pull-right">Autor: {{ artigo.autor }}</small>
+                    {% else %}
+                        {% if indice %}
+                            <div class="alert alert-success col-sm-12 mg-top20">
+                              <strong>
+                                  {% drilldown_tree_for_node indice as drilldown %}
+                                  {% for x in drilldown %}
+                                      {{ x }}{% if not x.is_leaf_node %} &middot; {% endif %}
+                                  {% endfor %}:
+                              </strong> {{ indice.descricao }}
+                            </div>
+                            <div class="row col-sm-12"><hr class="linha-tracejada"></div>
+                        {% endif %}
+
+                        {% for artigo in artigos %}
+                            <a href="{% url 'website:artigo-indice' %}?artigo={{ artigo.id }}" class="curso-x">
+                                <div class="descricao-noticia" style="height: auto; width: 100%">
+                                    <div class="col-sm-12 mg-bot20">
+                                        <h2>
+                                            <strong>{{ artigo }}</strong>
+                                        </h2>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <small><span class="text-info pull-right fa fa-calendar"> {{ artigo.data }}{% if artigo.autor %} | <i class="fa fa-user"> {{ artigo.autor|upper }}</i>{%  endif %}</span></small>
+                                        {% if not indice %}
+                                        <small><span class="text-info">
+                                            {% drilldown_tree_for_node artigo.indice as drilldown %}
+                                            {% for x in drilldown %}
+                                                {{ x }}{% if not x.is_leaf_node %} &middot; {% endif %}
+                                            {% endfor %}
+                                        </span></small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        <div class="row col-sm-12"><hr class="linha-tracejada"></div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </section>
+{% endblock %}
+{% block extra_js %}
+<script>
+$.fn.extend({
+    treed: function (o) {
+
+      var openedClass = 'glyphicon-minus-sign';
+      var closedClass = 'glyphicon-plus-sign';
+
+      if (typeof o != 'undefined'){
+        if (typeof o.openedClass != 'undefined'){
+        openedClass = o.openedClass;
+        }
+        if (typeof o.closedClass != 'undefined'){
+        closedClass = o.closedClass;
+        }
+      };
+
+        //initialize each of the top levels
+        var tree = $(this);
+        tree.addClass("tree");
+        tree.find('li').has("ul").each(function () {
+            var branch = $(this); //li with children ul
+            branch.prepend("<i class='indicator glyphicon " + openedClass + "'></i>");
+            branch.addClass('branch');
+            branch.on('click', function (e) {
+                if (this == e.target) {
+                    var icon = $(this).children('i:first');
+                    icon.toggleClass(openedClass + " " + closedClass);
+                    $(this).children().children().toggle();
+                }
+            })
+            //branch.children().children().toggle();
+        });
+        //fire event from the dynamically added icon
+      tree.find('.branch .indicator').each(function(){
+        $(this).on('click', function () {
+            $(this).closest('li').click();
+        });
+      });
+        //fire event to open branch if the li contains an anchor instead of text
+        /*tree.find('.branch>a').each(function () {
+            $(this).on('click', function (e) {
+                $(this).closest('li').click();
+                e.preventDefault();
+            });
+        });*/
+        //fire event to open branch if the li contains a button instead of text
+        tree.find('.branch>button').each(function () {
+            $(this).on('click', function (e) {
+                $(this).closest('li').click();
+                e.preventDefault();
+            });
+        });
+    }
+});
+
+//Initialization of treeviews
+
+$('.tree').treed();
+
+//{#$('.tree').treed({openedClass:'glyphicon-folder-open', closedClass:'glyphicon-folder-close'});#}
+
+//$('.tree').treed({openedClass:'glyphicon-chevron-right', closedClass:'glyphicon-chevron-down'});
+
+</script>
+{% endblock %}

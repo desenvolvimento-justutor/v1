@@ -1,0 +1,145 @@
+<div class="row">
+    {% for melhor in melhores %}
+        {% with estatistica=melhor.estatistica questionario=melhor.questionario %}
+        <div class="col-sm-4">
+            <div class="main-box clearfix">
+                <div class="main-box-body clearfix" style="padding: unset">
+                    <ul class="widget-products">
+                        <li style="border-bottom: unset">
+                            <div>
+                                <span class="img" style="margin-top: unset">
+                                    <span class="fa-stack fa-2x">
+                                        {% if forloop.first %}
+                                            <i class="fa fa-trophy fa-stack-2x" style="color: #FABA03"></i>
+                                        {% else %}
+                                            <i class="fa fa-circle fa-stack-2x" style="color: #8BC34A"></i>
+                                            <i class="fa fa-stack-1x fa-inverse"
+                                               style="font-size: 0.7em; font-weight: 500">{{ forloop.counter }}º</i>
+                                        {% endif %}
+                                        </span>
+                                </span>
+                                <span class="product clearfix">
+                                    <span class="name">
+                                        {{ questionario.aluno }}
+                                    </span>
+                                    {% if estatistica.aprovado_geral %}
+                                        <span class="price green">
+                                                <i class="fa fa-check fa-fw"></i> Classificado
+                                        </span>
+                                    {% else %}
+                                        <span class="price red">
+                                            <i class="fa fa-close fa-fw red"></i> Não classificado
+                                        </span>
+                                    {% endif %}
+                                    {% if estatistica.no_prazo %}
+                                        <span class="warranty green">
+                                            <i class="fa fa-check fa-fw green"></i> No tempo?
+                                        </span>
+                                    {% else %}
+                                        <span class="warranty red">
+                                            <i class="fa fa-times-circle-o fa-fw red"></i> No tempo?
+                                        </span>
+                                    {% endif %}
+                                    <span class="warranty red">
+                                        <small>
+                                            <span class="label label-info pull-left">{{ estatistica.pontos }} pontos.</span>
+                                        </small>
+                                    </span>
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+    {% endfor %}
+</div>
+<div class="main-box-body clearfix">
+    <hr/>
+    <header class="main-box-header clearfix">
+        <div class="filter-block pull-right">
+            <div class="form-group pull-left">
+                <input type="text" id="filter" class="form-control" placeholder="Buscar...">
+                <i class="fa fa-search search-icon"></i>
+            </div>
+        </div>
+    </header>
+    <table class="table footable toggle-circle-filled" data-page-size="25" data-filter="#filter"
+           data-filter-text-only="true">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th class="text-center">Nota</th>
+            <th class="text-center">Acertos</th>
+            <th class="text-center">Resultado</th>
+            <th class="text-center">No tempo?</th>
+            {% if request.user.is_superuser %}
+            <th></th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for estatistica in estatisticas %}
+            {% with estatistica=estatistica.estatistica questionario=estatistica.questionario %}
+            <tr>
+                <td>
+                    {{ forloop.counter }}
+                </td>
+                <td>
+                    {{ questionario.aluno }}
+{#                    {{ estatistica }}#}
+                </td>
+                <td class="text-center">
+                    <strong>{{ estatistica.pontos }}</strong>
+                </td>
+                <td class="text-center status-green">
+                    <strong>
+                        {{ estatistica.porcento|stringformat:".02f" }}%
+                    </strong>
+                </td>
+
+                <td class="text-center">
+                    <label class="label label-{{ estatistica.aprovado_geral|yesno:"success,danger" }}">{{ estatistica.aprovado_geral|yesno:"Classificado,Não classificado" }}</label>
+                </td>
+                <td class="text-center">
+                    <label class="label label-{{ estatistica.no_prazo|yesno:"success,danger" }}">{{ estatistica.no_prazo|yesno }}</label>
+                </td>
+                {% if request.user.is_superuser %}
+                    <td style="width: 15%;">
+                        <a href="#" class="table-link"  data-toggle="modal" data-target="#modalEstatisticas"
+                           data-pk="{{ questionario.pk }}" data-title="{{ questao }}">
+                            <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </td>
+                {% endif %}
+            </tr>
+            {% endwith %}
+
+        {% endfor %}
+        </tbody>
+    </table>
+    <ul class="pagination pull-right hide-if-no-paging"></ul>
+
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle fa-fw fa-lg"></i>
+        <strong>Entenda como funciona o ranking:</strong>
+        <p class="mrg-t-sm">
+        <ul>
+            <li>A nota leva em conta o peso de cada questão ou disciplina, de acordo com o edital do concurso.
+                Por isso, ela pode ser maior ou menor do que o número de questões que você acertou.</li>
+            <li>As questões anuladas são consideradas como corretas para todos os participantes do simulado.</li>
+            <li>A coluna “Resultado” informa se o participante do simulado atingiu as notas mínimas previstas no
+                edital do concurso. Se atingiu todos os mínimos, o sistema informa “Classificado”.</li>
+            <li>A coluna “Tempo” informa se o participante do simulado conseguiu terminar sua prova na
+                quantidade de horas prevista no edital do concurso.</li>
+            <li>Caso você não queira que seu nome verdadeiro apareça no ranking, insira um apelido na
+                <a href="/aluno/configuracoes/"><strong>página de configurações</strong></a></li>
+        </ul>
+        </p>
+    </div>
+</div>

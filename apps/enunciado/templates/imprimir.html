@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ enunciado }}</title>
+</head>
+<body>
+<img align="middle" src="http://www.justutor.com.br/static/images/logos/justuto-horizontal.png">
+<h1>{{ enunciado }}</h1>
+{{ enunciado.texto|safe }}
+<ul>
+    {% for resposta in enunciado.get_respostas %}
+    <li>
+        <h2>Resposta {{ resposta }}</h2>
+        <small style="font-weight: bold">Por: {{ resposta.aluno }}</small><small> {{ resposta.data_termino }}</small>
+        {{ resposta.texto|safe }}
+        <ul>
+            {% for correcao in resposta.correcao_set.all %}
+            <li>
+                <h3>Correção #{{ correcao }}</h3>
+                <small style="font-weight: bold">Por: {{ correcao.aluno }}</small><small> {{ correcao.data }}</small>
+                {{ correcao.texto|safe }}
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+</body>
+</html>

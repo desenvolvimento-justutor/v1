@@ -1,0 +1,60 @@
+{% with enunciado.formulario_autocorrecao as formulario %}
+    <div class="col-md-12">
+        <div class="panel panel-primary mg-top10">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-bookmark"></span>
+                    ESCOLHA O QUE VOCÊ DESEJA FAZER
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default">Imprimir este enunciado</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default">Imprimir enunciado + folha para responder
+                        </button>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-justified mg-top10" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default">
+                            <i class="fa fa-file fa-fw"></i>
+                            Acessar gabarito da banca
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default">
+                            <i class="fa fa-user fa-fw"></i>
+                            Ver as respostas dos outros alunos
+                        </button>
+                    </div>
+                    {% if formulario %}
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default" data-toggle="modal"
+                                    data-target="#modal-credito">
+                                <i class="fa fa-check-circle-o fa-fw"></i> Fazer autocorreção detalhada
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="panel-footer no-pd">
+                {% if resposta %}
+                    <a href="{{ resposta.get_absolute_url }}" class="faixa-verde">
+                        clique aqui e veja <span class="fonte-amarela">sua resposta</span>
+                    </a>
+                {% else %}
+                    <a href="{{ enunciado.get_responder_absolute_url }}" class="faixa-verde">
+                        clique aqui e <span class="fonte-amarela">responda esta questão</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if formulario %}
+        {% include 'enunciado/modal/comprar-credito.html' %}
+        {% include 'aluno/financeiro/includes/modal_comprar_creditos.html' %}
+    {% endif %}
+{% endwith %}

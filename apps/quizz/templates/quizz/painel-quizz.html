@@ -1,0 +1,98 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail aluno_tags quizz_tags humanize %}
+{% block header_title %}
+    <h1>{{ bloco }} <small>{{ bloco.descricao }}</small></h1>
+{% endblock %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+            {% if questao %}
+            <div class="main-box clearfix project-box green-box">
+            <div class="main-box-body clearfix">
+                <div class="project-box-header green-bg">
+                    <div class="name">
+                        <a href="#">
+                            Desempenho dos alunos nesta questão <span class="label label-primary">{{ total_geral }} resposta{{ total_geral|pluralize }}</span>
+                        </a>
+                    </div>
+                </div>
+                {% get_total bloco as total %}
+                <div class="project-box-content">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <span class="chart" data-percent="{{ total_corretas }}" data-bar-color="#4edd6c">
+                            <span class="percent"></span>%<br/>
+                            <span class="lbl">Acerto</span></span>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <span class="chart" data-percent="{{ total_erradas }}" data-bar-color="#db1717">
+                            <span class="percent"></span>%<br/>
+                            <span class="lbl">Erro</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            {% endif %}
+            <div class="main-box clearfix profile-box-menu">
+                <div class="main-box-body clearfix">
+                    <div class="profile-box-content clearfix">
+                        <ul class="menu-items">
+                            <li>
+                                <div class="alert alert-info">
+                                <i class="fa fa-info-circle fa-fw fa-lg"></i>
+                                Clique na 1ª questão abaixo para iniciar o teste.
+                                </div>
+                            </li>
+                            {% for questao in bloco.questoes.all %}
+                                {% get_questao_status questao as status %}
+                                <li>
+                                    <a href="{% url 'quizz:questao' bloco.pk questao.pk %}" class="clearfix">
+                                        {{ status|safe }}<strong>{{ forloop.counter|stringformat:"02d" }}.</strong>  {{ questao|truncatechars:30 }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            <li>
+                                <a href="{% url 'quizz:quizz' bloco.pk %}" class="clearfix text-center btn btn-success">
+                                    Resumo do seu desempenho
+                                </a>
+                            </li>
+                            {% if curso_id %}
+                                <li>
+                                    <a href="/aluno/cursos/?videos={{ curso_id }}" class="clearfix text-center btn btn-info">
+                                        Voltar ao curso
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-12 col-xs-12">
+            {% block side_rigth %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script src="{{ STATIC_URL }}perfil/js/jquery.easypiechart.min.js"></script>
+
+    <script>
+    $('.chart').easyPieChart({
+        easing: 'easeOutBounce',
+        onStep: function(from, to, percent) {
+            $(this.el).find('.percent').text(Math.round(percent));
+        },
+        barColor: '#db1717',
+        trackColor: '#f2f2f2',
+        scaleColor: false,
+        lineWidth: 8,
+        size: 130,
+        animate: 1500
+    });
+
+    </script>
+{% endblock %}
+

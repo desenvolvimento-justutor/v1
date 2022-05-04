@@ -1,0 +1,494 @@
+{% extends '_base-painel-aluno.html' %}
+{% load static autor %}
+
+{% block onbeforeunload %}
+    onbeforeunload="return confirmExit()"
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
+    <style>
+        .clock-day:before {
+            content: var(--timer-day);
+        }
+
+        .clock-hours:before {
+            content: var(--timer-hours);
+        }
+
+        .clock-minutes:before {
+            content: var(--timer-minutes);
+        }
+
+        .clock-seconds:before {
+            content: var(--timer-seconds);
+        }
+        .clock-container {
+
+            {#margin-top: 30px;#}
+            {#margin-bottom: 30px;#}
+            background: #689f38;
+            /*border-radius: 5px;*/
+            padding: 0px 20px 0px 20px;
+            display: flex;
+            font-family: 'Share Tech Mono';
+            box-shadow: 1px 1px 5px rgba(255, 255, 255, 0.15), 0 15px 90px 30px rgba(0, 0, 0, 0.25);
+            background-size: 100%;
+        }
+
+        .clock-col {
+            text-align: center;
+            margin-right: -28px;
+            margin-left: 0;
+            min-width: 90px;
+            position: relative;
+        }
+        .clock-col p{
+            margin: 0;
+        }
+
+        .clock-col:not(:last-child):before, .clock-col:not(:last-child):after {
+            content: "";
+            background-color: rgba(255, 255, 255, 0.3);
+            height: 5px;
+            width: 5px;
+            border-radius: 50%;
+            display: block;
+            position: absolute;
+            right: 12px;
+        }
+
+        .clock-col:not(:last-child):before {
+            top: 40%;
+        }
+
+        .clock-col:not(:last-child):after {
+            top: 55%;
+        }
+
+        .clock-timer:before {
+                    text-shadow: 0 0 20px rgba(10, 175, 230, 1),  0 0 20px rgba(10, 175, 230, 0);
+
+            color: #fff;
+            font-size: 4.2rem;
+            text-transform: uppercase;
+        }
+
+        .clock-label {
+            color: rgba(255, 255, 255, 0.35);
+            text-transform: uppercase;
+            font-size: .7rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 825px) {
+            .clock-container {
+                flex-direction: column;
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+
+            .clock-col + .clock-col {
+                margin-top: 20px;
+            }
+
+            .clock-col:before, .clock-col:after {
+                display: none !important;
+            }
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/hopscotch.min.css"/>
+    {#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/clock/css/main.css"/>#}
+    <link href='https://fonts.googleapis.com/css?family=Share+Tech+Mono' rel='stylesheet' type='text/css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+    <style>
+        .list-group-item > .label {
+            float: right;
+            font-size: 90%;
+            min-width: 120px;
+        }
+
+        @font-face {
+            font-family: 'digital-7';
+            src: url('{% static 'perfil/clock/fonts/digital-7.ttf' %}');
+        }
+
+        .form-group {
+            margin-bottom: unset;
+        }
+        .tooltip-inner {
+            max-width: 350px;
+            /* If max-width does not work, try using width instead */
+        }
+
+        .popover {
+            max-width: 350px; /* Max Width of the popover (depending on the container!) */
+        }
+
+        #swal2-content p {
+            text-align: justify;
+        }
+        .swal2-footer {
+            justify-content: left;
+        }
+        .content-full {
+            height: 100%;
+            text-align: unset;
+        }
+
+        .centered {
+            z-index: 99999;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            /* bring your own prefixes */
+            transform: translate(-50%, 0%);
+            background: #fff;
+            box-shadow: -3px 3px 3px -2px rgba(0, 0, 0, 0.1);
+            padding: 1px;
+        }
+    </style>
+    <style>
+        #clock-tool {
+            position: fixed;
+            right: 0;
+            top: 0px;
+            width: 300px;
+            z-index: 10000;
+            transition: all 0.2s ease-in-out 0s;
+        }
+
+        #clock-tool.closed {
+            right: -300px;
+        }
+
+        #clock-tool #clock-tool-cog {
+            background: #fff;
+            border-radius: 3px 0 0 3px;
+            background-clip: padding-box;
+            box-shadow: -3px 3px 3px -2px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            left: -50px;
+            padding: 2px;
+            position: absolute;
+            text-align: center;
+            width: 50px;
+            transition: all 0.1s ease-in-out 0s;
+            top: 0;
+        }
+
+        #clock-tool.closed #clock-tool-cog i {
+        {#-webkit-animation: rotating 3s linear infinite;#}{#-moz-animation: rotating 3s linear infinite;#}{#-ms-animation: rotating 3s linear infinite;#}{#-o-animation: rotating 3s linear infinite;#}{#animation: rotating 3s linear infinite;#}
+        }
+
+        #clock-tool #clock-tool-cog i {
+        {#-webkit-animation: rotating 3s linear infinite;#}{#-moz-animation: rotating 3s linear infinite;#}{#-ms-animation: rotating 3s linear infinite;#}{#-o-animation: rotating 3s linear infinite;#}{#animation: rotating 3s linear infinite;#}
+        }
+
+        #clock-tool.closed #clock-tool-cog:hover {
+            background-color: #03a9f4;
+            color: #fff;
+        }
+
+        #clock-tool #clock-tool-cog i {
+            font-size: 2.2em;
+        }
+
+        #clock-tool #clock-tool-options {
+            background: #fff;
+            box-shadow: -3px 3px 3px -2px rgba(0, 0, 0, 0.1);
+            padding: unset;
+        }
+
+        #clock-tool #clock-tool-options h4 {
+            margin-top: 6px;
+            margin-bottom: 0px;
+            font-size: 18px;
+            padding-bottom: 7px;
+            font-weight: bold;
+            color: #03A9F4;
+        }
+    </style>
+    <style>
+        /* CSS used here will be applied after bootstrap.css */
+        .menu-ico-collapse {
+            margin-left: 4px;
+        }
+
+        .list-group-item {
+            border-width: 1px;
+        }
+
+        .list-group-submenu .list-group-item:first-child {
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+        }
+
+        .list-group-submenu .list-group-item:last-child {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .project-box .project-box-footer .value {
+            font-size: unset;
+        }
+
+        .project-box .project-box-footer .label {
+            font-weight: bold;
+        }
+
+    </style>
+    <style>
+        .fa-stack {
+            font-size: 0.6em;
+        }
+    </style>
+    <style>
+        #config-tool {
+            width: 300px;
+            top: 0px;
+        }
+
+        #config-tool.closed {
+            right: -300px;
+        }
+
+        #config-tool #config-tool-options {
+            padding: unset;
+        }
+    </style>
+    <style>
+        .project-box .project-box-footer a {
+            width: 20%;
+            margin: 0;
+            padding: 5px 2px;
+        }
+
+        .outer-div {
+            z-index: 999;
+            position: fixed;
+            left: 50%;
+            top: 0;
+            transform: translate(-50px, 0);
+            width: 350px;
+            height: 50%;
+        }
+    </style>
+
+{% endblock %}
+{% block clock %}
+    {#    <div class="outer-div">#}
+    {#        <div id="box">#}
+    {#            <div class="clock">#}
+    {#                12:25:45#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+
+    <div id="clock-tool" class="closed">
+        <a id="clock-tool-cog" class="hide">
+            <i class="fa fa-info-circle"></i>
+        </a>
+        <!-- LAYOUT OPTIONS -->
+        <div id="clock-tool-options">
+            <div class="main-box clearfix project-box emerald-box" style="height: 100vh">
+                <div class="main-box-body clearfix">
+                    <div class="project-box-header emerald-bg" style="border-radius: unset">
+                        <div class="name">
+                            <a href="#"
+                               style="padding: 8px 15px; font-size: 1em; font-weight: bold"> Informações do simulado
+                                <button type="button" class="close pull-right"
+                                        onclick="$('#clock-tool').toggleClass('closed')">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-box-content" style="min-height: 320px; padding: unset">
+                        <ul class="list-group">
+                            <li class="list-group-item active" style="border-radius: unset">
+                                Simulado
+                            </li>
+                            <li class="list-group-item">
+                                Data atual
+                                <span class="label label-success fc-event.label-default"
+                                      id="lbl-now">{% now "d/m/Y H:i:s" %}</span>
+                            </li>
+                            <li class="list-group-item">
+                                Início
+                                <span class="label label-default fc-event.label-default">{{ simulado.data_inicio|date:"SHORT_DATETIME_FORMAT" }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                Término
+                                <span class="label label-default fc-event.label-default">{{ simulado.data_fim|date:"SHORT_DATETIME_FORMAT" }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                Duração
+                                <span class="label label-default fc-event.label-default">{{ simulado.duracao }}</span>
+                            </li>
+                            {#                <li class="list-group-item">#}
+                            {#                    Tempo restante#}
+                            {#                    <span class="label label-warning" id="time-left">{{ simulado.get_time_left.str }}</span>#}
+                            {#                </li>#}
+                            <li class="list-group-item active">
+                                Resolução
+                            </li>
+                            <li class="list-group-item">
+                                Inicio
+                                <span class="label label-default fc-event.label-default">{{ questionario_aluno.data_criacao|date:"SHORT_DATETIME_FORMAT" }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                Finalizado
+                                <span class="label label-default fc-event.label-default">
+                        {% if questionario_aluno.data_conclusao %}
+                            {{ questionario_aluno.data_conclusao|date:"SHORT_DATETIME_FORMAT" }}
+                        {% else %}
+                            Não finalizado
+                        {% endif %}
+                    </span>
+                            </li>
+                            <li class="list-group-item">
+                                Cronômetro
+                                <span class="label label-default fc-event.label-default"
+                                      id="lbl-cron">{{ questionario_aluno.data_criacao|date:"SHORT_DATETIME_FORMAT" }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                Tempo restante
+                                <span class="label label-default fc-event.label-default"
+                                      id="lbl-res">{{ questionario_aluno.data_criacao|date:"SHORT_DATETIME_FORMAT" }}</span>
+                        </ul>
+                        <div class="form-group" style="padding-left: 10px">
+                            <div class="checkbox-nice">
+                                <input type="checkbox" id="checkbox-1"
+                                       onchange="javascript:jump=$('#checkbox-1')[0].checked">
+                                <label for="checkbox-1" style="margin: unset">
+                                    Avanço automático
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block config_tool_cog %}
+    <a id="config-tool-cog" class="hide">
+        <i class="fa fa-list" style="-webkit-animation: unset; animation: unset"></i>
+    </a>
+{% endblock %}
+{% block config_tool_option %}
+    {% include 'autor/chart.html' %}
+{% endblock %}
+{% block panel_content %}
+    <style>
+        .q-statistics-btn {
+            color: #343a40;
+            font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            height: 34px;
+            line-height: 13px;
+            margin: 0px;
+            padding: 0px 12px;
+            width: 190px;
+        }
+
+
+    </style>
+        <div class="col-sm-12 mrb-b-sm">
+            <hr class="mrg-b-md">
+            <div class="icon-box pull-left">
+                <a href="javascript:voltar()" class="btn pull-left">
+                    <i class="fa fa-arrow-left fa-fw"></i> Voltar para a tela principal do simulado
+                </a>
+                <a href="javascript:void(0)"
+                   onclick="$('#config-tool').toggleClass('closed');$('#clock-tool').addClass('closed')"
+                   class="btn pull-left">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Estatisticas do simulado
+                </a>
+                <a href="javascript:void(0)"
+                   onclick="$('#clock-tool').toggleClass('closed');$('#config-tool').addClass('closed')"
+                   class="btn pull-left">
+                    <i class="fa fa-info-circle fa-fw"></i> Informações do simulado
+                </a>
+            </div>
+            <div class="icon-box pull-right">
+                <a href="javascript:fonteResize(-1)" class="btn pull-left">
+                    <i class="fa fa-minus"></i>
+                </a>
+                <a href="javascript:fonteResize(1)" class="btn pull-left">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </div>
+        </div>
+
+            <div id="render-questao">
+                {% include 'autor/box_questao.html' with resposta_questionario_aluno=resposta_questionario_aluno simulado=simulado %}
+            </div>
+        {#        <div class="col-lg-3 col-md-3 col-sm-3">#}
+        {#            {% include 'autor/box-lista.html' with simulado=simulado %}#}
+        {#        </div>#}
+        {#        <div id="render-resultado">#}
+        {#            {% include 'autor/resultado.html' with questionario_aluno=questionario_aluno encerrado=simulado.encerrado%}#}
+        {#        </div>#}
+        <!-- Link trigger modal -->
+        <div class="modal fade" id="modalComentarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel"></h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Link trigger modal -->
+        <div class="modal fade" id="modalBoasVindas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalBoasVindas">Seja bem vindo ao novo sistema de simulados do
+                            JusTutor</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Aqui você poderá se preparar e testar seu conhecimento para o
+                            concurso <strong>{{ questionario_aluno.simulado.concurso }}</strong>. blahh, blaah blaaa
+                        </p>
+                        <strong>A Equipe JusTutor deseja boa sorte e que seu natal seja repleto de alegria, muitas
+                            mulher
+                            (ou homens, ou os dois), sei lá, depende de vc, kkk</strong>
+                        <div class="text-center">
+                            <br/>
+                            <img width="64"
+                                 src="data:image/png;base64,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">
+                            <p style="font-weight: bold; font-size: 20px; color: deeppink">Beijinhos do Gustavo</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-primary"
+                                onclick="$('#modalBoasVindas').modal('hide');hopscotch.startTour(tour);">Ver tutorial
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+
+{% block js %}
+    {% include 'autor/includes/js.html' %}
+{% endblock %}

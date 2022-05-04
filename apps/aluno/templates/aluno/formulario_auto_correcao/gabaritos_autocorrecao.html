@@ -1,0 +1,100 @@
+{% extends '_base-painel-aluno.html' %}
+{% load static %}
+{% block panel_content %}
+        <div class="col-lg-12">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2>Filtro <small class="text-info">Exibindo: {{ formularios.count }}
+                        Formulário{{ formularios.count|pluralize }}</small></h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <form class="form-inline" role="form" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {% with filtro.categoria as categoria %}
+                                <select class="form-control" name="categoria">
+                                    <option value="" {% if not filtro.categoria %}selected{% endif %}>Selecione o tipo
+                                    </option>
+                                    <option value="QD" {% ifequal categoria 'QD' %}selected{% endifequal %}>Questão
+                                        Discursiva
+                                    </option>
+                                    <option value="PP" {% ifequal categoria 'PP' %}selected{% endifequal %}>Peça
+                                        Prática
+                                    </option>
+                                    <option value="ST" {% ifequal categoria 'ST' %}selected{% endifequal %}>Sentença
+                                    </option>
+                                </select>
+                            {% endwith %}
+                        </div>
+                        <div class="form-group checkbox checkbox-nice">
+                            <input type="checkbox" id="expirado" name="expirado"
+                                   {% ifequal filtro.expirado 'on' %}checked="checked"{% endifequal %}>
+                            <label for="expirado">
+                                Exibir atividades expiradas
+                            </label>
+                        </div>
+                        <button style="margin-left: 10px;" type="submit" class="btn btn-success">Filtar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <div class="col-lg-12">
+        <div class="main-box clearfix">
+            <div class="main-box-body clearfix">
+                <div class="table-responsive clearfix">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th><span>Enunciado</span></th>
+                            <th><span>Concurso</span></th>
+                            <th><span>Disciplina</span></th>
+                            <th class="text-center"><span>PDF</span></th>
+                            <th><span>Gabarito</span></th>
+                            <th><span>Autocorreção</span></th>
+                            <th><span>Nota</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for formulario in formularios %}
+                            <tr>
+                                <td>
+                                    {{ formulario.enunciado }}
+                                </td>
+                                <td>
+                                    {{ formulario.enunciado.concurso }}
+                                </td>
+                                <td>
+                                    {{ formulario.enunciado.disciplina }}
+                                </td>
+                                    <td>
+                                        <a target="_blank"
+                                           href="{% url 'autocorrecao:baixar_correcao' formulario.pk %}?action=lines"
+                                           class="table-link">
+                                            <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa  fa-file-pdf-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a target="_blank"
+                                           href="{% url 'autocorrecao:baixar_correcao' formulario.pk %}?action=gabarito"
+                                           class="table-link">
+                                            <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa  fa-download fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                        {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

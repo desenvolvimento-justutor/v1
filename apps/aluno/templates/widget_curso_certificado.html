@@ -1,0 +1,73 @@
+{% load thumbnail %}
+<div class="col-sm-6">
+    <div class="main-box clearfix">
+        <header class="main-box-header clearfix">
+            <h2>
+                {% if checkout.get_curso_ativo %}
+                    <i class="fa fa-check-circle" style="color: #8BC34A; cursor: pointer" data-toggle="tooltip" title="Curso em andamento."></i>
+                {% else %}
+                    <i class="fa fa-circle text-danger" style="color: #E84E40; cursor: pointer" data-toggle="tooltip" title="Curso encerrado."></i>
+                {% endif %}
+                <small><strong>ID: </strong></small>{{ checkout }}</h2>
+            <span class="warranty">
+                {% if checkout.transaction %}
+                    {% with  checkout.transaction.status as status %}
+                        {% if status in 'pago,disponivel' %}
+                            <span class="label label-success">{{ checkout.transaction.get_status_display }}</span>
+                        {% elif status in 'aguardando,em_analise' %}
+                            <span class="label label-warning">{{ checkout.transaction.get_status_display }}</span>
+                        {% else %}
+                            <span class="label label-danger">{{ checkout.transaction.get_status_display }}</span>
+                        {% endif %}
+                    {% endwith %}
+                {% else %}
+                    <span class="label label-warning">Aguardando transação do PagSeguro</span>
+                {% endif %}
+                <span class="pull-right text-primary">{{ checkout.date|date:"SHORT_DATE_FORMAT" }}</span>
+            </span>
+
+        </header>
+        <div class="main-box-body clearfix">
+            <ul class="widget-products">
+                {% for item in cursos %}
+                <li>
+
+                        <span class="img">
+                            {% thumbnail item.curso.imagem "48x68" crop="center" as im %}
+                                <img src="{{ im.url }}">
+                            {% empty %}
+                                <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                            {% endthumbnail %}
+                        </span>
+                        <span class="product clearfix">
+                            <span class="name">
+                                {{ item }}
+                            </span>
+                            <span class="price">
+                                <i class="fa fa-money"></i> {{ item.total }}
+                            </span>
+                            <span class="warranty">
+                                {% if checkout.transaction.status in 'pago,disponivel' %}
+                                    <i class="fa fa-unlock" style="color: green"></i> Liberado
+                                {% else %}
+                                    <i class="fa fa-lock" style="color: orangered"></i> Bloqueado
+                                {% endif %}
+                            </span>
+                        </span><br>
+                        {% if item.curso.atividade_set.all.count %}
+                        <span class="text-center">
+                            <a href="{% url 'aluno:certificado-solicitar' item.curso.pk  %}" class="btn btn-primary btn-sm"> <span class="fa fa-graduation-cap"></span> Solicitar Certificado</a><br><br>
+                        </span>
+                        {% else %}
+                        <span class="text-center">
+                            <button type="button" class="btn btn-primary btn-sm disabled"> <span class="fa fa-graduation-cap"></span> Solicitar Certificado</button><br><br>
+                        </span>
+                        {% endif %}
+
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="pull-right"><strong>Total:</strong> R$ {{ checkout.total }}</div>
+        </div>
+    </div>
+</div>

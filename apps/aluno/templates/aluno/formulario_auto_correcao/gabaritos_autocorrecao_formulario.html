@@ -1,0 +1,126 @@
+{% extends 'aluno/formulario_auto_correcao/_base.html' %}
+{% load static %}
+
+{% block css %}
+    <style>
+        .subject {
+            font-weight: bolder;
+            font-size: 1.2em !important;
+            color: orange;
+        }
+    </style>
+{% endblock %}
+
+{% block wrapper_attr %}class="email-inbox-wrapper"{% endblock %}
+{% block page_wrapper_class %}container nav-small{% endblock %}
+{% block content-wrapper %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="email-box" class="clearfix">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="email-header-mobile" class="visible-xs visible-sm clearfix">
+                            <div id="email-header-title-mobile" class="pull-left">
+                                <i class="fa fa-inbox"></i> Inbox
+                            </div>
+                            <a href="email-compose.html" class="btn btn-success email-compose-btn pull-right">
+                                <i class="fa fa-pencil-square-o"></i> Corrigir
+                            </a>
+                        </div>
+                        {% include 'aluno/formulario_auto_correcao/widgets/email-header.html' %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="email-navigation" class="email-nav-nano hidden-xs hidden-sm">
+                            {% include 'aluno/formulario_auto_correcao/widgets/email-nav-nano-content.html' %}
+                        </div>
+                        <div id="email-detail" class="email-detail-nano">
+                            <div class="email-detail-nano-content">
+                                {% block email-detail-subject %}
+                                {% endblock %}
+                                {% block email-body %}
+                                {% endblock %}
+                                {% block email-detail-attachments %}
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $('#email-list li > .star > a').on('click', function () {
+                $(this).toggleClass('starred');
+            });
+
+            $(".has-tooltip").each(function (index, el) {
+                $(el).tooltip({
+                    placement: $(this).data("placement") || 'bottom'
+                });
+            });
+
+            setHeightEmailContent();
+
+            initEmailScroller();
+        });
+
+        $(window).smartresize(function () {
+            setHeightEmailContent();
+
+            initEmailScroller();
+        });
+
+        function setHeightEmailContent() {
+            if ($(document).width() >= 992) {
+                var windowHeight = $(window).height();
+                var staticContentH = $('#header-navbar').outerHeight() + $('#email-header').outerHeight();
+                staticContentH += ($('#email-box').outerHeight() - $('#email-box').height());
+
+                $('#email-detail').css('height', windowHeight - staticContentH);
+            } else {
+                $('#email-detail').css('height', '');
+            }
+        }
+
+        function initEmailScroller() {
+            if ($(document).width() >= 992) {
+                $('#email-navigation').nanoScroller({
+                    alwaysVisible: false,
+                    iOSNativeScrolling: false,
+                    preventPageScrolling: true,
+                    contentClass: 'email-nav-nano-content'
+                });
+
+                $('#email-detail').nanoScroller({
+                    alwaysVisible: false,
+                    iOSNativeScrolling: false,
+                    preventPageScrolling: true,
+                    contentClass: 'email-detail-nano-content'
+                });
+            }
+        }
+        function changeNota(notaPk, tabelaPk) {
+            console.log(notaPk, tabelaPk)
+
+            var send = {
+                notaPk: notaPk,
+                tabelaPk: tabelaPk
+            };
+            var posting = $.post('{% url 'autocorrecao:responder' %}', send );
+            {#$.blockUI({ message: 'aguarde' });#}
+            posting.done(function( data ) {
+                toastr.info(data.valor, 'Info');
+                $('#nota' + data.tabela_pk).html(data.valor)
+                $('#total').html(data.total)
+
+                console.log(data.valor)
+            });
+        }
+    </script>
+{% endblock %}

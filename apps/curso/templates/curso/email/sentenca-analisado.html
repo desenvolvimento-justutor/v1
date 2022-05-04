@@ -1,0 +1,20 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    Seu recurso foi julgado!
+{% endblock %}
+{% block texto1 %}
+{% endblock %}
+
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}
+    <p style="text-align: justify">
+        {% if sentenca %}
+            O recurso que você apresentou em relação à correção da sua sentença <strong>{{ sentenca }}</strong>
+            já foi analisado e está disponível para você.
+        {% else %}
+            O recurso que você apresentou em relação à correção da sua atividade <strong>{{ tarefa.atividade }}</strong>
+            do curso <strong>{{ tarefa.atividade.curso }}</strong>, já foi analisado e está disponível para você.
+        {% endif %}
+    </p>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends '_base-painel-aluno.html' %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'financeiro/js/bootstrap-touchspin-master/dist/jquery.bootstrap-touchspin.min.css' %}"/>
+{% endblock %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-sm-6">
+            {% include 'financeiro/widgets/widget_avulso.html' %}
+        </div>
+        <div class="col-sm-6">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'financeiro/js/bootstrap-touchspin-master/dist/jquery.bootstrap-touchspin.min.js' %}"></script>
+    <script src="{% static 'financeiro/js/financeiro.js' %}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    data = {
+    tipo: '
+    qtda: 0,
+    }
+
+    <script>
+        // load a locale
+        numeral.register('locale', 'pt-BR', {
+            delimiters: {
+                thousands: '.',
+                decimal: ','
+            },
+            abbreviations: {
+                thousand: 'k',
+                million: 'm',
+                billion: 'b',
+                trillion: 't'
+            },
+            ordinal: function (number) {
+                return number === 1 ? 'er' : 'ème';
+            },
+            currency: {
+                symbol: 'R$'
+            }
+        });
+        numeral.locale('pt-BR');
+        let formatter = new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        });
+
+
+        let dataCredito;
+        $.getJSON("{% url 'financeiro:get-credito' %}?", function (json) {
+            dataCredito = json;
+        });
+
+        window.onload = function () {
+            const qtdaMin = dataCredito.config.qtda_min;
+            const qtdaMax = dataCredito.config.qtda_max;
+            const vlrUnit = dataCredito.config.valor_unitario;
+            updateCreditosAulso(qtdaMin, vlrUnit)
+            $("#inputCredito").TouchSpin({
+                min: qtdaMin,
+                max: qtdaMax,
+                step: 1,
+                decimals: 0,
+                boostat: 5,
+                maxboostedstep: 10,
+
+            });
+            $('#minValue').html(`Min. ${numeral(qtdaMin).format()}`)
+            $('#maxValue').html(`Máx. ${numeral(qtdaMax).format()}`)
+        }
+
+        function checkDesconto(qtda) {
+            const descontos = dataCredito.descontos;
+            for (var i = 0; i < descontos.length; i++) {
+                if (qtda >= descontos[i].fields.de && qtda <= descontos[i].fields.ate) {
+                    return descontos[i].fields.desconto;
+                }
+            }
+            return 0;
+        }
+
+        function updateCreditosAulso(qtda, valor) {
+            let valorTotal = qtda * parseFloat(valor)
+            const desconto = checkDesconto(qtda)
+            console.log(desconto, valor)
+            if (desconto > 0) {
+                $('#desconto').html(`Econômia de ${desconto}%`)
+                const vlrNovo = valorTotal - (valorTotal * desconto / 100)
+                $('#btnComprarAvulso strong').html(`Comprar <span class="text-info">${numeral(qtda).format()}</span> créditos de <del class="text-danger">${formatter.format(valorTotal)}</del> por <span class="text-info">${formatter.format(vlrNovo)}</span>`)
+            } else {
+                $('#btnComprarAvulso strong').html(`Comprar <span class="text-info">${numeral(qtda).format()}</span> créditos por <span class="text-info">${formatter.format(valorTotal)}</span>`)
+            }
+        }
+
+
+        $("#inputCredito").on('change', function () {
+            const qtda = $(this).val();
+            console.log('oioioi', qtda)
+            updateCreditosAulso(qtda, dataCredito.config.valor_unitario)
+        });
+
+        $('#modalComprarCreditos').on('show.bs.modal', function () {
+            console.log('modalComprarCreditos load...')
+        })
+    </script>
+{% endblock %}

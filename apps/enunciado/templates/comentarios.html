@@ -1,0 +1,101 @@
+<div >
+    <form action="{{ correcao.get_absolute_url }}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="hidden" name="action" value="comentar">
+            <textarea name="texto-comentario" class="form-control" rows="3" placeholder="Leia a correção ao lado e deixe aqui o seu comentário sobre ela. Não use este espaço para corrigir a questão, mas apenas para comentar a correção já feita.">
+                {{ texto_comentario }}
+            </textarea>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success fa fa-comment-o"> Comentar</button>
+        </div>
+    </form>
+    <div class="mg-bot10"></div>
+    {% with correcao.comentariocorrecao_set.all as comentarios %}
+    <div class="panel panel-default widget" id="comentarios">
+        <div class="panel-heading">
+            <span class="fa fa-comments-o fa-lg"></span>
+            <h3 class="panel-title">Recente{{ comentarios.count|pluralize }}</h3>
+            <span class="label label-info"> {{ comentarios.count }}</span>
+        </div>
+        <div class="panel-body">
+            <div class="div-scroll">
+            {% for comentario in comentarios %}
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-3 col-md-2">
+                            {% if comentario.aluno.foto %}
+                                <img src="{{ comentario.aluno.foto.url }}" class="avatar pull-left" alt="">
+                            {% else %}
+                                <img src="{{ STATIC_URL }}images/avatar_2x.png" class="avatar pull-left" alt=""/>
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-9 col-md-10">
+                            <div>
+                                <div class="mic-info bold">
+                                    Por: <a href="{{ comentario.aluno.get_absolute_url }}"> {% if request.user.aluno.id == comentario.aluno.id %} Você {% else %} {{ comentario.aluno }} {% endif %} </a> {{ comentario.str_data }}
+                                </div>
+                                <hr class="linha-tracejada no-pd">
+                            </div>
+                            <div class="comment-text">
+                                <div id="form-comentario-{{ comentario.id }}" class="hide">
+                                <form id="frm-comentario-{{ comentario.id }}" action="{{ correcao.get_absolute_url }}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="comentar">
+                                    <input id="del-com-{{ comentario.id }}" type="hidden" name="del_comentario" value="">
+                                    <input type="hidden" name="id-comentario" value="{{ comentario.id }}">
+                                    <textarea id="id_comentario-{{ comentario.id }}" name="texto-comentario">{{ comentario.comentario }}</textarea>
+                                </form>
+                                </div>
+                                <div id="texto-comentario-{{ comentario.id }}">
+                                    {{ comentario.comentario }}
+                                </div>
+                            </div>
+                            {% if request.user.aluno.id == comentario.aluno.id %}
+                            <div class="action">
+                                <div id="btn1-{{ comentario.id }}">
+                                    <button id="btn-editar-comentario-{{ comentario.id }}" onclick="editarComentario({{ comentario.id }})" type="button" class="btn btn-info btn-xs fa fa-edit" data-toggle="tooltip" data-original-title="Editar"></button>
+                                    <button onclick="$('#del-com-{{ comentario.id }}').val(1);$('#frm-comentario-{{ comentario.id }}').submit()" type="button" class="btn btn-danger btn-xs fa fa-trash-o" data-toggle="tooltip" data-original-title="Apagar"></button>
+                                </div>
+                                <div id="btn2-{{ comentario.id }}" class="hide">
+                                    <button id="btn-confirmar-comentario-{{ comentario.id }}" onclick="$('#frm-comentario-{{ comentario.id }}').submit()" type="button" class="btn btn-success btn-xs fa fa-check" data-toggle="tooltip" data-original-title="Confirmar"></button>
+                                    <button id="btn-cancelar-comentario-{{ comentario.id }}" onclick="editarComentario({{ comentario.id }}, true)" type="button" class="btn btn-danger btn-xs fa fa-remove" data-toggle="tooltip" data-original-title="Cancelar"></button>
+                                </div>
+
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            {% endfor %}
+            <!--a href="#" class="btn btn-primary btn-sm btn-block" role="button"><span class="glyphicon glyphicon-refresh"></span> More</a-->
+            </div>
+        </div>
+    </div>
+    <script>
+        function editarComentario(id, cancelar) {
+            var txt = $('#id_comentario-' + id);
+            var frm = $('#form-comentario-' + id);
+            var div = $('#texto-comentario-' + id);
+            var btn1 = $('#btn1-' + id);
+            var btn2 = $('#btn2-' + id);
+            if (cancelar == true) {
+                frm.prop('class', 'hide');
+                btn2.prop('class', 'hide');
+                div.prop('class', '');
+                btn1.prop('class', '');
+            } else {
+                frm.prop('class', '');
+                btn2.prop('class', '');
+                div.prop('class', 'hide');
+                btn1.prop('class', 'hide');
+                txt.focus();
+            }
+            console.log('editar', frm)
+        }
+    </script>
+    {% endwith %}
+</div>

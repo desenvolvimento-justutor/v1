@@ -1,0 +1,103 @@
+{% extends '_base-enunciado.html' %}
+
+{% block bloco_dir_lg %}5{% endblock %}
+
+{% block bloco_esq %}
+    <!-- BLOCO ENUNCIADO DESTAQUE ------------------------------------------------------------------------>
+    <section id="questoes-destaque" class="col-sm-7">
+        <!-- TITULO HOME ------->
+        <div class="titulo-home">
+            <h4 class="pd-home titulo-home bold"><a href="{{ enunciado.get_absolute_url }}">{{ enunciado }}</a></h4>
+            <div class="linha-aba"></div>
+        </div>
+        <!-- INFO ENUNCIADO ---->
+        {% include '_widget-info-enunciado.html' %}
+        <!-- ABAS -------------->
+        <div class="aba">
+             <div class="row">
+                <div class="col-md-12">
+                    <!-- TAB ----------------------------------------------------->
+                    <div class="tabbable-panel">
+                        <div class="tabbable-line">
+                            <ul class="nav nav-tabs pull-left">
+                                <li class="active">
+                                    <a href="#tab_enunciado" data-toggle="tab"> ENUNCIADO </a>
+                                </li>
+                            </ul>
+                            <!-- BARRA DE FERRAMENTAS -->
+                            <div class="btn-group pull-right">
+                                <!-- RESPONDER DEPOIS --->
+                                <a href="#" class="btn btn-default" data-toggle="tooltip"
+                                   onclick="responderDepois('{{ enunciado.id }}')"
+                                   data-original-title="Responder Depois">
+                                    <i class="fa fa-history text-info"></i>
+                                </a>
+                                <!-- ACOMPANHAR --------->
+                                <a href="#" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Acompanhar" onclick="acompanharResposta('{{ enunciado.id }}')">
+                                    <i class="fa fa-feed fa-lg text-success"></i>
+                                </a>
+                                <!-- CRIAR DESAFIO
+                                <a href="#" type="button" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Criar Desafio">
+                                    <i class="fa fa-trophy fa-lg text-warning"></i>
+                                </a>
+                                <!-- REPORTAR PROBLEMA -->
+                                <a href="#" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Reportar Problema" onclick="reportarBug('Enunciado {{ enunciado }}')">
+                                    <i class="fa fa-bug fa-lg text-danger"></i>
+                                </a>
+                                <!-- IMPRIMIR -->
+                                <a target="_blank" href="{% url 'enunciado:imprimir' enunciado.id %}" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Imprimir">
+                                    <i class="fa fa-print fa-lg text-primary"></i>
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab_enunciado">
+                                    <div class="div-scroll ">
+                                        <span style="padding: 4px 4px 4px 4px" class="pull-right bg-warning">Enunciado Nº <span class="bold">{{ enunciado.id|stringformat:"06d" }}</span></span>
+                                        <br><br>
+                                        {{ enunciado.texto|safe }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- BIBLIOTECA VIRTUAL ----->
+            {% with enunciado.get_biblioteca as biblioteca %}
+                {% if biblioteca %}
+                <div class="titulo-home">
+                    <h2 class="pd-home titulo-home-2 bold">Biblioteca Virtual</h2>
+                    <div class="clear"></div>
+                    <div class="linha-aba"></div>
+                    <table class="table table-hover table-striped">
+                        <tbody>
+                            {% for link in biblioteca %}
+                            <tr>
+                                <td><small><a target="_blank" href="{{ link.link }}">{{ link.title }}</a></small></td>
+                                <td><small><a target="_blank" href="{{ link.link }}">{{ link }}</a></small></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <!-- FIM ABAS ---------->
+    </section>
+    <!--*BLOCO ENUNCIADO DESTAQUE*------------------------------------------------------------------------>
+
+{% endblock %}
+
+{% block bloco_dir %}
+    {% if resposta.concluido %}
+            {% include '_resposta-fechada.html' %}
+    {% else %}
+        {% include '_resposta-aberta.html' %}
+    {% endif %}
+{% endblock %}

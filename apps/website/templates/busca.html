@@ -1,0 +1,250 @@
+<div class="row">
+    <div class="sessao-busca-pesquisa">
+        <div class="chamada-busca-pesquisa">
+            Faça sua busca detalhadamente
+        </div>
+        <div class="container">
+            <div class="col-sm-12">
+                <div class="process">
+                    <div class="process-row">
+                         <div class="process-step">
+                            <button type="button" onclick="change_tipo('QD')" class="btn bg-questao btn-circle icon-questao"></button>
+                            <p>QUESTÃO</p>
+                        </div>
+                        <div class="process-step">
+                            <button type="button" onclick="change_tipo('PP')" class="btn bg-peca btn-circle icon-peca"></button>
+                            <p>PEÇA</p>
+                        </div>
+                        <div class="process-step">
+                            <button type="button" onclick="change_tipo('ST')" class="btn bg-sentenca btn-circle icon-sentenca"><span class="icon-sentenca-black"></span></button>
+                            <p>SENTENÇA</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="encontrados">
+                    <div class="minhas-questoes pull-left">
+                        <a href="#">Buscar enunciado que seja: </a>
+                        <a href="#" class="respondidas">
+                            <div class="icones-questoes">
+
+                            </div>
+                            <div id="badge_tipo" class="numero-icone"><span class="badge bg-questao">QUESTÃO</span></div>
+                            <div class="clear"></div>
+                        </a>
+
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        <form id="id_form_busca" action="{% url 'enunciado:busca' %}" method="get">
+            <div class="container">
+                <div class="col-sm-12">
+                    <div class="borda-pontilhada">
+                        <div class="selecao-checkbox bold">
+                            Mostrar Apenas:
+                        </div>
+                        <label class="selecao-checkbox">
+                            <input  data-index="14" id="id_respondidas" name="corrigidas" onclick="sel_click(this)" type="radio" value="Respondidas">
+                            <span class="pull-left">Respondidas  <i class="fa fa-thumbs-o-up fa-lg text-success"></i></span>
+                            <div class="clear"></div>
+                        </label>
+                        <label class="selecao-checkbox">
+                            <input data-index="14" id="id_corrigidas" name="corrigidas" onclick="sel_click(this)" type="radio" value="Corrigidas">
+                            <span class="pull-left">Respondidas & Avaliadas <i class="fa fa-pencil-square-o fa-lg text-info"></i></span>
+                            <div class="clear"></div>
+                        </label>
+                        <!--label class="selecao-checkbox">
+                            <input data-index="16" id="id_avaliadas" name="avaliadas" onclick="sel_click(this)" type="checkbox" value="Avaliadas">
+                            <span class="pull-left">Avaliadas <i class="fa fa-smile-o fa-lg text-warning"></i></span>
+                            <div class="clear"></div>
+                        </label-->
+                        <label class="selecao-checkbox">
+                            <input  data-index="17" id="id_desatualizado" name="desatualizado" onclick="sel_click(this)" type="checkbox" value="Desatualizadas">
+                            <span class="pull-left">Excluir Desatualizadas <i class="fa fa-remove fa-lg text-danger"></i></span>
+                            <div class="clear"></div>
+                        </label>
+                        <label class="selecao-checkbox">
+                            <input {% if not request.user.aluno %}disabled {% endif %}data-index="17" id="id_jarespondi" name="jarespondi" onclick="sel_click(this)" type="checkbox" value="Respondi">
+                            <span class="pull-left">Excluir enunciados que já respondi <i class="fa fa-remove fa-lg text-danger"></i></span>
+                            <div class="clear"></div>
+                        </label>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <!-- CAMPOS DA BUSCA -->
+            <div class="campos">
+                <div class="container">
+                    <input type="hidden" id="id_classificacao" name="classificacao" value={% if data %}{{ data.classificacao }}{% else %}"QD"{% endif %}>
+
+                    <div class="col-sm-4"> <!-- PALAVRA CHAVE -->
+                        <input data-index="18" id="id_texto" name="texto" type="text" placeholder="Palavra chave" onchange="sel_click(this)" class="form-control">
+                    </div>
+                    <div class="col-sm-2"> <!-- ESFERA GERAL -->
+                        <select id="id_esfera_geral" name="esfera_geral_id" data-index="1"
+                                onchange="on_change_esferas(this)" onclick="sel_click(this)" class="form-control">
+                            <option value="">Esfera Geral</option>
+                            {% for esfera in proc_enunciado.esfera_geral %}
+                                <option value="{{ esfera.id }}" {% ifequal data.esfera_geral_id esfera.id|stringformat:"d" %}selected{% endifequal %}>{{ esfera }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- ESFERA ESPECIFICA -->
+                        <select id="id_esfera_especifica" name="esfera_especifica_id" data-index="2"
+                                onchange="on_change_esferas(this)" onclick="sel_click(this)" class="form-control">
+                            <option value="">Esfera Específica</option>
+                            {% for esfera in proc_enunciado.esfera_especifica %}
+                                <option value="{{ esfera.id }}">{{ esfera }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- CARGO -->
+                        <select id="id_cargo" name="cargo_id" data-index="3" onchange="on_change_esferas(this)" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Cargo</option>
+                            {% for cargo in proc_enunciado.cargo %}
+                                <option value="{{ cargo.id }}" {% ifequal data.cargo_id cargo.id|stringformat:"d" %}selected{% endifequal %}>{{ cargo }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- ORGAO -->
+                        <select id="id_orgao_entidade" name="orgao_entidade_id" data-index="4" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Orgão</option>
+                            {% for orgao in proc_enunciado.orgao %}
+                                <option value="{{ orgao.id }}">{{ orgao }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- CONCURSO -->
+                        <select id="id_concurso" name="concurso_id" data-index="5" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Concurso</option>
+                            {% for concurso in proc_enunciado.concurso %}
+                                <option value="{{ concurso.id }}">{{ concurso }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- DATA PROVA -->
+                        <select id="id_data_prova" name="data_prova" data-index="6" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Ano</option>
+                            {% for data in proc_enunciado.lista_anos %}
+                                <option value="{{ data.id }}">{{ data.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- DISCIPLINA -->
+                        <select id="id_disciplina" name="disciplina_id" data-index="7" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Disciplina</option>
+                            {% for disciplina in proc_enunciado.disciplina %}
+                                <option value="{{ disciplina.id }}">{{ disciplina }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- ORGANIZADOR -->
+                        <select id="id_organizador" name="organizador_id" data-index="8" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Organizador</option>
+                            {% for organizador in proc_enunciado.organizador %}
+                                <option value="{{ organizador.id }}">{{ organizador }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- LOCALIDADE -->
+                        <select id="id_localidade" name="localidade_id" data-index="9" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Localidade</option>
+                            {% for localidade in proc_enunciado.localidade %}
+                                <option value="{{ localidade.id }}">{{ localidade }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- NUM_QUESTAO_CADERNO -->
+                        <input data-index="19" disabled id="id_num_questao_caderno" name="num_questao_caderno" type="text" onchange="sel_click(this)"
+                               placeholder="N&deg; da Questão" class="form-control">
+                    </div>
+                    <div class="col-sm-4"> <!-- TIPO_PROCEDIMENTO -->
+                        <select id="id_tipo_procedimento" name="tipo_procedimento_id" data-index="10"
+                                onclick="sel_click(this)" class="form-control">
+                            <option value="">Tipo de Procedimento</option>
+                            {% for procedimento in proc_enunciado.tipo_procedimento %}
+                                <option value="{{ procedimento.id }}">{{ procedimento }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- TIPO_SENTENCA -->
+                        <select id="id_tipo_sentenca" name="tipo_sentenca_id" data-index="11" onclick="sel_click(this)"
+                                class="form-control">
+                            <option value="">Sentença</option>
+                            {% for sentenca in proc_enunciado.tipo_peca_sentenca %}
+                                <option value="{{ sentenca.id }}">{{ sentenca }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2"> <!-- AREA_PROFISSIONAL -->
+                        <select disabled id="id_area_profissional" name="area_profissional" data-index="12" onclick="sel_click(this)" class="form-control">
+                        <option value="">Área</option>
+                            {% for area in proc_enunciado.area_profissional %}
+                                <option value="{{ area.id }}">{{ area }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-4"> <!-- TIPO_PECA_PRATICA -->
+                        <select disabled id="id_tipo_peca_pratica" name="tipo_peca_pratica_id" data-index="13"
+                                onclick="sel_click(this)" class="form-control">
+                            <option value="">Peça</option>
+                            {% for peca in proc_enunciado.tipo_peca_pratica %}
+                                <option value="{{ peca.id }}">{{ peca }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <!--/CAMPOS DA BUSCA/-->
+            <div class="container">
+                <div class="col-sm-12">
+                    <div class="borda-pontilhada">
+                        <div class="filtro01">Filtro: <input name="tags" id="tags" data-role="tagsinput" type="text">
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="filtros paddin5">
+                        <a href="#busca-home" onclick="resetar_valores();"
+                           class="btn btn-sm btn-inverse"><span
+                                class="glyphicon glyphicon-trash text-danger"></span> Limpar Filtros</a>
+
+                        <a id="id_salvar_filtro" href="#" class="btn btn-sm btn-inverse"><span
+                                class="glyphicon glyphicon-floppy-save text-success"></span> Salvar Filtro</a>
+                        <a id="id_meus_filtros" href="#" class="btn btn-sm btn-inverse"><span
+                                class="glyphicon glyphicon-filter text-info"></span> Meus Filtros</a>
+
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="container">
+                <div class="col-sm-12">
+                    <div class="bloco-centro">
+                        <button class="lg-30per fa fa-search">&nbsp;&nbsp;Buscar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script>
+    {% for k, v in data.iteritems %}
+        $('[name={{ k }}]').val('{{ v }}');
+    {% endfor %}
+</script>

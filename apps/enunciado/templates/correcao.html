@@ -1,0 +1,265 @@
+{% extends '_base.html' %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/jquery-bar-rating/themes/bars-pill.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/comments.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap_line_tabs.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/12-sliding-tags/css/style.css">
+{% endblock %}
+{% block section %}
+    <!-- CABEÇALHO DO ENUNCIADO -------------------------------------------------------------------------->
+    {% include '_widget-cabecalho-enunciado.html' %}
+    <!--*CABEÇALHO DO ENUNCIADO*-------------------------------------------------------------------------->
+
+    <!-- BLOCO ENUNCIADO DESTAQUE ------------------------------------------------------------------------>
+    <section id="questoes-destaque" class="col-sm-7">
+        <!-- TITULO HOME ------->
+        <div class="titulo-home">
+            <h4 class="pd-home titulo-home bold"><span class="text-danger">C. </span><a href="{{ enunciado.get_absolute_url }}">{{ enunciado }}</a></h4>
+            </h4>
+            <div class="linha-aba"></div>
+        </div>
+        <!-- INFO ENUNCIADO ---->
+        {% include '_widget-info-enunciado.html' %}
+        <!-- ABAS -------------->
+        <div class="aba">
+             <div class="row">
+                <div class="col-md-12">
+                    {% if minha_resposta and minha_resposta.concluido %}
+                        {% if minha_resposta != resposta %}
+                        <a href="{{ minha_resposta.get_absolute_url }}" class="faixa-verde">
+                            clique aqui e veja <span class="fonte-amarela">sua resposta</span>
+                        </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ enunciado.get_responder_absolute_url }}" class="faixa-verde">
+                            clique aqui  e <span class="fonte-amarela">responda esta questão</span>
+                        </a>
+                    {% endif %}
+                    <!-- TAB ----------------------------------------------------->
+                    <div class="tabbable-panel">
+                        <div class="tabbable-line">
+                            <ul class="nav nav-tabs pull-left">
+                                <li>
+                                    <a href="#tab_enunciado" data-toggle="tab">ENUNCIADO</a>
+                                </li>
+                                <li class="">
+                                    <a href="#tab_resposta" data-toggle="tab">RESPOSTA</a>
+                                </li>
+                                <li class="active">
+                                    <a href="#tab_correcao" data-toggle="tab">CORREÇÃO</a>
+                                </li>
+                            </ul>
+
+                            <!-- BOTOES DE NAVEGAÇÃO -->
+                            <div class="btn-group " role="group" style="padding-left: 20px">
+                                {% with correcao.anterior as anterior %}
+                                    <a href="{{ anterior.get_absolute_url }}" class="btn btn-default"
+                                       data-toggle="tooltip" data-original-title="Correção Anterior" {% if not anterior %} disabled{% endif %}>
+                                        <i class="fa fa-chevron-left"></i>
+                                    </a>
+                                {% endwith %}
+                                {% with correcao.proxima as proximo %}
+                                    <a href="{{ proximo.get_absolute_url }}" type="button" class="btn btn-default"
+                                       data-toggle="tooltip" data-original-title="Próxima Correção"{% if not proximo %} disabled{% endif %}>
+                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                {% endwith %}
+                            </div>
+                            <!-- BARRA DE FERRAMENTAS -->
+                            <div class="btn-group pull-right">
+                                <!-- RESPONDER DEPOIS --->
+                                <a href="#" class="btn btn-default" data-toggle="tooltip"
+                                   onclick="responderDepois('{{ enunciado.id }}')"
+                                   data-original-title="Responder Depois">
+                                    <i class="fa fa-history text-info"></i>
+                                </a>
+                                <!-- ACOMPANHAR --------->
+                                <a href="#" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Acompanhar" onclick="acompanharResposta('{{ enunciado.id }}')">
+                                    <i class="fa fa-feed fa-lg text-success"></i>
+                                </a>
+                                <!-- CRIAR DESAFIO
+                                <a href="#" type="button" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Criar Desafio">
+                                    <i class="fa fa-trophy fa-lg text-warning"></i>
+                                </a>
+                                <!-- REPORTAR PROBLEMA -->
+                                <a href="#" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Reportar Problema" onclick="reportarBug('Correção {{ correcao }}')">
+                                    <i class="fa fa-bug fa-lg text-danger"></i>
+                                </a>
+                                <!-- IMPRIMIR -->
+                                <a target="_blank" href="{% url 'enunciado:imprimir' enunciado.id %}" class="btn btn-default" data-toggle="tooltip"
+                                   data-original-title="Imprimir">
+                                    <i class="fa fa-print fa-lg text-primary"></i>
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="tab-content">
+                                <div class="tab-pane" id="tab_enunciado">
+                                    <div class="div-scroll ">
+                                        <span style="padding: 4px 4px 4px 4px" class="pull-right bg-info">Enunciado Nº <span class="bold">{{ enunciado.id|stringformat:"06d" }}</span></span>
+                                        <br><br>
+                                        {{ enunciado.texto|safe }}
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="tab_resposta">
+                                    <div class="div-scroll ">
+                                        <span style="padding: 4px 4px 4px 4px" class="pull-right bg-info">Resposta Nº <span class="bold">{{ resposta.id|stringformat:"06d" }}</span> por <span class="bold"><a href="{{ resposta.aluno.get_absolute_url }}">{{ resposta.aluno }}</a></span></span>
+                                        <div class="mg-bot10"></div>
+                                        <br><br>
+                                        <p>
+                                            {{ resposta.texto|safe }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane active" id="tab_correcao">
+                                    <div class="div-scroll ">
+                                        <span style="padding: 4px 4px 4px 4px" class="pull-right bg-info">Correção Nº <span class="bold">{{ correcao.id|stringformat:"06d" }}</span> por <span class="bold"><a href="{{ correcao.aluno.get_absolute_url }}">{{ correcao.aluno }}</a></span></span>
+                                        <div class="mg-bot10"></div>
+                                        <br><br>
+                                        <p>
+                                            {{ correcao.texto|safe }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- SOCIAL CURTIR ----->
+            <div class="social-icones mg-top10">
+                <hr class="linha-tracejada">
+                <div class="pull-left mg-r10">
+                    <a href="https://twitter.com/share" class="twitter-share-button"{count} data-text="JusTutor">Tweet</a>
+                </div>
+                <div class="pull-left">
+                    <div class="fb-like" data-share="true"></div>
+                </div>
+                {% if correcao %}
+                <a style="padding: 0px 15px 0px 0px" onclick="avaliarCorrecao('{{ correcao.id }}')" href="javascript:void(0)" class="pull-right" data-toggle="tooltip" data-original-title="Marque caso a correção tenha sido útil para você.">
+                    <span id="span_correcao_{{ correcao.id }}" class="label label-info">{{ correcao.get_avaliacao_positiva }}</span> <i class="fa fa-thumbs-o-up fa-lg text-info"></i>
+                </a>
+                {% endif %}
+                <div class="clear"></div>
+                <hr class="linha-tracejada">
+                {% comment %} <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5" data-width="100%"></div>{% endcomment %}
+                {% if correcoes %}
+                    {% include 'widget-correcoes-resposta.html' %}
+                {% endif %}
+            </div>
+        </div>
+        <!-- FIM ABAS ---------->
+        <div class="titulo-home">
+            <h4 class="pd-home titulo-home bold">Comentários à correção feita por {{ correcao.aluno }}</h4>
+            <div class="linha-aba mg-bot20"></div>
+        </div>
+        {% with correcao.comentariocorrecao_set.all as comentarios %}
+        {% include 'comentarios.html' %}
+        {% endwith %}
+
+    </section>
+    <!--*BLOCO ENUNCIADO DESTAQUE*------------------------------------------------------------------------>
+
+    <!-- BLOCO ESQUERDO ---------------------------------------------------------------------------------->
+    <section class="col-sm-5">
+    {% if request.user.aluno %}
+        {% if minha_resposta %}
+            {% include '_resposta-fechada.html' %}
+        {% else %}
+            {% if minha_correcao %}
+                {% if minha_correcao == correcao %}
+                    {% include '_correcao-fechada.html' %}
+                {% else %} <!-- COREÇÃO -->
+                    {% if minha_correcao %}
+                        {% include '_correcao-fechada.html' %}
+                    {% else %}
+
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {% include '_correcao-aberta.html' %}
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% include '_bloco_login_correcao.html' %}
+    {% endif %}
+        {% include 'modal-compartilhar.html' %}
+    </section>
+    <!--*BLOCO ESQUERDO*---------------------------------------------------------------------------------->
+
+    </div>
+{% endblock %}
+
+{% block busca %}
+    {% include 'bloco-abaixo.html' %}
+    {% include 'busca.html' %}
+{% endblock %}
+<!--*BLOCO ABAIXO*------------------------------------------------------------------------------------>
+
+
+{% block extra_js %}
+    {% include 'social_scripts.html' %}
+
+    <script src="{{ STATIC_URL }}assets/jquery-bar-rating/jquery.barrating.min.js"></script>
+    <script src="{{ STATIC_URL }}assets/ckeditor/ckeditor.js"></script>
+    <script src="{{ STATIC_URL }}assets/ckeditor/config.js"></script>
+
+    <script type="text/javascript">
+        // BAR RATING
+        $(function() {
+            var nota = $('#rating').barrating('show', {
+                theme: 'bars-pill',
+                showValues: true,
+                showSelectedRating: false,
+            });
+        });
+
+        // AVALIAR CORREÇÃO
+        function avaliarCorrecao(cid) {
+            block();
+            $.getJSON("{% url 'enunciado:avaliar-correcao' %}", { cid: cid} )
+                .done(function( json ) {
+                    if (json.erro == false) {
+                        el = $('#span_correcao_' + cid);
+                        el.text(json.pontos);
+                    }
+                    Swal.fire('Info', json.mensagem, 'info');
+
+                })
+                .fail(function( jqxhr, textStatus, error ) {
+                    Swal.fire(jqxhr.statusText, 'Desculpe, ocorreu um erro ao tentar enviar sua avaliação.', 'error');
+                });
+                unBlockFunction();
+
+        };
+        {% if shared == True %}
+            $(window).load(function() {
+                console.log('exibir modal');
+                $('#modal-compartilhar').modal('show');
+            });
+        {% endif %}
+        // EDITOR
+        var editor = CKEDITOR.replace( 'content', {
+            height: 300,
+            // Define the toolbar groups as it is a more accessible solution.
+            toolbar: [
+                {name: 'basicstyles', items : [ 'Bold','Italic', '-', 'BulletedList','-','Outdent','Indent','-','Blockquote', '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Subscript','Superscript', 'Print', '-', 'Maximize']},
+            ],
+            // Remove the redundant buttons from toolbar groups defined above.
+            removeButtons: 'Underline,Strike,Anchor,Styles,Specialchar',
+            skin: 'bootstrapck'
+        });
+        function enviarCorrecao() {
+            var qtd_char = 150;
+            if (editor.plugins.wordcount.charCount < qtd_char) {
+                swal_alert('Ops...', 'Digite ao menos <span class="text-danger bold">150</span> caracteres', 'error')
+            } else if ($('#rating').val() == '') {
+                swal_alert('Ops...', 'Por favor, dê sua nota!', 'error')
+            } else {
+                $('#form-resposta').submit()
+            }
+        };
+    </script>
+{% endblock %}

@@ -1,0 +1,27 @@
+<div class="menu-painel">
+        <div class="container">
+            <div class="col-sm-12">
+                <nav class="menu-verde-painel">
+                    <ul>
+                        <li {% if menu_ativo == 'perfil' %}class="menu-active"{% endif %}><a href="{% url 'aluno:perfil' %}">Perfil</a></li>
+                    </ul>
+                    <ul>
+                        <li {% if menu_ativo == 'meus-dados' %}class="menu-active"{% endif %}><a href="{% url 'aluno:meus-dados' %}">Meus Dados</a></li>
+                    </ul>
+                    <ul>
+                        <li {% if menu_ativo == 'meus-desafios' %}class="menu-active"{% endif %}><a href="{% url 'aluno:meus-desafios' %}">Meus Desafios</a></li>
+                    </ul>
+                </nav>
+                <div class="menu-verde-mob">
+                    <form>
+                        <select>
+                            <option> Perfil</option>
+                            <option> Notícias</option>
+                            <option> Respondidas</option>
+                            <option> Corrigidas</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

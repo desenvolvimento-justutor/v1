@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Notification</title>
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- link for animation -->
+  <link href="assets/css/animate.css" rel="stylesheet">
+
+
+  <!-- style -->
+  <link href="style.css" rel="stylesheet">
+  <!-- google font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i">
+</head>
+<body>
+  <div class="notification-wrapper">
+
+<!--===============================================
+=            notification layout links            =
+================================================-->
+
+<div class="side-menu">
+  <h1 class="notification-wrapper__main-heading">Notification Design</h1>
+
+  <ul class="notification-wrapper__sidebar-list">
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-1"  class="notification-wrapper__link active">
+        Layout 1
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-2"   class="notification-wrapper__link">
+        Layout 2
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-3"  class="notification-wrapper__link ">
+        Layout 3
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-4"  class="notification-wrapper__link">
+        Layout 4
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-5"  class="notification-wrapper__link">
+        Layout 5
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-6"  class="notification-wrapper__link">
+        Layout 6
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-7"  class="notification-wrapper__link">
+        Layout 7
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-8"  class="notification-wrapper__link">
+        Layout 8
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-9"  class="notification-wrapper__link">
+        Layout 9
+      </a>
+    </li>
+    <li class="notification-wrapper__list-item">
+      <a href="#" data-layout_name="layout-10"  class="notification-wrapper__link">
+        Layout 10
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- notification links for mobile view -->
+
+<h1 class="notification-wrapper__mobile-heading">Notification Design</h1>
+<select class="mobile-view-sidebar" id="mobile-view-sidebar">
+  <option value="layout-1" data-layout_name="layout-1" class="notification-wrapper__link">Layout 1</option>
+  <option value="layout-2" data-layout_name="layout-2" class="notification-wrapper__link">Layout 2</option>
+  <option value="layout-3" data-layout_name="layout-3" class="notification-wrapper__link">Layout 3</option>
+  <option value="layout-4" data-layout_name="layout-4" class="notification-wrapper__link">Layout 4</option>
+  <option value="layout-5" data-layout_name="layout-5" class="notification-wrapper__link">Layout 5</option>
+  <option value="layout-6" data-layout_name="layout-6" class="notification-wrapper__link">Layout 6</option>
+  <option value="layout-7" data-layout_name="layout-7" class="notification-wrapper__link">Layout 7</option>
+  <option value="layout-8" data-layout_name="layout-8" class="notification-wrapper__link">Layout 8</option>
+  <option value="layout-9" data-layout_name="layout-9" class="notification-wrapper__link">Layout 9</option>
+  <option value="layout-10" data-layout_name="layout-10" class="notification-wrapper__link">Layout 10</option>
+</select>
+
+<!--====  End of notification layout links  ====-->
+
+<!--======================================================
+=            notification layout page wrapper            =
+=======================================================-->
+<div class="notification-page">
+
+<!--===========================================
+=            notification layout 1            =
+============================================-->
+
+<div class="layout hidden_class active_class" id="layout-1">
+
+ <!-- notification layout 1 (design 1) -->
+
+ <div class="noti-section-one noti-design-one rotateInDownLeft animated">
+
+  <div class="noti-layout-three">
+    <div class="noti-layout-three__wrapper">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__logo-wrap">
+            <img src="assets/images/butterfly.png" alt="" class="img-responsive noti-layout-three__sticker-image ">
+            <img src="assets/images/index1.png" alt="" class="img-responsive noti-layout-three__logo">
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__para-wrap">
+            <p>You got a new sticker here! Want to add it to your check-in?</p>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__check-in-button">
+            <button type="button" class="noti-layout-three__check-in">Add it to my check-in</button> 
+          </div>
+        </div>    
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__button-wrap">        
+            <a href="#" class="anchor-btn close-one">Not this time</a> 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- notification layout 1 (design 2) -->
+
+<div class="noti-section-two noti-design-two rotateInUpLeft animated">
+  <div class="noti-layout-three noti-layout-three--border">
+    <div class="noti-layout-three__wrapper">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__logo-wrap noti-layout-three__logo-wrap--border-color">
+            <img src="assets/images/butterfly.png" alt="" class="img-responsive noti-layout-three__sticker-image ">
+            <img src="assets/images/index1.png" alt="" class="img-responsive noti-layout-three__logo">
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__para-wrap">
+            <p>You got a new sticker here! Want to add it to your check-in?</p>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__check-in-button">
+            <button type="button" class="noti-layout-three__check-in noti-layout-three__check-in--button-color">Add it to my check-in</button> 
+          </div>
+        </div>    
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="noti-layout-three__button-wrap">        
+            <a href="#" class="anchor-btn anchor-btn--color close-two">Not this time</a> 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!--====  End of notification layout 1  ====-->
+
+<!--===========================================
+=            notification layout 2            =
+============================================-->
+
+<div class="layout hidden_class" id="layout-2">
+
+  <!-- notification layout 2 (design 1) -->
+
+  <div class="noti-section-one noti-design-three fadeInDown animated">
+    <div class="noti-layout-two">
+      <div class="noti-layout-two__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-two__image-wrap">
+              <div class="notification-image">
+                <img src="assets/images/notifi.png" alt="">
+              </div>
+              <div class="active-notification">
+                1
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-two__message-wrap">
+              <p class="noti-layout-two__paragraph">Meet up with huffman</p>
+              <span class="time-span">Today, 9:00 PM</span>
+              <span class="minute-span">14 minutes before</span>
+            </div>
+            <div class="noti-layout-two__timming-wrap">
+              <span>10 mins later</span>
+              <a class="pull-right noti-layout-two__okay-btn close-one">OK</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- notification layout 2 (design 2) -->
+  <div class="noti-section-two noti-design-four fadeInUp animated">
+    <div class="noti-layout-two noti-layout-two--border">
+      <div class="noti-layout-two__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-two__image-wrap noti-layout-two__image-wrap--background-color">
+              <div class="notification-image">
+                <img src="assets/images/notifi.png" alt="">
+              </div>
+              <div class="active-notification active-notification--background-color">
+                1
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-two__message-wrap">
+              <p class="noti-layout-two__paragraph">Meet up with huffman</p>
+              <span class="time-span">Today, 9:00 PM</span>
+              <span class="minute-span minute-span--color">14 minutes before</span>
+            </div>
+            <div class="noti-layout-two__timming-wrap">
+              <span>10 mins later</span>
+              <a class="pull-right noti-layout-two__okay-btn noti-layout-two__okay-btn--background close-two">OK</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--====  End of notification layout 2  ====-->
+
+<!--===========================================
+=            notification layout 3            =
+============================================-->
+<div class="layout " id="layout-3">
+
+  <!-- notification layout 3 (design 1) -->
+
+  <div class="noti-section-one noti-design-five fadeInLeft animated">
+    <div class="noti-layout-one">
+      <div class="noti-layout-one__wrapper">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+            <div class="noti-layout-one__icon">
+              <img src="assets/images/check.png" alt="">
+            </div>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+            <div class="noti-layout-one__content">
+              <h2 class="noti-layout-one__heading">Success Message</h2>
+              <p class="noti-layout-one__paragraph">Hey! you have new notification. Thankyou. your mail has been sent.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="noti-layout-one__close-btn close-one"></a>
+    </div>
+  </div>
+
+  <!-- notification layout 3 (design 2) -->
+
+  <div class="noti-section-two noti-design-six fadeInRight animated">
+    <div class="noti-layout-one noti-layout-one--color ">
+      <div class="noti-layout-one__wrapper">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+            <div class="noti-layout-one__icon noti-layout-one__icon">
+              <img src="assets/images/cancel.png" alt="">
+            </div>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+            <div class="noti-layout-one__content noti-layout-one__content--line-color">
+              <h2 class="noti-layout-one__heading noti-layout-one__heading--color">Error Message</h2>
+              <p class="noti-layout-one__paragraph">Hey! you have new notification. Your mail is not sent.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="noti-layout-one__close-btn noti-layout-one--btn-color close-two">
+        <img src="assets/images/icon.png" class="click-img" alt=""> 
+      </a>
+    </div>
+  </div>
+</div>
+<!--====  End of notification layout 3  ====-->
+
+
+<!--===========================================
+=            notification layout 4            =
+============================================-->
+
+<div class="layout hidden_class" id="layout-4">
+
+  <!-- notification layout 4 (design 1) -->
+
+  <div class="noti-section-one noti-design-seven slideInDown animated">
+    <div class="noti-layout-four">
+      <div class="noti-layout-four__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-four__first-content">
+              <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                  <img src="assets/images/cup1.png" alt="" class="img-responsive noti-layout-four__icon-img">
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                  <article>
+                    <h3 class="noti-layout-four__heading">Hello Huffman</h3>
+                    <p class="noti-layout-four__paragraph">come and take a coffee for just 2$</p>
+                  </article>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                  <span class="noti-layout-four__timing-span">13:40</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-four__mid-content">
+              <p class="noti-layout-four__mid-paragraph">Come in for a coffee</p>
+            </div> 
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-four__last-content">
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                  <a href="#">
+                    <img src="assets/images/share.png" alt="" class="noti-layout-four__share-img">
+                    <span>Share</span>
+                  </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                  <a href="#">
+                    <img src="assets/images/settings.png" alt="" class="noti-layout-four__share-img">
+                    <span>Setting</span>
+                  </a>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                  <button type="button" class="noti-layout-four__cross-btn close-one">ok</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- notification layout 4 (design 2) -->
+
+  <div class="noti-section-two noti-design-eight slideInUp animated">
+    <div class="noti-layout-four noti-layout-four--second-layout">
+      <div class="noti-layout-four__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-four__first-content">
+              <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                  <img src="assets/images/cup1.png" alt="" class="img-responsive noti-layout-four__icon-img noti-layout-four__icon-img--border-color">
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                  <article>
+                    <h3 class="noti-layout-four__heading noti-layout-four__heading--heading-color">Hello Huffman</h3>
+                    <p class="noti-layout-four__paragraph">I am busy right now. So, I am not coming.</p>
+                  </article>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                  <span class="noti-layout-four__timing-span">13:40</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-four__mid-content noti-layout-four__mid-content--background-color">
+              <p class="noti-layout-four__mid-paragraph">Not coming for a coffee</p>
+            </div> 
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-four__last-content">
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                  <a href="#">
+                    <img src="assets/images/share.png" alt="" class="noti-layout-four__share-img">
+                    <span>Share</span>
+                  </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                  <a href="#">
+                    <img src="assets/images/settings.png" alt="" class="noti-layout-four__share-img">
+                    <span>Setting</span>
+                  </a>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                  <button type="button" class="noti-layout-four__cross-btn noti-layout-four__cross-btn--btn-color close-two">ok</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--====  End of notification layout 4  ====-->
+
+<!--===========================================
+=            notification layout 5            =
+============================================-->
+
+<div class="layout hidden_class" id="layout-5">
+
+  <!-- notification layout 5 (design 1) -->
+
+  <div class="noti-section-one noti-design-nine flipInX animated">
+    <div class="noti-layout-five">
+      <div class="noti-layout-five__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-five__first-column">
+              <p class="paragraph">Hey don't forget!</p>
+              <h1 class="heading">Design is under construction</h1>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-five__second-column">
+              <img src="assets/images/message.png" alt="" class="message-icon">
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-five__third-column">
+              <h2 class="heading">Hi <b>Darry!</b></h2>
+              <p class="paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis amet expedita.</p>
+              <div class="noti-layout-five__button-wrap">
+                <button type="button" class="submit-button close-one">go for it</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>    
+    </div>
+  </div>
+
+  <!-- notification layout 5 (design 2) -->
+
+  <div class="noti-section-two noti-design-ten flipInX animated">
+    <div class="noti-layout-five noti-layout-five--layout-seven">
+      <div class="noti-layout-five__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-five__first-column noti-layout-five__first-column--column-one-color">
+              <p class="paragraph">Hey don't forget!</p>
+              <h1 class="heading">Your design is ready</h1>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-five__second-column noti-layout-five__second-column--column-two-color">
+              <img src="assets/images/message2.png" alt="" class="message-icon">
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-five__third-column noti-layout-five__third-column--column-three-color">
+              <h2 class="heading">Hi <b>Darry!</b></h2>
+              <p class="paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis amet expedita.</p>
+              <div class="noti-layout-five__button-wrap noti-layout-five__button-wrap--button-color">
+                <button type="button" class="submit-button close-two">go for it</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>
+
+<!--====  End of notification layout 5  ====-->
+
+
+<!--===========================================
+=            notification layout 6            =
+============================================-->
+
+<div class="layout hidden_class" id="layout-6">
+
+  <!-- notification layout 6 (design 1) -->
+
+  <div class="noti-section-one noti-design-eleven jackInTheBox animated">
+    <div class="noti-layout-six">
+      <div class="noti-layout-six__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <img src="assets/images/happiness.png" alt="" class="noti-layout-six__hppns-img">  
+            <h1 class="noti-layout-six__heading">Success</h1>
+            <p class="noti-layout-six__content-para">Hey jennifer! your post was successfully created</p>
+          </div>
+          <div class="col-lg-12 col-md-12 col--sm-12 col-xs-12">
+            <div class="noti-layout-six__success-para-wrap">
+              <p class="noti-layout-six__paragraph">Successfull</p>
+            </div>
+          </div>
+        </div>
+        <a href="#" class="noti-layout-six__cross-btn close-one"></a>
+      </div>
+    </div>
+  </div>
+  <!-- notification layout 6 (design 2) -->
+
+  <div class="noti-section-two noti-design-twelve jackInTheBox animated">
+    <div class="noti-layout-six noti-layout-six--layout-second">
+      <div class="noti-layout-six__wrapper noti-layout-six__wrapper--bakground-color">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <img src="assets/images/sad.png" alt="" class="noti-layout-six__hppns-img">
+            <h1 class="noti-layout-six__heading">Error</h1>
+            <p class="noti-layout-six__content-para">Ohh no, jennifer! there was an error</p>
+          </div>
+          <div class="col-lg-12 col-md-12 col--sm-12 col-xs-12">
+            <div class="noti-layout-six__success-para-wrap noti-layout-six__success-para-wrap--color">
+              <p class="noti-layout-six__paragraph">Try again !</p>
+            </div>
+          </div>
+        </div>
+        <a href="#" class="noti-layout-six__cross-btn close-two"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--====  End of notification layout 6  ====-->
+
+<!--===========================================
+=            notification layout 7           =
+============================================-->
+<div class="layout hidden_class" id="layout-7">
+
+  <!-- notification layout 7 (design 1) -->
+
+  <div class="noti-section-one noti-design-thirteen bounceInDown animated">
+    <div class="noti-layout-seven">
+      <div class="noti-layout-seven__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-seven__first-column">
+              <div class="noti-layout-seven__circle">
+                <span>Notify</span>
+              </div>
+              <a href="#" class="noti-layout-seven__cross-btn close-one"></a>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <article class="noti-layout-seven__content">
+                <h3 class="heading">John is live</h3>
+                <p class="paragraph">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+              </article>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <button type="button" class="noti-layout-seven__enable-btn">Enable notification</button>
+              <span class="noti-layout-seven__lst-span">Lorem Ipsum is simply dummy text of the printing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- notification layout 7 (design 2) -->
+
+  <div class="noti-section-two noti-design-fourteen bounceInUp animated">
+    <div class="noti-layout-seven noti-layout-seven--layout-second">
+      <div class="noti-layout-seven__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-seven__first-column noti-layout-seven__first-column--background-color">
+              <div class="noti-layout-seven__circle noti-layout-seven__circle--color">
+                <span>Notify</span>
+              </div>
+              <a href="#" class="noti-layout-seven__cross-btn close-two"></a>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <article class="noti-layout-seven__content">
+                <h3 class="heading">John is live</h3>
+                <p class="paragraph">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+              </article>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <button type="button" class="noti-layout-seven__enable-btn noti-layout-seven__enable-btn--color">Enable notification</button>
+              <span class="noti-layout-seven__lst-span">Lorem Ipsum is simply dummy text of the printing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--====  End of notification layout 7  ====-->
+
+<!--===========================================
+=            notification layout 8            =
+============================================-->
+
+<div class="layout hidden_class" id="layout-8">
+
+  <!-- notification layout 8 (design 1) -->
+
+  <div class="noti-section-one noti-design-fifteen rotateInDownLeft animated">
+    <div class="noti-layout-eight noti-layout-eight">
+      <div class="noti-layout-eight__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h1 class="noti-layout-eight__heading">Keep me posted</h1>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-eight__para-wrap">
+              <p class="noti-layout-eight__paragraph">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="noti-layout-eight__cross-btn close-one"></button>
+    </div>
+  </div>
+
+  <!-- notification layout 8 (design 2) -->
+
+  <div class="noti-section-two noti-design-sixteen rotateInUpLeft animated">
+    <div class="noti-layout-eight noti-layout-eight--layout-second">
+      <div class="noti-layout-eight__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h1 class="noti-layout-eight__heading noti-layout-eight__heading--color">Keep me posted</h1>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-eight__para-wrap noti-layout-eight__para-wrap--background-color">
+              <p class="paragraph">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="noti-layout-eight__cross-btn noti-layout-eight__cross-btn--color close-two"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--====  End of notification layout 8  ====-->
+
+<!--===========================================
+=            notification layout 9            =
+============================================-->
+
+<div class="layout hidden_class" id="layout-9">
+
+  <!-- notification layout 9 (design 1) -->
+
+  <div class="noti-section-one noti-design-seventeen fadeInLeft animated">
+    <div class="noti-layout-nine">
+      <div class="noti-layout-nine__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h1 class="noti-layout-nine__heading">Congrats!</h1>
+            <button type="button" class="noti-layout-nine__close close-one"></button>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-nine__content-wrap">
+              <div class="noti-layout-nine__img-wrap">
+                <img src="assets/images/congrats.png" alt="">
+              </div>
+              <p class="noti-layout-nine__paragraph">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+              <button type="button" class="noti-layout-nine__continue">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- notification layout 9 (design 2) -->
+
+  <div class="noti-section-two noti-design-eighteen fadeInRight animated">
+    <div class="noti-layout-nine noti-layout-nine--layout-second">
+      <div class="noti-layout-nine__wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h1 class="noti-layout-nine__heading">so close</h1>
+            <button type="button" class="noti-layout-nine__close close-two"></button>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="noti-layout-nine__content-wrap">
+              <div class="noti-layout-nine__img-wrap">
+                <img src="assets/images/near.png" alt="">
+              </div>
+              <p class="noti-layout-nine__paragraph">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+              <button type="button" class="noti-layout-nine__continue noti-layout-nine__continue--color">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--====  End of notification layout 9  ====-->
+
+<!--===========================================
+=            notification layout 10            =
+============================================-->
+<div class="layout hidden_class" id="layout-10">
+
+  <!-- notification layout 10 (design 1) -->
+
+  <div class="noti-section-one noti-design-nineteen jackInTheBox animated">
+    <div class="noti-layout-ten">
+      <div class="noti-layout-ten__wrapper">
+        <p class="noti-layout-ten__paragraph"><b>Welcome</b> you're one of the first to join!</p>
+        <span class="noti-layout-ten__content">Lorem Ipsum is simply dummy text of the printing and typesetting industry</span>
+        <button type="button" class="noti-layout-ten__start-btn">Get Started</button>
+        <a href="#" class="noti-layout-ten__cross-btn close-one"></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- notification layout 10 (design 2) -->
+
+  <div class="noti-section-two noti-design-twenty jackInTheBox animated">
+    <div class="noti-layout-ten noti-layout-ten--second-layout">
+      <div class="noti-layout-ten__wrapper noti-layout-ten__wrapper--color">
+        <p class="noti-layout-ten__paragraph"><b>Welcome</b> you're one of the first to join!</p>
+        <span class="noti-layout-ten__content">Lorem Ipsum is simply dummy text of the printing and typesetting industry</span>
+        <button type="button" class="noti-layout-ten__start-btn">Get Started</button>
+        <a href="#" class="noti-layout-ten__cross-btn close-two"></a>
+      </div>
+    </div>
+  </div>
+</div>
+<!--====  End of notification layout 10  ====-->
+</div>
+<!-- end of notification layout page wrapper  -->
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="assets/js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- custom js link -->
+<script src="assets/js/notification.js"></script>
+</body>
+</html>

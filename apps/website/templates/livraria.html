@@ -1,0 +1,49 @@
+{% extends '_base.html' %}
+{% block section_attrs %}id="cursos"{% endblock %}
+{% block section %}
+<div class="container">
+    <div class="col-sm-12">
+        <div class="cabecalho-cursos">
+            <h1>{{ categoria.titulo_menu }}</h1>
+            <div class="linha-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li >Livraria</li>
+                    <li class="active">
+                        <a href="{{ categoria.get_absolute_url }}">{{ categoria.titulo_menu }}</a>
+                    </li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {% if categoria.tipo in 'S,O' %}
+            <div class="alert alert-info" role="alert">
+            <p>
+            {% if categoria.tipo == 'S' %}
+                Prepare-se para enfrentar sentenças de provas de concursos ou da vida real com a série de "Sentenças
+                Avulsas" do JusTutor. Você adquire uma proposta, redige sua sentença no próprio JusTutor e ela será
+                corrigida, de forma individualizada, por nossa equipe de professores, incluindo o Juiz
+                Federal Alexandre Henry Alves.
+            {% else %}
+                Prepare-se para enfrentar as peças profissionais da 2ª fase da OAB de uma maneira prática e efetiva!
+                Você adquire uma proposta, redige sua peça profissional no próprio JusTutor e ela será corrigida, de
+                forma individualizada, por nossa equipe de professores. A melhor forma de aprendizado é praticando!
+            {% endif %}
+            {% if website.config.regulamento_sentenca_avulsa %}<a target="_blank" href="{{ website.config.regulamento_sentenca_avulsa.get_absolute_url }}">CLIQUE AQUI E CONFIRA COMO FUNCIONA</a>{% endif %}</p>
+            </div>
+            {% include '_filter-sentencas.html' %}
+            <div style="padding-bottom: 10px; padding-top: 4px"><hr></div>
+        {% endif %}
+    </div>
+    <div class="container">
+        {% for livro in livros %}
+            {% include '_block_livros.html' %}
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block busca %} {% endblock %}

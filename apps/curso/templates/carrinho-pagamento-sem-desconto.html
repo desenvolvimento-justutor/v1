@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<div class="row">
+    <div class="col-sm-5"></div>
+    <div class="col-sm-7">
+        <div class="preco" style="padding-right: 0;">
+            <span class="titulo04">Valor Total:</span>
+            <span class="text-danger pull-right">{{ proc_curso.cart.total }}</span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5">
+    </div>
+    <div class="col-sm-7">
+        <div class="preco">
+            <span class="titulo04" style="font-size: medium">Esta compra esta sendo feita no <strong>Brasil </strong></span>
+            <span class="total bold"><img src="{% static 'images/logos/flag_br.png' %}"/></span>
+        </div>
+    </div>
+</div>

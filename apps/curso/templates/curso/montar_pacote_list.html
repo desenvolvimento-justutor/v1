@@ -1,0 +1,163 @@
+{% extends '_base.html' %}
+{% load curso %}
+{% block section_attrs %}id="cursos"{% endblock %}
+{% block section %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="cabecalho-cursos">
+                    <h1>Monte seu pacote personalizado de Atividades Avulsas</h1>
+                    <div class="linha-breadcrumb">
+                        <ul class="breadcrumb">
+                            <li>
+                                <a href="{% url 'website:index' %}">Home</a>
+                            </li>
+                            <li>Cursos</li>
+                            <li class="active">
+                                <a href="">Montar Pacote</a>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="alert alert-success" role="alert" style="text-align: left">
+                    <p>Escolha as atividades cíveis e criminais avulsas que você quer inserir no seu pacote personalizado. Quanto mais atividades você escolher, maior será o desconto. O percentual de desconto se aplica ao pacote total e é informado a cada vez que você seleciona uma proposta. Ao terminar a sua escolha, finalize a montagem e o sistema gerará um pacote personalizado com as propostas e o desconto já aplicado. O pacote ficará disponível no seu carrinho de compras.</p>
+                    <strong class="text-danger">Importante: </strong><span class="text-danger">após finalizar a montagem, não é mais possível alterar as sentenças do pacote. Nesse caso, se você quiser fazer mudanças, basta criar um novo pacote. O prazo para a resolução das Atividades Avulsas é de um ano a partir da data da compra.</span>
+                </div>
+            </div>
+            {% include 'curso/partial/filter_sentenca.html' %}
+            <div class="col-sm-9">
+                <div class="row">
+                    {% for curso in cursos %}
+                        <div class="col-sm-4">
+                            {% include 'curso/partial/widget_curso.html' %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-sm-3">
+                {% if user.is_authenticated and user.aluno %}
+                    {% if combo_aluno %}
+                        <div class="panel panel-primary">
+                            <!-- Default panel contents -->
+                            <div class="panel-heading">
+                                <strong>Confira o seu pacote</strong><span class="label label-info pull-right"> {{ combo_aluno.get_status_display }}</span>
+                            </div>
+                            <ul class="list-group">
+                                {% with combo_aluno.calc as calc %}
+                                    <li class="list-group-item">
+                                        Valor sem desconto: <strong class="pull-right">{{ combo_aluno.get_valor_cursos|moeda }}</strong>
+                                    </li>
+                                    {% if calc.desconto_porcento %}
+                                        <li class="list-group-item">
+                                            Economia: <strong class="pull-right"> {{ calc.desconto_valor|moeda }}</strong>
+                                        </li>
+                                        <li class="list-group-item list-group-item-success">
+                                            <strong>Valor a pagar:</strong> <strong class="pull-right"> {{ combo_aluno.valor|moeda }}</strong>
+                                        </li>
+                                    {% endif %}
+                                    {% for msg in calc.messages %}
+                                    <li class="list-group-item list-group-item-warning">
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <i class="fa fa-info-circle fa-2x"></i>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                {{ msg|safe }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                {% endwith %}
+                            </ul>
+                            <div class="panel-footer text-center">
+                                <a href="{{ combo_aluno.get_absolute_url }}" class="btn btn-success">Finalizar e Compar</a>
+                            </div>
+                        </div>
+                        <!-- ITENS -->
+                        <div class="panel panel-info">
+                        {% with combo_aluno.cursos.all as cursos %}
+                            <!-- Default panel contents -->
+                            <div class="panel-heading">
+                                <span class="badge badge-important pull-right">{{ cursos.count }}</span>
+                                <strong>Atividades do pacote</strong>
+                            </div>
+                            <ul class="list-group">
+                                {% for curso in combo_aluno.cursos.all %}
+                                    <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <a href="{{ curso.get_absolute_url }}"><i class="fa fa-link"></i> {{ curso }}</a>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="curso_pk" value="{{ curso.pk }}">
+                                                <input type="hidden" name="action" value="remove">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endwith %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Você não possui pacote em aberto</strong>
+                            <p>Adicione um item para criar um pacote personalizado.</p>
+                        </div>
+                    {% endif %}
+                    {% get_combo_aluno 'C' as combo_in_cart %}
+                    {% if combo_in_cart %}
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Você possui um pacote no carrinho.</strong>
+                            <p><a href="{{ combo_in_cart.get_absolute_url }}" class="bold">Clique aqui</a>  para ver seu pacote.</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Você não está logado.</strong>
+                        <p>Efetue seu login/cadastro para poder criar um pacote personalizado.</p>
+                    </div>
+                {% endif %}
+                {% get_pacotes_desconto as descontos %}
+                <div>
+                    <button class="btn btn-warning" type="button" data-toggle="collapse"
+                            data-target="#collapseExample" style="width: 100%"
+                            aria-expanded="false" aria-controls="collapseExample">
+                        Clique para ver tabela de descontos
+                    </button>
+                    <div class="collapse" id="collapseExample" style="margin-top: 6px">
+                        <div class="panel panel-info">
+                        <!-- Default panel contents -->
+                        <ul class="list-group">
+                            {% for desconto in descontos %}
+                                <li class="list-group-item">
+                                    Compre <strong>{{ desconto.qtda }}</strong> sentença{{ desconto.qtda|pluralize }} e
+                                    ganhe <strong>{{ desconto.desconto|stringformat:".2f" }}%</strong> de desconto.
+                                </li>
+                            {% endfor %}
+                            <li class="list-group-item">
+                                <button class="btn btn-sm btn-warning" type="button" data-toggle="collapse"
+                                        data-target="#collapseExample" aria-expanded="false"
+                                        aria-controls="collapseExample">
+                                    <i class="fa fa-arrow-up"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}
+{% block busca %} {% endblock %}

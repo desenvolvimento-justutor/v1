@@ -1,0 +1,61 @@
+{% load thumbnail %}
+<div id="email-detail-sender" class="clearfix">
+    <div class="picture hidden-xs">
+        {% thumbnail formulario.professor.foto "100x100" crop="center" as im %}
+            <img src="{{ im.url }}" alt="{{ formulario.professor }}">
+        {% empty %}
+            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ formulario.professor }}"/>
+        {% endthumbnail %}
+    </div>
+    <div class="users">
+        <div class="from clearfix">
+            <div class="name">
+                {{ formulario.professor }}
+            </div>
+            <div class="email hidden-xs">
+                ({{ formulario.professor.graduacao }})
+            </div>
+        </div>
+        <div class="to">
+            Aluno: <span>{{ aluno}}</span>
+        </div>
+    </div>
+    <div class="tools">
+        <div class="date">
+            Sep 12 (6 days ago)
+        </div>
+        <div class="btns">
+            <div class="btn-group">
+                <button class="btn btn-success" type="button">
+                    <i class="fa fa-mail-reply"></i>
+                </button>
+                <button data-toggle="dropdown"
+                        class="btn btn-success dropdown-toggle" type="button">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-mail-reply"></i> Reply
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-mail-reply-all"></i> Reply all
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-mail-forward"></i> Forward
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-print"></i> Print
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

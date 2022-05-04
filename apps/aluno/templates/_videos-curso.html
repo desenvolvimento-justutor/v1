@@ -1,0 +1,841 @@
+{% load thumbnail comments curso static %}
+<style>
+    .bgi {
+        background: none repeat scroll 0 0 #e84e40;
+        border-radius: 50%;
+        background-clip: padding-box;
+        color: #fff;
+        display: block;
+        font-size: 10px;
+        height: 14px;
+        line-height: 14px;
+        position: absolute;
+        right: 6px;
+        text-align: center;
+        top: 8px;
+        width: 14px;
+    }
+    .btn-group {
+    white-space: nowrap;
+    }
+    .btn-group .btn {
+        float: none;
+        display: inline-block;
+    }
+     .btn + .dropdown-toggle {
+        margin-left: -4px;
+    }
+
+    .table-responsive {
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+    }
+</style>
+<div class="main-box-body clearfix">
+    <div class="tabs-wrapper">
+        <ul class="nav nav-tabs">
+            {% if submenu.is_doc %}
+                <li class="active"><a href="#tab-atividades" data-toggle="tab">Atividades</a></li>
+                <li><a href="#tab-discuss" data-toggle="tab">Discussão</a></li>
+                <li><a href="#tab-ranking" data-toggle="tab">Classificação</a></li>
+                {% if submenu.cronograma %}
+                    <li><a href="#tab-cronograma" data-toggle="tab">Cronograma</a></li>
+                {% endif %}
+                <li>
+                    <a href="#tab-mensagens" data-toggle="tab">
+                    Fale com o professor <i class="fa fa-envelope-o"></i>{% if msg_naolidas %}<span class="bgi">{{ msg_naolidas }}</span>{% endif %}
+                    </a>
+                </li>
+                <li><a href="#tab-home" data-toggle="tab">Vídeos</a></li>
+                <li><a href="#tab-help" data-toggle="tab">Biblioteca</a></li>
+                <li><a href="#tab-professores" data-toggle="tab">Professores</a></li>
+                <li><a href="#tab-alunos" data-toggle="tab">Alunos</a></li>
+                {% with submenu.blocos.all as blocos %}
+                    {% if blocos and submenu.disponivel %}
+                    <li><a href="#tab-quizz" data-toggle="tab">Teste seus conhecimentos</a></li>
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                <li class="active"><a href="#tab-home" data-toggle="tab">Vídeos</a></li>
+            {% endif %}
+        </ul>
+        <div class="tab-content">
+            <!-- TAB VIDEOS -->
+            <div class="tab-pane fade {% if not submenu.is_doc %}active in{% endif %}" id="tab-home">
+                {% for video in videos %}
+                    <div class="col-md-4 col-lg-4">
+                        <div class="main-box clearfix">
+                            <header class="main-box-header clearfix" style="min-height: 80px;">
+                                <h2>{{ video }}</h2>
+                            </header>
+                            <div class="main-box-body clearfix">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <a href="{% url 'aluno:curso-video' video.id %}">
+                                        {% thumbnail video.modulo.curso.imagem "310x170" crop="center" as im %}
+                                            <img src="{{ im.url }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                                        {% endthumbnail %}
+                                    </a>
+                                </div>
+                                <a href="{% url 'aluno:curso-video' video.id %}"
+                                   class="btn btn-success fa fa-play pull-right"> Play</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if submenu.is_doc %}
+            <!-- TAB VIDEOS -->
+            <div class="tab-pane fade" id="tab-help">
+                <div class="row">
+                    {% for material in submenu.materials %}
+                        <div class="col-lg-4 col-sm-6 col-xs-12">
+                            <div class="main-box infographic-box colored emerald-bg">
+                                <i class="fa fa-file-archive-o"></i>
+                                <span class="headline">{{ material }}</span>
+                                <span class="value"><a target="_blank" href="{{ material.file.url }}"
+                                                       style="color: white"><small>Abrir</small></a></span>
+                                <p style="padding-top: 10px">{{ material.data_ativo }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- TAB DISCUSSAO -->
+            <div class="tab-pane fade" id="tab-discuss">
+                <div class="main-box no-header clearfix">
+                    <div class="main-box-body clearfix">
+                        <div class="table-responsive">
+                            <table class="table user-list table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Sobre</th>
+                                    <th class="text-center">Inicio</th>
+                                    <th class="text-center">Término</th>
+                                    <th class="text-center">Status</th>
+                                    <th>Comentários</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for discuss in submenu.get_discuss %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ STATIC_URL }}images/discuss.png" alt=""/>
+                                        <a href="{% url 'aluno:curso-discussao' discuss.pk %}" class="user-link">{{ discuss }}</a>
+                                        <span class="user-subhead">{{ discuss.descricao }}</span>
+                                    </td>
+                                    <td class="text-center">{{ discuss.data_ini|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="text-center">{{ discuss.data_fim|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="text-center">
+                                        <span class="label label-{{ discuss.status.label }}">{{ discuss.status.status }}</span>
+                                    </td>
+                                    <td>
+                                        {% get_comment_count for discuss as comment_count %}
+                                        <span class="pull-right">{{ comment_count }} <i class="fa fa-comment-o"></i></span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if submenu.cronograma %}
+            <!-- TAB CRONOGRAMA -->
+            <div class="tab-pane fade" id="tab-cronograma">
+                <div class="main-box no-header clearfix">
+                    <div class="main-box-body clearfix">
+                        {{ submenu.cronograma|safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <!-- TAB ATIVIDADES -->
+            <div class="tab-pane fade {% if submenu.is_doc %}active in{% endif %}" id="tab-atividades">
+                {% if submenu.limitar_correcao and submenu.get_atividade_correcao_individual.count %}
+                    {% get_correcao_pendentes submenu as correcoes %}
+                    <p>Correções disponíveis: <span class="badge badge-success">{{ correcoes }} de {{ submenu.limitar_correcao }}</span> no total de <span class="badge badge-success">{{ submenu.get_atividade_correcao_individual.count }}</span> Atividades</p>
+                {% endif %}
+                <div class="row">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="main-box clearfix">
+                                <div class="main-box-body clearfix">
+                                    <div class="table-responsive clearfix">
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th><span>ID</span></th>
+                                                <th><span>Descrição</span></th>
+                                                <th class="text-center"><span>Tipo de Retorno</span></th>
+                                                <th class="text-center">
+                                                    <span>Início</span>
+                                                    <span style="display: block;">Término</span>
+                                                </th>
+                                                <th class="text-center"><span>Obrigatória</span></th>
+                                                <th class="text-center"></th>
+                                                <th>&nbsp;</th>
+                                                <th>&nbsp;</th>
+                                                <th class="text-center"><span>Recorrer</span></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for atividade in atividades %}
+                                            {% get_tarefa atividade aluno as tar %}
+                                            {% get_correcao_tarefa atividade aluno as cor %}
+                                            {% get_tabela_correcao_aluno atividade aluno as tabela_correcao_aluno %}
+
+                                            <tr class="{{ atividade.get_status.label }}">
+                                                <td data-original-title="{{ atividade.get_status.status }}"
+                                                    data-toggle="tooltip" data-container="body" style="cursor: pointer">
+                                                    <span class="badge badge-{{ atividade.get_status.label }}">&nbsp;</span>
+                                                    {{ atividade.pk|stringformat:"06d" }}
+                                                </td>
+                                                <td {% if atividade.descricao %}data-toggle="tooltip" data-original-title="{{ atividade.descricao|safe }}" data-container="body" style="cursor: pointer" {% endif %}>{{ atividade }} {% if atividade.descricao %}<i class="fa fa-info-circle"></i>{% endif %} </td>
+                                                <td class="text-center" data-toggle="tooltip" data-container="body"
+                                                    data-original-title="{{ atividade.get_tipo_retorno_display }}">
+                                                    <span style="cursor: pointer"
+                                                          class="badge badge-{{ atividade.tipo_retorno_label }}">{{ atividade.tipo_retorno }}</span>
+                                                    {% if atividade.get_resposta_padrao %}
+                                                        <a target="_blank" href="{{ atividade.resposta_padra.url }}" class="table-link">
+                                                            <i class="fa fa-download" data-toggle="tooltip" data-original-title="Download da resposta" ></i>
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong class="text-success">{{ atividade.data_ini|date:"SHORT_DATETIME_FORMAT" }}</strong>
+                                                    <strong style="display: block;" class="text-danger">{{ atividade.data_fim|date:"SHORT_DATETIME_FORMAT" }}</strong>
+                                                </td>
+                                                <td class="text-center" data-container="body" data-toggle="tooltip"
+                                                    data-original-title="{% if atividade.resolucao_obrigatorio %}É obrigatório{% else %}Não é obrigatório{% endif %}">
+                                                    {% if atividade.resolucao_obrigatorio %}
+                                                        <span class="label label-danger" style="cursor: pointer">S</span>
+                                                    {% else %}
+                                                        <span class="label label-default" style="cursor: pointer">N</span>
+                                                    {% endif %}
+                                                    {% if tar %}
+                                                        {% if tar.corrigido and atividade.tipo_retorno == 'C' %}
+                                                            <span class="label label-primary">Corrigido</span>
+                                                        {% elif tar.concluido %}
+                                                            <span class="label label-success">Finalizada</span>
+                                                        {% else %}
+                                                            <span class="label label-warning">Iniciada</span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="label label-danger">Pendente</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-left">
+                                                    {% if atividade.get_status.status == 'Aguarde' %}
+                                                        <a href="javascript:Swal.fire('JusTutor', 'Disponível após a data de início.', 'error');"
+                                                           class="btn btn-sm btn-info" title="Responder">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="{% url 'curso:atividade-responder' atividade.id %}"
+                                                           class="btn btn-sm btn-info" title="Responder">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown pull-left">
+                                                        <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                            Menu
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="pull-right dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                            {% if atividade.tipo_retorno != 'C' and tar or atividade.tipo_retorno != 'C' and atividade.gabarito_liberado %}
+                                                                <li>
+                                                                    <a target="_blank" href="{% url 'curso:baixar-correcao' atividade.pk %}?action=gabarito_atv" data-toggle="tooltip" data-original-title="Gabarito preliminar">
+                                                                      <i class="fa fa-download text-primary"></i> Gabarito preliminar
+                                                                    </a>
+                                                                </li>
+                                                            {% else %}
+                                                                <li>
+                                                                    <a href="javascript:" data-pk="{{ atividade.pk }}" data-toggle="modal" data-target="#chartModal">
+                                                                        <i class="fa fa-bar-chart"></i> Ranking das notas
+                                                                    </a>
+                                                                </li>
+                                                                {% if tar %}
+                                                                    {% if tar.corrigido %}
+                                                                       {% if tar.correcao %}
+                                                                             <li>
+                                                                              <a target="_blank" href="{{ tar.correcao.url }}">
+                                                                                  <i class="fa fa-download"></i> Baixar Correção (PDF)
+                                                                              </a>
+                                                                            </li>
+                                                                       {% else %}
+                                                                            <li>
+                                                                                <a target="_blank" href="{% url 'curso:baixar-correcao' tar.pk %}">
+                                                                                    <i class="fa fa-download"></i> Baixar Correção
+                                                                                </a>
+                                                                            </li>
+                                                                         {% endif %}
+                                                                    {% else %}
+                                                                          {% if tar.gabarito %}
+                                                                              <li>
+                                                                                  <a target="_blank" href="{% url 'curso:baixar-correcao' tar.pk %}?action=gabarito">
+                                                                                      <i class="fa fa-download"></i> Baixar Gabarito
+                                                                                  </a>
+                                                                              </li>
+                                                                          {% else %}
+                                                                              {% if atividade.gabarito %}
+                                                                                  <li>
+                                                                                      <a target="_blank" href="{% url 'curso:baixar-correcao' tar.pk %}?action=gabarito">
+                                                                                          <i class="fa fa-check text-primary"></i> Gabarito preliminar
+                                                                                      </a>
+                                                                                  </li>
+                                                                              {% endif %}
+                                                                          {% endif %}
+                                                                      {% endif %}
+                                                                {% else %}
+                                                                     {% if atividade.gabarito_liberado %}
+                                                                         <li>
+                                                                             <a target="_blank" href="{% url 'curso:baixar-correcao' atividade.pk %}?action=gabarito_atv">
+                                                                                 <i class="fa fa-download text-primary"></i> Gabarito preliminar
+                                                                             </a>
+                                                                         </li>
+                                                                     {% else %}
+                                                                         <li>
+                                                                             <a href="javascript:void(0)">
+                                                                                 <i class="fa fa-remove"></i> Indisponível
+                                                                             </a>
+                                                                         </li>
+                                                                     {% endif %}
+                                                                 {% endif %}
+                                                           {% endif %}
+                                                           <li role="separator" class="divider"></li>
+                                                            {% with atividade.get_status.status as status_atv %}
+                                                                {% if status_atv == 'Aguarde' %}
+                                                                <li>
+                                                                   <a href="javascript:Swal.fire('JusTutor', 'Disponível após a data de início.', 'error');">
+                                                                       <i class="fa fa-eye"></i> Visualizar tarefa
+                                                                   </a>
+                                                                </li>
+                                                                <li>
+                                                                   <a href="javascript:Swal.fire('JusTutor', 'Disponível após a data de início.', 'error')">
+                                                                       <i class="fa fa-print"></i> Imprimir tarefa
+                                                                   </a>
+                                                                </li>
+                                                                {% else %}
+                                                                <li>
+                                                                   <a href="#" data-toggle="modal" data-target="#modalTarefa" data-titulo="{{ atividade }}" data-pk="{{ atividade.pk }}">
+                                                                       <i class="fa fa-eye"></i> Visualizar tarefa {{ status_atv }}
+                                                                   </a>
+                                                                </li>
+                                                                <li>
+                                                                   <a target="_blank" href="{% url 'curso:atividade-imprimir' atividade.id %}">
+                                                                       <i class="fa fa-print"></i> Imprimir tarefa
+                                                                   </a>
+                                                                </li>
+                                                                {% endif %}
+                                                            {% endwith %}
+                                                            {% if tar %}
+                                                               {% if tar.arquivo %}
+                                                                   <li>
+                                                                       <a target="_blank" href="{{ tar.arquivo.url }}">
+                                                                           <i class="fa fa-file-pdf-o text-success"></i> Baixar arquivo com resposta manuscrita
+                                                                       </a>
+                                                                   </li>
+                                                               {% else %}
+                                                                   <li>
+                                                                       <a target="_blank" href="{% url 'curso:atividade-imprimir' tar.id %}?action=resposta">
+                                                                           <i class="fa fa-print text-success"></i> Imprimir sua resposta
+                                                                       </a>
+                                                                   </li>
+                                                               {% endif %}
+                                                            {% endif %}
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    {% with atividade.atividademodelo_set.all as modelos %}
+                                                        {% if modelos and tar.concluido or modelos and atividade.gabarito_liberado%}
+                                                        <div class="btn-group" data-toggle="tooltip" data-original-title="Respostas de outros alunos selecionadas pelos professores">
+                                                            <button data-toggle="dropdown" class="btn btn-success btn-xs dropdown-toggle has-tooltip" type="button">
+                                                            Modelos <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                                {% for modelo in modelos %}
+                                                                <li><a target="_blank" href="{{ modelo.arquivo.url }}">Modelo {{ modelo.pk|stringformat:"03d" }}</a></li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </td>
+                                                <td>
+                                                    {% if tabela_correcao_aluno %}
+                                                        {% if tabela_correcao_aluno.pode_recorrer %}
+                                                                <button data-pk="{{ tabela_correcao_aluno.pk }}"
+                                                                   data-toggle="modal" data-target="#modalRecorrer" class="btn btn-sm btn-primary"
+                                                                   title="Recorrer da Nota">
+                                                                    <i class="fa fa-gavel"></i>
+                                                                </button>
+                                                                <span class="badge badge-{{ tabela_correcao_aluno.status_color }}"
+                                                                      data-toggle="tooltip" data-original-title="{{ tabela_correcao_aluno.get_status_display }}">&nbsp;</span>
+                                                        {% else %}
+                                                            {% if tabela_correcao_aluno.status == 'corrigido' %}
+                                                                 <button disabled title="Recorrer da Nota" class="btn btn-sm btn-primary">
+                                                                    <i class="fa fa-gavel"></i>
+                                                                </button>
+                                                                <span class="badge badge-default" style="cursor: pointer"
+                                                                      data-toggle="tooltip" data-original-title="Não disponível">&nbsp;</span>
+                                                            {% else %}
+                                                                <button data-pk="{{ tabela_correcao_aluno.pk }}"
+                                                                   data-toggle="modal" data-target="#modalRecorrer" class="btn btn-sm btn-primary"
+                                                                   title="Recorrer da Nota">
+                                                                    <i class="fa fa-gavel"></i>
+                                                                </button>
+                                                                <span class="badge badge-{{ tabela_correcao_aluno.status_color }}" style="cursor: pointer"
+                                                                      data-toggle="tooltip" data-original-title="{{ tabela_correcao_aluno.get_status_display }}">&nbsp;</span>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <button disabled title="Recorrer da Nota" class="btn btn-sm btn-primary">
+                                                            <i class="fa fa-gavel"></i>
+                                                        </button>
+                                                        <span class="badge badge-default" style="cursor: pointer"
+                                                              data-toggle="tooltip" data-original-title="Não disponível">&nbsp;</span>
+                                                    {% endif %}
+                                                </td>
+
+                                            </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- TAB PROFESSORES -->
+            <div class="tab-pane fade" id="tab-professores">
+                <div class="row">
+                    {% for professor in submenu.professores.all %}
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="main-box clearfix profile-box-contact">
+                                    <div class="main-box-body clearfix">
+                                        <div class="profile-box-header gray-bg clearfix">
+                                            {% thumbnail professor.foto "100x100" crop="center" as im %}
+                                                <img src="{{ im.url }}" alt="{{ aluno }}" class="profile-img img-responsive">
+                                            {% empty %}
+                                                <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}" class="profile-img img-responsive"/>
+                                            {% endthumbnail %}
+
+                                            <h2>{{ professor }}</h2>
+
+                                            <div class="job-position">
+                                                {{ professor.graduacao }}
+                                            </div>
+                                            <!--ul class="contact-details">
+                                                <li>
+                                                    <i class="fa fa-map-marker"></i> San Francisco
+                                                </li>
+                                            </ul-->
+                                        </div>
+                                        <div class="profile-box-footer clearfix" style="padding-left: 20px; padding-right: 20px; text-align: justify">
+                                            {{ professor.sobre|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- TAB ALUNOS -->
+            <div class="tab-pane fade" id="tab-alunos">
+                <div class="row">
+                    {% for aluno in submenu.get_alunos %}
+                    <div class="col-lg-4 col-md-5 col-sm-6">
+                        <div class="main-box clearfix profile-box-stats">
+                            <div class="main-box-body clearfix">
+                                <div class="profile-box-header emerald-bg clearfix">
+                                    <h4><strong>{{ aluno }}</strong></h4>
+                                    <div class="job-position">
+                                        <a class="btn btn-primary btn-sm" href="{{ aluno.get_absolute_url }}">Ver perfil</a>
+                                    </div>
+                                    <img src="{{ aluno.foto_url }}" alt="" class="profile-img img-responsive">
+                                </div>
+                                <div class="profile-box-footer clearfix">
+                                    <a href="#">
+                                        <span class="value">{{ aluno.resposta_set.all.count }}</span>
+                                        <span class="label">Respostas</span>
+                                    </a>
+                                    <a href="#">
+                                        <span class="value">{{ aluno.minhas_correcoes.count }}</span>
+                                        <span class="label">Correções<br>Feitas</span>
+                                    </a>
+                                    <a href="#">
+                                        <span class="value">{{ aluno.correcoes_recebidas.count }}</span>
+                                        <span class="label">Correções<br>Recebidas</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- TAB VIDEOS -->
+            <div class="tab-pane fade" id="tab-mensagens">
+                {% include '_msg-professor.html' with professores=submenu.professores.all %}
+            </div>
+            <!-- TAB QUIZZ -->
+            {% with submenu.blocos.all as blocos %}{% if blocos and submenu.disponivel %}
+            <div class="tab-pane fade" id="tab-quizz">
+                <div class="row">
+                {% for bloco in blocos.all %}
+                    <div class="col-lg-4 col-md-5 col-sm-6">
+                        <div class="main-box clearfix profile-box-menu">
+                            <div class="main-box-body clearfix">
+                                <div class="profile-box-header green-bg clearfix">
+                                    {% thumbnail item.curso.imagem "48x68" crop="center" as im %}
+                                        <img src="{{ im.url }}" class="profile-img img-fluid">
+                                    {% empty %}
+                                        <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg" class="profile-img img-fluid">
+                                    {% endthumbnail %}
+                                    <h2>{{ bloco }}</h2>
+                                    <div class="job-position">
+                                        {{ bloco.descricao }}
+                                    </div>
+                                </div>
+                                <div class="profile-box-content clearfix">
+                                    <ul class="menu-items">
+                                        <li>
+                                            <a href="{% url 'quizz:quizz' bloco.pk %}" class="clearfix text-center btn-link">
+                                                VER QUESTIONÁRIO
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+            {% endif %}{% endwith %}
+            <div class="tab-pane fade" id="tab-ranking">
+                <div id="divStatistics">
+                </div>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="chartModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Justutor</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalBody">
+                    <div id="modalHtml"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL RECORRER -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalRecorrer">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!--button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button-->
+                <h4 class="modal-title" id="modalRecorrerTitulo">Justutor</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalRecorrerBody">
+                    <div id="modalRecorrerHtml"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="confirmar_recorrer()"><i class="fa fa-save"></i> Finalizar e enviar recurso</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+<!-- MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalTarefa">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+                <a href="" target="_blank" id="btn-imprimir" class="btn btn-primary"><i class="fa fa-print"></i> Imprimir</a>
+                <a href="" id="btn-tarefa" class="btn btn-success"><i class="fa fa-edit"></i> Responder</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalCorrecao">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Justutor</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalCorrecaoBody">
+                    <div id="modalCorrecaoHtml"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+<div class="cc-style7">
+    <!-- Chat Panel -->
+    <div class="cc-panel">
+        <!-- Panel Header Content -->
+        <div class="cc-header">
+            <!-- Profile Picture -->
+            <div class="cc-img-cont">
+                <img class="cc-user-img" src="" alt=""/>
+            </div>
+            <!-- Display Name & Last Seen -->
+            <div class="cc-user-info">
+                <strong></strong>
+            </div>
+            <a class="cc-button closer" id="cc-close">
+                <i class="fa fa-close red" aria-hidden="true" style="display: inline-block;"></i>
+            </a>
+        </div>
+        <!-- Panel Body Content -->
+        <div class="cc-body">
+            <div class="cc-content">
+                <textarea placeholder="Digite sua mensagem..." id="text-message" autofocus></textarea>
+                <input type="hidden" id="input-pk">
+                <input type="hidden" value="" id="pid">
+                <input type="hidden" value="" id="aid">
+                <input type="hidden" value="" id="cid">
+
+            </div>
+        </div>
+        <!-- Panel Footer Content -->
+        <div class="cc-footer">
+            <!-- Start Single Contact List -->
+            <a class="cc-list" id="btnEnviar">
+                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                <p>Enviar</p>
+            </a>
+        </div>
+    </div>
+
+</div>
+<!-- Call Layout JS Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<script>
+    function verTarefa(atividadeID) {
+        console.log('atividadeID', atividadeID);
+        $('#modalTarefa').modal('show');
+
+    }
+    $('#modalTarefa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var titulo = button.data('titulo');
+        var pk = button.data('pk');
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this);
+        modal.find('.modal-title').text(titulo);
+        $('#btn-tarefa').prop('href', '/curso/atividade/responder/' + pk);
+        $('#btn-imprimir').prop('href', '/curso/atividade/imprimir/' + pk);
+        $.getJSON( "{% url 'curso:get-tarefa-json' %}?pk=" + pk, function( json ) {
+            modal.find('#modalBody').html($.parseHTML( json.tarefa ));
+            $('#modalBody').slimScroll({
+                start: 'top',
+                height: '400px'
+            });
+        });
+    });
+    // CHART MODAL
+    $('#chartModal').on('hide.bs.modal', function (event) {
+        $('#modalHtml').html('')
+    });
+    $('#chartModal').on('show.bs.modal', function (event) {
+        var pk = $(event.relatedTarget).data('pk');
+        var posting = $.post('{% url 'professor:formulario-estatistica' %}', {pk: pk} );
+        {#$.blockUI({ message: 'aguarde' });#}
+        posting.done(function( data ) {
+            //$.unblockUI();
+            if (data.message) {
+                toastr.error(data.message, 'Erro');
+            };
+            if (!data.html) {
+                toastr.error('Não há dados para gerar a estatística.', 'Erro');
+                $('#modalHtml').html(
+                    '<div class="alert alert-danger">\n' +
+                    '<i class="fa fa-times-circle fa-fw fa-lg"></i>\n' +
+                    '<strong>Opss!</strong> Não há dados para gerar a estatística.' +
+                    '</div>'
+                );
+            } else {
+                $('#modalHtml').html(data.html);
+                $('#modalBody').slimScroll({
+                    start: 'top',
+                    height: '400px'
+                });
+            }
+        });
+    });
+    // CHART RECORRER
+    $('#modalRecorrer').on('hide.bs.modal', function (event) {
+        $('#modalRecorrerHtml').html('');
+        $('#modalRecorrerTitulo').html('Justutor')
+    });
+    $('#modalRecorrer').on('show.bs.modal', function (event) {
+        var pk = $(event.relatedTarget).data('pk');
+        var posting = $.post('{% url 'professor:formulario-recorrer' %}', {pk: pk} );
+
+        {#$.blockUI({ message: 'aguarde' });#}
+        posting.done(function( data ) {
+            //$.unblockUI();
+            if (data.message) {
+                toastr.error(data.message, 'Erro');
+            };
+            if (!data.html) {
+                toastr.error('Não há dados para gerar a estatística.', 'Erro');
+                $('#modalRecorrerHtml').html(
+                    '<div class="alert alert-danger">\n' +
+                    '<i class="fa fa-times-circle fa-fw fa-lg"></i>\n' +
+                    '<strong>Opss!</strong> Não há dados para gerar a estatística.' +
+                    '</div>'
+                );
+            } else {
+                $('#modalRecorrerHtml').html(data.html);
+                $("#formulario_pk").val(pk);
+                $('#modalRecorrerTitulo').html('<strong>Recurso da nota</strong> - Atividade: [ ' + data.atividade_nome + ' ]');
+                $('#modalRecorrerBody').slimScroll({
+                    start: 'top',
+                    height: '400px'
+                });
+            }
+        });
+        console.log('**', pk)
+    });
+    // MODAL CORRECAO
+    $('#modalCorrecao').on('show.bs.modal', function (event) {
+        var pk = $(event.relatedTarget).data('pk');
+        var posting = $.post('{% url 'professor:formulario-estatistica-correcao' %}', {pk: pk} );
+        {#$.blockUI({ message: 'aguarde' });#}
+        posting.done(function( data ) {
+            //$.unblockUI();
+            if (data.message) {
+                toastr.error(data.message, 'Erro');
+            };
+            if (!data.html) {
+                toastr.error('Não há dados para gerar a estatística.', 'Erro');
+                $('#modalHtml').html(
+                    '<div class="alert alert-danger">\n' +
+                    '<i class="fa fa-times-circle fa-fw fa-lg"></i>\n' +
+                    '<strong>Opss!</strong> ' + data.message +
+                    '</div>'
+                );
+            } else {
+                $('#modalCorrecaoHtml').html(data.html);
+                $('#modalCorrecaoBody').slimScroll({
+                    start: 'top',
+                    height: '400px'
+                });
+            }
+        });
+        console.log('**', pk)
+    });
+    function confirmar_recorrer() {
+        status = $('#formulario_status').val();
+        if (status == 'corrigido') {
+            Swal.fire({
+                title: 'Deseja finalizar?',
+                html: "Confira se todos os itens em relação aos quais você deseja recorrer estão marcados " +
+                    "como recorridos. Depois de clicar em \"Finalizar\", seu recurso será enviado e não será " +
+                    "mais possível alterá-lo ou refazê-lo.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, desejo finalizar!',
+                cancelButtonText: 'Cancelar'
+            }).then(function (result) {
+                if (result.value) {
+                   enviar_confirmacao()
+                }
+            })
+        } else {
+            Swal.fire('JusTutor', 'O status atual não permite mais alterações.', 'error');
+        }
+    }
+    function enviar_confirmacao() {
+        // Send the data using post
+        var send = {
+            action: 'confirmar',
+            pk: $("#formulario_pk").val()
+        };
+        var posting = $.post('{% url 'professor:post-confirmar-recorrer' %}', send );
+        posting.done(function( data ) {
+            if (data.erro) {
+                toastr.error(data.message, 'Atenção');
+            } else {
+                $('#modalRecorrer').modal('toggle');
+                toastr.success(data.message, 'Informação', {timeOut: 0});
+            }
+        });
+    }
+    const renderStatistics = (pk) => {
+        var posting = $.post('{% url 'professor:formulario-estatistica-geral' %}', {pk: pk} );
+        {#$.blockUI({ message: 'aguarde' });#}
+        posting.done(function( data ) {
+            //$.unblockUI();
+            if (data.message) {
+                toastr.error(data.message, 'Erro');
+            };
+            if (!data.html) {
+                toastr.error('Não há dados para gerar a estatística.', 'Erro');
+                $('#divStatistics').html(
+                    '<div class="alert alert-danger">\n' +
+                    '<i class="fa fa-times-circle fa-fw fa-lg"></i>\n' +
+                    '<strong>Opss!</strong> Não há dados para gerar a estatística.' +
+                    '</div>'
+                );
+            } else {
+                $('#divStatistics').html(data.html);
+            }
+        });
+    }
+    $(document).ready(function() {
+        renderStatistics("{{ submenu.pk }}");
+    });
+</script>

@@ -1,0 +1,35 @@
+{% load compress static %}
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700,900,300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.css" id="theme-swall">
+{% compress css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}banner-mobile/css/banner.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap-review.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/style.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/extra.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/doc.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/media-queries.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/select2.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap-editable.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap-dialog.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/toastr.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/navbar.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/scrolling-nav.css"/>
+    <!--Main Menu File-->
+    <link id="effect" rel="stylesheet" type="text/css" media="all"
+          href="{% static 'website/webslidemenu/dropdown-effects/fade-down.css' %}"/>
+    <link rel="stylesheet" type="text/css" media="all" href="{% static 'website/webslidemenu/webslidemenu.css' %}"/>
+    <link id="theme" rel="stylesheet" type="text/css" media="all"
+          href="{% static 'website/webslidemenu/color-skins/white-gry.css' %}"/>
+    <link id="theme" rel="stylesheet" type="text/css" media="all" href="{% static 'website/webslidemenu/demo.css' %}"/>
+    {% if website.config.subs_ativo %}
+    {% endif %}
+
+{% endcompress %}
+<style>
+    .swal2-popup {
+        font-size: unset !important;
+    }
+</style>

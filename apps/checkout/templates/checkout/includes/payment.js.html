@@ -1,0 +1,569 @@
+{% load static %}
+<script type="text/javascript"
+        src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js">
+</script>
+<script type="text/javascript" src="{% static 'checkout/card-master/dist/card.js' %}"></script>
+<script type="text/javascript" src="{% static 'checkout/js/payment.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/localization/messages_pt_BR.min.js"></script>
+
+{#<script src="http://malsup.github.io/min/jquery.form.min.js"></script>#}
+<script>
+    $(document).ready(function () {
+        $('#row-nome').hide();
+        function limpa_formulário_cep() {
+            // Limpa valores do formulário de cep.
+            $("input[name=logradouro]").val("");
+            $("input[name=bairro]").val("");
+            $("input[name=cidade]").val("");
+            $("input[name=uf]").val("");
+        }
+
+        //Quando o campo cep perde o foco.
+        $("#id_cep").on('keyup', function () {
+
+            //Nova variável "cep" somente com dígitos.
+            var cep = $(this).val().replace(/\D/g, '');
+
+            //Verifica se campo cep possui valor informado.
+            if (cep.length === 8) {
+
+                //Expressão regular para validar o CEP.
+                var validacep = /^[0-9]{8}$/;
+
+                //Valida o formato do CEP.
+                if (validacep.test(cep)) {
+                    //Preenche os campos com "..." enquanto consulta webservice.
+                    $("input[name=logradouro]").val("...");
+                    $("input[name=bairro]").val("...");
+                    $("input[name=cidade]").val("...");
+                    $("input[name=uf]").val("...");
+
+                    //Consulta o webservice viacep.com.br/
+                    $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+
+                        if (!("erro" in dados)) {
+                            //Atualiza os campos com os valores da consulta.
+                            {#$("#rua").val(dados.logradouro);#}
+                            {#$("#bairro").val(dados.bairro);#}
+                            {#$("#cidade").val(dados.localidade);#}
+                            {#$("#uf").val(dados.uf);#}
+                            {#$("#ibge").val(dados.ibge);#}
+                            updateAddressFields(false, dados);
+                            $("input[name='numero']").focus();
+                        } //end if.
+                        else {
+                            //CEP pesquisado não foi encontrado.
+                            updateAddressFields(true);
+                            Swal.fire("CEP não encontrado.");
+                        }
+                    });
+                } //end if.
+                else {
+                    //cep é inválido.
+                    updateAddressFields(true);
+                    Swal.fire("Formato de CEP inválido.");
+                }
+            } //end if.
+            else {
+                //cep sem valor, limpa formulário.
+                updateAddressFields(true);
+            }
+        });
+    });
+    /* ======================================
+       VALIDATOR FUNCTIONS
+    =======================================*/
+    // validator defaults
+    $.validator.setDefaults({
+        lang: 'pt-br',
+        focusInvalid: false,
+        highlight: function (element) {
+            $(element).closest('.form-group').addClass('has-error');
+        },
+        unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error');
+        },
+        errorElement: 'span',
+        errorClass: 'help-block',
+        errorPlacement: function (error, element) {
+            if (element.parent('.input-group').length) {
+                error.insertAfter(element.parent());
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        submitHandler: function (e) {
+            alert("submitted!");
+        },
+        invalidHandler: function (event, validator) {
+            // 'this' refers to the form
+            const errors = validator.numberOfInvalids();
+            if (errors) {
+                /*
+                var message = errors == 1
+                    ? 'You missed 1 field. It has been highlighted'
+                    : errors + ' fields. Preencha os campos em vermelho.';*/
+                toastr.error('Prencha os campos em vermelho.', 'Atenção');
+            }
+        },
+        debug: true,
+        success: "valid"
+    });
+    // validator defaults end
+
+    jQuery.validator.addMethod("cpf", function (value, element) {
+        value = jQuery.trim(value);
+
+        value = value.replace('.', '');
+        value = value.replace('.', '');
+        cpf = value.replace('-', '');
+        while (cpf.length < 11) cpf = "0" + cpf;
+        var expReg = /^0+$|^1+$|^2+$|^3+$|^4+$|^5+$|^6+$|^7+$|^8+$|^9+$/;
+        var a = [];
+        var b = new Number;
+        var c = 11;
+        for (i = 0; i < 11; i++) {
+            a[i] = cpf.charAt(i);
+            if (i < 9) b += (a[i] * --c);
+        }
+        if ((x = b % 11) < 2) {
+            a[9] = 0
+        } else {
+            a[9] = 11 - x
+        }
+        b = 0;
+        c = 11;
+        for (y = 0; y < 10; y++) b += (a[y] * c--);
+        if ((x = b % 11) < 2) {
+            a[10] = 0;
+        } else {
+            a[10] = 11 - x;
+        }
+        if ((cpf.charAt(9) != a[9]) || (cpf.charAt(10) != a[10]) || cpf.match(expReg)) return this.optional(element) || false;
+        return this.optional(element) || true;
+    }, "Informe um CPF válido."); // Mensagem padrão
+
+    jQuery.validator.addMethod("telefone", function (value, element) {
+        value = value.replace("(", "");
+        value = value.replace(")", "");
+        value = value.replace("-", "");
+        value = value.replace(" ", "");
+        return this.optional(element) || /[0-9]{11}/.test(value);
+    }, "Por favor, um telefone válido");
+
+    jQuery.validator.addMethod("dateBR", function (value, element) {
+        //contando chars
+        if (value.length != 10) return false;
+        // verificando data
+        var data = value;
+        var dia = data.substr(0, 2);
+        var barra1 = data.substr(2, 1);
+        var mes = data.substr(3, 2);
+        var barra2 = data.substr(5, 1);
+        var ano = data.substr(6, 4);
+        if (data.length != 10 || barra1 != "/" || barra2 != "/" || isNaN(dia) || isNaN(mes) || isNaN(ano) || dia > 31 || mes > 12) return false;
+        if ((mes == 4 || mes == 6 || mes == 9 || mes == 11) && dia == 31) return false;
+        if (mes == 2 && (dia > 29 || (dia == 29 && ano % 4 != 0))) return false;
+        if (ano < 1900) return false;
+        return true;
+    }, "Informe uma data válida");
+
+    jQuery.validator.addMethod("dateMinBR", function (value, element) {
+        //contando chars
+        if ($("input[name=paymentmethod]").val() != 'creditcard') return true;
+        if (value.length != 7) return false;
+        // verificando data
+        var data = value;
+        var barra1 = data.substr(2, 1);
+        var mes = data.substr(0, 2);
+        var ano = data.substr(3, 4);
+        if (data.length != 7 || barra1 != "/" || isNaN(mes) || isNaN(ano) || mes > 12) return false;
+        if (ano < 1900) return false;
+        return true;
+    }, "Informe uma data válida");
+
+    var formCC = $("#formCreditCard").validate({
+        focusInvalid: true,
+        rules: {
+            cpf: { // field
+                cpf: true, // validator function
+                required: true
+            },
+            card_number: { // field
+                creditcard: true, // validator function
+                required: function (element) {
+                    return $("input[name=paymentmethod]").val() == 'creditcard';
+                }
+            },
+            nome: { // field
+                required: function (element) {
+                    return $("input[name=paymentmethod]").val() == 'boleto';
+                },
+                minWords: 2
+            },
+            name_on_card: { // field
+                required: function (element) {
+                    return $("input[name=paymentmethod]").val() == 'creditcard';
+                }
+            },
+            code: { // field
+                required: function (element) {
+                    return $("input[name=paymentmethod]").val() == 'creditcard';
+                }
+            },
+            expiry_date: { // field
+                dateMinBR: true, // validator function
+                required: function (element) {
+                    return $("input[name=paymentmethod]").val() == 'creditcard';
+                }
+            },
+            nascimento: { // field
+                dateBR: true, // validator function
+                required: true
+            },
+            celular: { // field
+                telefone: true, // validator function
+                required: true
+            },
+        }
+    });
+    $('.cc-date-min').toArray().forEach(function (field) {
+        new Cleave(field, {
+            date: true,
+            datePattern: ['m', 'Y']
+        });
+    });
+    $('.cc-phone').toArray().forEach(function (field) {
+        new Cleave(field, {
+            numericOnly: true,
+            blocks: [0, 2, 5, 4],
+            delimiters: ['(', ') ', '-']
+        });
+    });
+    $('.cc-date').toArray().forEach(function (field) {
+        new Cleave(field, {
+            date: true,
+            delimiter: '/',
+            datePattern: ['d', 'm', 'Y']
+        });
+    });
+    $('.cc-cpf').toArray().forEach(function (field) {
+        new Cleave(field, {
+            numericOnly: true,
+            delimiters: ['.', '.', '-'],
+            blocks: [3, 3, 3, 2],
+        });
+    });
+    $('.cc-cep').toArray().forEach(function (field) {
+        new Cleave(field, {
+            numericOnly: true,
+            delimiters: ['.', '-'],
+            blocks: [2, 3, 3],
+        });
+    });
+    PagSeguroDirectPayment.onSenderHashReady(function (response) {
+        if (response.status == 'error') {
+            console.log(response.message);
+            return false;
+        }
+        var hash = response.senderHash; //Hash estará disponível nesta variável.
+        $('#formCreditCard input[name=senderHash]').val(hash);
+        console.log('>>>>', hash);
+    });
+    const pagSeguro = {
+        createCardToken: function (params) {
+            return new Promise(function (resolve, reject) {
+                params.success = function (response) {
+                    console.log('CRE S', response);
+                    resolve(response.card.token);
+                },
+                    params.error = function (response) {
+                        console.log('CRE E', response);
+                        console.log(response);
+                        var err;
+                        if (response.errors) {
+                            err = response.errors;
+                            console.log('tem errors')
+                        } else {
+                            err = response.error;
+                        }
+                        console.log('err ' + err);
+                        $.each(err, function (index, value) {
+                            var msg;
+                            console.log('index ' + index);
+                            if (index == 10000) {
+                                msg = "Bandeira do cartão inválida";
+                            } else if (index == 10001) {
+                                msg = "O número do cartão está incompleto, verifique";
+                            } else if (index == 10004) {
+                                msg = "O CVV é obrigatório";
+                            } else if (index == 30405) {
+                                msg = "Preencha o mês e ano de expiração do cartão";
+                            } else if (index == 30404) {
+                                msg = "Devido ao tempo de inatividade na página, é necessário atualiza-la";
+                            } else if (index == 30400) {
+                                msg = "Data de expiração do cartão inválida";
+                            } else {
+                                msg = value;
+                            }
+                            Swal.fire('Atenção', msg, 'error')
+                        });
+                    },
+                    params.complete = function (response) {
+                        console.log('CRE C', response);
+                    }
+                PagSeguroDirectPayment.createCardToken(params);
+            });
+        }
+    };
+    $('button[name=confirmar]').on('click', function (e) {
+        let payment_method = $("input[name=paymentmethod]").val();
+        var valid = formCC.form();
+        console.log('valido', valid);
+        if (valid) {
+            e.preventDefault();
+            if (payment_method === 'creditcard') {
+                let params = {
+                    cvv: $('input[name=code]').val(), // CVV do cartão
+                    cardNumber: $('#cardNumber').val().replace(/ /g, ''), // Número do cartão de crédito
+                    expirationMonth: $('input[name=expiry_date]').val().split('/')[0], // Mês da expiração do cartão
+                    expirationYear: $('input[name=expiry_date]').val().split('/')[1], // Ano da expiração do cartão, é necessário os 4 dígitos.
+                    brand: $('input[name=brand]').val(), // Bandeira do cartão
+                };
+                pagSeguro.createCardToken(params).then(function (token) {
+                    console.log('>>>>> TTT', token)
+                    $('input[name=token]').val(token);
+                    var data = $("#formCreditCard").serializeArray();
+                    checkout(data);
+                });
+            } else {
+                var data = $("#formCreditCard").serializeArray();
+                checkout(data);
+            }
+        }
+    });
+
+
+</script>
+<script>
+    var pagseguroSession = getCookie('pagseguro_session');
+    console.log('SESSION ID: ', pagseguroSession);
+    console.log('SESSION ID: ', '{{session_id}}');
+    PagSeguroDirectPayment.setSessionId(pagseguroSession);
+
+
+    /* FORMAS DE PAGAMENTO */
+    function PaymentsMethods(value) {
+        PagSeguroDirectPayment.getPaymentMethods({
+            amount: value,
+            success: function (response) {
+                console.table(response.paymentMethods);
+            },
+            error: function (response) {
+                console.log('tratamento do erro')
+            },
+            complete: function (response) {
+                console.log('concluido', response);
+            }
+        });
+    };
+
+    function getInstallments(brand, amount) {
+        PagSeguroDirectPayment.getInstallments({
+            brand: brand,
+            amount: amount,
+            success: function (response) {
+                console.log('---', response);
+                let sel = document.getElementById('cc_parcelas');
+                sel.disabled = false;
+                $.each(response.installments, function (index, value) {
+                    $.each(value, function (i, v) {
+                        console.log(i, '+', v);
+                        optionValue = `${v.quantity}:${v.installmentAmount}`;
+                        console.log('OPT', optionValue);
+                        optionText = v.quantity.toString().padStart(2, '0') + 'x de ' + (v.installmentAmount).formatMoney(2, '.', ',') + ' = ' + (v.totalAmount).formatMoney(2, '.', ',');
+                        if (!v.interestFree) {
+                            optionText += ' *'
+                        }
+                        $('#cc_parcelas')
+                            .append(`<option value="${optionValue}">
+                                                                ${optionText}
+                                                              </option>`);
+                    });
+                });
+            },
+            error: function (response) {
+                console.log('error', response)
+                // callback para chamadas que falharam.
+            },
+            complete: function (response) {
+                console.log('+++', response);
+                // Callback para todas chamadas.
+            }
+        });
+    }
+
+    function getBrand(cardbin) {
+        console.log('getbrand', cardbin);
+        PagSeguroDirectPayment.getBrand({
+            cardBin: cardbin,
+            success: function (response) {
+                console.log('getbrand 1', response);
+                var brand = response.brand.name;
+                $('input[name=brand]').val(brand);
+                getInstallments(brand, {{ cart.total_payment|stringformat:".2f" }})
+            },
+            error: function (response) {
+                console.log('getbrand err', response)
+            },
+            complete: function (response) {
+                console.log('getbrand cmpl', response)
+            }
+        })
+    }
+
+    function getToken(cardNumber, cvv, expirationMonth, expirationYear) {
+        PagSeguroDirectPayment.getBrand({
+            cardBin: cardNumber,
+            success: function (json) {
+                console.log(json)
+            },
+            error: function (json) {
+                console.log(json);
+            },
+            complete: function (json) {
+                let brand = json.brand.name;
+                let param = {
+                    cardNumber: cardNumber,
+                    brand: brand,
+                    cvv: cvv,
+                    expirationMonth: expirationMonth,
+                    expirationYear: expirationYear,
+                    success: function (json) {
+                        let token = json.card.token;
+                        console.log("Token: " + token);
+                    },
+                    error: function (json) {
+                        console.log(json);
+                    },
+                    complete: function (json) {
+                    }
+                };
+                PagSeguroDirectPayment.createCardToken(param);
+            }
+        });
+    }
+</script>
+
+<script>
+    function updateAddressFields(disabled, vals = undefined) {
+        let logradouro = $('input[name=logradouro]');
+        let bairro = $('input[name=bairro]');
+        let numero = $('input[name=numero]');
+        let cidade = $('input[name=cidade]');
+        let uf = $('select[name=uf]');
+        let complemento = $('input[name=complemento]');
+        logradouro.attr('disabled', disabled);
+        bairro.attr('disabled', disabled);
+        numero.attr('disabled', disabled);
+        cidade.attr('disabled', disabled);
+        uf.attr('disabled', disabled);
+        complemento.attr('disabled', disabled);
+        logradouro.val(vals ? vals.logradouro : '');
+        bairro.val(vals ? vals.bairro : '');
+        numero.val(vals ? vals.numero : '');
+        cidade.val(vals ? vals.localidade : '');
+        uf.val(vals ? vals.uf : '');
+        complemento.val('');
+    }
+
+    $(document).on('input', '#cardNumber', function (e) {
+        let number = $(e.target).val().replace(/ /g, '');
+        console.log(number, number.length);
+        if (number.length == 16) {
+            getBrand(number, {{ cart.total_payment|stringformat:".2f" }});
+        } else {
+            $('#cc_parcelas').empty();
+            $('#cc_parcelas').attr('disabled', true);
+        }
+    });
+
+    function checkCheckout(code) {
+        let timerInterval;
+        window.showProgress = false;
+        unblockUI();
+        Swal.fire({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            icon: 'info',
+            title: 'Processando!',
+            html: 'Aguardando retorno do Pagseguro: <b></b>',
+            timer: 15000,
+            timerProgressBar: true,
+            width: 600,
+            onBeforeOpen: () => {
+                Swal.showLoading();
+                timerInterval = setInterval(() => {
+                    $.ajax({
+                        method: "GET",
+                        url: "{% url 'checkout:ajax_check_checkout' %}",
+                        data: {code: code}
+                    })
+                        .done(function (response) {
+                            var code = response.checkout;
+                            console.log('code', code);
+                            if (code !== false) {
+                                Swal.close();
+                                window.showProgress = true;
+                                window.location.replace("/checkout/status/" + code)
+                            }
+                            //if (count === 10) {
+                            //   $('#overlay').toggleClass();
+                            //   clearInterval(check);
+                            //}
+                        }).fail(function (err) {
+                        window.showProgress = false;
+
+                        //$('#overlay').toggleClass();
+                        //console.log('err', err);
+                        //clearInterval(check);
+                    });
+                }, 1000)
+            },
+            onClose: () => {
+                clearInterval(timerInterval);
+                window.showProgress = false;
+            }
+        }).then((result) => {
+            if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.timer
+            ) {
+                console.log('I was closed by the timer') // eslint-disable-line
+            }
+            ;
+        });
+        $('#overlay').removeClass('hide');
+    }
+
+    function checkout(data) {
+        $.ajax({
+            method: "POST",
+            url: "{% url 'checkout:ajax_checkout' %}",
+            data: data
+        })
+            .done(function (response) {
+                if (response.error) {
+                    response.error.forEach((v) => toastr.error(v));
+                } else {
+                    checkCheckout(response.code);
+                }
+            }).fail(function (err) {
+                toastr.error(err);
+                console.log('err', err)
+        });
+    }
+</script>

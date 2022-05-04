@@ -1,0 +1,71 @@
+{% load thumbnail %}
+<link rel="stylesheet" type="text/css" href="//kenwheeler.github.io/slick/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="//kenwheeler.github.io/slick/slick/slick-theme.css"/>
+<style>
+    .slider1 {
+    position: relative;
+    margin: 0 auto;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    max-height: 430px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.46);
+}
+</style>
+<section>
+<div class="slider1">
+        <div class="responsive">
+            {% for banner in banners %}
+                <div style="padding: 1px">
+                    <a href="{{ banner.link }}">
+                        <img src="{{ banner.imagem.url }}" />
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+</div>
+</section>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="//kenwheeler.github.io/slick/slick/slick.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.responsive').slick({
+            dots: false,
+            infinite: false,
+            speed: 300,
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            autoplay: true,
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        infinite: true,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+                // You can unslick at a given breakpoint now by adding:
+                // settings: "unslick"
+                // instead of a settings object
+            ]
+        });
+    });
+</script>

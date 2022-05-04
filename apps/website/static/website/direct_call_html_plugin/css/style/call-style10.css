@@ -1,0 +1,538 @@
+/*=============================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 5, Sep 2019
+@version: 1.0
+
+===============================================================*/
+
+/*========================================================
+[Table of Contents For Click To Call Button Style 10 ]
+* Click To Call Common CSS
+* Click To Call Button Style 1 CSS
+* Click To Call Button Style 2 CSS
+* Click To Call Button Style 3 CSS
+* Click To Call Button Style 4 CSS
+* Click To Call Button Style 5 CSS
+* Click To Call Button Style 6 CSS
+* Click To Call Button Style 7 CSS
+==========================================================*/ 
+
+/*=====================================
+  Click To Call Common CSS
+=======================================*/
+
+/* Click To Call Main Style CSS */
+.cc-style10{
+	font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;	  
+}
+
+/*=====================================
+  Start Click To Call Button Style 1
+=======================================*/
+.cc-style10 .cc-button1{
+    display: flex;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    width: 245px;
+    height: 65px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 99px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    overflow: hidden; 
+}
+.cc-style10 .cc-button1:before, .cc-style10 .cc-button1:after{
+    display: flex;
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    align-items: center;
+    transition: 0.25s linear;
+    z-index: 1;
+}
+.cc-style10 .cc-button1:before{
+    content: "";
+    left: 0;
+    justify-content: flex-end;
+}
+.cc-style10 .cc-button1:after{
+    content: "";
+    right: 0;
+    justify-content: flex-start;
+}
+.cc-style10 .cc-button1:hover{
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25), 0 5px 10px rgba(0, 0, 0, 0.22);
+}
+.cc-style10 .cc-button1:hover:before{
+    opacity: 0.5;
+    transform: translateY(-100%);
+}
+.cc-style10 .cc-button1:hover:after{
+    opacity: 0.5;
+    transform: translateY(100%);
+}
+.cc-style10 .cc-button1 span{
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 25px;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    z-index: 2;
+}
+.cc-style10 .cc-button1:hover span{
+    opacity: 0;
+    z-index: -3;
+}
+.cc-style10 .cc-button1 span i{
+    margin: 5px 10px 0 0;
+    font-size: 25px;
+    font-weight: 700;
+}
+.cc-style10 .cc-button1 .social-link{
+    display: flex;
+    position: relative;
+    padding: 3px;
+    margin: 4px;
+    font-size: 24px;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 2px solid transparent;
+    border-radius: 50px;
+    cursor: pointer;
+}
+.cc-style10 .cc-button1 .social-link img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+}
+
+/* Comoon CSS */
+.cc-style10 .cc-button1 .social-link,
+.cc-style10 .cc-button1 .social-link:hover{
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+
+/* Media CSS for Smaller Device */
+@media(max-width: 576px){
+    .cc-style10 .cc-button1:before{
+        opacity: 0.5;
+        transform: translateY(-100%);
+    }
+    .cc-style10 .cc-button1:after{
+        opacity: 0.5;
+        transform: translateY(100%);
+    }
+    .cc-style10 .cc-button1 span{
+        opacity: 0;
+        z-index: -3;
+    }
+}
+
+/*=====================================
+  End Click To Call Button Style 1
+=======================================*/
+
+/*=====================================
+  Start Click To Call Button Style 2
+=======================================*/
+.cc-style10 .cc-button2{
+    display: flex;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    outline: 0;
+    cursor: pointer;  
+}
+.cc-style10 .cc-button2 .cc-chat-icon i{
+    position: relative;
+    padding: 13px;
+    width: 50px;
+    height: 50px;
+    line-height: 0.8;
+    font-size: 25px;
+    text-align: center;
+    border-radius: 50%;
+}
+.cc-style10 .cc-button2:hover .cc-chat-icon i{
+    box-shadow: 0 0px 10px #222;
+}
+.cc-style10 .cc-button2 p{
+    padding: 2px 13px 2px 25px;
+    margin-top: 7px;
+    margin-bottom: 0;
+    margin-left: -15px;
+    height: 35px;
+    line-height: 28px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 10px;
+}
+
+/* Common CSS */
+.cc-style10 .cc-button2:hover .cc-chat-icon i,
+.cc-style10 .cc-button2:hover p{
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+.cc-style10 .cc-button2 .cc-chat-icon i,
+.cc-style10 .cc-button2:hover p{
+    box-shadow: 0 0px 2px #222;
+}
+/*=====================================
+  End Click To Call Button Style 2
+=======================================*/
+
+/*=====================================
+  Start Click To Call Button Style 3
+=======================================*/
+.cc-style10 .cc-button3{
+    display: flex;
+    position: fixed;
+    padding: 5px 15px;
+    bottom: 1em;
+    right: 1em;
+    outline: 0;
+    text-align: center;
+    border-radius: 30px;
+    cursor: pointer;    
+    box-shadow: 0 0px 2px #6c6b6b;   
+}
+.cc-style10 .cc-button3:hover{
+    box-shadow: 0 0px 10px #6c6b6b;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+.cc-style10 .cc-button3 i{
+    padding: 3px;
+    font-size: 20px;   
+}
+.cc-style10 .cc-button3 span{
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 25px;
+}
+/*=====================================
+  End Click To Call Button Style 3
+=======================================*/
+
+/*=====================================
+  Start Click To Call Button Style 4
+=======================================*/
+.cc-style10 .cc-button4{
+    display: block;
+    position: fixed;
+    padding: 5px 20px;
+    bottom: 1em;
+    right: 1em;
+    outline: none;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px #999;
+    cursor: pointer;
+    overflow: hidden;  
+}
+.cc-style10 .cc-button4 span{
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 600;
+}
+.cc-style10 .cc-button4 .fa-phone{
+    position: absolute;
+    padding: 10px 20px;
+    top: 0;
+    left: -60px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.cc-style10 .cc-button4:hover{
+    border-radius: 50px;
+}
+.cc-style10 .cc-button4:hover .fa-phone{
+    left: 0px;
+}
+.cc-style10 .cc-button4:hover span{
+    margin-left: 50px;
+}
+
+/* Common CSS */
+.cc-style10 .cc-button4,
+.cc-style10 .cc-button4 span,
+.cc-style10 .cc-button4 .fa-phone{
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+/* Media CSS for Smaller Device */
+@media(max-width: 576px){
+    .cc-style10 .cc-button4{
+        border-radius: 50px;
+    }
+    .cc-style10 .cc-button4 .fa-phone{
+        left: 0px;
+    }
+    .cc-style10 .cc-button4 span{
+        margin-left: 50px;
+    }
+}
+/*=====================================
+  End Click To Call Button Style 4
+=======================================*/
+
+/*=====================================
+  Start Click To Call Button Style 5
+=======================================*/
+.cc-style10 .cc-button5{
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    outline: 0;
+    cursor: pointer; 
+}
+.cc-style10 .cc-button5 i{
+    position: relative;
+    padding: 13px;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    text-align: center;
+    line-height: 0.8;
+    border-radius: 50%;
+    box-shadow: 0 0 2px #222;
+}
+.cc-style10 .cc-button5:hover i{
+    box-shadow: 0 0 10px #222;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+/*=====================================
+  End Click To Call Button Style 5
+=======================================*/
+
+/*=====================================
+  Start Click To Call Button Style 6
+=======================================*/
+.cc-style10 .cc-button6{
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    bottom: 2.5em;
+    right: 2.5em;
+    justify-content: center;  
+}
+.cc-style10 .cc-button6 .fa-phone{
+    position: relative;
+    padding: 13px;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    text-align: center;
+    line-height: 0.8;
+    border-radius: 50%;
+    z-index: 1;
+}
+.cc-style10 .cc-button6 .fa-phone:hover{
+    -webkit-transform: rotate(270deg);
+    -moz-transition: rotate(270deg);
+    -ms-transition: rotate(270deg);
+    -o-transition: rotate(270deg);
+    transform: rotate(270deg);
+    box-shadow: 0 0 1px 15px rgba(64, 62, 62, 0.14), 0 0 1px 30px rgba(138, 59, 88, 0.1), 0 0 1px 45px rgba(138, 59, 88, 0.1);
+}
+.cc-style10 .cc-button6 .fa-phone,
+.cc-style10 .cc-button6 .fa-phone:hover{
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+/*=====================================
+  End Click To Call Button Style 6
+=======================================*/
+
+/*=====================================
+  Start Click To Call Button Style 7
+=======================================*/
+.cc-style10 .cc-button7{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    position: fixed;
+    bottom: 2.5em;
+    right: 2.5em;
+    width: 84px;
+    height: 84px;
+
+    -webkit-transform: scale(0.5);
+    -moz-transform: scale(0.5);
+    -ms-transform: scale(0.5);
+    -o-transform: scale(0.5);
+    transform: scale(0.5);
+
+    -webkit-transform-origin: 50% 50%;
+    -moz-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    -o-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+
+    transition: -webkit-transform .4s ease;
+    transition: transform .4s ease;
+    transition: transform .4s ease, -webkit-transform .4s ease;
+}
+.cc-style10 .cc-button7 a{
+    display: block;
+    position: relative;
+    padding-bottom: 50%;
+    width: 50%;
+    cursor: pointer;
+    -webkit-backface-visibility: hidden;
+    transition: border-radius .3s ease, -webkit-transform .2s ease;
+    transition: border-radius .3s ease, transform .2s ease;
+    transition: border-radius .3s ease, transform .2s ease, -webkit-transform .2s ease;
+}
+.cc-style10 .cc-button7 a img{
+    display: block;
+    position: absolute;
+    padding: 2px;
+    margin: 0;
+    width: 100%;
+    border-radius: 50px;
+    opacity: 0;
+    fill: #fff;
+    -webkit-transform: scale(0.6) rotate(-45deg);
+            transform: scale(0.6) rotate(-45deg);
+    transition: all .15s ease;
+    -webkit-backface-visibility: hidden;
+}
+.cc-style10 .cc-button7 a:nth-child(1){
+    border-radius: 8px 0 0 0;
+}
+.cc-style10 .cc-button7 a:nth-child(2){
+    border-radius: 0 0 0 8px;
+}
+.cc-style10 .cc-button7 a:nth-child(3){
+    border-radius: 0 8px 0 0;
+}
+.cc-style10 .cc-button7 a:nth-child(4){
+    border-radius: 0 0 8px 0;
+}
+.cc-style10 .cc-button7:before, 
+.cc-style10 .cc-button7:after{
+    content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 28px;
+    height: 6px;
+    border-radius: 3px;
+    z-index: 1;
+    -webkit-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+    transition: -webkit-transform .25s ease;
+    transition: transform .25s ease;
+    transition: transform .25s ease, -webkit-transform .25s ease;
+}
+.cc-style10 .cc-button7:before{
+    -webkit-transform: translate(-50%, -50%) scaleY(0.76);
+            transform: translate(-50%, -50%) scaleY(0.76);
+}
+.cc-style10 .cc-button7:after{
+  -webkit-transform: translate(-50%, -50%) rotate(90deg) scaleY(0.76);
+          transform: translate(-50%, -50%) rotate(90deg) scaleY(0.76);
+}
+.cc-style10 .cc-button7:hover{
+    -webkit-transform: scale(1) rotate(45deg);
+            transform: scale(1) rotate(45deg);
+    transition: -webkit-transform .4s ease .1s;
+    transition: transform .4s ease .1s;
+    transition: transform .4s ease .1s, -webkit-transform .4s ease .1s;
+}
+.cc-style10 .cc-button7:hover:before{
+    -webkit-transform: translate(-50%, -50%) scaleY(0.76) scaleX(3);
+            transform: translate(-50%, -50%) scaleY(0.76) scaleX(3);
+}
+.cc-style10 .cc-button7:hover:after{
+    -webkit-transform: translate(-50%, -50%) rotate(90deg) scaleY(0.76) scaleX(3);
+            transform: translate(-50%, -50%) rotate(90deg) scaleY(0.76) scaleX(3);
+}
+.cc-style10 .cc-button7:hover a{
+    pointer-events: none;
+    border-radius: 50%;
+    -webkit-animation: pointerEvent 0s linear forwards .4s;
+            animation: pointerEvent 0s linear forwards .4s;
+    transition: border-radius .15s ease .1s, -webkit-transform .25s ease .15s;
+    transition: border-radius .15s ease .1s, transform .25s ease .15s;
+    transition: border-radius .15s ease .1s, transform .25s ease .15s, -webkit-transform .25s ease .15s;
+}
+.cc-style10 .cc-button7:hover a:nth-child(1){
+    -webkit-transform: translate(-6px, -6px);
+          transform: translate(-6px, -6px);
+}
+.cc-style10 .cc-button7:hover a:nth-child(2){
+    -webkit-transform: translate(-6px, 6px);
+          transform: translate(-6px, 6px);
+}
+.cc-style10 .cc-button7:hover a:nth-child(3){
+    -webkit-transform: translate(6px, -6px);
+          transform: translate(6px, -6px);
+}
+.cc-style10 .cc-button7:hover a:nth-child(4){
+    -webkit-transform: translate(6px, 6px);
+          transform: translate(6px, 6px);
+}
+.cc-style10 .cc-button7:hover a img{
+    opacity: 1;
+    transition: all .3s ease .2s;
+    -webkit-transform: scale(1) rotate(-45deg);
+          transform: scale(1) rotate(-45deg);
+}
+.cc-style10 .cc-button7:hover a:hover img{
+    opacity: 1;
+    transition: all .3s ease 0s;
+}
+
+@-webkit-keyframes pointerEvent{
+  100%{
+      pointer-events: auto;
+  }
+}
+
+@keyframes pointerEvent{
+  100%{
+      pointer-events: auto;
+  }
+}
+/*=====================================
+  End Click To Call Button Style 7
+=======================================*/

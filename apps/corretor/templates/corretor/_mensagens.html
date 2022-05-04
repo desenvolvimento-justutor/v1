@@ -1,0 +1,141 @@
+{% load thumbnail %}
+<div class="row">
+    <div class="col-lg-4 col-md-5 col-sm-5">
+        <div class="main-box feed">
+            <div class="main-box-body clearfix">
+                <ul>
+                    <li class="clearfix">
+                        <div class="title" style="margin-left: 0px">
+{#                            <a href="{% url 'aluno:mensagens' %}">Todas as mensagens</a>#}
+                            <button class="btn btn-link btn-sm fa" data-aid="false" data-curso="{{ submenu.id }}" data-name="ver"> Todas as mensagens</button>
+                        </div>
+                        <!--div class="post-time"  style="margin-left: 0px">
+                            <a href="#modal-msg" class="btn btn-info btn-sm fa fa-send-o"> Enviar</a>
+                            <button class="btn btn-success btn-sm fa fa-eye" data-id="{{ row.aluno.id }}" data-name="ver"> Ver</button>
+                        </div-->
+                        <div class="time-ago">
+                            <span class="label label-info">{{ todas_msg.count }}</span>
+                        </div>
+                    </li>
+
+                    {% for row in alunos_msg %}
+                    <li class="clearfix">
+                        <div class="img">
+                            <img src="{{ row.aluno.foto_url }}" alt="{{ row.aluno }}">
+                        </div>
+                        <div class="title">
+                            {{ row.aluno }}
+                        </div>
+                        <div class="post-time">
+                            <button onclick="$('#exampleInputEmail1').val('{{ row.aluno }}');$('#cid').val('{{ submenu.id }}');$('#aid').val('{{ row.aluno.id }}')" data-toggle="modal" href="#modal-msg" class="btn btn-info btn-sm fa fa-send-o"> Enviar</button>
+                            <button class="btn btn-success btn-sm fa fa-eye" data-aid="{{ row.aluno.id }}" data-curso="{{ submenu.id }}" data-name="ver"> Ver</button>
+                        </div>
+                        <div class="time-ago">
+                            <span class="label label-danger">{{ row.msg_count }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- MENSAGENS -->
+    <div class="col-lg-8">
+        <div class="main-box clearfix">
+            <header class="main-box-header clearfix">
+                <h2>Mensagem</h2>
+            </header>
+            <div class="main-box-body clearfix">
+                <div class="conversation-wrapper">
+                    <div class="conversation-content">
+                        <div class="conversation-inner" id="msg-inner">
+                            {% for mensagem in  todas_msg %}
+                            <div class="conversation-item item-{% if mensagem.is_professor %}right{% else %}left{% endif %} clearfix">
+                                <div class="conversation-user">
+                                    {% if not mensagem.is_professor %}
+                                        {% thumbnail mensagem.aluno.foto "50x50" crop="center" as im %}
+                                            <img src="{{ im.url }}" alt="{{ aluno }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                        {% endthumbnail %}
+                                    {% else %}
+                                        {% thumbnail mensagem.professor.foto "50x50" crop="center" as im %}
+                                            <img src="{{ im.url }}" alt="{{ aluno }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                        {% endthumbnail %}
+                                    {% endif %}
+                                </div>
+                                <div class="conversation-body">
+                                    <div class="name">
+                                        {% if mensagem.is_professor %}
+                                            <a href="#">{{ mensagem.professor }}</a>
+                                        {% else %}
+                                            <a href="{{ mensagem.aluno.get_absolute_url }}">{{ mensagem.aluno }}</a>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="time hidden-xs">
+                                        {{ mensagem.str_data }}
+                                    </div>
+                                    <div id="icone-lido-{{ mensagem.id }}">
+                                        {% if mensagem.is_professor %}
+                                            {% if mensagem.lido %}
+                                                <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Aluno leu sua mensagem." class="fa fa-eye fa-lg pull-right text-success"></i></a>
+                                            {% else %}
+                                                <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Aluno não leu sua mensagem." class="fa fa-eye-slash fa-lg pull-right text-danger"></i></a>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if mensagem.lido %}
+                                                <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Marcada como lidar" class="fa fa-check fa-lg pull-right text-success"></i></a>
+                                            {% else %}
+                                                <a href="javascript:void(0)" onclick="startLoad();Dajaxice.apps.professor.msg_set_lido(Dajax.process, {mid:'{{ mensagem.pk }}'});"><i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i></a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="text">
+                                        {{ mensagem.mensagem }}
+                                    </div>
+                                    <div class="text">
+                                        <small>{{ mensagem.curso }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div class="modal fade" id="modal-msg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <input type="hidden" value="" id="pid">
+            <input type="hidden" value="" id="aid">
+            <input type="hidden" value="" id="cid">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Enviar Mensagem</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="form-msg">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Para</label>
+                        <input disabled class="form-control" id="exampleInputEmail1" value="{{ aluno_view }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="text-msg">Mensagem</label>
+                        <textarea class="form-control" id="text-msg" rows="3" placeholder="Texto da mensagem"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger fa fa-remove" data-dismiss="modal"> Cancelar</button>
+                <button type="submit" onclick="enviarMensagem2()" class="btn btn-primary fa fa-send"> Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>

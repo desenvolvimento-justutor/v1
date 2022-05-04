@@ -1,0 +1,63 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/login-form-elements.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/login-form-style.css">
+{% endblock %}
+
+{% block section %}
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-6 col-sm-offset-3 form-box">
+
+                <div class="form-bottom">
+                    <form role="form" action="" method="post" class="login-form">
+                        {% csrf_token %}
+
+                        {% with form.first_name as field %}
+                        <div class="form-group{% if field.errors %} has-error{% endif %}">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<span class="help-block">{{ field.errors.0 }}</span>{% endif %}
+                        </div>
+                        {% endwith %}
+
+                        {% with form.last_name as field %}
+                        <div class="form-group{% if field.errors %} has-error{% endif %}">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<span class="help-block">{{ field.errors.0 }}</span>{% endif %}
+                        </div>
+                        {% endwith %}
+
+                        {% with form.username as field %}
+                        <div class="form-group{% if field.errors %} has-error{% endif %}">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<span class="help-block">{{ field.errors.0 }}</span>{% endif %}
+                        </div>
+                        {% endwith %}
+
+                        {% with form.email as field %}
+                        <div class="form-group{% if field.errors %} has-error{% endif %}">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<span class="help-block">{{ field.errors.0 }}</span>{% endif %}
+                        </div>
+                        {% endwith %}
+
+                        <div class="mg-top20">
+                            <button type="submit" class="btn btn-success pull-right" style="width: auto">Acessar!</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block busca %}{% endblock %}

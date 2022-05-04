@@ -1,0 +1,58 @@
+{% load autor %}
+<style>
+    #sidebar-nav .nav > li {
+        margin: 0;
+        border-bottom: 1px solid lightgray;
+    }
+
+    #sidebar-nav .nav li .submenu {
+        padding: 0 0;
+    }
+    #sidebar-nav .nav li .submenu > li > a {
+        padding-left: 24px;
+    }
+
+    .theme-white #sidebar-nav .nav li .submenu, .theme-white #nav-col-submenu .submenu {
+        border-top: 1px solid lightgrey;
+    }
+    </style>
+{% with resposta_questionario_aluno.questao_grupo.disciplina_grupo.grupo_simulado as gr %}
+<div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
+    <ul class="nav nav-pills nav-stacked">
+        <li>
+            <a href="index.html">
+                <i class="fa fa-arrow-left"></i>
+                <span>Tela principal do simulado</span>
+            </a>
+        </li>
+        {% for grupo in simulado.grupos.all %}
+        <li class="open">
+            <a href="#" class="dropdown-toggle">
+                <i class="fa fa-circle"></i>
+                <span>{{ grupo  }}</span>
+                <i class="fa fa-angle-right drop-icon"></i>
+            </a>
+            <ul class="submenu" style="display: block;">
+                {% for disciplina in grupo.grupo.disciplinas.all %}
+                <li class="open">
+                    <a href="#" class="dropdown-toggle">
+                        {{ disciplina }}
+                        <i class="fa fa-angle-right drop-icon"></i>
+                    </a>
+                    <ul class="submenu" style="display: block;">
+                        {% for q in disciplina.questoes.all %}
+                        <li>
+                            <a href="#">
+                                {{ q }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endwith %}

@@ -1,0 +1,163 @@
+<style>
+    * {
+        -webkit-box-sizing: border-box;
+           -moz-box-sizing: border-box;
+                box-sizing: border-box;
+        outline: none;
+    }
+    .subscribe-now {
+        margin: 20px auto 0px;
+        max-width: 640px;
+        font: 15px/2.2em Lato, serif;
+        color: #808080;
+        padding-bottom: 0px;
+    }
+    .subscribe-now .well {
+	    text-align: center;
+		background: #fff;
+        margin-bottom: 0px;
+    }
+    .subscribe-now h2 {
+	    margin: 10px 0;
+    }
+    .subscribe-now form {
+	    margin-bottom: 0px;
+    }
+    .subscribe-now form.form-newsletter {
+	    max-width: 300px;
+    }
+    .subscribe-now p {
+	    margin-bottom: 20px;
+    }
+</style>
+
+
+<footer>
+    <section class="container">
+	    <section class="subscribe-now">
+			<div class="well">
+				<h2>Newsletter</h2>
+                <p>Receba dicas incríveis de concursos e de como melhorar sua escrita!</p>
+                <form id="frmNews" class="form-inline" action="{% url 'website:subscrible' %}" method="post" role="form">
+				    <div class="input-group form-group" style="padding-right: 10px">
+						<span class="input-group-addon"><i class="fa fa-user"></i></span>
+						<input type="text" id="nome" placeholder="Informe seu nome" required class="form-control" />
+					</div>
+				    <div class="input-group form-group">
+						<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+						<input type="email" id="email" placeholder="Informe seu email" required class="form-control" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">Assinar!</button>
+                        </span>
+					</div>
+              	</form>
+            </div>
+		</section>
+    </section>
+    <script type='text/javascript'>
+        /* attach a submit handler to the form */
+        $("#frmNews").submit(function (event) {
+            /* stop form from submitting normally */
+            event.preventDefault();
+            block();
+            /* get the action attribute from the <form action=""> element */
+            var $form = $(this),
+                url = $form.attr('action');
+            /* Send the data using post with element id name and name2*/
+            var posting = $.post(url, {FNAME: $('#nome').val(), email: $('#email').val()});
+            /* Alerts the results */
+            posting.done(function (data) {
+                unBlockFunction()
+                if (data.result == true) {
+                    Swal.fire('Sucesso', 'Obrigado por assinar nossa Newsletter.', 'success');
+                } else {
+                    Swal.fire('Sorry', 'Não foi possível efetuar a assinatura. Entre em contato conosco.', 'error');
+                }
+            });
+        });
+    </script>
+    <div class="container">
+        <div class="col-sm-12">
+            <div class="rodape-logo">
+                <a href="#"><img src="{{ STATIC_URL }}assets/images/logotipo-footer-w100.png" width="100px" height="66"> </a>
+            </div>
+        </div>
+    </div>
+    <div class="total-rodape">
+        x
+        <div class="container">
+            <div class="mg-vert10"></div>
+            <div class="clear"></div>
+            <div class="col-sm-5">
+                <div class="titulo-rodape pd-home">
+                    Institucional
+                </div>
+                <ul class="rodape-lista">
+                {% for institucional in website.config.get_institucional %}
+                    <li><a href="{{ institucional.get_absolute_url }}">{{ institucional }}</a></li>
+                {% endfor %}
+                    <li><a href="{% url 'professor:painel' %}">Área do professor</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <div class="titulo-rodape pd-home">
+                    Nossos números
+                </div>
+                <ul class="rodape-lista-nobulet">
+                    <li><a href="{% url 'enunciado:tipo' 'questao' %}"><span class="lbl30">{{ proc_enunciado.total_questao }}</span> Questões</a></li>
+                    <li><a href="{% url 'enunciado:tipo' 'peca' %}"><span class="lbl30">{{ proc_enunciado.total_peca }}</span> Peças</a></li>
+                    <li><a href="{% url 'enunciado:tipo' 'sentenca' %}"><span class="lbl30">{{ proc_enunciado.total_sentenca }}</span> Atividades</a></li>
+                    <li><a href="{% url 'enunciado:busca'%}?filtro=resposta"><span class="lbl30">{{ proc_enunciado.total_resposta }}</span> Respostas</a></li>
+                    <li><a href="javascript:void(0)"><span class="lbl30">{{ proc_enunciado.total_aluno }}</span> Alunos</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-3 text-center">
+                <div class="titulo-rodape pd-home">
+                    Socialize
+                </div>
+                <div class="social">
+                    <a target="_blank" href="{{ website.config.url_facebook }}">
+                        <img src="{{ STATIC_URL }}assets/images/23-face.svg">
+                    </a>
+                    <a target="_blank" href="{{ website.config.url_twitter }}">
+                        <img src="{{ STATIC_URL }}assets/images/24-twitter.svg">
+                    </a>
+                </div>
+              <div class="row">
+                <div class="col-sm-12">
+                                  <div class="titulo-rodape pd-home">
+                    Contate-nos
+                </div>
+                <div class="rod-text">Dúvidas e/ou Sugestões</div>
+                <form class="rod-form" id="form-contato">
+                    <input id="id-contato-nome" type="Nome" placeholder="Nome" required value="{{ request.user.aluno  }}">
+                    <input id="id-contato-email" type="email" placeholder="Email" required value="{{ request.user.email  }}">
+                    <textarea id="id-contato-mensagem" required placeholder="Digite aqui sua mensagem"></textarea>
+                    <button id="btn-enviar-contato"  data-loading-text="Enviando..." type="submit">Enviar</button>
+                </form>
+                </div>
+              </div>
+            </div>
+            {% comment %}
+            <div class="col-sm-4">
+                <div class="titulo-rodape pd-home">
+                    Contate-nos
+                </div>
+                <div class="rod-text">Dúvidas e/ou Sugestões</div>
+                <form class="rod-form" id="form-contato">
+                    <input id="id-contato-nome" type="Nome" placeholder="Nome" required value="{{ request.user.aluno  }}">
+                    <input id="id-contato-email" type="email" placeholder="Email" required value="{{ request.user.email  }}">
+                    <textarea id="id-contato-mensagem" required placeholder="Digite aqui sua mensagem"></textarea>
+                    <button id="btn-enviar-contato"  data-loading-text="Enviando..." type="submit">Enviar</button>
+                </form>
+            </div>
+            {% endcomment %}
+        </div>
+        <div class="linha-rodape">
+            <a href="#" class="smartweb">
+                <img src="{{ STATIC_URL }}assets/images/smartweb.png" width="92" height="29">
+            </a>
+
+        </div>
+    </div>
+</footer>

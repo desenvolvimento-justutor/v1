@@ -1,0 +1,39 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: a4 landscape;
+            @frame header_frame { /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 2cm; width: 25.7cm; top: 2cm; height: 3cm;
+            }
+            @frame content_frame { /* Content Frame */
+                left: 2cm; width: 25.7cm; top: 5cm; height: 13cm;
+                line-height: 2;
+            }
+            @frame footer_frame { /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 2cm; width: 25.7cm; top: 20cm; height: 2cm;
+            }
+        }
+        p {
+            line-height: 2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">
+        <img src="http://www.justutor.com.br/static/images/logos/justuto-horizontal.png">
+    </div>
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content" style="text-align: center">
+        Certificado emitido de forma eletrônica. Para conferir a autenticidade, acesse: <a style="color: #0b0b0b" href="https://{{ request.get_host }}{% url 'website:consulta-certificado' certificado.chave %}">https://{{ request.get_host }}{% url 'website:consulta-certificado' certificado.chave %}</a>
+    </div>
+    <!-- HTML Content -->
+    <div style="line-height: 2">
+    {{ certificado.curso.certificado|safe }}
+    </div>
+</body>
+</html>

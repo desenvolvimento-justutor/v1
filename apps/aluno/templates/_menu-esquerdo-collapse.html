@@ -1,0 +1,153 @@
+<!-- MENU --------------------------------->
+<div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
+    <ul class="nav nav-pills nav-stacked">
+        <li class="nav-header hidden-sm hidden-xs">
+            <i class="fa fa-circle-o mrg-r-sm"></i>
+            PRINCIPAL
+        </li>
+        <!-- CURSOS ----------------------->
+        <li{% if menu == 'cursos' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:cursos' %}">
+                <i class="fa fa-balance-scale"></i>
+                <span>Meus Cursos</span>
+            </a>
+        </li>
+        <!-- SENTENÇAS ----------------------->
+        <li{% if menu|slugify == 'atividades-avulsas' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:sentencas-avulsas' %}">
+                <i class="fa fa-pencil-square-o fa-fe"></i>
+                <span>Atividades Avulsas</span>
+            </a>
+        </li>
+        <!-- CERTIFICADO ------------------>
+        <li{% if menu == 'certificados' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:certificado' %}">
+                <i class="fa fa-graduation-cap"></i>
+                <span>Certificados</span>
+            </a>
+        </li>
+        <!-- SIMULADO ----------------------->
+        <li{% if menu == 'simulados' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:simulados' %}">
+                <i class="fa fa-check-square-o"></i>
+                <span>Simulados</span>
+            </a>
+        </li>
+        <!-- GABARITOS E AUTO CORREÇÃO ----------------------->
+        {% if request.user.is_superuser %}
+            <li{% if menu|slugify == 'gabaritos-e-autocorrecao' %} class="active"{% endif %}>
+                <a href="{% url 'aluno:gabaritos_autocorrecao' %}">
+                    <i class="fa fa-check-circle-o"></i>
+                    <span>Gabaritos e Autocorreção</span>
+                </a>
+            </li>
+        {% endif %}
+        <!-- FINANCEIRO ------------------->
+        {% if request.user.is_superuser %}
+            <li{% if menu|slugify == 'meus-creditos' %} class="active"{% endif %}>
+                <a href="{% url 'aluno:creditos' %}">
+                    <i class="fa fa-barcode"></i>
+                    <span>Meus créditos</span>
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- SENTENÇAS OAB ------------------->
+        <li{% if menu|slugify == 'sentencas-oab-2ª-fase' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:sentencas-oab' %}">
+                <i class="fa fa-gavel"></i>
+                <span>OAB 2ª Fase</span>
+            </a>
+        </li>
+        <!-- LIVROS ----------------------->
+        <li{% if menu == 'livros' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:livros' %}">
+                <i class="fa fa-file-pdf-o"></i>
+                <span>Livros</span>
+            </a>
+        </li>
+        <!-- CUPONS ----------------------->
+        <li{% if menu == 'cupons' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:cupons' %}">
+                <i class="fa fa-tag"></i>
+                <span>Cupons de desconto</span>
+                {% with aluno.get_cupons_ativos.count as count %}
+                    {% if count %}
+                        <span class="label label-success pull-right">{{ count }}</span>
+                    {% endif %}
+                {% endwith %}
+            </a>
+        </li>
+        <li class="nav-header hidden-sm hidden-xs">
+            <i class="fa fa-circle-o mrg-r-sm"></i>
+            ÁREA GRATUITA
+        </li>
+
+        <!-- PAINEL ----------------------->
+        <li{% if menu == 'painel' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:painel' %}">
+                <i class="fa fa-dashboard"></i>
+                <span>Painel</span>
+            </a>
+        </li>
+        <!-- PRODUCAO ----------------------->
+        <li{% if menu == 'perfil' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:perfil' %}">
+                <i class="fa fa-user"></i>
+                <span>Produção</span>
+            </a>
+        </li>
+        <!-- NOTIFICAÇÕES ----------------->
+        <li{% if menu == 'notificações' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:notificacoes' %}">
+                <i class="fa fa-bell"></i>
+                <span>Notificações</span>
+                {% with proc_aluno.notificacoes.count as count %}
+                    {% if count %}
+                        <span id="id-notificacao-menu-esq"
+                              class="label label-danger pull-right">{{ count }}</span>
+                    {% endif %}
+                {% endwith %}
+            </a>
+        </li>
+        <!-- TIMELINE --------------------->
+        <li{% if menu == 'timeline' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:timeline' %}">
+                <i class="fa fa-clock-o"></i>
+                <span>Timeline</span>
+            </a>
+        </li>
+        <!-- MENSAGENS -------------------->
+        <li>
+            <a href="{% url 'aluno:mensagens' %}">
+                <i class="fa fa-envelope-o"></i>
+                <span>Mensagens</span>
+                {% with aluno.msg_para_naolidas.count as count %}
+                    {% if count %}
+                        <span id="id-msg-menu-esq"
+                              class="label label-danger pull-right">{{ count }}</span>
+                    {% endif %}
+                {% endwith %}
+            </a>
+        </li>
+        <li class="nav-header hidden-sm hidden-xs">
+            <i class="fa fa-circle-o mrg-r-sm"></i>
+            GERAL
+        </li>
+        <!-- CONFIGURAÇÕES ---------------->
+        <li{% if menu == 'configurações' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:configuracoes' %}">
+                <i class="fa fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+        </li>
+        <!-- ENCERRAR SESSÃO -------------->
+        <li>
+            <a href="{% url 'logout' %}">
+                <i class="fa fa-power-off"></i>
+                <span>Encerrar Sessão</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--/MENU/--------------------------------->

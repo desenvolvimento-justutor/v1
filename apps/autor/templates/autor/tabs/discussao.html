@@ -1,0 +1,39 @@
+{% load comments %}
+
+<div class="table-responsive">
+    <table class="table user-list table-hover">
+        <thead>
+        <tr>
+            <th>Sobre</th>
+            <th class="text-center">Inicio</th>
+            <th class="text-center">Término</th>
+            <th class="text-center">Status</th>
+            <th>Comentários</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for discuss in curso.get_discuss %}
+            <tr>
+                <td>
+                    <i class="fa fa-comments-o fa-2x fa-fw text-info"></i>
+                    <a href="{% url 'aluno:curso-discussao' discuss.pk %}?backto=simulado"
+                       class="user-link">{{ discuss }}</a>
+                    <span class="user-subhead">{{ discuss.descricao }}</span>
+                </td>
+                <td class="text-center">{{ discuss.data_ini|date:"SHORT_DATE_FORMAT" }}</td>
+                <td class="text-center">{{ discuss.data_fim|date:"SHORT_DATE_FORMAT" }}</td>
+                <td class="text-center">
+                    <span class="label label-{{ discuss.status.label }}">{{ discuss.status.status }}</span>
+                </td>
+                <td>
+                    {% get_comment_count for discuss as comment_count %}
+                    <a href="#" class="story-comments-link">
+                        <i class="fa fa-commenting-o fa-lg"></i> {{ comment_count }}
+                        Comentário{{ comment_count|pluralize }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

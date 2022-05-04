@@ -1,0 +1,89 @@
+<div class="titulo-home">
+    <h4 class="pd-home titulo-home bold">Elabore abaixo sua Resposta!</h4>
+    <div class="linha-aba mg-bot20"></div>
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Atenção para as regras:</strong>
+        <ol style="margin-left: 20px">
+            <li>Elabore a sua própria resposta.</li>
+            <li>Não copie textos de terceiros (são permitidos apenas pequenos trechos, se necessário, desde que sempre entre aspas e com citação da fonte).</li>
+            <li>Não reproduza a resposta-padrão da banca.</li>
+            <li>Respostas que contrariarem a <a target="_blank" href="https://justutor.com.br/institucional/politica-de-uso/">Política de Uso</a> do JusTutor serão excluídas.</li>
+        </ol>
+    </div>
+</div>
+<div class="row mg-bot10">
+    <!-- CLOCK --------------------------------------------------------------->
+        <div class="col-sm-8">
+            <div class="btn-group" role="group">
+                <button class="btn btn-primary btn-sm" id="start" data-toggle="tooltip"
+                        data-original-title="Iniciar resposta"><i class="fa fa-play width-10"></i></button>
+                <button class="btn btn-primary btn-sm" id="pause" data-toggle="tooltip"
+                        data-original-title="Pausar resposta"><i class="fa fa-pause width-10"></i></button>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h4 style="margin-top: 4px" class="mg-top5" data-toggle="tooltip"
+                data-original-title="Tempo gasto">
+                <span class="label label-danger pull-right" id="relative">00:00:00</span>
+            </h4>
+        </div>
+</div>
+<!-- EDITOR HTML --------------------------------------------------------->
+<div id="block">
+    <form id="form-resposta" class="correcao-form">
+        <input type="hidden" name="concluido" id="concluido" value="{{ resposta.concluido }}">
+        <input type="hidden" name="tempo" id="tempo" value="{{ resposta.tempo }}">
+        <input type="hidden" name="resposta_id" id="resposta_id" id="resposta_id" value="{{ resposta.id }}">
+        <input type="hidden" name="enunciado_id" id="enunciado_id" value="{{ enunciado.id }}">
+        <textarea class="ckeditor" id="content" name="content">
+            {% if resposta %}{{ resposta.texto|safe }}{% endif %}
+        </textarea>
+    </form>
+    <div class="row mg-top10">
+        <div class="col-md-6">
+        Mínimo de caracteres <span class="label label-warning pull-right">{{ enunciado.min_char }}</span>
+        </div>
+    </div>
+</div>
+<div class="row" style="padding: 15px">
+    <button id="btn-salvar" disabled onclick="$('#form-resposta').submit()" class="btn btn-info fa fa-save fg-lg pull-left">
+        &nbspSALVAR RASCUNHO
+    </button>
+    <button id="btn-enviar" {% if not resposta %}disabled{% endif %} class="btn btn-success fa fa-send-o fg-lg pull-right" onclick="enviar_resposta()">
+        &nbspENVIAR RESPOSTA
+    </button>
+</div>
+
+<!-- EDITOR HTML --------------------------------------------------------->
+<!-----------------------------------------modal-----------------desafio--------------------->
+<div class="modal fade" id="myModal" tabindex="-1" role="document" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <div class="clear"></div>
+                <div class="titulo-home">Confirmar Resposta</div>
+                <div class="clear"></div>
+                <hr>
+            </div>
+            <div class="modal-body">
+                Atenção: ao confirmar sua resposta, ela será publicada no site e
+                <span class="fonte-vermelha">você não poderá mais fazer alterações nela.</span>
+                Tem certeza que você deseja publicar esta resposta?
+                <div class="clear"></div>
+                <br><br>
+            </div>
+            <div class="modal-footer">
+                <a href="#" type="button" class="btn btn-danger" data-dismiss="modal">Voltar e conferir</a>
+                <a href="#" onclick="$('#concluido').val('1');$('#form-resposta').submit();" class="btn btn-success" data-dismiss="modal">
+                    Confirmar e Publicar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-----------------------------------------modal-----------------desafio--------------------->

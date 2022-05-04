@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+</head>
+<body>
+<div style="text-align: center">
+    <img align="middle" src="https://justutor.com.br/static/images/logos/justuto-horizontal.png">
+    <hr>
+</div>
+<h1>{{ titulo }}</h1>
+{{ conteudo|safe }}
+{% if print %}
+<script>
+    window.print()
+</script>
+{% endif %}
+</body>
+</html>

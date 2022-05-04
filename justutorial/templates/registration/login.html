@@ -1,0 +1,54 @@
+{% extends "_base.html" %}
+{% load account socialaccount %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/login-form-elements.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/login-form-style.css">
+{% endblock %}
+
+{% block section %}
+    <!-- provider -->
+    {% providers_media_js %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3 form-box">
+                {% user_display user %}
+                <div class="form-top">
+                    <div class="text-center social-login-buttons">
+                        <a class="btn btn-link-1 btn-link-1-facebook" href="{% provider_login_url "facebook" method="oauth2" next=request.get_full_path %}">
+                            <i class="fa fa-facebook"></i> Facebook
+                        </a>
+                    </div>
+                </div>
+                <div class="form-bottom">
+{#                    <div class="form-top-left">#}
+{#                        <h3>Acesse pelo site</h3>#}
+{#                        <p>Entre com seu email e senha:</p>#}
+{#                    </div>#}
+                    <form role="form" action="" method="post" class="login-form">
+                        {% csrf_token %}
+{#                        <div class="form-group">#}
+{#                            <label class="sr-only" for="form-username">Username</label>#}
+{#                            <input type="text" name="username" placeholder="Username..."#}
+{#                                   class="form-username form-control" id="form-username">#}
+{#                        </div>#}
+{#                        <div class="form-group">#}
+{#                            <label class="sr-only" for="form-password">Password</label>#}
+{#                            <input type="password" name="password" placeholder="Password..."#}
+{#                                   class="form-password form-control" id="form-password">#}
+{#                        </div>#}
+                        {{ form }}
+                        <div class="mg-top20">
+                            <a class="btn btn-info" href="{% url 'auth_password_reset' %}">Recuperar senha</a>
+                            <button type="submit" class="btn btn-success pull-right" style="width: auto">Acessar!</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block busca %}{% endblock %}

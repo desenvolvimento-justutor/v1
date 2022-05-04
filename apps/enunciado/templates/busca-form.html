@@ -1,0 +1,10 @@
+{% extends '_base.html' %}
+
+{% block section %}
+    {% include 'busca.html' %}
+    {% if resultado %}
+        {% include 'busca-resultado.html' %}
+    {% endif %}
+{% endblock %}
+{% block busca %}
+{% endblock %}

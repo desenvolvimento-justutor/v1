@@ -1,0 +1,65 @@
+{% extends 'professor/_base.html' %}
+{% load thumbnail %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2>Filtro</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    {% include 'professor/_filter-sentencas.html' with tipo_filtro="oab" %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>Peças</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <ul class="widget-users row">
+                        {% for sentenca in sentencas %}
+                        <li class="col-md-4">
+                            <div class="img">
+                                {% thumbnail sentenca.aluno.foto "50x50" crop="center" as im %}
+                                    <img src="{{ im.url }}" alt="{{ aluno }}">
+                                {% empty %}
+                                    <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                {% endthumbnail %}
+                            </div>
+                            <div class="details">
+                                <div class="name">
+                                    <a href="{{ sentenca.aluno.get_absolute_url }}">{{ sentenca.aluno.nome_resumido }}</a> <small style="color: #1ABC9C; font-size: 0.75em">({{ sentenca }})</small>
+                                </div>
+                                <div class="time">
+                                    {{ sentenca.span_status|safe }}
+                                </div>
+                                <div class="actions">
+                                    {% if sentenca.status != 'I' %}
+                                    <a href="{% url 'curso:download-tarefa' sentenca.pk %}?tipo=oab" class="table-link text-success" data-toggle="tooltip" data-original-title="Baixar Resolução do Aluno">
+                                        <i class="fa fa-cloud-download"></i>
+                                    </a>
+                                    {% endif %}
+                                    {% if sentenca.correcao %}
+                                        <a target="_blank" href="{{ sentenca.correcao.url }}" class="table-link text-danger" data-toggle="tooltip" data-original-title="Baixar Correção">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    {% else %}
+                                        {% ifequal sentenca.status 'A' %}
+                                        <a href="#" class="table-link" data-toggle="modal" data-target="#modalUpload"
+                                           data-titulo="{{ sentenca }}" data-pk="{{ sentenca.pk }}" data-action="oab">
+                                            <i class="fa fa-upload" data-toggle="tooltip" data-original-title="Enviar Correção"></i>
+                                        </a>
+                                        {% endifequal %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

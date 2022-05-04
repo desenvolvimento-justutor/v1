@@ -1,0 +1,103 @@
+{% extends '_base-enunciado.html' %}
+{% block bloco_dir %}
+    {% if request.user.aluno.id == resposta.aluno.id %}
+        {% include '_resposta-fechada.html' %}
+    {% else %}
+        {% if show_correcao %}
+        <div class="titulo-home">
+            <h1 class="pd-home titulo-home bold">
+                Correção Nº {{ correcao.id|stringformat:"06d" }}
+            </h1>
+
+            <div style="margin-bottom: 4px" class="linha-aba"></div>
+            {% if pagina == 'resposta' %}
+                <h4 class="bold text-primary"><i class="fa fa-edit fa-lg text-success"></i>
+                    {% if request.user.aluno.id == correcao.aluno.id %}
+                        Você
+                    {% else %}
+                        {{ correcao.aluno }}
+                    {% endif %}
+                </h4>
+                <div style="margin-top: 4px" class="linha-aba"></div>
+            {% endif %}
+        </div>
+
+        <div class="enunciado-destaque">
+            <!--div class="linha-opcoes text-center">
+                <a href="#">
+                    <i class="fa fa-lightbulb-o fa-lg text-warning"></i> INSTRUÇÕES DE CORREÇÃO
+                </a>
+                <div class="clear"></div>
+            </div-->
+            {% if not minha_correcao %}
+            <a href="{{ resposta.get_absolute_url }}" class="faixa-vermelha">
+                clique aqui <span class="fonte-amarela">e faça sua própria correção!</span>
+            </a>
+            {% endif %}
+            <div class="mg-top10"></div>
+            <ul class="nav nav-pills nav-stacked nav-pills-stacked-example">
+              <li role="presentation"><a href="javascript:void(0)">Nota dada nesta resposta<span class="label label-warning pull-right">{{ correcao.get_nota_resposta|stringformat:".1f" }}</span></a></li>
+              <li role="presentation"><a href="javascript:void(0)">Média das notas recebidas pela resposta<span class="label {{ resposta.get_css_class.1 }} pull-right">{{ resposta.get_media|stringformat:".2f" }}</span></a></li>
+            </ul>
+            <hr class="borda-pontilhada01 mg-bot10">
+            {% include 'comentarios.html' %}
+
+        </div>
+        {% else %}
+            <div class="enunciado-destaque">
+                <span class="faixa-vermelha">
+                    Veja as respostas já elaboradas <span class="fonte-amarela">para este enunciado</span>
+                </span>
+                <div class="linha-opcoes text-center">
+                    <a href="#">
+                        <i class="fa fa-lightbulb-o fa-lg text-warning"></i> INSTRUÇÕES DE CORREÇÃO
+                    </a>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <form id="form-resposta" class="correcao-form" method="post" action="{{ resposta.get_absolute_url }}">
+                {% csrf_token %}
+                    <div class="text-center">
+                        Dê sua nota abaixo.<span class="text-danger">{{ rating }} Obrigatório</span>
+                        <select id="rating" name="rating">
+                            <option value=""></option>
+                            <option value="0"{% if rating == '0' %} selected{% endif %}>0</option>
+                            <option value="1"{% if rating == '1' %} selected{% endif %}>1</option>
+                            <option value="2"{% if rating == '2' %} selected{% endif %}>2</option>
+                            <option value="3"{% if rating == '3' %} selected{% endif %}>3</option>
+                            <option value="4"{% if rating == '4' %} selected{% endif %}>4</option>
+                            <option value="5"{% if rating == '5' %} selected{% endif %}>5</option>
+                            <option value="6"{% if rating == '6' %} selected{% endif %}>6</option>
+                            <option value="7"{% if rating == '7' %} selected{% endif %}>7</option>
+                            <option value="8"{% if rating == '8' %} selected{% endif %}>8</option>
+                            <option value="9"{% if rating == '9' %} selected{% endif %}>9</option>
+                            <option value="10"{% if rating == '10' %} selected{% endif %}>10</option>
+                        </select>
+                    </div>
+
+                <textarea class="ckeditor" id="content" name="content">
+                    {{ content }}
+                </textarea>
+
+                <div class="row mg-top10">
+                    <div class="col-md-6">
+                        Mínimo de caracteres <span class="label label-warning pull-right">150</span>
+                    </div>
+                </div>
+
+                <button>
+                    ENVIAR CORREÇÃO
+                </button>
+            </form>
+        {% endif %}
+
+    {% endif %}
+{% endblock %}
+{#{% block enunciado_footer %}#}
+{#    {% with resposta.correcao_set.all as correcoes %}#}
+{#        {% if correcoes %}#}
+{#            {% include 'widget-correcoes-resposta.html' %}#}
+{#        {% endif %}#}
+{#    {% endwith %}#}
+{#{% endblock %}#}

@@ -1,0 +1,42 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    Informamos que seu {% if curso.categoria.tipo == "D" %}simulado{% else %}curso{% endif %}
+    <strong>{{ curso.nome }}</strong> teve a(s) seguinte(s) atividade(s) na data de
+    <strong>{{ yesterday|date:'d/m/Y' }}</strong>:
+{% endblock %}
+{% block texto1 %}
+    <dl>
+        <!-- COMENTARIOS -->
+        {% if discuss %}
+            <dt style="font-weight: bold">* POSTAGENS EM FÓRUNS:</dt><br>
+            {% for key, values in discuss.iteritems %}
+                <dd style="font-weight: bold">- {{ key }} <a href="{{ dominio }}/aluno/cursos/discussao/{{ key.pk }}/">Ver</a>
+                </dd>
+                <dl>
+                    {% for comentario in values %}
+                        <dd><b>#{{ comentario.pk }} - {{ comentario.user.aluno }}</b> {{ comentario.comment }}</dd>
+                    {% endfor %}
+                </dl>
+            {% endfor %}
+
+        {% endif %}
+        <!-- ATIVIDADES -->
+        {% if atividades %}
+            <dt style="font-weight: bold">* INCLUSÃO DE NOVA(S) ATIVIDADE(S):</dt><br>
+            {% for atividade in atividades %}
+                <dd>{{ atividade }}</dd>
+            {% endfor %}<br>
+        {% endif %}
+        <!-- MATERIAIS -->
+        {% if materiais %}
+            <dt style="font-weight: bold">* INCLUSÃO DE NOVO(S) MATERIAL(IS)</dt><br>
+            {% for material in materiais %}
+                <dd>{{ material }}</dd>
+            {% endfor %}<br>
+        {% endif %}
+    </dl>
+{% endblock %}
+
+{% block titulo2 %}Acesse a área do curso{% endblock %}
+{% block texto2 %}<p><a href="{{ dominio }}/aluno/cursos/?videos={{ checkout.pk }}">Clique aqui</a> para ir para a área do aluno no JusTutor e conferir as novidades do curso.</p>{% endblock %}

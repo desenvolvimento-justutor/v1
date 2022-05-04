@@ -1,0 +1,185 @@
+{% extends '_base.html' %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/jquery-bar-rating/themes/bars-pill.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/comments.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap_line_tabs.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/12-sliding-tags/css/style.css">
+{% endblock %}
+{% block section %}
+    <section id="questoes-destaque" class="col-sm-7">
+        <div class="titulo-home  mg-bot20">
+            <h4 class="pd-home titulo-home bold">Ranking Geral</h4>
+            <div class="linha-aba"></div>
+        </div>
+        <a href="#minha-posicao" onclick="$('#minha-posicao').pulsate({color: '#4A91D3'})" class="mg-bot20 meu-rank">Encontrar minha posição neste ranking</a>
+        <div class="div-scroll">
+            {% for aluno in ranking_geral  %}
+            <div {% if aluno == request.user.aluno %}id="minha-posicao"{% endif %} class="pontuar">
+                <div class="pontuar01 {% if aluno == request.user.aluno %}bg-azul{% else %}bg-laranja{% endif %}"></div>
+                <div class="pontuar02" >
+                    <span class="bold">{{ forloop.counter|stringformat:'02d' }}º</span>&nbsp<a href="{{ aluno.get_absolute_url }}">{{ aluno }}</a>
+                    <a onclick="show_chart_geral('geral', {{ aluno.id }})" href="javascript:void(0)" class="pull-right emoticon02">
+                        <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <g> <defs> <rect id="SVGID_1_" x="3.642" y="3.621" width="16.715" height="16.758"></rect> </defs> <clipPath id="SVGID_2_"> <use xlink:href="#SVGID_1_" overflow="visible"></use> </clipPath> <path clip-path="url(#SVGID_2_)" d="M4.272,8.849l3.817,1.574c0.07,0.029,0.143,0.042,0.214,0.042c0.194,0,0.381-0.1,0.486-0.275 l1.718-2.895l3.14-1.545l0.098,1.427c0.002,0.042,0.031,0.079,0.072,0.09c0.039,0.013,0.084-0.002,0.109-0.036l2.631-3.429 c0.025-0.034,0.031-0.081,0.012-0.119c-0.02-0.039-0.059-0.063-0.102-0.063l-4.322-0.008c-0.043,0-0.08,0.026-0.096,0.065 c-0.015,0.04-0.004,0.084,0.027,0.113l1.072,0.948l-3.29,1.619c-0.099,0.048-0.18,0.124-0.236,0.218L8.069,9.195L4.703,7.807 c-0.289-0.12-0.618,0.019-0.736,0.306C3.847,8.4,3.985,8.73,4.272,8.849L4.272,8.849z M4.272,8.849"></path> <path clip-path="url(#SVGID_2_)" d="M19.52,18.686H4.488c-0.467,0-0.846,0.379-0.846,0.846s0.378,0.846,0.846,0.846H19.52 c0.469,0,0.846-0.379,0.846-0.846S19.988,18.686,19.52,18.686L19.52,18.686z M19.52,18.686"></path> </g> <path d="M5.323,11.804c-0.188,0-0.341,0.153-0.341,0.342v5.07c0,0.189,0.153,0.342,0.341,0.342h1.995 c0.188,0,0.342-0.152,0.342-0.342v-5.07c0-0.189-0.153-0.342-0.342-0.342H5.323z M5.323,11.804"></path> <path d="M16.35,6.391v10.826c0,0.189,0.152,0.342,0.342,0.342h1.994c0.188,0,0.342-0.152,0.342-0.342V6.391 c0-0.188-0.154-0.341-0.342-0.341h-1.994C16.502,6.049,16.35,6.202,16.35,6.391L16.35,6.391z M16.35,6.391"></path> <path d="M12.9,9.067c-0.188,0-0.34,0.153-0.34,0.342v7.808c0,0.189,0.152,0.342,0.34,0.342h1.996c0.188,0,0.34-0.152,0.34-0.342 V9.409c0-0.188-0.152-0.342-0.34-0.342H12.9z M12.9,9.067"></path> <path d="M9.112,13.313c-0.188,0-0.342,0.154-0.342,0.342v3.563c0,0.189,0.153,0.342,0.342,0.342h1.994 c0.189,0,0.342-0.152,0.342-0.342v-3.563c0-0.188-0.153-0.342-0.342-0.342H9.112z M9.112,13.313"></path> </g> </svg>
+                    </a>
+                    <div class="pull-right"class="pull-right mg-r10"><span style="font-size:100%" class="label label-info">{{ aluno.get_pontos_total }}</span> pts</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="clear"></div>
+    </section>
+    <section class="col-sm-5">
+        <div class="titulo-home mg-bot20">
+            <h4 class="pd-home titulo-home bold">Como Pontuar</h4>
+
+            <div class="linha-aba"></div>
+        </div>
+        <div class="panel panel-success">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Tabela de pontuação JusTutor</div>
+
+            <!-- Table -->
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Questão</th>
+                    <th>Peça</th>
+                    <th>Sentença</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Quando você responde</th>
+                    <td class="text-center">8</td>
+                    <td class="text-center">20</td>
+                    <td class="text-center">20</td>
+                </tr>
+                <tr>
+                    <th scope="row">Quando alguém corrige uma resposta sua</th>
+                    <td class="text-center">2</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center">3</td>
+                </tr>
+                <tr>
+                    <th scope="row">Quando você avalia uma resposta</th>
+                    <td class="text-center">1</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center">1</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        {% if website.config.regulamento_premios %}
+        <div class="titulo-home mg-top10">
+            <h2 class="pd-home titulo-home-2 bold">Como concorrer a prêmios</h2>
+
+            <div class="linha-aba"></div>
+                <p>{{ website.config.regulamento_premios.conteudo|safe|truncatechars_html:"200" }}</p>
+            </div>
+            <a href="{{ minha_resposta.get_absolute_url }}" class="faixa-vermelha" data-toggle="modal" data-target="#myModal">
+                clique aqui e veja <span class="fonte-amarela">regulamento completo</span>
+            </a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Regulamento de como concorrer a prêmios</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="div-scroll ">
+                        {{ website.config.regulamento_premios.conteudo|safe }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    {% endif %}
+    </section>
+
+{% endblock %}
+
+{% block busca %}
+    <div class="mg-bot20">
+        <div class="container">
+            <!-- MAIS RESPONDERAM -->
+            <div class="col-sm-4">
+                <div class="titulo-home">
+                    <h2 class="pd-home titulo-home-2 bold">Pessoas que mais responderam</h2>
+                    <div class="clear"></div>
+                    <a href="#minha-posicao-2" onclick="$('#minha-posicao-2').pulsate({color: '#4A91D3'})" class="meu-rank">Encontrar minha posição neste ranking</a>
+                </div>
+                <div class="enunciado-destaque div-scroll" style="padding-right: 4px; min-height: 300px">
+                    <div class="clear"></div>
+                    {% for row in mais_responderam  %}
+                    <div {% if row.aluno == request.user.aluno %}id="minha-posicao-2"{% endif %} class="pontuar">
+                        <div class="pontuar01 {% if row.aluno == request.user.aluno %}bg-azul{% else %}bg-laranja{% endif %}"></div>
+                        <div class="pontuar02">
+                            <span class="bold">{{ forloop.counter|stringformat:'02d' }}º</span> <a href="{{ row.aluno.get_absolute_url }}">{{ row.aluno }}</a>
+                            <div class="pull-right"class="pull-right mg-r10"><span style="font-size:100%" class="label label-info">{{ row.total }}</span> respostas</div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!--a href="#" class="vermais"> + VER MAIS</a-->
+            </div>
+            <!-- MAIS CORRIGIRAM -->
+            <div class="col-sm-4">
+                <div class="titulo-home">
+                    <h2 class="pd-home titulo-home-2 bold">Pessoas que mais avaliaram</h2>
+                    <div class="clear"></div>
+                    <a href="#minha-posicao-3" onclick="$('#minha-posicao-3').pulsate({color: '#4A91D3'})" class="meu-rank">Encontrar minha posição neste ranking</a>
+                </div>
+                <div class="enunciado-destaque div-scroll" style="padding-right: 4px; min-height: 300px">
+                    <div class="clear"></div>
+                    {% for row in mais_corrigiram  %}
+                    <div {% if row.aluno == request.user.aluno %}id="minha-posicao-3"{% endif %} class="pontuar">
+                        <div class="pontuar01 {% if row.aluno == request.user.aluno %}bg-azul{% else %}bg-laranja{% endif %}"></div>
+                        <div class="pontuar02">
+                            <span class="bold">{{ forloop.counter|stringformat:'02d' }}º</span> <a href="{{ row.aluno.get_absolute_url }}">{{ row.aluno }}</a>
+                            <div class="pull-right"class="pull-right mg-r10"><span style="font-size:100%" class="label label-info">{{ row.total }}</span> avaliações</div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!--a href="#" class="vermais"> + VER MAIS</a-->
+            </div>
+            <!-- MAIS POPULARES -->
+            <div class="col-sm-4">
+                <div class="titulo-home">
+                    <h2 class="pd-home titulo-home-2 bold">Mais Populares</h2>
+                    <div class="clear"></div>
+                    <a href="javascript:void(0)" onclick="$('#minha-posicao-4').pulsate({color: '#4A91D3'})" class="meu-rank">Encontrar minha posição neste ranking</a>
+                </div>
+                <div class="enunciado-destaque div-scroll" style="padding-right: 4px; min-height: 300px">
+                    <div class="clear"></div>
+                    {% for row in mais_populares  %}
+                    <div {% if row.aluno == request.user.aluno %}id="minha-posicao-4"{% endif %} class="pontuar">
+                        <div class="pontuar01 {% if row.aluno == request.user.aluno %}bg-azul{% else %}bg-laranja{% endif %}"></div>
+                        <div class="pontuar02">
+                            <span class="bold">{{ forloop.counter|stringformat:'02d' }}º</span> <a href="{{ row.aluno.get_absolute_url }}">{{ row.aluno }}</a>
+                            <div class="pull-right"class="pull-right mg-r10"><span style="font-size:100%" class="label label-info">{{ row.total }}</span> seguidores</div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!--a href="#" class="vermais"> + VER MAIS</a-->
+            </div>
+
+        <div class="clear"></div> <br><br>
+    </div>
+    {% include 'busca.html' %}
+{% endblock %}
+<!--*BLOCO ABAIXO*------------------------------------------------------------------------------------>

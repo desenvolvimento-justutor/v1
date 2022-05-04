@@ -1,0 +1,124 @@
+{% extends '_base-enunciado.html' %}
+{% block extra_css %}
+<style>
+    .notice {
+        padding: 15px;
+        background-color: #fafafa;
+        border-left: 6px solid #7f7f84;
+        margin-bottom: 10px;
+        -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+           -moz-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+                box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+    }
+    .notice-sm {
+        padding: 10px;
+        font-size: 80%;
+    }
+    .notice-lg {
+        padding: 35px;
+        font-size: large;
+    }
+    .notice-success {
+        border-color: #80D651;
+    }
+    .notice-success>strong {
+        color: #80D651;
+    }
+    .notice-info {
+        border-color: #45ABCD;
+    }
+    .notice-info>strong {
+        color: #45ABCD;
+    }
+    .notice-warning {
+        border-color: #FEAF20;
+    }
+    .notice-warning>strong {
+        color: #FEAF20;
+    }
+    .notice-danger {
+        border-color: #d73814;
+    }
+    .notice-danger>strong {
+        color: #d73814;
+    }
+</style>
+{% endblock %}
+{% block bloco_dir_lg %}4{% endblock %}
+{% block cabecalho %}
+    <div class="titulo-home mg-bot20">
+        <h4 class="pd-home titulo-home bold">Temas abordados nos enunciados do JusTutor</h4>
+        <div class="linha-aba mg-bot20"></div>
+    </div>
+{% endblock %}
+
+{% block bloco_esq %}
+    <section id="questoes-destaque" class="col-sm-8">
+        <!-- Últimas Respostas -->
+        <div class="containner">
+            {% for tag in tags %}
+            <div class="col-sm-6">
+                <a href="{% url 'website:busca-tag' %}?tag={{ tag.nome }}">
+                <div class="notice notice-info">
+                    <strong>{{ tag }}</strong> <span class="label label-success pull-right">{{ tag.enunciadoproposta_set.all.count }}</span>
+                </div>
+                </a>
+            </div>
+            {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block centro %}
+    <div class="col-sm-12 containner text-center">
+         <ul class="pagination">
+            {% if tags.has_previous %}
+              <li><a href="?page={{ tags.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled"><a href="#">&laquo;</a></li>
+            {% endif %}
+
+            {% for num in tags.paginator.page_range %}
+              {% ifequal num tags.number %}
+                <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+              {% else %}
+                <li><a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ num }}</a></li>
+              {% endifequal %}
+            {% endfor %}
+
+            {% if tags.has_next %}
+              <li><a href="?page={{ tags.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&raquo;</a></li>
+            {% else %}
+              <li class="disabled"><a href="#">&raquo;</a></li>
+            {% endif %}
+         </ul>
+    </div>
+    <div class="col-sm-12">
+        <ol>
+            <li>Os temas listados aparecem tanto em questões discursivas, redações, peças práticas e sentenças. Assim, as informações mostradas não separam os temas pela quantidade de vezes em que aparecem em cada tipo específico de enunciado.</li>
+            <li>As quantidades mostradas são relativas ao conjunto de enunciados cadastrados no JusTutor e variam na medida em que novos enunciados são incluídos.</li>
+            <li>O JusTutor tem em seu banco de dados enunciados de diversas áreas, com predominância para o Direito.</li>
+            <li>Cada enunciado é cadastrado com ao menos um tema, podendo, em alguns casos, um mesmo enunciado ser cadastrado pelo JusTutor com vários temas.</li>
+        </ol>
+    </div>
+{% endblock %}
+{% block bloco_dir %}
+    <form role="search" method="get">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Buscar um tema..." name="q">
+          <span class="input-group-btn" style="top: -1px" >
+            <button class="btn btn-default glyphicon glyphicon-search" type="input"></button>
+          </span>
+        </div>
+    </form>
+    <div class="enunciado-destaque">
+        <a href="#" class="faixa-vermelha">
+            Veja as respostas já elaboradas <span class="fonte-amarela">para este enunciado</span>
+        </a>
+    </div>
+    {% include '_widget-anuncio.html' %}
+{% endblock %}
+
+{% block busca %}
+    {% include 'busca.html' %}
+{% endblock %}

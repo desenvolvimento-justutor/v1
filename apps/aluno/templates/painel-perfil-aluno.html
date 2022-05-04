@@ -1,0 +1,203 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/nifty-component.css"/>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/social-buttons.css"/>
+{% endblock %}
+
+{% block panel_content %}
+    <div class="row" id="user-profile" xmlns="http://www.w3.org/1999/html">
+        {% include '_widget-perfil-aluno.html' %}
+        <div class="col-lg-9 col-md-8 col-sm-8">
+            <div class="main-box clearfix">
+                <div class="tabs-wrapper profile-tabs">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><!-- GRAFICO -->
+                            <a href="#tab-grafico" id="grafico" data-toggle="tab">Gráfico</a>
+                        </li>
+                        <li><!-- RESPOSTAS -->
+                            <a href="#tab-respostas" id="respostas" data-toggle="tab">Respostas</a>
+                        </li>
+                        <li><!-- SEGUIDORES-->
+                            <a href="#tab-seguidores" data-toggle="tab">Seguidores</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- MEUS ENUNCIADOS --->
+                        <div class="tab-pane fade in active" id="tab-grafico">
+                            <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+                                <span class="text-primary mg-top20"><i class="fa fa-refresh fa-spin fa-5x"></i></span>
+                            </div>
+                        </div>
+                        <!-- MEUS ENUNCIADOS --->
+                        <div class="tab-pane fade" id="tab-respostas">
+                            <div data-scroll="slimscroll" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Média</td>
+                                        <td >Correções</td>
+                                        <td>Situação</td>
+                                        <td>Tempo</td>
+                                        <td>Data</td>
+                                    </thead>
+                                    <tbody>
+                                    {% for resposta in aluno_view.resposta_set.all %}
+                                    <tr>
+                                        <td>
+                                            <i class="fa icon-{{ resposta.enunciado.get_tipo_url }} icon-size-16 {{ resposta.enunciado.get_tipo_url }}-black"></i>
+                                        </td>
+                                        <td>
+                                            {% if resposta.ativo %}
+                                                <a href="{{ resposta.get_absolute_url }}">Resposta {{ resposta.numero }}</a>
+                                                ao Enunciado <a href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a>
+                                            {% else %}
+                                                <span class="text-danger"><i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="Este Resposta foi desativado."></i></span>
+                                                <span class="bg-danger"><a target="_blank" href="{{ resposta.get_absolute_url }}">Resposta {{ resposta.numero }}</a>
+                                                ao Enunciado <a target="_blank" href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a></span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="label label-warning">{{ resposta.get_media }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="label label-info">{{ resposta.correcao_set.all.count }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if resposta.concluido %}
+                                                <span class="text-success"><i class="fa fa-check fa-lg" data-toggle="tooltip" title="Concluído"></i></span>
+                                            {% else %}
+                                                <span class="text-primary"><i class="fa fa-clock-o fa-lg" data-toggle="tooltip" title="Você não terminou de responder"></i></span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="label label-success">{{ resposta.tempo|date:"H:i" }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            {{ resposta.data_termino|date:"d\/m\/y H:i" }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- SEGUIDORES -->
+                        <div class="tab-pane clearfix fade" id="tab-seguidores">
+                            <div data-scroll="slimscroll">
+                                <ul class="widget-users row">
+                                    {% for seguidor in  aluno_view.get_seguidores.all %}
+                                        {% with seguidor.de_aluno as aluno %}
+                                        <li class="col-md-6">
+                                            <div class="img">
+                                                {% thumbnail aluno.foto "50x50" crop="center" as im %}
+                                                    <img src="{{ im.url }}" alt="{{ aluno_view }}">
+                                                {% empty %}
+                                                    <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno_view }}"/>
+                                                {% endthumbnail %}
+                                            </div>
+                                            <div class="details">
+                                                <div class="name">
+                                                    <a href="{{ aluno.get_absolute_url }}">{{ aluno }}</a>
+                                                </div>
+                                                <!--div class="time">
+                                                    <i class="fa fa-clock-o"></i> Last online: 5 minutes ago
+                                                </div-->
+                                                <div class="type">
+                                                    <span data-toggle="tooltip" title="Pontos" class="label label-primary">{{ aluno.get_pontos_total }}</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endwith %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ STATIC_URL }}assets/highcharts/highcharts.js"></script>
+<script src="{{ STATIC_URL }}assets/highcharts/modules/exporting.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/modernizr.custom.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/classie.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/modalEffects.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $.getJSON("{% url 'enunciado:get-chart' %}", {'aluno_id': {{ aluno_view.id }}, 'tipo': 'geral'})
+            .done(function (json) {
+                var pieData = json.pieData;
+                // graph
+                $('#span-pontos').text(json.total);
+                $('#container').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: true,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Gráfico Ranking Geral (' + json.aluno + ')'
+                    },
+                    /*tooltip: {
+                     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                     },*/
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            },
+                            showInLegend: false
+                        }
+                    },
+                    series: [{
+                        name: 'Pontos',
+                        colorByPoint: true,
+                        data: pieData
+                    }]
+                });
+
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                Swal.fire(jqxhr.statusText, 'Desculpe, ocorreu um erro ao tentar enviar sua avaliação.', 'error');
+            });
+    });
+    // SEGUIR
+    $('#btn-seguir').click(function () {
+        var btn = $(this)
+        btn.button('loading')
+        console.log('seguir', btn.data().seguir)
+        Dajaxice.apps.aluno.seguir(Dajax.process, {'aid': {{ aluno_view.id }}, 'acao': btn.data('seguir') });
+{#        setTimeout(function () {#}
+{#            btn.button('reset')#}
+{#        }, 3000)#}
+    });
+    // ENVIAR MENSAGEM
+    function enviarMensagem() {
+        var texto = $('#text-msg').val();
+        if (texto == "") {
+            notif('Informe o texto da mensagem', 'error');
+            $('#modal-msg').blur();
+        } else {
+            $("#modal-msg").modal("hide");
+            $("#text-msg").val("");
+            startLoad();
+            Dajaxice.apps.aluno.enviar_mensagem(Dajax.process, {'aid': {{ aluno_view.id }}, 'mensagem': texto });
+        }
+    }
+
+</script>
+{% endblock %}

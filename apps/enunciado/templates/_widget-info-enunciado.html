@@ -1,0 +1,57 @@
+<div class="clear"></div>
+<div class="info-enunciado">
+    {% if enunciado.classificacao == 'ST' %}
+        <div class="pull-left">{{ enunciado.esfera_especifica.nome }}</div>
+        <div class="pull-left">&bullet;</div>
+        <div class="pull-left">{{ enunciado.concurso }}</div>
+        <div class="pull-left">&bullet;</div>
+        <div class="pull-left">Sentença {{ enunciado.tipo_sentenca }}</div>
+    {% elif enunciado.classificacao == 'PP' %}
+        <div class="pull-left">{{ enunciado.concurso }}</div>
+        <div class="pull-left"><span>Disciplina: </span>{{ enunciado.disciplina }}</div>
+        <div class="pull-left"><span>Peça: </span>{{ enunciado.tipo_peca_pratica }}</div>
+    {% else %}
+        <div class="pull-left">{{ enunciado.concurso }}</div>
+        <div class="pull-left"><span>Org.: </span>{{ enunciado.orgao_entidade.nome }}</div>
+        <div class="pull-left"><span>Disciplina: </span>{{ enunciado.disciplina }}</div>
+        <div class="pull-left"><span>Questão N&deg;: </span>{{ enunciado.num_questao_caderno|stringformat:"03d" }}</div>
+    {% endif %}
+    <div class="clear"></div>
+    <div class="mg-bot10"></div>
+</div>
+
+<hr class="no-pd">
+<div class="mg-bot10"></div>
+
+<ul class="tags">
+    {% for tag in enunciado.tags.all %}
+        <li><a {% if btag == tag.nome %} class="blue"{% endif %} href="{% url 'website:busca-tag' %}?tag={{ tag.nome }}">{{ tag }}<span{% if btag == tag.nome %} class="blue"{% endif %}>{{ tag.enunciadoproposta_set.all.count }}</span></a></li>
+    {% endfor %}
+</ul>
+
+<!-- BARRA DE OPÇÕES --->
+{% comment %}
+<!div class="linha-opcoes">
+    <!-- RESPONDER DEPOIS --->
+    <a href="#" class="btn-linha-opcoes">
+        <i class="fa fa-history fa-lg text-info"></i> Responder Depois
+    </a>
+    <!-- ACOMPANHAR --------->
+    <a href="#" class="btn-linha-opcoes">
+        <i class="fa fa-feed fa-lg text-success"></i> Acompanhar
+    </a>
+    <!-- CRIAR DESAFIO ------>
+    <a href="#" type="button" class="btn-linha-opcoes" data-toggle="modal" data-target="#myModal">
+        <i class="fa fa-trophy fa-lg text-warning"></i> Criar Desafio
+    </a>
+    <!-- REPORTAR PROBLEMA -->
+    <a href="#" class="btn-linha-opcoes">
+        <i class="fa fa-bug fa-lg text-danger"></i> Reportar Problema
+    </a>
+    <!-- REPORTAR IMPRIMIR -->
+    <a href="#" class="btn-linha-opcoes">
+        <i class="fa fa-print fa-lg text-primary"></i> Imprimir
+    </a>
+    <div class="clear"></div>
+</div>
+{% endcomment %}

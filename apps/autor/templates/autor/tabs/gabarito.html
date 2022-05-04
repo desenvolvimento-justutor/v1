@@ -1,0 +1,56 @@
+{% load autor %}
+<div class="row">
+        <div class="col-lg-12">
+            <p class="text-info">* O simbolo <i class="fa fa-circle red"></i> na alternativa informa que a questão foi anulada.</p>
+        </div>
+    {% for grupo in simulado.grupos.all %}
+        <div class="col-lg-12">
+            <h4><strong>{{ grupo.grupo.nome }}</strong></h4>
+            <div class="table-responsive">
+                <table class="table table-bordered" style="width: unset">
+                    <tbody>
+                    {% for disciplina in grupo.grupo.disciplinas.all %}
+                        <tr>
+                            <td style="width: 400px; padding: 4px">
+                                <small>{{ disciplina.disciplina.nome }}</small>
+                            </td>
+                            {% for q in disciplina.questoes.all %}
+                                {% get_resposta_aluno questionario_aluno q as resposta %}
+                                    {% if request.user.is_superuser or simulado.encerrado or questionario_aluno.data_conclusao %}
+                                        {% with  status=resposta.status %}
+                                            <td style="width: 40px; padding: 4px; cursor: pointer"
+                                                class="text-center {{ status.color }}-bg">
+                                                <strong>{{ q.numeracao }}</strong>
+                                                <span style="display: block">
+                                                <!-- {{ q.questao.get_correta }} -->
+                                                <!-- {{ q.tipo }} -->
+                                                <!-- {{ q.questao.tipo }} -->
+                                                    {% if anulada %}
+                                                        <i class="fa fa-circle red"></i>
+                                                    {% else %}
+                                                        {% ifequal q.questao.tipo "M" %}
+                                                            ({{ q.questao.get_correta.numeracao }})
+                                                        {% else %}
+                                                            {{ q.questao.get_correta.correta|yesno:"C,E" }}
+                                                        {% endifequal %}
+
+                                                    {% endif %}
+                                                </span>
+                                            </td>
+                                        {% endwith %}
+                                    {% else %}
+                                        <td style="width: 40px; padding: 4px; cursor: pointer"
+                                            class="text-center gray-bg">
+                                            <strong style="display: block">{{ q.numeracao }}</strong>
+                                            <i class="fa fa-lock purple"></i>
+                                        </td>
+                                    {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+</div>

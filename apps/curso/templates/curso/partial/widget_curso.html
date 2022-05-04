@@ -1,0 +1,74 @@
+{% load thumbnail aluno_tags curso %}
+<div class="curso-x">
+    <div class="descricao-curso" style="height: 180px">
+        <h2 class="text-success" style="font-weight: 400">{{ curso }}</h2>
+        <div>
+            {{ curso.descricao|truncatechars:300 }}
+        </div>
+    </div>
+
+    <div class="preco-curso">
+        <div class="pull-right"><small>Nível:</small> {{ curso.sentenca_avulsa.span_nivel|safe }} </div>
+        <div class="preco-geral">
+            <div class="preco-menor-x">R$</div>
+            <div class="preco-maior-x text-primary">{{ curso.valor }}</div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    {% if curso.ativo == False %}
+        <div class="categoria-curso" style="background-color: red">
+            Inscrições encerradas
+        </div>
+    {% else %}
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <a href="{% url 'curso:curso-sentenca' curso.slug %}?action=combo_redirect" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Saiba mais
+                </a>
+            </div>
+            {% if curso.ativo %}
+                <div class="btn-group" role="group">
+                    {% if request.user.aluno %}
+                        {% get_transaction curso as tr %}
+                        {% if not tr.check %}
+                            {% check_curso_in_pct curso as in_pct %}
+                            {% if in_pct %}
+                                {% if in_pct.status == 'A' %}
+                                    <a href="{{ in_pct.get_absolute_url }}" class="btn btn-warning">
+                                        <i class="fa fa-check"></i> Adicionado
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'curso:carrinho' %}" class="btn btn-danger">
+                                        <i class="fa fa-cart-plus"></i> Adicionado
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="curso_pk" value="{{ curso.pk }}">
+                                    <input type="hidden" name="action" value="add">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-plus"></i> Adicionar
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            {% if tr.trans %}
+                                {% if tr.trans.status == 'pago' %}
+                                    <a href="{% url 'aluno:sentencas-avulsas' %}" class="btn btn-info">Ver sentenças</a>
+                                {% else %}
+                                    <a href="#" class="btn btn-danger">Transação: {{ tr.trans.status }}</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="#" class="btn btn-danger">Transação pendente</a>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <button onclick="login()" type="button" class="btn btn-info"><i class="fa fa-user"></i> Login</button>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+    <div class="clear"></div>
+</div>

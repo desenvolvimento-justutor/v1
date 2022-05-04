@@ -1,0 +1,48 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/timeline.css">
+{% endblock %}
+
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <section id="cd-timeline" class="cd-container">
+            {% for notificacao in notificacoes %}
+                <div class="cd-timeline-block">
+                    <div class="cd-timeline-img cd-picture" data-toggle="tooltip" title="{{ notificacao.aluno }}">
+                        {% thumbnail notificacao.aluno.foto "100x100" crop="center" as im %}
+                            <a href="#"><img src="{{ im.url }}" alt="{{ notificacao.aluno }}" class="cd-timeline-img cd-picture"></a>
+                        {% empty %}
+                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}" class="cd-timeline-img cd-picture"/>
+                        {% endthumbnail %}
+                    </div>
+                    <div class="cd-timeline-content">
+                        <h2>{{ notificacao.icone.lg|safe }} {{ notificacao.get_tipo_display }}</h2>
+
+                        <p>{{ notificacao.get_mensagem.html|safe }}</p>
+
+                        <span class="cd-date"><label data-toggle="tooltip" title="{{ notificacao.data }}">{{ notificacao.str_data }}</label></span>
+                    </div>
+                </div>
+            {% endfor %}
+                <div class="cd-timeline-block">
+                    <div class="cd-timeline-img cd-movie">
+                        <i class="fa fa-star-o fa-2x"></i>
+                    </div>
+                    <div class="cd-timeline-content">
+                        <h2>Seu cadastro no site</h2>
+                        <p class="text-succes"><strong>\o.</strong></p>
+                        <span class="cd-date">{{ aluno.data_cadastro }}</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ STATIC_URL }}perfil/js/modernizr.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/timeline.js"></script>
+{% endblock %}

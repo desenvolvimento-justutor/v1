@@ -1,0 +1,26 @@
+<div class="modal fade" id="modalComprarCreditos" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <form method="post" id="formComprar">
+                    {% csrf_token %}
+                    <input type="hidden" value="" name="valor" id="inputValor">
+                    <input type="hidden" value="" name="qtda" id="inputQtda">
+                    <input type="hidden" value="" name="pacote_id" id="inputPacoteId">
+                </form>
+                <div class="row">
+                    <div class="col-sm-6">
+                        {% include 'aluno/financeiro/includes/widget_avulso.html' %}
+                    </div>
+                    <div class="col-sm-6">
+                        {% include 'aluno/financeiro/includes/widget_pacote.html' %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

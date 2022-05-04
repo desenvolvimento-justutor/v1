@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ enunciado }}</title>
+</head>
+<body>
+<img align="middle" src="http://www.justutor.com.br/static/images/logos/justuto-horizontal.png">
+{% for resposta in respostas %}
+    <h2> {{ forloop.counter|stringformat:"03d" }}. Enunciado: {{ resposta.enunciado }} <small>({{ resposta.enunciado.disciplina }}) {{ resposta.enunciado.concurso }}</small></h2>
+    {{ resposta.enunciado.texto|safe }}
+    <h2> Resposta: {{ resposta }}</h2>
+    {{ resposta.texto|safe }}
+    <hr>
+{% endfor %}
+</body>
+</html>

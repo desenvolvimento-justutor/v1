@@ -1,0 +1,11 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+     Seu acesso de cortesia já está liberado!
+{% endblock %}
+{% block texto1 %}
+    <p>Estamos felizes em comunicar que seu acesso de cortesia para <strong>{{ simulado }}</strong> já está disponível!</p>
+{% endblock %}
+
+{% block titulo2 %}{{ codigo }}{% endblock %}
+{% block texto2 %}<p><a href="{{ dominio }}/aluno/simuladoinfo/{{ simulado.simulado_id }}/">Clique aqui</a> para ir para a área do aluno no JusTutor e acessar o simulado.</p>{% endblock %}

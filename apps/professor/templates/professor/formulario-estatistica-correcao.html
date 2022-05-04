@@ -1,0 +1,30 @@
+<div class="table-responsive">
+    <table class="table user-list table-hover">
+        <thead>
+        <tr>
+            <th><span>Item</span></th>
+            <th class="text-center"><span>Valor</span></th>
+            <th class="text-center"><span>Nota</span></th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for tabela in tabelas %}
+            <tr id="block{{ tabela.pk }}">
+                <td >
+                    {{ tabela.tabela }}
+                </td>
+                <td class="text-center">
+                    <label class="label label-info" style="font-size: 16px">{{ tabela.tabela.valor }}</label>
+                </td>
+                <td  class="text-center">
+                    {{ tabela.get_dot_nota|default_if_none:"0" }}
+                </td>
+            </tr>
+
+            {% endfor %}
+            <td><span class="pull-right">Total:</span></td>
+            <td class="text-center"><strong class="label label-primary" style="font-size: 16px">{{ tabela_correcao.total.valor }}</strong></td>
+            <td class="text-center"><span id="totalID" class="label label-success" style="font-size: 16px">{{ tabela_correcao.total.nota }}</span></td>
+        </tbody>
+    </table>
+</div>

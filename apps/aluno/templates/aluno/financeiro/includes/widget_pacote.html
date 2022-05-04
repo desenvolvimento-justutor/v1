@@ -1,0 +1,43 @@
+{% load curso %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Ou escolha um dos pacotes abaixo.</div>
+    </div>
+    <div class="panel-body">
+        {% with config.pacotes.all as pacotes %}
+            <form class="credits">
+                <ul class="list-unstyled" id="pacotes">
+                    {% for pacote in pacotes %}
+                        <li class="pacote_row {% if forloop.counter > 3 %}hide{% endif %}" id="li_{{ pacote.pk }}"
+                            data-qtda="{{ pacote.quantidade }}" data-pacote="{{ pacote.pk }}"
+                            data-valor="{{ pacote.valor|stringformat:".02f" }}">
+                            <label class="row">
+                            <span class="col-xs-6 col-lg-4 text-left">
+                                {{ pacote.quantidade }} Créditos
+                            </span>
+                                <span class="col-lg-5 visible-lg text-center savings">
+                                {% if pacote.desconto %}
+                                    Econômia de {{ pacote.desconto|floatformat:2 }}%
+                                {% endif %}
+                            </span>
+                                <span class="col-xs-6 col-lg-3 text-right">
+                                {{ pacote.valor|moeda }}
+                            </span>
+                            </label>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="expand-credits text-center {% if pacotes.count <= 3 %}hide{% endif %}">
+                    <span>Exibir mais pacotes</span>
+                    <span class="fa fa-chevron-down"></span>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-block" id="btnComprarPacote" disabled
+                            data-valor="" data-qtda="" data-pacote="">
+                        <strong id="btnComprarPacoteText">Selecione um pacote</strong>
+                    </button>
+                </div>
+            </form>
+        {% endwith %}
+    </div>
+</div>

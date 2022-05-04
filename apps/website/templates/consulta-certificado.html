@@ -1,0 +1,44 @@
+{% extends "_base.html" %}
+{% block  section %}
+    <section class="interna">
+        <div class="container">
+            <div class="caminho-do-site mb-bot20">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>Consulta Certificado</li>
+                    <li class="active">{{ chave }}</li>
+                </ol>
+            </div>
+        </div><br>
+        <div class="container">
+            <section id="questoes-destaque" class="col-sm-12">
+                <div class="jumbotron text-center">
+                    <h2 class="mg-bot20">{{ chave }}</h2>
+                    {% if certificado %}
+                        <i class="fa fa-thumbs-o-up fa-4x" style="color: limegreen"></i>
+                        <p class="text-success"> <strong>Certificado Válido</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Nome do Aluno</th>
+                                <th>Curso</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{ certificado.aluno }}</td>
+                                <td>{{ certificado.curso }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <i class="fa fa-remove fa-4x" style="color: red"></i>
+                        <p class="text-danger"> <strong>Certificado Inválido</strong></p>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </section>
+{% endblock %}

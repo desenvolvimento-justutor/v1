@@ -1,0 +1,80 @@
+{% load thumbnail %}
+<div class="col-lg-3 col-md-4 col-sm-4">
+    <div class="main-box clearfix">
+        <header class="main-box-header clearfix text-center">
+            <h5>{{ aluno }}</h5>
+        </header>
+        <div class="main-box-body clearfix">
+            <!-- FOTO ----------->
+            {% thumbnail aluno.foto "160x160" crop="center" as im %}
+                <img id="foto-aluno" src="{{ im.url }}" alt="{{ aluno }}" class="profile-img img-responsive center-block">
+            {% empty %}
+                <img id="foto-aluno" src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}" class="profile-img img-responsive center-block"/>
+            {% endthumbnail %}
+            <div class="profile-label">
+                <a href="#" data-toggle="popover-x" data-target="#myPopover1b" data-placement="right">
+                    <span class="text-success" data-toggle="tooltip" title="Alterar Imagem"><i class="fa fa-file-image-o fa-lg"></i></span>
+                </a>
+                <div id="myPopover1b" class="popover popover-success">
+                    <div class="arrow"></div>
+                    <h3 class="popover-title"><span class="close pull-right" data-dismiss="popover-x">×</span>Alterar imagem</h3>
+                    <div class="popover-content">
+                        <input id="avatar" type="file" class="file" value="{{ aluno.foto }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- START RATTING -->
+            <div class="profile-stars">
+                {% for i in 'xxxxxxxxxx' %}
+                    {% if forloop.counter|stringformat:"2d" <=  aluno.get_media_respostas|stringformat:"2d" %}
+                        <i class="fa fa-star" data-toggle="tooltip" title="{{ forloop.counter }}"></i>
+                    {% else %}
+                        <i class="fa fa-star-o" data-toggle="tooltip" title="{{ forloop.counter }}"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="profile-since" style="padding-bottom: 10px">
+                <span class="label label-warning label-circle" data-toggle="tooltip" title="Média de notas das suas Respostas">{{ aluno.get_media_respostas|stringformat:".2f" }}</span>
+            </div>
+            <!-- MENBRO DESDE -->
+            <div class="profile-since">
+                Membro desde: <span class="text-info">{{ aluno.data_cadastro|date:"b. \d\e Y"|capfirst }}</span>
+            </div>
+            <div class="profile-details">
+                <ul class="fa-ul">
+                    <li><i class="fa-li fa fa-edit"></i>Respostas <span class="pull-right">{{ aluno.resposta_set.all.count }}</span></li>
+                    <li><i class="fa-li fa fa-check"></i>Correções feitas<span class="pull-right">{{ aluno.minhas_correcoes.count }}</span></li>
+                    <li><i class="fa-li fa fa-remove"></i>Correções recebidas<span class="pull-right">{{ aluno.correcoes_recebidas.count }}</span></li>
+                    <li><i class="fa-li fa fa-thumbs-up"></i>Likes <span class="pull-right">{{ aluno.get_pontos_avaliacao }}</span></li>
+                </ul>
+            </div>
+            <button class="btn btn-danger btn-block" data-toggle="modal" data-target="#modalCancel">Cancelar conta</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Cancelamento de conta</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-info text-justify" style="font-weight: bolder">Ao confirmar o cancelamento da sua conta, seu perfil será apagado e seu acesso ao JusTutor será encerrado. Todos os seus dados sairão do ar e, caso você tenha feito alguma resposta ou correção em nossa área gratuita, o conteúdo permanecerá, mas seu nome e seu usuário serão excluídos. Ainda assim, se não quiser que suas respostas/correções fiquem disponíveis, exclua-os antes de encerrar sua conta.</p>
+                <p>Se desejar reativar sua conta, envie um e-mail para <a href="mailto:administrativo@justutor.com.br">administrativo@justutor.com.br</a></p>
+                <form method="post" id="formCancel">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="cancel">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Voltar</button>
+                <button type="button" class="btn btn-danger" onclick="$('#formCancel').submit()"> Cancelar conta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

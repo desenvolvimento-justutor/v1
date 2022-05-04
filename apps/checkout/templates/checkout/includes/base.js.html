@@ -1,0 +1,128 @@
+{% load static %}
+
+<script src="{% static 'website/checkout/assets/scripts/jquery/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'website/checkout/assets/scripts/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'website/checkout/assets/scripts/icheck/icheck.min.js' %}"></script>
+<script src="{% static 'website/checkout/assets/scripts/nicescroll/nicescroll.js' %}"></script>
+<script src="{% static 'website/checkout/assets/scripts/scroll-up-bar/dist/scroll-up-bar.min.js' %}"></script>
+<script src="{% static 'website/checkout/assets/js/number_format.js' %}"></script>
+<script src="{% static 'website/checkout/assets/js/config.js' %}"></script>
+<script src="{% static 'website/checkout/assets/js/letscheckout.js' %}"></script>
+<script src="{% static 'website/checkout/assets/js/demo.js' %}"></script>
+<script src="{% static 'website/checkout/assets/scripts/dist/cleave.min.js' %}"></script>
+<script src="{% static 'website/checkout/assets/scripts/dist/cleave-phone.i18n.js' %}"></script>
+<script src="{% static 'checkout/holdon/js/HoldOn.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.5.3/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+    function blockUI(message, backgroundColor, textColor) {
+        /* THEMES
+        sk-rect sk-bounce sk-folding-cube sk-circle
+        sk-dot sk-bounce sk-falding-circle sk-cube-grid
+         */
+        message = message ? message : 'Aguarde...';
+        let options = {
+            theme: 'custom',
+            // If theme == "custom" , the content option will be available to customize the logo
+            content: `<div class="loader loader12">
+      <svg width="80px" height="80px" viewBox="0 0 50 50">
+        <path d="M25,50 C11.2,50 0,38.8 0,25 C0,11.2 11.2,0 25,0 C38.8,0 50,11.2 50,25 C50,25.8 49.3,26.5 48.5,26.5 C47.7,26.5 47,25.8 47,25 C47,12.9 37.1,3 25,3 C12.9,3 3,12.9 3,25 C3,37.1 12.9,47 25,47 C25.8,47 26.5,47.7 26.5,48.5 C26.5,49.3 25.8,50 25,50 Z" fill="#212120"></path>
+        <path d="M25,45 C14,45 5,36 5,25 C5,24.2 5.7,23.5 6.5,23.5 C7.3,23.5 8,24.2 8,25 C8,34.4 15.6,42 25,42 C34.4,42 42,34.4 42,25 C42,15.6 34.4,8 25,8 C24.2,8 23.5,7.3 23.5,6.5 C23.5,5.7 24.2,5 25,5 C36,5 45,14 45,25 C45,36 36,45 25,45 Z" fill="#4FB95C"></path>
+      </svg>
+      <span style="font-size: 1.5em; font-weight: bold; bottom: 0px; color: #4ac372;"><p>${message}</p></span>
+    </div>`,
+            {#message: message ? message : 'Aguarde...',#}
+            backgroundColor: backgroundColor ? backgroundColor : 'rgba(211,211,211,0.60)',
+            textColor: '#4ac372',
+        };
+        HoldOn.open(options);
+    }
+
+    function unblockUI() {
+        HoldOn.close();
+    }
+
+    function getCookie(name) {
+        var re = new RegExp(name + "=([^;]+)");
+        var value = re.exec(document.cookie);
+        return (value != null) ? unescape(value[1]) : null;
+    }
+
+    Number.prototype.formatMoney = function (c, d, t) {
+        var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0;
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    };
+
+
+    function getCepFecth(cep) {
+        const res = fetch('{% url "checkout:ajax_busca_cep" %}?cep=' + cep, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(resp => resp.text());
+        return res
+    }
+
+    async function getCep(cep) {
+        let url = 'https://correiosapi.apphb.com/cep/' + cep;
+        const res = $.ajax({
+            //O campo URL diz o caminho de onde virá os dados
+            //É importante concatenar o valor digitado no CEP
+            url: url,
+            //Aqui você deve preencher o tipo de dados que será lido,
+            //no caso, estamos lendo JSON.
+            dataType: 'jsonp',
+            crossDomain: true,
+            contentType: "application/json",
+            //SUCESS é referente a função que será executada caso
+            //ele consiga ler a fonte de dados com sucesso.
+            //O parâmetro dentro da função se refere ao nome da variável
+            //que você vai dar para ler esse objeto.
+            success: function (resposta) {
+                //Agora basta definir os valores que você deseja preencher
+                //automaticamente nos campos acima.
+                console.log(resposta)
+            }
+        });
+        return res
+    }
+    window.showProgress = true;
+    $(document).ajaxStart(function () {
+        if (window.showProgress) {
+            blockUI();
+        }
+    });
+    $(document).ajaxComplete(function () {
+        if (window.showProgress) {
+            unblockUI();
+        }
+    });
+    $(document).ready(function () {
+        toastr.options = {
+            'closeButton': true,
+            'debug': false,
+            'newestOnTop': false,
+            'progressBar': true,
+            'positionClass': 'toast-top-right',
+            'preventDuplicates': false,
+            'showDuration': '1000',
+            'hideDuration': '1000',
+            'timeOut': '8000',
+            'extendedTimeOut': '1000',
+            'showEasing': 'swing',
+            'hideEasing': 'linear',
+            'showMethod': 'fadeIn',
+            'hideMethod': 'fadeOut',
+        }
+        {% for message in messages %}
+            toastr["{{message.tags}}"]("{{message}}")
+        {% endfor %}
+    });
+</script>

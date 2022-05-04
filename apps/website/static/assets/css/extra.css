@@ -1,0 +1,830 @@
+@-webkit-keyframes click-wave {
+    0% {
+        height: 40px;
+        width: 40px;
+        opacity: 0.35;
+        position: relative;
+    }
+    100% {
+        height: 200px;
+        width: 200px;
+        margin-left: -80px;
+        margin-top: -80px;
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes click-wave {
+    0% {
+        height: 40px;
+        width: 40px;
+        opacity: 0.35;
+        position: relative;
+    }
+    100% {
+        height: 200px;
+        width: 200px;
+        margin-left: -80px;
+        margin-top: -80px;
+        opacity: 0;
+    }
+}
+
+@keyframes click-wave {
+    0% {
+        height: 40px;
+        width: 40px;
+        opacity: 0.35;
+        position: relative;
+    }
+    100% {
+        height: 200px;
+        width: 200px;
+        margin-left: -80px;
+        margin-top: -80px;
+        opacity: 0;
+    }
+}
+
+.option-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    position: relative;
+    top: 13.3333333333px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    width: 40px;
+    -webkit-transition: all 0.15s ease-out 0s;
+    -moz-transition: all 0.15s ease-out 0s;
+    transition: all 0.15s ease-out 0s;
+    background: #cbd1d8;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 0.5rem;
+    outline: none;
+    position: relative;
+    z-index: 1000;
+}
+
+.option-input:hover {
+    background: #9faab7;
+}
+
+.option-input:checked {
+    background: #40e0d0;
+}
+
+.option-input:checked::before {
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    content: "\2716";
+    display: inline-block;
+    font-size: 26.6666666667px;
+    text-align: center;
+    line-height: 40px;
+}
+
+.option-input:checked::after {
+    -webkit-animation: click-wave 0.65s;
+    -moz-animation: click-wave 0.65s;
+    animation: click-wave 0.65s;
+    background: #40e0d0;
+    content: "";
+    display: block;
+    position: relative;
+    z-index: 100;
+}
+
+.option-input.radio {
+    border-radius: 50%;
+}
+
+.option-input.radio::after {
+    border-radius: 50%;
+}
+
+
+.bg-desatualizado {
+    background: url(../images/desatualizado.png) no-repeat center;
+}
+
+.mg-l10 {
+    margin-left: 10px;
+}
+
+.lg-30per {
+    width: 30%
+}
+
+.ng-hide {
+    display: none
+}
+
+.termos a {
+    color: #0669de;
+}
+
+.lbl30 {
+    display: inline-block;
+    padding: .2em .6em .3em;
+    /*font-size: 75%;*/
+    font-weight: bold;
+    line-height: 1;
+    color: #ffffff;
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    /*background-color: #449d44;*/
+    width: 38px;
+}
+ul.rodape-lista-nobulet {
+    list-style-type: none;
+    padding: 10px 0 0 0;
+    color: #fff;
+    text-transform: uppercase
+}
+.rodape-lista-nobulet li a {
+    color: #fff
+}
+.rodape-lista-nobulet li a:hover {
+    color: #f89302
+}
+
+.preco {
+    width: 100%;
+    float: left;
+    padding: 10px;
+    font-size: 18px;
+    margin-top: 10px;
+    text-align: center
+}
+
+.menu-active {
+    background-color: #055a3d;
+}
+
+.icon-sentenca {
+    background-image: url("../img/icon-sentenca-white.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80px;
+}
+.sentenca-black {
+    background-image: url("../img/icon-sentenca-black.svg");
+}
+.bg-sentenca {
+    background-color: #DE7A43;
+}
+
+.icon-peca {
+    background-image: url("../img/icon-peca-white.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80px;
+}
+.peca-black {
+    background-image: url("../img/icon-peca-black.svg");
+}
+
+.bg-peca {
+    background-color: #41C372;
+}
+
+.icon-questao {
+    background-image: url("../img/icon-questao-white.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80px;
+}
+.questao-black {
+    background-image: url("../img/icon-questao-black.svg");
+}
+.bg-questao {
+    background-color: #4A91D3;
+}
+
+.icon-size-16 {
+    background-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+/* WIZARD */
+/*********/
+
+.stepwizard-step p {
+    margin-top: 10px;
+}
+
+.process-row {
+    display: table-row;
+}
+
+.process {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+
+.process-step button[disabled] {
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+}
+
+.process-row:before {
+    top: 50px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-order: 0;
+
+}
+
+.process-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+
+.process-step p {
+    margin-top:10px;
+
+}
+
+.btn-circle {
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+
+.list-group-item>.label {
+    float: right;
+    font-size: 90%;
+}
+
+/*.div-scroll{
+  max-height:80%;
+  overflow-y:scroll;
+  width:100%;
+}*/
+
+/* CSS used here will be applied after bootstrap.css */
+.badge-notify-red {
+    background: rgba(222, 39, 29, 0.8);
+    position:relative;
+    top: -10px;
+    left: -20px;
+}
+
+.badge-notify-green {
+    background: rgba(20, 115, 74, 0.7);
+    position:relative;
+    top: -10px;
+    left: -20px;
+}
+
+.badge-notify-yellow {
+    background: #5BC0DE;
+    position:relative;
+    top: -10px;
+    left: -20px;
+}
+
+
+/* Et-Line */
+@font-face {
+    font-family: 'et-line';
+    src: url('../../v2/website/assets/fonts/et-line.eot');
+    src: url('../../v2/website/assets/fonts/et-line.eot?#iefix') format('embedded-opentype'),
+    url('../../v2/website/assets/fonts/et-line.woff') format('woff'),
+    url('../../v2/website/assets/fonts/et-line.ttf') format('truetype'),
+    url('../../v2/website/assets/fonts/et-line.svg#et-line') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[data-icon]:before {
+    font-family: et-line;
+    content: attr(data-icon);
+    speak: none;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block
+}
+
+.et-adjustments, .et-alarmclock, .et-anchor, .et-aperture, .et-attachment, .et-bargraph, .et-basket, .et-beaker, .et-bike, .et-book-open, .et-briefcase, .et-browser, .et-calendar, .et-camera, .et-caution, .et-chat, .et-circle-compass, .et-clipboard, .et-clock, .et-cloud, .et-compass, .et-desktop, .et-dial, .et-document, .et-documents, .et-download, .et-dribbble, .et-edit, .et-envelope, .et-expand, .et-facebook, .et-flag, .et-focus, .et-gears, .et-genius, .et-gift, .et-global, .et-globe, .et-googleplus, .et-grid, .et-happy, .et-hazardous, .et-heart, .et-hotairballoon, .et-hourglass, .et-key, .et-laptop, .et-layers, .et-lifesaver, .et-lightbulb, .et-linegraph, .et-linkedin, .et-lock, .et-magnifying-glass, .et-map, .et-map-pin, .et-megaphone, .et-mic, .et-mobile, .et-newspaper, .et-notebook, .et-paintbrush, .et-paperclip, .et-pencil, .et-phone, .et-picture, .et-pictures, .et-piechart, .et-presentation, .et-pricetags, .et-printer, .et-profile-female, .et-profile-male, .et-puzzle, .et-quote, .et-recycle, .et-refresh, .et-ribbon, .et-rss, .et-sad, .et-scissors, .et-scope, .et-search, .et-shield, .et-speedometer, .et-strategy, .et-streetsign, .et-tablet, .et-target, .et-telescope, .et-toolbox, .et-tools, .et-tools-2, .et-trophy, .et-tumblr, .et-twitter, .et-upload, .et-video, .et-wallet, .et-wine {
+    font-family: et-line;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block
+}
+
+.et-mobile:before {
+    content: "\e000"
+}
+
+.et-laptop:before {
+    content: "\e001"
+}
+
+.et-desktop:before {
+    content: "\e002"
+}
+
+.et-tablet:before {
+    content: "\e003"
+}
+
+.et-phone:before {
+    content: "\e004"
+}
+
+.et-document:before {
+    content: "\e005"
+}
+
+.et-documents:before {
+    content: "\e006"
+}
+
+.et-search:before {
+    content: "\e007"
+}
+
+.et-clipboard:before {
+    content: "\e008"
+}
+
+.et-newspaper:before {
+    content: "\e009"
+}
+
+.et-notebook:before {
+    content: "\e00a"
+}
+
+.et-book-open:before {
+    content: "\e00b"
+}
+
+.et-browser:before {
+    content: "\e00c"
+}
+
+.et-calendar:before {
+    content: "\e00d"
+}
+
+.et-presentation:before {
+    content: "\e00e"
+}
+
+.et-picture:before {
+    content: "\e00f"
+}
+
+.et-pictures:before {
+    content: "\e010"
+}
+
+.et-video:before {
+    content: "\e011"
+}
+
+.et-camera:before {
+    content: "\e012"
+}
+
+.et-printer:before {
+    content: "\e013"
+}
+
+.et-toolbox:before {
+    content: "\e014"
+}
+
+.et-briefcase:before {
+    content: "\e015"
+}
+
+.et-wallet:before {
+    content: "\e016"
+}
+
+.et-gift:before {
+    content: "\e017"
+}
+
+.et-bargraph:before {
+    content: "\e018"
+}
+
+.et-grid:before {
+    content: "\e019"
+}
+
+.et-expand:before {
+    content: "\e01a"
+}
+
+.et-focus:before {
+    content: "\e01b"
+}
+
+.et-edit:before {
+    content: "\e01c"
+}
+
+.et-adjustments:before {
+    content: "\e01d"
+}
+
+.et-ribbon:before {
+    content: "\e01e"
+}
+
+.et-hourglass:before {
+    content: "\e01f"
+}
+
+.et-lock:before {
+    content: "\e020"
+}
+
+.et-megaphone:before {
+    content: "\e021"
+}
+
+.et-shield:before {
+    content: "\e022"
+}
+
+.et-trophy:before {
+    content: "\e023"
+}
+
+.et-flag:before {
+    content: "\e024"
+}
+
+.et-map:before {
+    content: "\e025"
+}
+
+.et-puzzle:before {
+    content: "\e026"
+}
+
+.et-basket:before {
+    content: "\e027"
+}
+
+.et-envelope:before {
+    content: "\e028"
+}
+
+.et-streetsign:before {
+    content: "\e029"
+}
+
+.et-telescope:before {
+    content: "\e02a"
+}
+
+.et-gears:before {
+    content: "\e02b"
+}
+
+.et-key:before {
+    content: "\e02c"
+}
+
+.et-paperclip:before {
+    content: "\e02d"
+}
+
+.et-attachment:before {
+    content: "\e02e"
+}
+
+.et-pricetags:before {
+    content: "\e02f"
+}
+
+.et-lightbulb:before {
+    content: "\e030"
+}
+
+.et-layers:before {
+    content: "\e031"
+}
+
+.et-pencil:before {
+    content: "\e032"
+}
+
+.et-tools:before {
+    content: "\e033"
+}
+
+.et-tools-2:before {
+    content: "\e034"
+}
+
+.et-scissors:before {
+    content: "\e035"
+}
+
+.et-paintbrush:before {
+    content: "\e036"
+}
+
+.et-magnifying-glass:before {
+    content: "\e037"
+}
+
+.et-circle-compass:before {
+    content: "\e038"
+}
+
+.et-linegraph:before {
+    content: "\e039"
+}
+
+.et-mic:before {
+    content: "\e03a"
+}
+
+.et-strategy:before {
+    content: "\e03b"
+}
+
+.et-beaker:before {
+    content: "\e03c"
+}
+
+.et-caution:before {
+    content: "\e03d"
+}
+
+.et-recycle:before {
+    content: "\e03e"
+}
+
+.et-anchor:before {
+    content: "\e03f"
+}
+
+.et-profile-male:before {
+    content: "\e040"
+}
+
+.et-profile-female:before {
+    content: "\e041"
+}
+
+.et-bike:before {
+    content: "\e042"
+}
+
+.et-wine:before {
+    content: "\e043"
+}
+
+.et-hotairballoon:before {
+    content: "\e044"
+}
+
+.et-globe:before {
+    content: "\e045"
+}
+
+.et-genius:before {
+    content: "\e046"
+}
+
+.et-map-pin:before {
+    content: "\e047"
+}
+
+.et-dial:before {
+    content: "\e048"
+}
+
+.et-chat:before {
+    content: "\e049"
+}
+
+.et-heart:before {
+    content: "\e04a"
+}
+
+.et-cloud:before {
+    content: "\e04b"
+}
+
+.et-upload:before {
+    content: "\e04c"
+}
+
+.et-download:before {
+    content: "\e04d"
+}
+
+.et-target:before {
+    content: "\e04e"
+}
+
+.et-hazardous:before {
+    content: "\e04f"
+}
+
+.et-piechart:before {
+    content: "\e050"
+}
+
+.et-speedometer:before {
+    content: "\e051"
+}
+
+.et-global:before {
+    content: "\e052"
+}
+
+.et-compass:before {
+    content: "\e053"
+}
+
+.et-lifesaver:before {
+    content: "\e054"
+}
+
+.et-clock:before {
+    content: "\e055"
+}
+
+.et-aperture:before {
+    content: "\e056"
+}
+
+.et-quote:before {
+    content: "\e057"
+}
+
+.et-scope:before {
+    content: "\e058"
+}
+
+.et-alarmclock:before {
+    content: "\e059"
+}
+
+.et-refresh:before {
+    content: "\e05a"
+}
+
+.et-happy:before {
+    content: "\e05b"
+}
+
+.et-sad:before {
+    content: "\e05c"
+}
+
+.et-facebook:before {
+    content: "\e05d"
+}
+
+.et-twitter:before {
+    content: "\e05e"
+}
+
+.et-googleplus:before {
+    content: "\e05f"
+}
+
+.et-rss:before {
+    content: "\e060"
+}
+
+.et-tumblr:before {
+    content: "\e061"
+}
+
+.et-linkedin:before {
+    content: "\e062"
+}
+
+.et-dribbble:before {
+    content: "\e063"
+}
+
+.lightgrey-bg {
+    background-color: #f8f8f8   ;
+}
+
+.btn-outline-info {
+  color: #17a2b8;
+  background-color: transparent;
+  background-image: none;
+  border-color: #17a2b8 !important;
+}
+
+.btn-outline-info:hover {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.btn-outline-info:focus, .btn-outline-info.focus {
+  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+}
+
+.btn-outline-info.disabled, .btn-outline-info:disabled {
+  color: #17a2b8;
+  background-color: transparent;
+}
+
+.btn-outline-info:not(:disabled):not(.disabled):active, .btn-outline-info:not(:disabled):not(.disabled).active,
+.show > .btn-outline-info.dropdown-toggle {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8 !important;
+}
+
+.btn-outline-info:not(:disabled):not(.disabled):active:focus, .btn-outline-info:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-info.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+}
+
+.grupo-title {
+    font-size: 1.5em;
+    text-align: center;
+    font-weight: bolder;
+    display: block;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    color: #e84e40;
+    margin-bottom: 8px;
+}
+#email-nav-labels-wrapper {
+    padding: 10px 0 0;
+}
+
+#email-nav-labels li a {
+    color: #212121;
+    font-size: 0.875em;
+    display: block;
+    padding: 4px 5px 4px 0;
+}
+
+#email-nav-labels li a:hover {
+    color: #000000;
+    text-decoration: none;
+    background-color: #ebebeb;
+}
+/*
+.radio label:before {
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    font-size: 1em;
+    content: "A";
+    font-weight: bold;
+}
+.radio label:after {
+    height: 42px;
+    width: 42px;
+    font-size: 1em;
+    content: "A";
+    font-weight: bold;
+    top: -6px;
+    left: -6px;
+}*/
+

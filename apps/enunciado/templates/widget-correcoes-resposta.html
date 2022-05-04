@@ -1,0 +1,66 @@
+{% load thumbnail enunciado %}
+<div class="container col-md-12 mg-top20">
+    <div class="titulo-home row">
+        <h4 class="pd-home titulo-home bold">Correções desta Resposta</h4>
+        <div class="linha-aba mg-bot20"></div>
+    </div>
+    {% for correcao in correcoes %}
+    <div class="qa-message-list" id="wallmessages">
+        <div class="message-item" id="m16">
+            <div class="message-inner">
+                <div class="message-head clearfix">
+                    <div class="col-sm-8">
+                        <!-- AVATAR ----------------->
+                        <div class="avatar pull-left">
+                            <a href="{{ correcao.aluno.get_absolute_url }}">
+                                {% if correcao.aluno.foto %}
+                                    <img src="{{ correcao.aluno.foto.url }}">
+                                {% else %}
+                                    <img src="{{ STATIC_URL }}images/avatar_2x.png">
+                                {% endif %}
+                            </a>
+                        </div>
+                        <!-- DETALHES ---------->
+                        <div class="user-detail">
+                        <h5 class="handle"><a href="{{ correcao.get_absolute_url }}">Correção Nº {{ correcao.id|stringformat:"06d" }}</a></h5>
+
+                        <div class="post-meta">
+                            <div class="asker-meta">
+                                <span class="qa-message-what"></span>
+                                <span class="qa-message-who">
+
+                                    <span class="qa-message-who-data">
+                                        <a href="{{ correcao.aluno.get_absolute_url }}">
+                                            {% if request.user.aluno.id == correcao.aluno.id %}
+                                                Você
+                                            {% else %}
+                                                {{ correcao.aluno }}
+                                            {% endif %}
+                                        </a></span>
+                                </span>
+                                <span class="qa-message-when">
+                                    <span class="qa-message-who-pad">em </span>
+                                    <span class="qa-message-when-data">{{ correcao.data|date }}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-sm-2 center-block">
+                        <div class="mg-top10">
+                            <!-- CURTIR ------------->
+                            <a style="padding: 0px 15px 0px 0px" onclick="avaliarCorrecao('{{ correcao.id }}')" href="javascript:void(0)" class="pull-right" data-toggle="tooltip" data-original-title="Marque caso a correção tenha sido útil para você.">
+                                <span id="span_correcao_{{ correcao.id }}" class="label label-info">{{ correcao.get_avaliacao_positiva }}</span> <i class="fa fa-thumbs-o-up fa-lg text-info"></i>
+                            </a>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <h4 class="mg-top12 pull-right"><span class="label label-success">{{ correcao.get_nota_resposta|stringformat:".1f" }}</span></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

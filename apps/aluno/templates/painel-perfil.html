@@ -1,0 +1,477 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'assets/css/select2.css' %}" type="text/css"/>
+{% endblock %}
+{% block panel_content %}
+    <div class="row" id="user-profile" xmlns="http://www.w3.org/1999/html">
+        {% include '_widget-user-profile.html' %}
+        <div class="col-lg-9 col-md-8 col-sm-8">
+            <div class="main-box clearfix">
+                <div class="tabs-wrapper profile-tabs">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><!-- MINHAS RESPOSTAS -->
+                            <a href="#tab-respostas" id="respostas" data-toggle="tab">Respostas</a>
+                        </li>
+                        <li><!-- MINHAS RESPOSTAS -->
+                            <a href="#tab-coletanea" id="coletanea" data-toggle="tab">Coletâneas <span class="label label-info">{{ aluno.coletania_set.all.count }}</span> </a>
+                        </li>
+                        <li><!-- RESPONDER DEPOIS -->
+                            <a href="#tab-responder-depois" data-toggle="tab">A Responder</a>
+                        </li>
+                        <li><!-- RESPONDER DEPOIS -->
+                            <a href="#tab-acompanhadas" data-toggle="tab">Acompanhadas</a>
+                        </li>
+                        <li><!-- MEUS COMENTÁRIOS -->
+                            <a href="#tab-comentarios" data-toggle="tab">Comentários</a>
+                        </li>
+                        <li><!-- MEUS SEGUIDORES -->
+                            <a href="#tab-seguidores" data-toggle="tab">Seus Vínculos</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- MINHAS RESPOSTAS --->
+                        <div class="tab-pane fade in active" id="tab-respostas">
+                            <div id="table-respostas" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <td>
+                                        {% if aluno.resposta_set.all.count %}
+                                        <button data-toggle="modal" data-target="#myModal" class="btn btn-info"><i
+                                                class="fa fa-print"></i> Imprimir
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                    <td></td>
+                                    <td>Média</td>
+                                    <td>Correções</td>
+                                    <td>Situação</td>
+                                    <td>Tempo</td>
+                                    <td>Data</td>
+                                    </thead>
+                                    <tbody>
+                                    {% for resposta in aluno.resposta_set.all %}
+                                        <tr>
+                                            <td>
+                                                <i class="fa icon-{{ resposta.enunciado.get_tipo_url }} icon-size-16 {{ resposta.enunciado.get_tipo_url }}-black"></i>
+                                            </td>
+                                            <td>
+                                                {% if resposta.ativo %}
+                                                    <a href="{{ resposta.get_absolute_url }}">Resposta {{ resposta.numero }}</a>
+                                                    ao Enunciado
+                                                    <a href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a>
+                                                {% else %}
+                                                    <span class="text-danger"><i class="fa fa-exclamation-triangle"
+                                                                                 data-toggle="tooltip"
+                                                                                 data-placement="right"
+                                                                                 title="Este Resposta foi desativado."></i></span>
+                                                    <span class="bg-danger"><a target="_blank"
+                                                                               href="{{ resposta.get_absolute_url }}">Resposta {{ resposta.numero }}</a>
+                                                ao Enunciado <a target="_blank"
+                                                                href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a></span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="label label-warning">{{ resposta.get_media }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="label label-info">{{ resposta.correcao_set.all.count }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if resposta.concluido %}
+                                                    <span class="text-success"><i class="fa fa-check fa-lg"
+                                                                                  data-toggle="tooltip"
+                                                                                  title="Concluído"></i></span>
+                                                {% else %}
+                                                    <span class="text-primary"><i class="fa fa-clock-o fa-lg"
+                                                                                  data-toggle="tooltip"
+                                                                                  title="Você não terminou de responder"></i></span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="label label-success">{{ resposta.tempo|date:"H:i:s" }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ resposta.data_termino|date:"d\/m\/y H:i" }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- MINHAS COLETÂNEAS --->
+                        <div class="tab-pane fade" id="tab-coletanea">
+                            <div class="main-box clearfix" style="padding-bottom: 0px">
+                                <header class="main-box-header clearfix">
+                                    <form class="form-inline" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="printcol">
+                                        <input type="hidden" name="acao" value="filtrar" id="idAcao">
+                                        <div class="filter-block pull-right">
+                                            <div class="form-group form-group-select2">
+                                                <select style="width: 100%" id="sel2Col" multiple
+                                                        name="disciplinas"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <select class="form-control" name="enunciado">
+                                                    <option value="" {% if not filtro.enunciado %}selected{% endif %}>Tipo Enunciado</option>
+                                                    <option value="QD" {% if filtro.enunciado == 'QD' %}selected{% endif %}>Questão Discursiva</option>
+                                                    <option value="PP" {% if filtro.enunciado == 'PP' %}selected{% endif %}>Peça Prática</option>
+                                                    <option value="ST" {% if filtro.enunciado == 'ST' %}selected{% endif %}>Sentença</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-success pull-right" onclick="$('#idAcao').val('imprimir')"
+                                                    data-toggle="tooltip" title="Imprimit">
+                                                <i class="fa fa-print"></i>
+                                            </button>
+                                            <button type="submit" class="btn btn-success pull-right" onclick="$('#idAcao').val('filtrar')"
+                                                    data-toggle="tooltip" title="Filtar">
+                                                <i class="fa fa-filter"></i>
+                                            </button>
+                                            <a href="{% url 'aluno:perfil' %}?tab=tab-coletanea" class="btn btn-danger pull-right" data-toggle="tooltip" title="Remover Filtro">
+                                                <i class="fa fa-remove"></i>
+                                            </a>
+                                        </div>
+                                    </form>
+                                </header>
+                            </div>
+                            <div id="table-coletania" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Média</td>
+                                    <td>Correções</td>
+                                    <td>Disciplina</td>
+                                    <td>Data</td>
+                                    <td class="text-center">Remover</td>
+                                    </thead>
+                                    <tbody>
+                                    {% for col in coletaneas %}
+                                        <tr>
+                                            <td class="text-center">
+                                                <i class="fa icon-{{ col.resposta.enunciado.get_tipo_url }} icon-size-16 {{ col.resposta.enunciado.get_tipo_url }}-black"></i>
+                                                <small style="display: block">{{ col.resposta.enunciado.get_classificacao_display }}</small>
+                                            </td>
+                                            <td>
+                                                {% if col.resposta.ativo %}
+                                                    <a href="{{ col.resposta.get_absolute_url }}">Resposta {{ col.resposta.numero }}</a>
+                                                    ao Enunciado
+                                                    <a href="{{ col.resposta.enunciado.get_absolute_url }}">{{ col.resposta.enunciado }}</a>
+                                                {% else %}
+                                                    <span class="text-danger"><i class="fa fa-exclamation-triangle"
+                                                                                 data-toggle="tooltip"
+                                                                                 data-placement="right"
+                                                                                 title="Este Resposta foi desativado."></i></span>
+                                                    <span class="bg-danger"><a target="_blank"
+                                                                               href="{{ col.resposta.get_absolute_url }}">Resposta {{ col.resposta.numero }}</a>
+                                                ao Enunciado <a target="_blank"
+                                                                href="{{ col.resposta.enunciado.get_absolute_url }}">{{ col.resposta.enunciado }}</a></span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="label label-warning">{{ col.resposta.get_media }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="label label-info">{{ col.resposta.correcao_set.all.count }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="label label-success">{{ col.resposta.enunciado.disciplina }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ col.resposta.data_termino|date:"d\/m\/y H:i" }}
+                                            </td>
+                                            <td class="text-center">
+                                                <form method="post" id="formC{{ col.pk }}">
+                                                    {% csrf_token %}
+                                                    <input name="action" value="removercol" type="hidden">
+                                                    <input name="col_id" value="{{ col.id }}" type="hidden">
+                                                </form>
+                                                <button onclick="removerColetanea('{{ col.pk }}')" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- MINHAS RESPONDER DEPOIS -->
+                        <div class="tab-pane clearfix fade" id="tab-responder-depois">
+                            <div id="table-responder-depois" class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                    {% for responder in aluno.responderdepois_set.all %}
+                                        <tr>
+                                            <td class="text-center">
+                                                {% if responder.respondido %}
+                                                    <i class="fa fa-check text-success"></i>
+                                                {% else %}
+                                                    <i class="fa fa-history text-info"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{{ responder.enunciado.get_absolute_url }}">{{ responder.enunciado }}</a>
+                                            </td>
+                                            <td>
+                                                {{ responder.data }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- ACOMPANHADAS -->
+                        <div class="tab-pane clearfix fade" id="tab-acompanhadas">
+                            <div id="table-acompanhadas" class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                    {% for acompanhada in aluno.acompanharresposta_set.all %}
+                                        <tr id="acompanhar-{{ acompanhada.id }}">
+                                            <td class="text-center">
+                                                <i class="fa fa-feed fa-lg text-success"></i>
+                                            </td>
+                                            <td>
+                                                <a href="{{ acompanhada.enunciado.get_absolute_url }}">{{ acompanhada.enunciado }}</a>
+                                            </td>
+                                            <td>
+                                                {{ acompanhada.data }}
+                                            </td>
+                                            <td>
+                                                <button onclick="acompanharRemover('{{ acompanhada.id }}')"
+                                                        class="btn btn-sm btn-danger fa fa-remove" data-toggle="tooltip"
+                                                        data-original-title="Deixar de acompanhar"></button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- MEUS COMENTÁRIOS -->
+                        <div class="tab-pane fade" id="tab-comentarios">
+                            <div class="conversation-wrapper">
+                                <div class="conversation-content">
+                                    <div class="conversation-inner">
+                                        {% for comentario in comentarios %}
+                                            <div class="conversation-item item-left clearfix">
+                                                <div class="conversation-user">
+                                                    {% thumbnail aluno.foto "50x50" crop="center" as im %}
+                                                        <img src="{{ im.url }}" alt="{{ aluno }}"
+                                                             class="profile-img img-responsive center-block">
+                                                    {% empty %}
+                                                        <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg"
+                                                             alt="{{ aluno }}"
+                                                             class="profile-img img-responsive center-block"/>
+                                                    {% endthumbnail %}
+                                                </div>
+                                                <div class="conversation-body">
+                                                    <div class="name">
+                                                        Comentário à Correção <a target="_blank"
+                                                                                 href="{{ comentario.correcao.get_absolute_url }}">#{{ comentario.correcao }}</a>
+                                                    </div>
+                                                    <div class="time hidden-xs">
+                                                        {{ comentario.str_data }}
+                                                    </div>
+                                                    <div class="text">
+                                                        {{ comentario.comentario|truncatechars:"120" }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- SEGUIDORES -->
+                        <div class="tab-pane clearfix fade" id="tab-seguidores">
+                            <div class="col-lg-6">
+                                <div class="main-box clearfix">
+                                    <header class="main-box-header clearfix">
+                                        <h2>Seguidores
+                                        </h2>
+                                    </header>
+                                    <div class="theme-whbl main-box-body clearfix">
+                                        <div data-scroll="slimscroll">
+                                            <ul class="widget-users row">
+                                                {% for seguidor in  aluno.get_seguidores.all %}
+                                                    {% with seguidor.de_aluno as aluno %}
+                                                        <li class="col-md-12">
+                                                            <div class="img">
+                                                                {% thumbnail aluno.foto "50x50" crop="center" as im %}
+                                                                    <img src="{{ im.url }}" alt="{{ seguidor }}">
+                                                                {% empty %}
+                                                                    <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg"
+                                                                         alt="{{ aluno }}"/>
+                                                                {% endthumbnail %}
+                                                            </div>
+                                                            <div class="details">
+                                                                <div class="name">
+                                                                    <a href="{{ aluno.get_absolute_url }}">{{ aluno }}</a>
+                                                                </div>
+                                                                <!--div class="time">
+                                                                    <i class="fa fa-clock-o"></i> Last online: 5 minutes ago
+                                                                </div-->
+                                                                <div class="type">
+                                                                    <span data-toggle="tooltip" title="Pontos"
+                                                                          class="label label-primary">{{ aluno.get_pontos_total }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    {% endwith %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="main-box clearfix">
+                                    <header class="main-box-header clearfix">
+                                        <h2>Seguindo
+                                        </h2>
+                                    </header>
+                                    <div class="theme-whbl main-box-body clearfix">
+                                        <div data-scroll="slimscroll">
+                                            <ul class="widget-users row">
+                                                {% for aluno in  aluno.seguindo.all %}
+                                                    <li class="col-md-12">
+                                                        <div class="img">
+                                                            {% thumbnail aluno.foto "50x50" crop="center" as im %}
+                                                                <img src="{{ im.url }}" alt="{{ seguidor }}">
+                                                            {% empty %}
+                                                                <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg"
+                                                                     alt="{{ aluno }}"/>
+                                                            {% endthumbnail %}
+                                                        </div>
+                                                        <div class="details">
+                                                            <div class="name">
+                                                                <a href="{{ aluno.get_absolute_url }}">{{ aluno }}</a>
+                                                            </div>
+                                                            <!--div class="time">
+                                                                <i class="fa fa-clock-o"></i> Last online: 5 minutes ago
+                                                            </div-->
+                                                            <div class="type">
+                                                                <span data-toggle="tooltip" title="Pontos"
+                                                                      class="label label-primary">{{ aluno.get_pontos_total }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Imprimir Respostas</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="formPrint" method="post"action="{% url 'aluno:perfil' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="printresp">
+                        <div class="form-group form-group-select2">
+                            <label>Selecione as Disciplinas:</label>
+                            <select style="width: 100%" id="sel2Multi" multiple name="disciplinas"></select>
+                            <span class="help-block"><i class="fa fa-info"></i> Deixe em branco para imprimir todas as disciplinas</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#formPrint').submit()"><i class="fa fa-print"></i> Imprimir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'assets/js/select2.full.js' %}"></script>
+    <script>
+        var data = [
+            {% for dis in disciplinas %}
+            {
+                id: {{ dis.id }},
+                text: '{{ dis }}'
+            },
+            {% endfor %}
+        ];
+
+        $("#sel2Multi").select2({
+            data: data,
+            placeholder: 'Disciplinas',
+            allowClear: true
+        });
+
+        var dataCol = [
+            {% for dis in disciplinas_col %}
+            {
+                id: {{ dis.id }},
+                text: '{{ dis }}'
+            },
+            {% endfor %}
+        ];
+
+        var sel2Col = $("#sel2Col");
+        sel2Col.select2({
+            data: dataCol,
+            placeholder: 'Disciplinas',
+            allowClear: true
+        });
+        {% for dis in  filtro.disciplina %}
+            console.log('filtro', {{ dis }});
+            sel2Col.val({{ dis }}).trigger('change');
+        {% endfor %}
+
+        function acompanharRemover(eid) {
+            Dajaxice.apps.enunciado.acompanhar_remover(Dajax.process, {'eid': eid});
+        };
+
+        $('#table-respostas').slimScroll({
+            height: '400px',
+        });
+        $('#table-correcoes').slimScroll({
+            height: '400px',
+        });
+
+        $(document).on('ready', function () {
+            $(window).load(function () {
+                $('a[href="#{{ tab }}"]').click()
+            });
+        });
+
+        function removerColetanea(pk) {
+            Swal.fire({
+                title: 'Remover',
+                text: "Deseja remover a Resposta da sua coletânea?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, Remover!',
+                cancelButtonText: 'Cancelar'
+            }).then(function (result) {
+                if (result.value) {
+                    var frm = $('#formC' + pk);
+                    frm.submit()
+                }
+            })
+        }
+    </script>
+{% endblock %}

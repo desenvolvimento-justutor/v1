@@ -1,0 +1,223 @@
+{% extends '_base.html' %}
+{% load thumbnail %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/simple-subscription-popup/css/simplesubscriptionpopup.css">
+    <style>
+    .notice {
+        padding: 15px;
+        background-color: #fafafa;
+        border-left: 6px solid #7f7f84;
+        margin-bottom: 10px;
+        -webkit-box-shadow: 0 5px 8px -6px rgba(0, 0, 0, .2);
+        -moz-box-shadow: 0 5px 8px -6px rgba(0, 0, 0, .2);
+        box-shadow: 0 5px 8px -6px rgba(0, 0, 0, .2);
+    }
+
+    .notice-sm {
+        padding: 8px;
+        font-size: 90%;
+    }
+
+    .notice-lg {
+        padding: 35px;
+        font-size: large;
+    }
+
+    .notice-success {
+        border-color: #14734A;
+    }
+
+    .notice-success > strong {
+        color: #14734A;
+    }
+
+    .notice-success > a {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+    }
+
+    .notice-info {
+        border-color: #45ABCD;
+    }
+
+    .notice-info > strong {
+        color: #45ABCD;
+    }
+
+    .notice-warning {
+        border-color: #FEAF20;
+    }
+
+    .notice-warning > strong {
+        color: #FEAF20;
+    }
+
+    .notice-danger {
+        border-color: #d73814;
+    }
+
+    .notice-danger > strong {
+        color: #d73814;
+    }
+    </style>
+{% endblock %}
+{% block section %}
+    <section id="noticias" class="col-sm-6">
+        <div class="titulo-home">
+            Notícias<a href="{% url 'website:noticias-justutor' %}"> <small class="pull-right text-danger">+Ver todas</small></a>
+            <div class="linha-aba mg-bot10"></div>
+        </div>
+        <div class="clear"></div>
+        {% for noticia in noticias %}
+        <div>
+            <h5 class="mg-top10 bold"><a href="{{ noticia.get_absolute_url }}">{{ noticia.nome }}</a></h5>
+            <div class="mg-top10"></div>
+            <small class="text-info"><i class="fa fa-clock-o pull-left"> {{ noticia.ativo_inicio|date:"d/m/Y - H\hi" }}</i><i class="fa fa-eye pull-right"> {{ noticia.noticialida_set.all.count }}</i></small>
+            <br>
+            <hr class="no-pd">
+
+        </div>
+        {% endfor %}
+    </section>
+    <!-- VIDEO -->
+    <section id="video" class="col-sm-6">
+        <div class="titulo-home">
+            Últimas respostas<a href="{% url 'enunciado:atividade' %}"> <small class="pull-right text-danger">+Ver todas</small></a>
+            <div class="linha-aba mg-bot10"></div>
+        </div>
+        <div>
+            {% for resposta in ultimas_respostas  %}
+            <div class="notice notice-sm notice-success">
+                <strong>{{ resposta.aluno }}</strong> elaborou a <a href="{{ resposta.get_absolute_url }}">Resposta {{ resposta }}</a> à <a href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    <!-- RANKING -->
+    {% comment %}
+    <section id="questoes-destaque" class="col-sm-4">
+        <div class="titulo-home">
+             <strong>Top</strong> Ranking<a href="{% url 'enunciado:ranking' %}"> <small class="pull-right text-danger">+Ver ranking completo</small></a>
+            <div class="linha-aba mg-bot10"></div>
+        </div>
+        <div>
+            {% for aluno in ranking_geral  %}
+            <div {% if aluno == request.user.aluno %}id="minha-posicao"{% endif %} class="pontuar">
+                <div class="pontuar01 {% if aluno == request.user.aluno %}bg-azul{% else %}bg-laranja{% endif %}"></div>
+                <div class="pontuar02">
+                        <span class="bold">{{ forloop.counter|stringformat:'02d' }}º</span>&nbsp<a href="{{ aluno.get_absolute_url }}">{{ aluno }}</a>
+                        <a onclick="show_chart_geral('geral', {{ aluno.id }})" href="javascript:void(0)" class="pull-right emoticon02">
+                            <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <g> <defs> <rect id="SVGID_1_" x="3.642" y="3.621" width="16.715" height="16.758"></rect> </defs> <clipPath id="SVGID_2_"> <use xlink:href="#SVGID_1_" overflow="visible"></use> </clipPath> <path clip-path="url(#SVGID_2_)" d="M4.272,8.849l3.817,1.574c0.07,0.029,0.143,0.042,0.214,0.042c0.194,0,0.381-0.1,0.486-0.275 l1.718-2.895l3.14-1.545l0.098,1.427c0.002,0.042,0.031,0.079,0.072,0.09c0.039,0.013,0.084-0.002,0.109-0.036l2.631-3.429 c0.025-0.034,0.031-0.081,0.012-0.119c-0.02-0.039-0.059-0.063-0.102-0.063l-4.322-0.008c-0.043,0-0.08,0.026-0.096,0.065 c-0.015,0.04-0.004,0.084,0.027,0.113l1.072,0.948l-3.29,1.619c-0.099,0.048-0.18,0.124-0.236,0.218L8.069,9.195L4.703,7.807 c-0.289-0.12-0.618,0.019-0.736,0.306C3.847,8.4,3.985,8.73,4.272,8.849L4.272,8.849z M4.272,8.849"></path> <path clip-path="url(#SVGID_2_)" d="M19.52,18.686H4.488c-0.467,0-0.846,0.379-0.846,0.846s0.378,0.846,0.846,0.846H19.52 c0.469,0,0.846-0.379,0.846-0.846S19.988,18.686,19.52,18.686L19.52,18.686z M19.52,18.686"></path> </g> <path d="M5.323,11.804c-0.188,0-0.341,0.153-0.341,0.342v5.07c0,0.189,0.153,0.342,0.341,0.342h1.995 c0.188,0,0.342-0.152,0.342-0.342v-5.07c0-0.189-0.153-0.342-0.342-0.342H5.323z M5.323,11.804"></path> <path d="M16.35,6.391v10.826c0,0.189,0.152,0.342,0.342,0.342h1.994c0.188,0,0.342-0.152,0.342-0.342V6.391 c0-0.188-0.154-0.341-0.342-0.341h-1.994C16.502,6.049,16.35,6.202,16.35,6.391L16.35,6.391z M16.35,6.391"></path> <path d="M12.9,9.067c-0.188,0-0.34,0.153-0.34,0.342v7.808c0,0.189,0.152,0.342,0.34,0.342h1.996c0.188,0,0.34-0.152,0.34-0.342 V9.409c0-0.188-0.152-0.342-0.34-0.342H12.9z M12.9,9.067"></path> <path d="M9.112,13.313c-0.188,0-0.342,0.154-0.342,0.342v3.563c0,0.189,0.153,0.342,0.342,0.342h1.994 c0.189,0,0.342-0.152,0.342-0.342v-3.563c0-0.188-0.153-0.342-0.342-0.342H9.112z M9.112,13.313"></path> </g> </svg>
+                        </a>
+                        <div class="pull-right"><span style="font-size:100%" class="label label-info">{{ aluno.get_pontos_total }}</span> pts</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="clear"></div>
+        <!-- modal chart -->
+        <div class="modal fade" id="modalChart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">JusTutor</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+                            <span class="text-primary mg-top20"><i class="fa fa-refresh fa-spin fa-5x"></i></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-sm-3">
+                            <span class="pull-left bold">QT = Questões</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="pull-left bold">PÇ = Peças</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="pull-left bold">ST = Sentenças</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    {% endcomment %}
+{% endblock %}
+
+{% block extra_js %}
+    {% if website.config.subs_ativo and not sleep_cookie %}
+    <script src="{{ STATIC_URL }}assets/simple-subscription-popup/js/simplesubscriptionpopup.js" defer></script>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('body').sspopup({
+                'animtime': '0.4',
+                'animation': '{{ website.config.subs_animacao }}',
+                'customfields': [{
+                    id: 'FNAME',
+                    name: 'Nome',
+                    required: true,
+                    warning: 'O Nome é requerido',
+                    minlength: 3
+                }],
+                'facebook_appid': '',
+                'googleplus_clientid': '',
+                'googleplus_apikey': '',
+                'customfieldsmargin': '0px',
+                'openwithlink': true,
+                'bottomtitle': '{{ website.config.subs_texto_inferior }}',
+                'inputborderradius': '3px',
+                'once_per_filled': true,
+                'filled_cookie_days': 999,
+                'closewithlayer': false,
+                'preset': '',
+                'autoopen': true,
+                'timer': '6000',
+                'mode': 'mail',
+                'lockbgcolor': '#00AC5A',
+                'bgcolor': '{{ website.config.subs_bgcolor }}',
+                'buttonbgcolor': '{{ website.config.subs_buttonbgcolor }}',
+                'buttoncolor': '{{ website.config.subs_buttoncolor }}',
+                'closecolor': '{{ website.config.subs_closecolor }}',
+                'color': '{{ website.config.subs_color }}',
+                'contentcolor': '{{ website.config.subs_contentcolor }}',
+                'fontfamily': 'ABeeZee',
+                'contentfontfamily': 'ABeeZee',
+                'fontsize': '20px',
+                'contentfontsize': '30px',
+                'closefontsize': '18px',
+                'fontweight': 'bold',
+                'contentweight': 'normal',
+                'title': '{% if website.config.subs_imagem %}<img style="max-width: 80px; padding-bottom: 20px" src="{{ website.config.subs_imagem.url }}"><br>{% endif %}{{ website.config.subs_titulo }}',
+                'text': '{{ website.config.subs_texto|safe }}',
+                'invalid_address': 'Email inválido',
+                'signup_success': '{{ website.config.subs_texto_sucesso }}',
+                'subscribe_text': '{{ website.config.subs_texto_botao }}',
+                'vspace': '60px',
+                'hspace': '10px',
+                'position': '{{ website.config.subs_posicao }}',
+                'placeholder_text': 'Informe seu email',
+                'borderradius': '4px',
+                'openbottom': false,
+                'double_optin': false,
+                'update_existing': true,
+                'replace_interests': false,
+                'send_welcome': false,
+                'mailchimp_listid': false,
+                'once_per_user': false,
+                'cookie_days': 999,
+                'lock': true,
+                'hideclose': false,
+                'path': '{% url "website:subscrible" %}'
+            });
+        });
+    </script>
+    {% endif %}
+{% endblock %}

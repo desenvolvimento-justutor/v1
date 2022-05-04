@@ -1,0 +1,19 @@
+{% extends '_base-enunciado.html' %}
+{% block bloco_esq_lg %}8{% endblock %}
+{% block bloco_dir_lg %}4{% endblock %}
+{% block bloco_dir %}
+        <div class="enunciado-destaque">
+        <a href="#" class="faixa-vermelha">
+            Veja as respostas já elaboradas <span class="fonte-amarela">para este enunciado</span>
+        </a>
+        <div class="info-enunciado">
+            Clique em cada nome para ver a resposta.
+            <hr class="linha-tracejada">
+        </div>
+        <div class="clear"></div>
+        <div class="div-scroll">
+            {% include 'widget-top-respostas.html' %}
+        </div>
+        </div>
+        {% include '_widget-anuncio.html' %}
+{% endblock %}

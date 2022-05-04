@@ -1,0 +1,27 @@
+{% load static %}
+{% load curso %}
+{% load thumbnail %}
+
+<div class="item">
+    <div class="item-inner">
+        <figure>
+            <a href="#">
+                {% thumbnail curso.imagem "100x100" crop="center" as im %}
+                    <img src="{{ im.url }}">
+                {% empty %}
+                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                {% endthumbnail %}
+            </a>
+        </figure>
+        <div class="item-details">
+            <div class="item-title">
+                <a href="{{ curso.get_absolute_url}}">{{ curso }}</a>
+            </div>
+            <div class="item-description text-bold">{{ curso.categoria.nome }}
+            </div> <!-- /.item-variants -->
+        </div>
+        <div class="item-price">
+            <div class="value" id="item-1-price" data-price="">{{ curso.valor|moeda }}</div>
+        </div>
+    </div> <!-- /.item-inner -->
+</div> <!-- /.item -->

@@ -1,0 +1,29 @@
+{% with enunciado.get_respostas as respostas %}
+    {% if respostas %}
+        {% for resposta in respostas %}
+        <a class="ranking-linha" href="{{ resposta.get_absolute_url }}">
+            <div class="nome-rk2">{{ forloop.counter|stringformat:'02d' }}º&ensp;
+                {% if request.user.aluno.id == resposta.aluno.id %}
+                    Você
+                {% else %}
+                    {{ resposta.aluno }}
+                {% endif %}
+            </div>
+            <div class="nota-rk2">
+                <div class="pull-right"><span style="font-size: 90%" class="label {{ resposta.get_css_class.1 }}">{{ resposta.get_media|stringformat:".2f" }}</span></div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+            <div class="linha-status">
+                <div class="{{ resposta.get_css_class.0 }}"></div>
+            </div>
+            <div class="clear"></div>
+        </a>
+        {% endfor %}
+    {% else %}
+        <a class="ranking-linha" href="{{ enunciado.get_responder_absolute_url }}">
+            <div class="fonte-vermelha">Seja o primeiro a Responder</div>
+            <div class="clear"></div>
+        </a>
+    {% endif %}
+{% endwith %}

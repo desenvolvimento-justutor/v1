@@ -1,0 +1,281 @@
+{% with website.aluno as aluno %}
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container" style="min-width: 90%">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand nav-logo" href="{% url 'website:index' %}">
+                <img src="{{ STATIC_URL }}images/logos/justuto-horizontal.png" width="160" height="21"></a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <!--li class="menu-item active"><a href="#">About </a></li-->
+                <!-- CURSOS E AULAS -->
+                <li disabled class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> Cursos <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for categoria in proc_curso.categorias %}
+                            <li class="menu-item dropdown"><a href="" onclick="window.location = '{{ categoria.get_absolute_url }}';" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                        {% endfor %}
+                        {% if proc_curso.sentencas_oab %}
+                        <!-- SENTENÇAS OAB -->
+                        <li disabled class="menu-item dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> OAB 2ª Fase </a>
+                            <ul class="dropdown-menu">
+                                {% for categoria in proc_curso.sentencas_oab %}
+                                    <li class="menu-item dropdown"><a href="" onclick="window.location = '{{ categoria.get_absolute_url }}';" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endif %}
+                        <!-- Atividades Avulsas -->
+                        {% if proc_curso.sentencas_avulsas %}
+                            <li class="dropdown-header">Atividades Avulsas</li>
+                            {% for categoria in proc_curso.sentencas_avulsas %}
+                                <li class="menu-item dropdown"><a href="" onclick="window.location = '{{ categoria.get_absolute_url }}';" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                            {% endfor %}
+                            <li>
+                                <a href="{% url 'curso:montar-pacote' %}">Pacotes personalizados</a>
+                            </li>
+
+                        {% endif %}
+
+                        <li role="separator" class="divider"></li>
+                        <!-- CURSOS GRÁTIS -->
+                        <li class="dropdown-header">Cursos Grátis</li>
+                        {% for serie in proc_curso.series %}
+                            <li class="menu-item dropdown"><a href="" onclick="window.location = '{{ serie.get_absolute_url }}';" class="dropdown-toggle" data-toggle="dropdown">{{ serie }}</a>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+                {% if proc_curso.livraria %}
+                <!-- LIVRARIA -->
+                <li disabled class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> Livraria <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for categoria in proc_curso.livraria %}
+                            <li class="menu-item dropdown"><a href="" onclick="window.location = '{{ categoria.get_absolute_url }}';" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if proc_curso.simulados %}
+                <!-- SENTENÇAS OAB -->
+                <li disabled class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> Simulados <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for categoria in proc_curso.simulados %}
+                            <li class="menu-item dropdown"><a href="" onclick="window.location = '{{ categoria.get_absolute_url }}';" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                <!-- RANKING -->
+                <li class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="text-warning"></span> Ranking <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:ranking-premiado' %}?q=I';" class="dropdown-toggle" data-toggle="dropdown">Premiado </a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:ranking' %}';" class="dropdown-toggle" data-toggle="dropdown">Permanentes </a>
+                    </ul>
+                </li>
+                <!-- ENUNCIADOS  -->
+                <li class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> Estude Aqui <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="menu-item dropdown">
+                            <form id="busca_questao" action="{% url 'enunciado:busca' %}" method="post" style="margin-left: 4px">
+                                {% csrf_token %}
+                                <input type="hidden" name="classificacao" value="QD">
+                                <a href="javascript:void(0)" onclick="$('#busca_questao').submit()" data-toggle="tooltip"
+                                   data-original-title="QUESTÕES" data-placement="bottom">
+                                    <div class="cg-azul">
+                                        <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg" style="height: 18px">
+                                    </div> Questão Discursiva
+                                    <div class="clear"></div>
+                                </a>
+                            </form>
+                        </li>
+                        <li class="menu-item dropdown">
+                            <form id="busca_peca" action="{% url 'enunciado:busca' %}" method="post" style="margin-top: 4px; margin-left: 4px">
+                                {% csrf_token %}
+                                <input type="hidden" name="classificacao" value="PP">
+                                <a href="javascript:void(0)" onclick="$('#busca_peca').submit()" data-toggle="tooltip"
+                                   data-original-title="PEÇAS" data-placement="bottom">
+                                    <div class="cg-verde">
+                                        <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg" style="height: 18px">
+                                    </div> Peça Prática
+                                    <div class="clear"></div>
+                                </a>
+                            </form>
+                        </li>
+                        <li class="menu-item dropdown">
+                            <form id="busca_sentenca" action="{% url 'enunciado:busca' %}" method="post" style="margin-top: 4px; margin-left: 4px">
+                                {% csrf_token %}
+                                <input type="hidden" name="classificacao" value="ST">
+                                <a href="javascript:void(0)" onclick="$('#busca_sentenca').submit()" data-toggle="tooltip"
+                                   data-original-title="SENTENÇAS" data-placement="bottom">
+                                    <div class="cg-laranja">
+                                        <img src="{{ STATIC_URL }}assets/img/icon-sentenca-white.svg" style="height: 18px">
+                                    </div> Sentença
+                                    <div class="clear"></div>
+                                </a>
+                            </form>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:atividade' %}';" class="dropdown-toggle" data-toggle="dropdown">Últimas Atividades</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:mais-populares' %}';" class="dropdown-toggle" data-toggle="dropdown">Enunciados mais populares</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:recentes' %}';" class="dropdown-toggle" data-toggle="dropdown">Enunciados mais recentes</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:temas-abordados' %}';" class="dropdown-toggle" data-toggle="dropdown">Temas mais abordados</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:roteiros' %}';" class="dropdown-toggle" data-toggle="dropdown">Roteiros de Estudo<span class="label label-info pull-right">Novo</span></a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'website:artigo-indice' %}';" class="dropdown-toggle" data-toggle="dropdown">Artigos e outros textos</a>
+                        <li class="divider"></li>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:atividade' %}';" class="dropdown-toggle" data-toggle="dropdown">Últimas Atividades</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:mais-populares' %}';" class="dropdown-toggle" data-toggle="dropdown">Enunciados mais populares</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:recentes' %}';" class="dropdown-toggle" data-toggle="dropdown">Enunciados mais recentes</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:temas-abordados' %}';" class="dropdown-toggle" data-toggle="dropdown">Temas mais abordados</a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'enunciado:roteiros' %}';" class="dropdown-toggle" data-toggle="dropdown">Roteiros de Estudo<span class="label label-info pull-right">Novo</span></a>
+                        <li class="menu-item dropdown"><a href="" onclick="window.location = '{% url 'website:artigo-indice' %}';" class="dropdown-toggle" data-toggle="dropdown">Artigos e outros textos</a>
+                    </ul>
+                </li>
+                <li class="menu-item dropdown">
+                    <a href="" onclick="window.location = '{% url 'website:professores' %}';" class="dropdown-toggle" data-toggle="dropdown"><span class="text-warning"></span> Professores </a>
+                </li>
+            </ul>
+            <!-- DROPDOWN LOGIN STARTS HERE  -->
+            <ul id="signInDropdown" class="nav navbar-nav navbar-right">
+                {% if aluno %}
+                <li style="padding-top: 8px">
+                    <div>
+                      <a href="{% url 'enunciado:ranking' %}" class="btn btn-default btn-sm btn-link" style="font-size:24px;"
+                              data-toggle="tooltip" data-original-title="Seus pontos" data-placement="bottom">
+                            <span class="fa fa-trophy" style="color: #FFC720"></span>
+                          </a>
+                          <span class="badge badge-notify-green">{{ aluno.get_pontos_total }}</span>
+                    </div>
+                </li>
+                {% with aluno.msg_para_naolidas.count as count %}
+                    {% if count %}
+                        <li style="padding-top: 8px">
+                            <div>
+                              <a href="{% url 'aluno:mensagens' %}" class="btn btn-default btn-sm btn-link" style="font-size:24px;"
+                                      data-toggle="tooltip" data-original-title="Mensagens" data-placement="bottom">
+                                    <span class="fa fa-envelope-o" style="color: #2f6bff"></span>
+                                  </a>
+                                  <span class="badge badge-notify-red">{{ count }}</span>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endwith %}
+
+                {% endif %}
+                <li style="padding-top: 8px">
+                    <div data-toggle="tooltip" data-original-title="Carrinho de compras" data-placement="bottom">
+                        <a href="{% url 'curso:carrinho' %}" class="btn btn-default btn-sm btn-link" style="font-size:24px;">
+                        <span class="fa fa-shopping-cart" style="color: #14734A"></span>
+                        </a>
+                        <span class="badge badge-notify-red">{{ proc_curso.cart.count }}</span>
+                    </div>
+                </li>
+            </ul>
+            <ul id="signInDropdown" class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    {% if aluno %}
+                        <button onclick="window.location = '{% url 'aluno:painel' %}';" class="btn btn-success navbar-btn">
+                            <i class="fa fa-user fa-fw"></i> Área do Aluno
+                        </button>
+                    {% else %}
+                        <button onclick="login()" class="btn btn-primary navbar-btn"><i class="fa fa-key fa-fw"></i> Acessar</button>
+                    {% endif %}
+                </li>
+            </ul>
+            <!-- DROPDOWN LOGIN ENDS HERE  -->
+{#            <ul class="nav navbar-nav navbar-right">#}
+{#                <li class="dropdown">#}
+{#                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <i class="fa fa-shopping-cart fa-lg"></i>&nbsp&nbsp{{ proc_curso.cart.count }} - Item{{ proc_curso.cart.count|pluralize }} <span class="caret"></span></a>#}
+{#                    <ul class="dropdown-menu dropdown-cart" role="menu">#}
+{#                        <li>#}
+{#                            <span class="item">#}
+{#                                <span class="item-left">#}
+{#                                    <img src="http://lorempixel.com/50/50/" alt=""/>#}
+{#                                    <span class="item-info">#}
+{#                                        <span>Curso 01</span>#}
+{#                                        <span>R$23,12</span>#}
+{#                                    </span>#}
+{#                                </span>#}
+{#                                <span class="item-right">#}
+{#                                    <button class="btn btn-xs btn-danger pull-right">x</button>#}
+{#                                </span>#}
+{#                            </span>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                            <span class="item">#}
+{#                                <span class="item-left">#}
+{#                                    <img src="http://lorempixel.com/50/50/" alt=""/>#}
+{#                                    <span class="item-info">#}
+{#                                        <span>Curso 02</span>#}
+{#                                        <span>R$15,00</span>#}
+{#                                    </span>#}
+{#                                </span>#}
+{#                                <span class="item-right">#}
+{#                                    <button class="btn btn-xs btn-danger pull-right">x</button>#}
+{#                                </span>#}
+{#                            </span>#}
+{#                        </li>#}
+{#                        <li class="divider"></li>#}
+{#                        <li><a class="text-center" href="{% url 'curso:carrinho' %}">Ver Carrinho</a></li>#}
+{#                    </ul>#}
+{#                </li>#}
+{#            </ul>#}
+        </div>
+    </div>
+
+    </div>
+    <div style="margin-top: 54px"></div>
+
+{% comment %}
+<div class="linha-topo-verde">
+    <div class="container">
+        <div class="col-sm-6">
+            {% if aluno%}
+            <a class="svg-01" href="#">
+                <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <defs> <rect id="SVGID_1_" x="1.458" y="1.811" width="17.169" height="15.897"/> </defs> <clipPath id="SVGID_2_"> <use xlink:href="#SVGID_1_"  overflow="visible"/> </clipPath> <path clip-path="url(#SVGID_2_)" d="M18.274,2.416c-0.761-0.633-1.941-1.034-3.468,0.186c-0.003-0.186-0.005-0.367-0.011-0.561 H5.078C5.07,2.235,5.07,2.418,5.067,2.602c-1.526-1.22-2.706-0.819-3.466-0.186l-0.143,0.12l0.008,0.181 c0.009,0.179,0.229,4.348,2.517,6.239c0.8,0.659,1.752,0.965,2.831,0.901c-0.073,0.233-0.218,0.55-0.386,0.833l0.635,0.381 c0.118-0.2,0.318-0.565,0.437-0.937c0.844,0.682,1.581,0.89,1.581,1.395c0,1.138-2.815,1.878-2.916,2.592H5.773v0.3H5.355v2.984 h9.069v-2.984H14.06v-0.3h-0.351c-0.1-0.714-2.916-1.454-2.916-2.592c0-0.508,0.738-0.713,1.581-1.395 c0.119,0.371,0.318,0.736,0.438,0.937l0.634-0.381c-0.168-0.282-0.313-0.6-0.388-0.833c1.082,0.064,2.034-0.242,2.833-0.901 c2.287-1.891,2.507-6.063,2.516-6.239l0.01-0.184L18.274,2.416z M4.457,8.386c-1.78-1.47-2.166-4.699-2.236-5.514 C3.06,2.279,3.996,2.515,5.07,3.596c0.006,0.14,0.014,0.272,0.021,0.407C4.829,4.251,4.48,4.577,4.159,4.866l0.497,0.548 c0.191-0.17,0.359-0.323,0.504-0.458c0.217,2.026,0.763,3.307,1.379,4.16C5.748,9.117,5.047,8.872,4.457,8.386L4.457,8.386z M13.08,16.782H6.874v-1.517h6.207V16.782z M15.417,8.386c-0.589,0.486-1.291,0.729-2.082,0.731 c0.615-0.854,1.161-2.134,1.378-4.16c0.148,0.134,0.313,0.285,0.505,0.458l0.497-0.548c-0.321-0.29-0.673-0.615-0.93-0.866 c0.006-0.132,0.014-0.264,0.019-0.404c1.071-1.081,2.008-1.316,2.85-0.724C17.583,3.687,17.197,6.913,15.417,8.386L15.417,8.386z M15.417,8.386"/> </svg>
+                <div class="numero">
+                    {{ aluno.get_pontos_total }}
+                </div>
+                <div class="clear"></div>
+            </a>
+            {% endif %}
+        </div>
+        <div class="col-sm-6">
+            <div class="informacao-perfil">
+                {% if aluno %}
+                <a href="#" class="notificacao" style="padding-top: 6px">
+                    <div class="pull-left">
+                        <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <g> <path d="M9.813,0.801c-4.977,0-9.013,4.035-9.013,9.012c0,4.982,4.036,9.018,9.013,9.018c4.981,0,9.017-4.035,9.017-9.018 C18.83,4.836,14.795,0.801,9.813,0.801L9.813,0.801z M9.813,15.568c-0.705,0-1.184-0.542-1.184-1.246 c0-0.723,0.502-1.248,1.184-1.248c0.727,0,1.188,0.525,1.188,1.248C11.002,15.026,10.54,15.568,9.813,15.568L9.813,15.568z M10.283,10.808c-0.18,0.611-0.745,0.624-0.936,0c-0.216-0.72-0.986-3.445-0.986-5.217c0-2.336,2.923-2.348,2.923,0 C11.281,7.374,10.47,10.169,10.283,10.808L10.283,10.808z M10.283,10.808"/> </g> </svg>
+                    </div>
+                    <div class="pull-left">10</div>
+                    <div class="clear"></div>
+                </a>
+                {% endif %}
+                <div class="btn-group mg-l10">
+                    <button type="button" style="background-color: #00624A; border-color: #00624A" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        {% if aluno %}#{{ aluno.id }}-{{ aluno }}{% else %}Acessar{% endif %}&nbsp;&nbsp;&nbsp;<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% if aluno %}
+                            <li><a href="{% url 'aluno:perfil' %}">Área do Aluno</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{% url 'logout' %}">Encerrar sessão</a></li>
+                        {% else %}
+                            <li><a href="{% url 'login' %}">Login</a></li>
+                            <li><a href="{% url 'aluno:cadastro' %}">Cadastro</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endcomment %}
+{% endwith %}

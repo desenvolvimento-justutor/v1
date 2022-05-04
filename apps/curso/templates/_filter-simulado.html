@@ -1,0 +1,64 @@
+<div class="container">
+        <form method="post" action="{{ categoria.get_absolute_url }}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label class="" for="orderBy">Palavra chave</label>
+                    <input class="form-control input-sm basicAutoComplete" type="text" autocomplete="off"
+                           name="nome__icontains" value="{{ filtro.nome__icontains|default_if_none:'' }}">
+
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="">Tipo</label>
+                    <select class="form-control input-sm" name="simulado__tipo">
+                        <option value="">---</option>
+                        <option value="M" {% ifequal filtro.simulado__tipo 'M'%}selected{% endifequal %}>Múltipla escolha</option>
+                        <option value="C" {% ifequal filtro.simulado__tipo 'C' %}selected{% endifequal %}>Certo/Errado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-2">
+                    <label class="">Esfera Específica</label>
+                    <select class="form-control input-sm" name="simulado__esfera_especifica_id">
+                        <option value="">---</option>
+                        {% for esfera in esferas_especificas %}
+                        <option value="{{ esfera.id }}" {% ifequal filtro.simulado__esfera_especifica_id esfera.id|slugify %}selected{% endifequal %}>{{ esfera.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="">Cargo</label>
+                    <select class="form-control input-sm" name="simulado__cargo_id">
+                        <option value="">---</option>
+                        {% for cargo in cargos %}
+                        <option value="{{ cargo.id }}" {% ifequal filtro.simulado__cargo_id cargo.id|slugify %}selected{% endifequal %}>{{ cargo.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="">Concurso</label>
+                    <select class="form-control input-sm" name="simulado__concurso_id">
+                        <option value="">---</option>
+                        {% for concurso in concursos %}
+                        <option value="{{ concurso.id }}" {% ifequal filtro.simulado__concurso_id concurso.id|slugify %}selected{% endifequal %}>{{ concurso.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="">Localidade</label>
+                    <select class="form-control input-sm" name="simulado__localidade_id">
+                        <option value="">---</option>
+                        {% for localidade in localidades %}
+                        <option value="{{ localidade.id }}" {% ifequal filtro.simulado__localidade_id localidade.id|slugify %}selected{% endifequal %}>{{ localidade.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <button type="submit" class="btn btn-primary" style="margin-top: 15px;">
+                        <i class="fa fa-filter"></i> Filtar
+                    </button>
+                </div>
+            </div>
+        </form>
+</div>

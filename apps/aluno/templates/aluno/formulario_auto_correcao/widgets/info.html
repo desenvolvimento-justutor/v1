@@ -1,0 +1,70 @@
+{% load static %}
+{% with formulario.enunciado as enunciado %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box-body clearfix">
+                <ul class="widget-products">
+                    <li>
+                        <a href="#">
+                            <span class="img bg-info">
+                                <img src="{% static 'assets/img/icon-questao-white.svg' %}" alt="" width="100%">
+                            </span>
+                            <span class="product clearfix">
+                            <span class="name">
+                            {{  enunciado }}
+                            </span>
+                            {% if enunciado.classificacao == 'ST' %}
+                                <span class="price" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.esfera_especifica.nome }}
+                                </span>
+                                <span class="warranty" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.concurso }}
+                                </span>
+                                <span class="warranty" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.tipo_sentenca }}
+                                </span>
+                            {% elif enunciado.classificacao == 'PP' %}
+                                <span class="price" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.concurso }}
+                                </span>
+                                <span class="warranty" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.disciplina }}
+                                </span>
+                                <span class="warranty" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.tipo_peca_pratica }}
+                                </span>
+                            {% else %}
+                                <span class="price" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.orgao_entidade.nome }}
+                                </span>
+                                <span class="warranty" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.disciplina }}
+                                </span>
+                                <span class="warranty" style="width: 33%">
+                                    <i class="fa fa-circle green"></i> {{ enunciado.num_questao_caderno|stringformat:"03d" }}
+                                </span>
+                            {% endif %}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="alert alert-block alert-info fade in">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <spa>INSTRUÇÕES:</spa>
+                <p style="font-weight: bolder">antes de ler o gabarito e fazer a correção, é fortemente recomendável que
+                    você elabore a sua própria resposta à atividade. Só assim você terá um aprendizado mais efetivo.
+                    Após elaborar sua própria resposta, leia o que era esperado pelo examinador e marque uma opção em
+                    cada um dos itens abaixo. Ao final, você saberá qual foi a sua nota. Relembramos que todas as
+                    atividades que compõem o sistema de autocorreção do JusTutor buscam representar uma nota apenas
+                    aproximada em relação à que você receberia na prova caso tivesse elaborado essa mesma resposta. Além
+                    disso, todas as atividades no JusTutor são avaliadas em 10,00 (dez) pontos, podendo haver
+                    diferenciação em relação à nota atribuída pela banca do concurso.</p>
+            </div>
+        </div>
+    </div>
+{% endwith %}

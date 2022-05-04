@@ -1,0 +1,205 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  humanize %}
+
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2><strong>Enunciado</strong><a href="/curso/atividade/imprimir/{{ tarefa.atividade.pk }}" target="_blank" id="btn-imprimir" class="btn btn-link pull-right">
+                        <span class="cke_button_icon cke_button__print_icon" style="background-image:url(https://justutor.com.br/static/assets/ckeditor/plugins/icons.png?t=E8PB);background-position:0 -1656px;background-size:auto;">&nbsp;</span>
+                    </a></h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="content">
+                        {{ submenu.tarefa|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left"><strong>Elabore sua resposta</strong><span style="margin-left: 10px"></span></h2>
+                    <div class="icon-box pull-right">
+                        <a href="/aluno/cursos/?videos={{ video_url }}" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Voltar para o curso" data-trigger="hover">
+                            <i class="fa fa-long-arrow-left"></i> Voltar
+                        </a>
+                        <a id="btn-salvar" disabled="true" href="javascript:saveResposta(finalizar=false)" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Salvar sua resposta" data-trigger="hover">
+                            <i class="fa fa-save"></i> Salvar
+                        </a>
+                        <a id="btn-finalizar" href="javascript:saveResposta(finalizar=true)" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Marcar como concluído" data-trigger="hover">
+                            <i class="fa fa-check"></i> Finalizar
+                        </a>
+                    </div>
+                </header>
+                <div class="main-box-body clearfix">
+                    {% if tarefa.concluido %}
+                        <div class="alert alert-success fade in">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-warning fa-fw fa-lg"></i>
+                            <strong>Atividade finalizada!</strong>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning fade in">
+                            <button id="btclose" type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-warning fa-fw fa-lg"></i>
+                            <strong>Aviso!</strong> Serão aceitos no máximo de {{ tarefa.atividade.caracteres|intcomma }} caracteres.
+                        </div>
+                    {% endif %}
+                    <h4>
+                        <span class="label label-success" id='timer'>{{ tarefa.time }}</span>
+                    </h4>
+                    <textarea class="ckeditor" id="content" name="content">{{ tarefa.resposta }}</textarea>
+                </div>
+                <div class="main-box-body clearfix">
+                    {% if tarefa.arquivo %}
+                        <div class="alert alert-success fade in">
+                            <i class="fa fa-info fa-fw fa-lg"></i>
+                            {% if not tarefa.concluido %}<strong>Lembre-se de finalizar a atividade.</strong><br>{% endif %}Seu arquivo já foi enviado. <a href="{{ tarefa.arquivo.url }}" target="_blank">Clique aqui</a> para visualizar.
+                        </div>
+                        {% if not tarefa.concluido %}
+                        <div class="alert alert-danger fade in">
+                            <i class="fa fa-warning fa-fw fa-lg"></i>
+                            <strong>Lembre-se de finalizar a atividade.</strong>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label class="control-label">Enviar arquivo com resposta manuscrita:</label>
+                        <input id="inputUpload" name="inputUpload" type="file" class="file file-loading" data-allowed-file-extensions='["pdf", "odt", "htm", "html", "txt", "doc", "docx"]'>
+                        <small class="text-danger">Arquivos permitidos: [.pdf, .odt, .htm, .html, .txt, .doc, .docx]</small>
+                        <div class="alert alert-info fade in">
+                            <i class="fa fa-info fa-fw fa-lg"></i>
+                            <strong>Atenção!</strong> Após selecionar o arquivo em seu computador, clique em "Enviar". Por fim, após enviar o arquivo, clicar em "Finalizar" no canto superior direito.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ STATIC_URL }}assets/ckeditor/ckeditor.js"></script>
+    <script src="{{ STATIC_URL }}assets/ckeditor/config.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/timer.jquery.js"></script>
+    <script>
+        window.timer = false;
+        $(document).on('ready', function() {
+            var editor = CKEDITOR.replace( 'content', {
+                language: 'pt-br',
+                height: 400,
+                // Define the toolbar groups as it is a more accessible solution.
+                toolbar: [
+                    {name: 'basicstyles', items : [ 'Bold','Italic', '-', 'BulletedList','-','Outdent','Indent','-','Blockquote', '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Subscript','Superscript', 'Print', '-', 'Maximize']},
+                ],
+                // Remove the redundant buttons from toolbar groups defined above.
+                removeButtons: 'Underline,Strike,Anchor,Styles,Specialchar',
+                skin: 'bootstrapck',
+                extraPlugins: 'wordcount',
+                wordcount: {
+                    showParagraphs: false,
+                    showWordCount: true,
+                    showCharCount: true,
+                    maxCharCount: {{ tarefa.atividade.caracteres }},
+                    /*paragraphsCountGreaterThanMaxLengthEvent: function (currentLength, maxLength) {
+                        $("#informationparagraphs").css("background-color", "crimson").css("color", "white").text(currentLength + "/" + maxLength + " - paragraphs").show();
+                    },
+                    wordCountGreaterThanMaxLengthEvent: function (currentLength, maxLength) {
+                        $("#informationword").css("background-color", "crimson").css("color", "white").text(currentLength + "/" + maxLength + " - word").show();
+                    },*/
+                    charCountGreaterThanMaxLengthEvent: function (currentLength, maxLength) {
+                        Swal.fire('ops!!!', 'Número máximo de caracteres excedido.', 'warning');
+                        $("#informationchar").css("background-color", "crimson").css("color", "white").text(currentLength + "/" + maxLength + " - char").show();
+                    },
+                    /*charCountLessThanMaxLengthEvent: function (currentLength, maxLength) {
+                        $("#informationchar").css("background-color", "white").css("color", "black").hide();
+                    },
+                    paragraphsCountLessThanMaxLengthEvent: function (currentLength, maxLength) {
+                        $("#informationparagraphs").css("background-color", "white").css("color", "black").hide();
+                    },
+                    wordCountLessThanMaxLengthEvent: function (currentLength, maxLength) {
+                        $("#informationword").css("background-color", "white").css("color", "black").hide();
+                    }*/
+                }
+            });
+            editor.on('key', function(event) {
+                window.safe = false;
+                $('#btn-salvar').attr('disabled', false);
+                if (window.timer == false) {
+                    $('#timer').timer({
+                        seconds: {{ tarefa.tempo }},
+                        format: '%H:%M:%S'
+                    });
+                    window.timer = true;
+                } else {
+                    $('#timer').timer('resume')
+                }
+            });
+            editor.on("instanceReady", function(){
+                {% if tarefa.concluido or tarefa.atividade.get_status.status != 'Iniciado'  %}
+                    CKEDITOR.instances.content.setReadOnly(true);
+                    $('#btn-finalizar').attr('disabled', true);
+                {% endif %}
+            });
+            console.log('ready...');
+            window.safe = true;
+            $('[data-toggle=popover]').popover();
+            $('.content').slimScroll({
+                height: '460px'
+            });
+            $(window).load(function(){
+                console.log('load...');
+                $('#make-small-nav').click();
+                $('#make-small-nav').popover('show');
+                setTimeout(function(){
+                    $('[data-toggle=popover]').popover('hide');
+                    $('#btclose').click();
+                }, 5000);
+            });
+        });
+        function saveResposta(finalizar) {
+            $('#timer').timer('pause');
+            $.ajax({
+              method: "POST",
+              url: "{% url 'curso:post-resposta' tarefa.id %}",
+              data: {
+                  content: CKEDITOR.instances.content.getData(),
+                  tempo: $('#timer').data('seconds'),
+                  concluido: finalizar
+              }
+            })
+              .done(function( msg ) {
+                  window.safe = true;
+                  $('#btn-salvar').attr('disabled', true);
+                  _toastr(msg.msg, "top-center", msg.flag, false);
+                  if (finalizar == true) {
+                      CKEDITOR.instances.content.setReadOnly();
+                      Swal.fire('Sucesso', 'Tarefa finalizada.', 'success');
+                      $('#btn-finalizar').attr('disabled', true);
+                  }
+                  console.log( "Data Saved: ", msg );
+              });
+
+        };
+
+        window.onbeforeunload = function (e) {
+            e = e || window.event;
+            if (window.safe == false) {
+                // For IE and Firefox
+                if (e) {
+                    e.returnValue = 'Deseja sair sem salvar a resposta?';
+                }
+                // For Safari
+                return 'Deseja sair sem salvar a resposta?';
+            }
+        };
+    </script>
+    <script>
+    $("#inputUpload").fileinput({
+        language: "pt-BR",
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends '_base.html' %}
+{% block section_attrs %}id="cursos"{% endblock %}
+{% block section %}
+<div class="container">
+    <div class="col-sm-12">
+        <div class="cabecalho-cursos">
+            <h1>{{ categoria.titulo_menu }}</h1>
+            <div class="linha-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li >Cursos</li>
+                    <li class="active">
+                        <a href="{{ categoria.get_absolute_url }}">{{ categoria.titulo_menu }}</a>
+                    </li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {% if categoria.tipo != 'S' %}
+        <div class="cabecalho-cursos" style="margin-top: 0px">
+        {% if inativos == 'sim' %}
+            <a href="?inativos=nao" class="btn btn-primary btn-sm">
+                Exibir somente {{ categoria.titulo_menu|upper }} com inscrições em aberto
+            </a>
+        {% else %}
+            <a href="?inativos=sim" class="btn btn-success btn-sm">
+                Exibir também {{ categoria.titulo_menu|upper }} com inscrições finalizadas
+            </a>
+        {% endif %}
+        </div>
+        {% endif %}
+        {% if categoria.tipo in 'S,O' %}
+            <div class="alert alert-info" role="alert">
+                {% if categoria.tipo == 'S' %}
+                    Prepare-se para enfrentar sentenças de provas de concursos ou da vida real com a série de "Atividades
+                    Avulsas" do JusTutor. Você adquire uma proposta, redige sua sentença no próprio JusTutor e ela será
+                    corrigida, de forma individualizada, por nossa equipe de professores, incluindo o Juiz
+                    Federal Alexandre Henry Alves.
+                    <p>{% if website.config.regulamento_sentenca_avulsa %}<a target="_blank" href="{{ website.config.regulamento_sentenca_avulsa.get_absolute_url }}">CLIQUE AQUI E CONFIRA COMO FUNCIONA</a>{% endif %}</p>
+                {% else %}
+                    Prepare-se para enfrentar as peças profissionais da 2ª fase da OAB de uma maneira prática e efetiva!
+                    Você adquire uma proposta, redige sua peça profissional no próprio JusTutor e ela será corrigida, de
+                    forma individualizada, por nossa equipe de professores. A melhor forma de aprendizado é praticando!
+                {% endif %}
+            </div>
+            {% include '_filter-sentencas.html' %}
+            <div style="padding-bottom: 10px; padding-top: 4px"><hr></div>
+        {% elif categoria.tipo == 'D' %}
+            <div class="alert alert-success" role="alert">
+            Os simulados do JusTutor possibilitam um treinamento específico para a 1ª fase dos concursos,
+            com questões exclusivas do JusTutor e rankings que permitem a você comparar seu desempenho
+            com os demais candidatos que fizerem o simulado. Todas as questões possuem gabarito detalhado,
+            comentado por nossos autores.
+            </div>
+            {% include '_filter-simulado.html' %}
+        {% elif categoria.tipo == 'B' %}
+            <div class="alert alert-danger" role="alert">
+                <h4>Quer montar um pacote personalizado com Atividades Avulsas? <a href="{% url 'curso:montar-pacote' %}">Clique aqui</a> e obtenha descontos progressivos!</h4>
+            </div>
+        {% endif %}
+    </div>
+    <div class="container">
+        {% if categoria.tipo in 'S,O,D' %}
+            {% for curso in cursos %}
+                {% include '_bloco-cursos-sentenca.html' %}
+            {% endfor %}
+        {% else %}
+            {% for curso in cursos %}
+                {% include '_bloco-cursos.html' %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalAmostra">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Amostra</h3>
+                    <hr>
+                    <div id="modalBody"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+{% endblock %}
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.2.2/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script>
+        $('.basicAutoComplete').autoComplete({
+            resolverSettings: {
+                url: '{% url 'curso:ajax-search-simulado' %}'
+            }
+        });
+    </script>
+    <script>
+        $('#modalAmostra').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var titulo = button.data('titulo');
+            var pk = button.data('pk');
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this);
+            modal.find('.modal-title').text(titulo);
+            $.getJSON("{% url 'curso:get-amostra-json' %}?pk=" + pk, function (json) {
+                modal.find('#modalBody').html($.parseHTML(json.amostra));
+                $('#modalBody').slimScroll({
+                    start: 'top',
+                    height: '400px'
+                });
+            });
+        })
+    </script>
+{% endblock %}
+{% block busca %} {% endblock %}

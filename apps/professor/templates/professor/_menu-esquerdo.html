@@ -1,0 +1,113 @@
+{% load  thumbnail curso %}
+{% get_recursos_abertos as recursos %}
+{% get_recursos_abertos tipo='S' as recursos_st %}
+<div id="nav-col">
+    <section id="col-left" class="col-left-nano">
+        <div id="col-left-inner" class="col-left-nano-content">
+            <!-- MENU --------------------------------->
+            <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
+                <ul class="nav nav-pills nav-stacked">
+                    <!-- PAINEL ----------------------->
+                    <li{% if menu == 'painel' %} class="active"{% endif %}>
+                        <a href="{% url 'professor:painel' %}">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Painel</span>
+                        </a>
+                    </li>
+                    <!-- CURSOS ----------------------->
+                    <li{% if menu == 'cursos' %} class="active"{% endif %}>
+                        <a href="{% url 'professor:cursos' %}">
+                            <i class="fa fa-balance-scale"></i>
+                            <span>Cursos</span>
+                        </a>
+                    </li>
+                    <!-- RECURSOS ----------------------->
+                    <li{% if menu|slugify == 'recursos' %} class="active"{% endif %}>
+                        <a href="{% url 'professor:recursos' %}">
+                            <i class="fa fa-gavel"></i>
+                            <span>Recursos</span>
+                            {% if recursos %}
+                                <span id="id-msg-menu-esq" class="label label-danger pull-right">{{ recursos }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <!-- CURSOS ----------------------->
+                    <li{% if menu|slugify == 'sentencas-para-correcao' %} class="active"{% endif %}>
+                        <a href="{% url 'professor:sentencas' %}">
+                            <i class="fa fa-gavel"></i>
+                            <span>Atividades Avulsas</span>
+                            {% get_sentencas_aluno_aguardando as sentencas_aluno_aguardando %}
+                            {% if sentencas_aluno_aguardando %}
+                                <span class="label label-danger pull-right">{{ sentencas_aluno_aguardando }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <!-- CURSOS ----------------------->
+                    <li{% if menu|slugify == 'oab-2a-fase' %} class="active"{% endif %}>
+                        <a href="{% url 'professor:sentencas-oab' %}">
+                            <i class="fa fa-gavel"></i>
+                            <span>OAB 2ª Fase</span>
+                        </a>
+                    </li>
+                    <!-- MENSAGENS -------------------->
+                    <li>
+                        <a href="{% url 'professor:mensagens' %}">
+                            <i class="fa fa-envelope-o"></i>
+                            <span>Mensagens</span>
+                            {% with request.user.professor.msg_naolidas.count as count %}
+                                {% if count %}
+                                <span id="id-msg-menu-esq" class="label label-danger pull-right">{{ count }}</span>
+                                {% endif %}
+                            {% endwith %}
+
+                        </a>
+                    </li>
+                    {% comment %}
+                    <!-- PERFIL ----------------------->
+                    <li{% if menu == 'perfil' %} class="active"{% endif %}>
+                        <a href="{% url 'aluno:perfil' %}">
+                            <i class="fa fa-user"></i>
+                            <span>Produção</span>
+                        </a>
+                    </li>
+                    <!-- NOTIFICAÇÕES ----------------->
+                    <li{% if menu == 'notificações' %} class="active"{% endif %}>
+                        <a href="{% url 'aluno:notificacoes' %}">
+                            <i class="fa fa-bell"></i>
+                            <span>Notificações</span>
+                            {% with proc_aluno.notificacoes.count as count %}
+                                {% if count %}
+                                <span id="id-notificacao-menu-esq" class="label label-danger pull-right">{{ count }}</span>
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+                    </li>
+                    <!-- TIMELINE --------------------->
+                    <li{% if menu == 'timeline' %} class="active"{% endif %}>
+                        <a href="{% url 'aluno:timeline' %}">
+                            <i class="fa fa-clock-o"></i>
+                            <span>Timeline</span>
+                        </a>
+                    </li>
+                    <!-- CONFIGURAÇÕES ---------------->
+                    <li{% if menu == 'configurações' %} class="active"{% endif %}>
+                        <a href="{% url 'aluno:configuracoes' %}">
+                            <i class="fa fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    {% endcomment %}
+                    <!-- ENCERRAR SESSÃO -------------->
+                    <li>
+                        <a href="{% url 'logout' %}">
+                            <i class="fa fa-power-off"></i>
+                            <span>Encerrar Sessão</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!--/MENU/--------------------------------->
+        </div>
+    </section>
+    <div id="nav-col-submenu"></div>
+</div>

@@ -1,0 +1,42 @@
+{% extends '_base.html' %}
+{% block section %}
+    <section id="questoes-destaque" class="col-sm-8">
+        <div class="titulo-home  mg-bot20">
+            <h4 class="pd-home titulo-home bold"><a class="btn btn-link" href="{% url 'enunciado:roteiros' %}"><i class="fa fa-arrow-left"></i></a> Roteiro de Estudo <small><strong>{{ roteiro }}</strong></small></h4>
+            <div class="linha-aba"></div>
+        </div>
+        <div style="padding-bottom: 10px"></div>
+        {% for roteiro in roteiro.itens.all %}
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">
+                    <a href="{{ roteiro.get_absolute_url }}">
+                        <strong>{{ roteiro }}</strong> <span class="label label-default pull-right">{{ roteiro.get_total_enunciados }}</span>
+                    </a>
+                </div>
+                <!-- List group -->
+                <ul class="list-group">
+                    {% for sub in roteiro.subitens.all %}
+                        <a href="{{ sub.get_absolute_url }}">
+                            <li class="list-group-item">
+                                {{ sub }}<span class="label label-default">{{ sub.get_total_enunciados }}</span>
+                            </li>
+                        </a>
+                    {% endfor %}
+
+                </ul>
+            </div>
+        {% endfor %}
+    </section>
+    <section class="col-sm-4">
+        <div class="titulo-home mg-bot20">
+            <h4 class="pd-home titulo-home bold">Publicidade</h4>
+            <div class="linha-aba"></div>
+            <div class="mg-top20">
+                {% include '_widget-anuncio.html' %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+{% block busca %}{% endblock %}

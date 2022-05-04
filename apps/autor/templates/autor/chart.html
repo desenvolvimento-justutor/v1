@@ -1,0 +1,95 @@
+<div class="main-box clearfix project-box emerald-box" style="height: 100vh">
+    <div class="main-box-body clearfix">
+        <div class="project-box-header {{ questionario_aluno.status_flags.bg }}">
+            <div class="name">
+                <a href="#"
+                   style="padding: 8px 15px; font-size: 1em; font-weight: bold"> {{ questionario_aluno.status_flags.title }}
+                    <button type="button" class="close pull-right" onclick="$('#config-tool').toggleClass('closed')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </a>
+
+            </div>
+
+        </div>
+        <div class="project-box-content" style="min-height: 320px;">
+
+            <span class="chart" data-percent="{{ questionario_aluno.get_respostas_percent }}">
+                <span class="percent">{{ questionario_aluno.get_respostas_percent }}</span>%<br>
+                <span class="lbl" style="margin-top: unset">Total: <strong>{{ questionario_aluno.get_respostas_total.count }}</strong></span>
+                <canvas height="130" width="130"></canvas>
+            </span>
+            {% if questionario_aluno.data_conclusao %}
+            <ul class="graph-stats">
+                <li>
+                    <div class="clearfix"><div class="title pull-left">Acertos</div>
+                        <div class="value pull-right" title="10% down" data-toggle="tooltip">{{ questionario_aluno.get_respostas_corretas|length }}
+                            <i class="fa fa-level-up green"></i>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div style="width: {{ questionario_aluno.get_respostas_corretas_perc }}%;" aria-valuemax="100" aria-valuemin="0"
+                             aria-valuenow="69" role="progressbar" class="progress-bar progress-bar-success">
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="clearfix"><div class="title pull-left">Erros</div>
+                        <div class="value pull-right" title="10% down" data-toggle="tooltip">{{ questionario_aluno.get_respostas_erradas|length }}
+                            <i class="fa fa-level-down red"></i>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div style="width: {{ questionario_aluno.get_respostas_erradas_perc }}%;" aria-valuemax="100" aria-valuemin="0"
+                             aria-valuenow="69" role="progressbar" class="progress-bar progress-bar-danger">
+                            <span class="sr-only">69% Complete</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="clearfix"><div class="title pull-left">Em branco</div>
+                        <div class="value pull-right" title="10% down" data-toggle="tooltip">{{ questionario_aluno.get_respostas_nulas|length }}
+                            <i class="fa fa-level-down red"></i>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div style="width: {{ questionario_aluno.get_respostas_nulas_perc }}%;" aria-valuemax="100" aria-valuemin="0"
+                             aria-valuenow="69" role="progressbar" class="progress-bar progress-bar-default">
+                            <span class="sr-only">69% Complete</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="clearfix"><div class="title pull-left">Pontuação final</div>
+                        <div class="value pull-right" title="10% down" data-toggle="tooltip">{{ questionario_aluno.pontuacao }}
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div style="width: 100%;" aria-valuemax="100" aria-valuemin="0"
+                             aria-valuenow="69" role="progressbar" class="progress-bar progress-bar-info">
+                            <span class="sr-only">69% Complete</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            {% endif %}
+        </div>
+            {% if questionario_aluno.data_conclusao %}
+                <div class="main-box infographic-box colored emerald-bg" style="border-radius: unset">
+                    <i class="fa fa-trophy yellow"></i>
+                    <span class="headline">Classificação provisória</span>
+                    <span class="value">{{ questionario_aluno.position }}º</span>
+                </div>
+            {% endif %}
+        <div class="project-box-footer clearfix">
+            <a href="#" style="width: 50%">
+                <span class="value text-success" style="font-weight: bold" id="num_concluidas">{{ questionario_aluno.get_respostas_concluidas.count }}</span>
+                <span class="label text-success"><small>Respondidas</small></span>
+            </a>
+            <a href="#" style="width: 50%">
+                <span class="value text-danger"style="font-weight: bold" id="num_restantes">{{ questionario_aluno.get_respostas_restantes.count }}</span>
+                <span class="label"><small class="text-danger">Restantes</small></span>
+            </a>
+        </div>
+    </div>
+</div>

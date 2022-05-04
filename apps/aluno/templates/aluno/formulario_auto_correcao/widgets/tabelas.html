@@ -1,0 +1,49 @@
+{% load aluno_tags %}
+<div class="row">
+    {% for tabela in formulario.autocorrecao_tabelas.all %}
+        {% get_resposta tabela.pk as resposta %}
+
+        <div class="col-lg-12">
+            <div class="main-box clearfix project-box emerald-box">
+                <div class="main-box-body clearfix">
+                    <div class="project-box-header emerald-bg">
+                        <div class="name">
+                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapse-{{ tabela.pk }}"
+                               style="font-size: medium; font-weight: bolder; padding: 10px 15px !important;">
+                                <i class="fa fa-circle {% if resposta %}green{% else %}red{% endif %}"></i>
+                                {{ tabela }} <small style="padding-left: 10px; font-size: x-small; font-weight: lighter">CLIQUE AQUI PARA RESPONDER</small>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="collapse-{{ tabela.pk }}" class="panel-collapse collapse">
+                        <div class="project-box-content">
+                            <div class="pagecallout pagecallout-info">
+                                {{ tabela.comentarios|safe }}
+                            </div>
+                            <div class="form-group text-left">
+                                <label class="font-weight-bolder">Escolha uma opção</label>
+                                {% for nota in tabela.nota.all %}
+                                    <div class="radio">
+                                        <input type="radio" name="optionsNotas{{ tabela.pk }}" id="nota-{{ nota.pk }}"
+                                               value="{{ nota.pk }}" {% if nota.pk == resposta.nota.pk %}checked{% endif %}
+                                               onchange="changeNota({{ nota.pk }}, {{ tabela.pk }})"
+                                        >
+                                        <label for="nota-{{ nota.pk }}">
+                                            <div>{{ nota.texto|safe }}</div>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="project-box-ultrafooter clearfix float-left">
+                            <a href="#" class="link float-right">
+                                <i class="fa fa-arrow-circle-right fa-lg"></i> <strong id="nota{{ tabela.pk }}">{{ resposta.nota.valor|floatformat:2 }}</strong>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

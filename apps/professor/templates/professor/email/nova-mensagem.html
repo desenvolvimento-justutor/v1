@@ -1,0 +1,28 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    <h3>{{ curso }}</h3>
+    {% if not professor %}
+        <p>Nova mensagem do aluno: <strong>{{ aluno }}</strong></p>
+        {% if cid %}
+            <p><a href="{{ dominio }}/professor/mensagens/{{ cid }}/">Clique aqui</a> para ir para a área do professor e ver a mensagem.</p>
+        {% else %}
+            <p><a href="{{ dominio }}/professor/mensagens?tipo={{ tipo }}/">Clique aqui</a> para ir para a área do professor e ver a mensagem.</p>
+        {% endif %}
+    {% else %}
+        <p>Nova mensagem do professor: <strong>{{ professor }}</strong></p>
+        {% if tipo_url == 2 %}
+            <p><a href="{{ dominio }}/aluno/cursos/">Clique aqui</a> para ir para a área do aluno e ver a mensagem.</p>
+        {% else %}
+            <p><a href="{{ dominio }}/aluno/sentencas-avulsas/">Clique aqui</a> para ir para a área do aluno e ver a mensagem.</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+{% block texto1 %}
+{% endblock %}
+
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}
+    <p><strong>Mensagem:</strong></p>
+    <p>{{ mensagem|linebreaksbr }}</p>
+{% endblock %}

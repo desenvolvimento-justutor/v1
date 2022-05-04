@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+  <li>
+      <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        <span class="divider">»</span>
+    </li>
+    <li>
+        <a href="/admin/aluno/">Aluno</a>
+        <span class="divider">»</span>
+    </li>
+    <li>
+        <a href="/admin/aluno/aluno/">
+            Alunos</a>
+        <span class="divider">»</span>
+    </li>
+    <li>
+        <a href="/admin/aluno/aluno/{{ aluno.pk }}/">
+            {{ aluno }}</a>
+          <span class="divider">&raquo;</span>
+    </li>
+    <li>
+      </li>
+      <li class="active">
+      Livros
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+    {% if livros %}
+    <div class="module">
+        <table class="table-overview applist" summary="Models available in the Autenticação e Autorização application.">
+            <caption><a href="/admin/auth/" class="section">Livros do Aluno</a></caption>
+            <tbody>
+            <tr>
+                <th style="text-align: left">Livro</th>
+                <th style="text-align: center">Senha</th>
+                <th style="text-align: left">Nome Completo</th>
+                <th style="text-align: center">Transação</th>
+                <th style="text-align: center"></th>
+            </tr>
+            {% for livro in livros %}
+            <tr>
+                <th scope="row" style="text-align: left">{{ livro }}</th>
+                <td style="text-align: center">{{ senha }}</td>
+                <td style="text-align: left">{{ aluno.nome_completo }}</td>
+                <td style="text-align: center">{{ livro.checkout.transaction.get_status_display }}</td>
+                <td><a href="{% url 'aluno:baixar-livro' livro.curso.id %}?action=admin&aluno={{ aluno.pk }}" class="addlink icon"><i class="icon-file icon-alpha75"></i>Baixar PDF</a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-danger">
+            <strong>Aluno "{{ aluno }}" não possui livros.</strong>
+          </div>
+    {% endif %}
+{% endblock %}

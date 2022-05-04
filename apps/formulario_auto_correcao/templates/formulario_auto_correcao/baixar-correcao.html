@@ -1,0 +1,129 @@
+{% load aluno_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+</head>
+<body>
+<style>
+    h1 {
+        background-color: lightgray;
+        font-size: 1.5em;
+        color: darkgreen;
+        padding: 8px;
+    }
+</style>
+<div style="text-align: center">
+    <img align="middle" src="https://justutor.com.br/static/images/logos/justuto-horizontal.png">
+    <hr>
+    {% if action != 'lines' %}
+        <p style="color: red; font-weight: bolder">{{ aluno }} ({{ aluno.email }}){% if aluno.cpf %} -
+            {{ aluno.cpf }}{% endif %}</p>
+        <hr>
+    {% endif %}
+</div>
+<div>
+    <h1>{{ formulario.enunciado }}</h1>
+    <div style="padding: 4px; background-color: darkgrey">
+        {% if formulario.enunciado.classificacao == 'ST' %}
+            <strong>Esfera:</strong> {{ formulario.enunciado.esfera_especifica.nome }} |
+            <strong>Concurso:</strong> {{ formulario.enunciado.concurso }} |
+            <strong>Sentença:</strong> {{ formulario.enunciado.tipo_sentenca }} |
+        {% elif formulario.enunciado.classificacao == 'PP' %}
+            <strong>Concurso:</strong> {{ formulario.enunciado.concurso }} |
+            <strong>Disciplina:</strong> {{ formulario.enunciado.disciplina }} |
+            <strong>Tipo peça:</strong> {{ formulario.enunciado.tipo_peca_pratica }}
+        {% else %}
+            <strong>Orgão:</strong> {{ formulario.enunciado.orgao_entidade.nome }} |
+            <strong>Disciplina:</strong> {{ formulario.enunciado.disciplina }} |
+            <strong>Caderno:</strong> {{ formulario.enunciado.num_questao_caderno|stringformat:"03d" }}
+        {% endif %}
+    </div>
+    {{ formulario.enunciado.texto|safe }}
+    <h1>Resposta: {{ resposta|default_if_none:"" }}</h1>
+    {% if resposta %}
+        {{ resposta.texto|safe }}
+    {% else %}
+        <strong style="color: red">Você não respondeu a esse enunciado.</strong>
+    {% endif %}
+    {% if action == 'default' %}
+        <h1>Considerações iniciais</h1>
+        {{ formulario.texto|safe }}
+        <h1>Itens/Quesitos</h1>
+        {% for tabela in formulario.autocorrecao_tabelas.all %}
+            <hr>
+            {% get_resposta tabela.pk as resposta %}
+            <ul>
+                <li>
+                    <h3>{{ tabela }}</h3>
+                    {{ tabela.comentarios|safe }}
+                    {% if resposta %}
+                        {{ resposta.nota.texto|safe }}
+                        <strong>Nota: <span style="color: darkorange; font-size: large">{{ resposta.nota.valor }}</span></strong>
+                    {% else %}
+                        <strong style="color: red">Não respondido</strong>
+                    {% endif %}
+                </li>
+            </ul>
+        {% endfor %}
+        <hr/>
+        <strong>Nota geral: <span style="color: darkorange; font-size: large">{{ total }}</span></strong>
+        <hr/>
+    {% elif action == 'lines' %}
+        <style type="text/css">
+            .tg {
+                border-collapse: collapse;
+                border-spacing: 0;
+            }
+
+            .tg td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 2px;
+                word-break: normal;
+            }
+
+            .tg .tg-0lax {
+                text-align: left;
+                vertical-align: middle;
+            }
+        </style>
+        <table class="tg">
+            <thead>
+            {% for linha in formulario.enunciado.range_lines %}
+                <tr>
+                    <th class="tg-0lax" width="30px">{{ linha|stringformat:"02d" }}</th>
+                    <th class="tg-0lax"></th>
+                </tr>
+            {% endfor %}
+            </thead>
+        </table>
+    {% elif action == 'gabarito' %}
+        <h1>Gabarito</h1>
+        {{ formulario.enunciado.gabarito|safe }}
+    {% endif %}
+</div>
+
+<script>
+    {#window.print()#}
+</script>
+</body>
+</html>

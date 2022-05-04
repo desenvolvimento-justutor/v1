@@ -1,0 +1,66 @@
+<section id="carrinho">
+    <div class="container">
+        <div class="col-sm-12 ">
+            <div class="relative">
+                <div class="borda-topo">
+                    <div class="cadastro-home">
+                        <div class="pull-left">
+                            <img src="{{ STATIC_URL }}assets/images/firula01.png">
+                        </div>
+                        <div class="cad01">
+                            {% if website.aluno %}
+                            <span>Meu Carrinho</span>
+                            <div style="height: 3px">
+
+                            </div>
+                            {% else %}
+                            <span>Acesse pelo</span>
+                            <span>
+                                <a href="{% url 'socialauth_begin' 'facebook' %}?{{ redirect_querystring }}"
+                                   data-toggle="tooltip" title="Facebook">
+                                <img src="{{ STATIC_URL }}assets/images/09-face.svg">
+                                </a>
+                            </span>
+                            <span>ou</span>
+                            <span>
+                                <a href="{% url 'aluno:cadastro' %}" data-toggle="tooltip" title="Cadastre-se">
+                                    <img src="{{ STATIC_URL }}assets/images/10-edit.svg">
+                                </a>
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="cad02">
+                            <a class="gadet" href="{% url 'curso:carrinho' %}">{{ proc_curso.cart.count|stringformat:"02d" }}</a>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col-sm-12">
+            <div class="cadastro-mob">
+                <div class="pull-left">
+                    <img src="{{ STATIC_URL }}assets/images/firula01.png">
+                </div>
+                <div class="cad01">
+                    <span>Cadastre-se</span>
+                    <span>
+                        <a href="{% url 'socialauth_begin' 'facebook' %}?{{ redirect_querystring }}">
+                            <img src="{{ STATIC_URL }}assets/images/09-face.svg">
+                        </a>
+                    </span>
+                    <span>ou</span>
+                    <span>
+                        <a href="#">
+                            <img src="{{ STATIC_URL }}assets/images/10-edit.svg">
+                        </a>
+                    </span>
+                </div>
+                <div class="cad02"><a class="gadet" href="#">10</a></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</section>

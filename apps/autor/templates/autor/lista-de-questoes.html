@@ -1,0 +1,90 @@
+{% load autor %}
+<div class="panel-group accordion" id="accordion-q">
+    {% with resposta_questionario_aluno.questao_grupo.disciplina_grupo.grupo_simulado as gr %}
+        {% for grupo in simulado.grupos.all %}
+            <div class="panel panel-default">
+                <div class="panel-heading gray-bg">
+                    <h5 class="panel-title">
+                        <a class="accordion-toggle{% if gr.pk != grupo.grupo.pk %} collapsed  {% endif %}"
+                           style="font-size: x-small; font-weight: bold"
+                           data-toggle="collapse" data-parent="#accordion-q"
+                           href="#callapse-{{ grupo.pk }}">
+                            {{ grupo|upper }}
+                        </a>
+                    </h5>
+                </div>
+                <div id="callapse-{{ grupo.pk }}"
+                     class="panel-collapse collapse{% if gr.pk == grupo.grupo.pk %} in{% endif %}">
+                    <div class="panel-body" style="padding: unset">
+                        {% for disciplina in grupo.grupo.disciplinas.all %}
+                            <table class="table table-hover" style="margin-bottom: unset">
+                                <thead>
+                                <tr>
+                                    <th colspan="2"><small>{{ disciplina }}</small></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for q in disciplina.questoes.all %}
+                                    {% get_resposta_aluno resposta_questionario_aluno.questionario_aluno q as resposta %}
+                                    <tr style="cursor: pointer" onclick="render_box({{ resposta.pk }})"
+                                        {% if q.pk == resposta_questionario_aluno.questao.pk %}bg-success{% endif %}>
+                                        <td scope="row" style="width: 36px" class="text-center">
+                                        <span class="fa-stack" style="vertical-align: middle;">
+                                            {% if questionario_aluno.data_conclusao or simulado.encerrado %}
+
+                                                {% if resposta.correta or q.anulada %}
+                                                    <i class="fa fa-circle-o fa-stack-2x" style="color: forestgreen"
+                                                       data-html="true" data-toggle="tooltip" data-placement="top"
+                                                       title="Correta"></i>
+                                                    <i class="fa fa-check fa-stack-1x"></i>
+                                                {% elif resposta.correta == False %}
+                                                    <i class="fa fa-circle-o fa-stack-2x" style="color: tomato"
+                                                       data-html="true" data-toggle="tooltip" data-placement="top"
+                                                       title="Errada"></i>
+                                                    <i class="fa fa-close fa-stack-1x" style="color: tomato"></i>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if resposta.respondida %}
+                                                    <i class="fa fa-square-o fa-stack-2x" style="color: forestgreen"
+                                                       data-html="true" data-toggle="tooltip" data-placement="top"
+                                                       title="Respondida"></i>
+                                                        {% if resposta.viu_comentario %}
+                                                            <i class="fa fa-lock fa-stack-1x red" style="color: forestgreen"></i>
+                                                        {% else %}
+                                                            <i class="fa fa-check fa-stack-1x" style="color: forestgreen"></i>
+                                                        {% endif %}
+                                                {% else %}
+                                                    <i class="fa fa-square-o fa-stack-2x" style="color: orange"
+                                                       data-html="true" data-toggle="tooltip" data-placement="top"
+                                                       title="Em branco"></i>
+                                                        {% if resposta.viu_comentario %}
+                                                            <i class="fa fa-lock fa-stack-1x red" style="color: forestgreen"></i>
+                                                        {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        </span>
+                                        </td>
+                                        <td>
+                                        <span style="color: {% if resposta.respondida %}forestgreen{% else %}{% endif %}"
+                                              data-html="true" data-toggle="tooltip" data-placement="top"
+                                              title="{{ q.questao.enunciado }}">
+                                            {{ q }}
+                                            {% if q.questao.anulada %}
+                                                {% if questionario_aluno.data_conclusao or simulado.encerrado %}
+                                                    <span class="label label-danger pull-right">Anulada</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endwith %}
+</div>

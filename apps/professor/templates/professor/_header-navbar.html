@@ -1,0 +1,47 @@
+{% load thumbnail %}
+<header class="navbar" id="header-navbar">
+        <div class="container">
+            <a href="{% url 'website:index' %}" id="logo" class="navbar-brand">
+                <img src="{{ STATIC_URL }}images/logos/logotype-jus-negativo.svg" alt=""
+                     class="normal-logo logo-white" style="max-width: 200px"/>
+                <img src="{{ STATIC_URL }}perfil/img/logo-black.png" alt="" class="normal-logo logo-black"/>
+                <img src="{{ STATIC_URL }}perfil/img/logo-small.png" alt=""
+                     class="small-logo hidden-xs hidden-sm hidden"/>
+            </a>
+
+            <div class="clearfix">
+                <button class="navbar-toggle" data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="nav-no-collapse navbar-left pull-left hidden-sm hidden-xs">
+                    <ul class="nav navbar-nav pull-left">
+                        <li>
+                            <a class="btn" id="make-small-nav" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Clique aqui para exibir/ocultar o menu lateral" data-trigger="hover">
+                                <i class="fa fa-bars"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nav-no-collapse pull-right" id="header-nav">
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown profile-dropdown open">
+                            <a href="javascript:void(0)">
+                                {% thumbnail professor.foto "40x40" crop="center" as im %}
+                                    <img src="{{ im.url }}" alt="">
+                                {% empty %}
+                                    <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                {% endthumbnail %}
+                                <span class="hidden-xs">{{ professor }}</span>
+                            </a>
+                        </li>
+                        <li class="hidden-xxs">
+                            <a class="btn" href="{% url 'logout' %}">
+                                <i class="fa fa-power-off"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>

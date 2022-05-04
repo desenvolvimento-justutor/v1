@@ -1,0 +1,27 @@
+{% for escolha in questao.get_escolhas %}
+    <div class="form-group">
+        <div class="radio">
+            <input type="radio" name="questao" id="questao-{{ escolha.pk }}"
+                   value="{{ escolha.pk }}"
+                    {% if escolha.pk == resposta_questionario_aluno.questao_escolha.pk %}
+                        checked="checked"
+                    {% endif %}
+                    {% if resposta_questionario_aluno.questionario_aluno.edit and not resposta_questionario_aluno.viu_comentario %}
+                        onchange="responder('{{ resposta_questionario_aluno.pk }}', '{{ escolha.pk }}')"
+                    {% else %}
+                        disabled
+                    {% endif %}
+            >
+            <label for="questao-{{ escolha.pk }}" style="font-size: large;">
+                {% if resposta_questionario_aluno.questionario_aluno.data_conclusao or simulado.encerrado %}
+                    {% if escolha.correta %}
+                        <i class="fa fa-check fa-fw text-success"></i>
+                    {% else %}
+                        <i class="fa fa-remove fa-fw text-danger"></i>
+                    {% endif %}
+                {% endif %}
+                {% if not escolha.questao.tipo == 'C' %}<strong>{{ escolha.questao.tipo }}.&nbsp;</strong>{% endif %}{{ escolha|removetags:"p"|safe }}
+            </label>
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+</head>
+<body>
+<div style="text-align: center">
+    <img align="middle" src="https://justutor.com.br/static/images/logos/justuto-horizontal.png">
+    <hr>
+</div>
+{% if gabarito %}
+    <h1>Gabarito Preliminar</h1>
+    {{ atividade.gabarito|safe }}
+{% else %}
+    <h1>{{ atividade }}</h1>
+    {{ atividade.tarefa|safe }}
+
+    <h1>Resposta</h1>
+    {{ tarefa.resposta|safe }}
+
+    <h1>Correção</h1>
+    {{ tarefa.render_gabarito|safe }}
+{% endif %}
+<script>
+    window.print()
+</script>
+</body>
+</html>

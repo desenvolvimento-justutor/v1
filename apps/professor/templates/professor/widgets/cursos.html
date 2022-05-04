@@ -1,0 +1,272 @@
+{% load  thumbnail curso %}
+<div class="main-box clearfix">
+    <header class="main-box-header clearfix">
+        <h2>Cursos</h2>
+    </header>
+    <div class="main-box-body clearfix">
+        <div class="table-responsive">
+            <table class="table user-list table-hover">
+                <thead>
+                <tr>
+                    <th><span>Título</span></th>
+                    <th><span>Início</span></th>
+                    <th><span>Término</span></th>
+                    <th><span>Tipo</span></th>
+                    <th class="text-center"><span>Status</span></th>
+                    <td>Disponínel</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        {% thumbnail curso.imagem "50x50" crop="center" as im %}
+                            <img src="{{ im.url }}" alt=""/>
+                        {% empty %}
+                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                        {% endthumbnail %}
+                        <span class="user-link text-primary"><strong>{{ curso.categoria.nome }}</strong></span>
+                    </td>
+                    <td>{{ curso.data_ini|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ curso.data_fim|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ curso.categoria.get_tipo_display }}</td>
+                    <td class="text-center">
+                        {% if curso.ativo %}
+                            <span class="label label-success">Aberto</span>
+                        {% else %}
+                            <span class="label label-danger">Fechado</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if curso.disponivel %}
+                            <i class="fa fa-check text-success"></i>
+                        {% else %}
+                            <i class="fa fa-remove text-danger"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% get_atividades curso filtro.professor as atividades %}
+                {% if atividades.count %}
+                <tr>
+                    <td colspan="6">
+                        {% for atividade in atividades %}
+                        <div class="panel-group accordion" id="accordion">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a class="accordion-toggle collapsed" data-toggle="collapse"
+                                           data-parent="#accordion" href="#atividade-{{ atividade.pk }}">
+                                            {{ atividade }}
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="atividade-{{ atividade.pk }}" class="panel-collapse collapse" style="height: 2px;">
+                                    <div class="panel-body">
+                                        <!-- TABS -->
+                                        <div class="tabs-wrapper">
+                                            <ul class="nav nav-tabs">
+                                                <li class="active"><a href="#tab-detalhes-{{ atividade.pk }}" data-toggle="tab">Detalhes da Atividade</a></li>
+                                                <li class=""><a href="#tab-atividades-{{ atividade.pk }}" data-toggle="tab">Atividades dos alunos</a></li>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade active in" id="tab-detalhes-{{ atividade.pk }}">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th><span>ID</span></th>
+                                                            <th><span>Descrição</span></th>
+                                                            <th class="text-center"><span>Resposta padrão</span></th>
+                                                            <th class="text-center"><span>Início</span></th>
+                                                            <th class="text-center"><span>Término</span></th>
+                                                            <th class="text-center"><span>Status</span></th>
+                                                            <th>&nbsp;</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>{{ atividade.pk|stringformat:"06d" }}</td>
+                                                            <td>{{ atividade }}</td>
+                                                            <td class="text-center"><span class="badge badge-primary">{{ atividade.get_tipo_retorno_display }}</span> </td>
+                                                            <td class="text-center">{{ atividade.data_ini|date:"SHORT_DATE_FORMAT" }}</td>
+                                                            <td class="text-center">{{ atividade.data_fim|date:"SHORT_DATE_FORMAT" }}</td>
+                                                            <td class="text-center">
+                                                                <span class="label label-{{ atividade.get_status.label }}">{{ atividade.get_status.status }}</span>
+                                                            </td>
+                                                            <td class="text-center" style="width: 15%;">
+                                                                <div class="actions">
+                                                                    <a href="#" class="table-link" data-toggle="modal" data-target="#modalTarefa" data-titulo="{{ atividade }}" data-pk="{{ atividade.pk }}">
+                                                                        <i class="fa fa-eye" data-toggle="tooltip" data-original-title="Visualizar tarefa"></i>
+                                                                    </a>
+                                                                    <a target="_blank" href="{% url 'curso:atividade-imprimir' atividade.id %}" class="table-link success" data-toggle="tooltip" data-original-title="Imprimir tarefa">
+                                                                        <i class="fa fa-print"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {% ifequal atividade.tipo_retorno 'R' %}
+                                                        <tr>
+                                                            <td colspan="7">
+                                                                <form action="{% url 'curso:enviar-resposta-padrao' %}" method="post" enctype="multipart/form-data">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" value="{{ atividade.pk }}" name="atividade_id">
+                                                                    <input type="hidden" value="{{ request.path }}" name="redirect">
+                                                                    <fieldset>
+                                                                        <div class="row">
+                                                                            <div class="form-group col-sm-6">
+                                                                                <label for="disabledSelect">Data disponível</label>
+                                                                                <div class="input-group" data-date-format="dd-mm-yyyy">
+                                                                                    <input type="text" name="data" class="form-control" data-type="date" required value="{{ atividade.resposta_padrao_data|date:'SHORT_DATE_FORMAT' }}">
+                                                                                    <span class="input-group-addon"><i class="fa fa-th"></i></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group col-sm-6">
+                                                                                <label for="file{{ atividade.pk }}">Enviar resposta padrão</label>
+                                                                                <input {% if atividade.resposta_padra %}value="{{ atividade.resposta_padra.url }}"{% endif %} data-show-preview="false" name="file" type="file" class="file file-loading" data-allowed-file-extensions='["pdf", "odt", "htm", "html", "txt", "doc", "docx"]'>
+                                                                                {% if atividade.resposta_padra %}
+                                                                                    <p class="help-block">{% if atividade.resposta_padra %}<a href="{{ atividade.resposta_padra.url }}"><i class="fa fa-download"></i> {{ atividade.resposta_padra }}</a> {% endif %}</p>
+                                                                                {% else %}
+                                                                                    <p class="help-block">Arquivos permitidos: [.pdf, .odt, .htm, .html, .txt, .doc, .docx].{% if atividade.resposta_padra %}{{ atividade.resposta_padra.url }}{% endif %}</p>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                          </div>
+                                                                    </fieldset>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                        {% endifequal %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- *********** ATIVIDADES *************-->
+                                                <div class="tab-pane fade" id="tab-atividades-{{ atividade.pk }}">
+                                                    <div data-scroll="slimscroll">
+                                                    {% for tarefa in atividade.tarefaatividade_set.all %}
+                                                        <ul class="widget-products">
+                                                            <li class="col-sm-6">
+                                                                <span class="img">
+                                                                    {% thumbnail tarefa.aluno.foto "60x60" crop="center" as im %}
+                                                                        <img src="{{ im.url }}" alt="">
+                                                                    {% empty %}
+                                                                        <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                                                    {% endthumbnail %}
+                                                                </span>
+                                                                <span class="product clearfix" style="margin-top: 4px">
+                                                                    <span class="name">
+                                                                        <a href="{{ tarefa.aluno.get_absolute_url }}"> {{ tarefa.aluno }}</a>
+                                                                    </span>
+                                                                    <span class="price">
+                                                                        {% if tarefa.concluido %}
+                                                                            <i class="fa fa-check-circle" style="color: #8BC34A"></i>
+                                                                        {% else %}
+                                                                            <i class="fa fa-circle text-danger" style="color: #E84E40"></i>
+                                                                        {% endif %}
+                                                                        {{ tarefa.time }}
+                                                                        <a href="{% url 'curso:download-tarefa' tarefa.pk %}"
+                                                                           title="Download"
+                                                                           class="table-link">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a>
+                                                                        <a href="/admin/curso/tarefaatividade/{{ tarefa.pk }}/"
+                                                                           title="Ver no admin"
+                                                                           class="table-link" target="_blank">
+                                                                            <i class="fa fa-link"></i>
+                                                                        </a>
+                                                                        {% if tarefa.arquivo %}
+                                                                        <a href="{{ tarefa.arquivo.url }}"
+                                                                           target="_blank" title="Baixar Arquivo"
+                                                                           class="table-link">
+                                                                            <i class="fa fa-file-pdf-o"></i>
+                                                                        </a>
+                                                                        {% endif %}
+                                                                    </span>
+                                                                    <span class="price">
+                                                                        {% if tarefa.concluido and not tarefa.limitada %}
+                                                                            {% if tarefa.corrigido %}
+                                                                                <span class="label label-success"> Correção enviada</span>
+                                                                                {% if tarefa.correcao %}
+                                                                                <a class="table-link" href="{{ tarefa.correcao.url }}" style="color: #8BC34A">
+                                                                                    <i class="fa fa-download" data-container="body" data-toggle="tooltip" data-original-title="Fazer download da correção"></i>
+                                                                                </a>
+                                                                                {% endif %}
+                                                                                {% get_tarefa_nota tarefa as tar %}
+                                                                                {% if tar %}
+                                                                                <spa class="label label-warning">{{ tar }}</spa>
+                                                                                {% endif %}
+                                                                                <a target="_blank" href="{% url 'curso:baixar-correcao' tarefa.pk %}" class="table-link primary" data-toggle="tooltip" data-original-title="*Baixar Correção">
+                                                                                    <i class="fa fa-download"></i>
+                                                                                </a>
+                                                                            {% else %}
+                                                                                {% if tarefa.atividade.tipo_retorno == 'R' %}
+                                                                                    <span class="label label-success" data-container="body" data-toggle="tooltip" data-original-title="Gabarito preliminar disponibilizado">Gabarito disponível</span>
+                                                                                {% else %}
+                                                                                    <span class="label label-danger" > Aguardando correção</span>
+                                                                                {% endif %}
+                                                                                <a class="table-link" href="javascript:void(0)" data-toggle="modal" data-target="#modalUpload" style="color: #E84E40" data-titulo="T{{ tarefa.pk|stringformat:"03d" }} {{ tarefa.aluno }}" data-pk="{{ tarefa.pk }}">
+                                                                                    <i class="fa fa-upload" data-container="body" data-toggle="tooltip" data-original-title="Enviar correção para o aluno"></i>
+                                                                                </a>
+                                                                            {% endif %}
+                                                                        {% elif tarefa.limitada %}
+                                                                            <span class="label label-warning"> Correção Limitada</span>
+                                                                        {% else %}
+                                                                            <span class="label label-warning"> Aguardando concluir</span>
+                                                                        {% endif %}
+                                                                    </span>
+                                                                </span>
+                                                            </li>
+                                                        </ul>
+                                                    {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalTarefa">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    $('#modalTarefa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var titulo = button.data('titulo');
+        var pk = button.data('pk');
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this);
+        modal.find('.modal-title').text(titulo);
+        $('#btn-tarefa').prop('href', '/curso/atividade/responder/' + pk);
+        $('#btn-imprimir').prop('href', '/curso/atividade/imprimir/' + pk);
+        $.getJSON( "{% url 'curso:get-tarefa-json' %}?pk=" + pk, function( json ) {
+            modal.find('#modalBody').html($.parseHTML( json.tarefa ));
+            $('#modalBody').slimScroll({
+                start: 'top',
+                height: '400px'
+            });
+        });
+    })
+</script>

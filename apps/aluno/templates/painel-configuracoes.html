@@ -1,0 +1,288 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail %}
+{% block panel_content %}
+    <div class="row" id="user-profile" xmlns="http://www.w3.org/1999/html">
+        {% include '_widget-user-profile.html' %}
+        <div class="col-lg-9 col-md-8 col-sm-8">
+            <div class="main-box clearfix">
+                <div class="tabs-wrapper profile-tabs">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><!-- MEUS DADOS -->
+                            <a href="#tab-meus-dados" data-toggle="tab">Meus Dados</a>
+                        </li>
+                        <li><!-- MINHAS NOTIFICAÇÕES -->
+                            <a href="#tab-notificacoes" data-toggle="tab">Notificações por Email</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- MEUS DADOS -------->
+                        <div class="tab-pane fade in active" id="tab-meus-dados">
+                            <form action="#" method="post">
+                            {% csrf_token %}
+                                <section class="col-sm-12">
+                                    <!-- ### INFORMAÇÕES GERAIS ### -->
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h4>Dados Cadastrais</h4>
+                                            <hr>
+                                        </div>
+                                        <!-- *** SEXO *** -->
+                                        {% with form.sexo as sexo %}
+                                        <div class="col-sm-12 form-group{% if sexo.errors %} has-error{% endif %}">
+                                            <label>Sexo<span class="text-danger">*</span></label>
+                                            <div class="radio">
+                                                {% for radio in sexo %}
+                                                    {{ radio }}
+                                                {% endfor %}
+                                            </div>
+                                            {% if sexo.errors %}<span class="help-block">{{ sexo.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}<br>
+                                        <!-- *** NOME COMPLETO *** -->
+                                        {% with form.nome_completo as nome %}
+                                        <div class="col-sm-12 form-group{% if nome.errors %} has-error{% endif %}">
+                                            <label>Nome Completo<span class="text-danger">* <small> Nome que aparecera no certificado</small></span></label>
+                                            {{ nome }}
+                                            {% if nome.errors %}<span class="help-block">{{ nome.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** APELIDO *** -->
+                                        {% with form.nome as nome %}
+                                        <div class="col-sm-6 form-group{% if nome.errors %} has-error{% endif %}">
+                                            <label>Apelido<span class="text-danger">* <small> Nome que aparecera no site</small></span></label>
+                                            {{ nome }}
+                                            {% if nome.errors %}<span class="help-block">{{ nome.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** CARGO *** -->
+                                        {% with form.cargo as cargo %}
+                                        <div class="col-sm-6 form-group{% if cargo.errors %} has-error{% endif %}">
+                                            {{ cargo.label_tag }}
+                                            {{ cargo }}
+                                            {% if cargo.errors %}<span class="help-block">{{ cargo.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** CPF *** -->
+                                        {% with form.cpf as cpf %}
+                                        <div class="col-sm-3 form-group{% if cpf.errors %} has-error{% endif %}">
+                                            <label>CPF<span class="text-danger">*</span></label>
+                                            {{ cpf }}
+                                            {% if cpf.errors %}<span class="help-block">{{ cpf.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** RG *** -->
+                                        {% with form.rg as rg %}
+                                        <div class="col-sm-3 form-group{% if rg.errors %} has-error{% endif %}">
+                                            <label>RG</label>
+                                            {{ rg }}
+                                            {% if rg.errors %}<span class="help-block">{{ rg.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** EMAIL *** -->
+                                        {% with form.email as email %}
+                                        <div class="col-sm-6 form-group{% if email.errors %} has-error{% endif %}">
+                                            <label>E-Mail<span class="text-danger">*</span></label>
+                                            {{ email }}
+                                            {% if email.errors %}<span class="help-block">{{ email.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** EMAIL PÚBLICO *** -->
+                                        {% with form.email_publico as email_publico %}
+                                        <div class="col-sm-6 form-group{% if email_publico.errors %} has-error{% endif %}">
+                                            <div style="margin-top: 28px"></div>
+                                            <div class="checkbox-nice">
+                                                {{ email_publico }}
+                                                <label for="{{ email_publico.id_for_label }}">
+                                                    Tornar e-mail público
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endwith %}
+                                    </div>
+                                    <!-- ### ENDEREÇO ### -->
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h4>Endereço</h4>
+                                            <hr>
+                                        </div>
+                                        <!-- *** CEP *** -->
+                                        {% with form.cep as cep %}
+                                        <div class="col-sm-2 form-group{% if cep.errors %} has-error{% endif %}">
+                                            <label>C.E.P</label>
+                                            {{ cep }}
+                                            {% if cep.errors %}<span class="help-block">{{ cep.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** LOGRADOURO *** -->
+                                        {% with form.logradouro as logradouro %}
+                                        <div class="col-sm-4 form-group{% if logradouro.errors %} has-error{% endif %}">
+                                            <label>Logradouro</label>
+                                            {{ logradouro }}
+                                            {% if logradouro.errors %}<span class="help-block">{{ logradouro.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** NUMERO *** -->
+                                        {% with form.numero as numero %}
+                                        <div class="col-sm-1 form-group{% if numero.errors %} has-error{% endif %}">
+                                            <label>Numero</label>
+                                            {{ numero }}
+                                            {% if numero.errors %}<span class="help-block">{{ numero.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** COMPLEMENTO *** -->
+                                        {% with form.complemento as complemento %}
+                                        <div class="col-sm-2 form-group{% if complemento.errors %} has-error{% endif %}">
+                                            <label>Complemento</label>
+                                            {{ complemento }}
+                                            {% if complemento.errors %}<span class="help-block">{{ complemento.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** BAIRRO *** -->
+                                        {% with form.bairro as bairro %}
+                                        <div class="col-sm-3 form-group{% if bairro.errors %} has-error{% endif %}">
+                                            <label>Bairro</label>
+                                            {{ bairro }}
+                                            {% if bairro.errors %}<span class="help-block">{{ bairro.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** ESTADO *** -->
+                                        {% with form.uf as uf %}
+                                        <div class="col-sm-3 form-group{% if uf.errors %} has-error{% endif %}">
+                                            <label>Estado</label>
+                                            {{ uf }}
+                                            {% if uf.errors %}<span class="help-block">{{ uf.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** CIDADE *** -->
+                                        {% with form.cidade as cidade %}
+                                        <div class="col-sm-3 form-group{% if cidade.errors %} has-error{% endif %}">
+                                            <label>Cidade</label>
+                                            {{ cidade }}
+                                            {% if cidade.errors %}<span class="help-block">{{ cidade.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** TELEFONE *** -->
+                                        {% with form.telefone as telefone %}
+                                        <div class="col-sm-3 form-group{% if telefone.errors %} has-error{% endif %}">
+                                            <label>Telefone</label>
+                                            {{ telefone }}
+                                            {% if telefone.errors %}<span class="help-block">{{ telefone.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** CELULAR *** -->
+                                        {% with form.celular as celular %}
+                                        <div class="col-sm-3 form-group{% if celular.errors %} has-error{% endif %}">
+                                            <label>Celular</label>
+                                            {{ celular }}
+                                            {% if celular.errors %}<span class="help-block">{{ celular.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                    </div>
+                                    <!-- ### SOCIAL ### -->
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h4>Social</h4>
+                                            <hr>
+                                        </div>
+                                        <!-- *** FRASE *** -->
+                                        {% with form.frase as frase %}
+                                        <div class="col-sm-12 form-group{% if url_facebook.errors %} has-error{% endif %}">
+                                            {{ frase.label_tag }}
+                                            {{ frase }}
+                                            {% if frase.errors %}<span class="help-block">{{ frase.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** FACEBOOK *** -->
+                                        {% with form.url_facebook as url_facebook %}
+                                        <div class="col-sm-6 form-group{% if url_facebook.errors %} has-error{% endif %}">
+                                            {{ url_facebook.label_tag }}
+                                            {{ url_facebook }}
+                                            {% if url_facebook.errors %}<span class="help-block">{{ url_facebook.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** FLICKER *** -->
+                                        {% with form.url_flicker as url_flicker %}
+                                        <div class="col-sm-6 form-group{% if url_flicker.errors %} has-error{% endif %}">
+                                            {{ url_flicker.label_tag }}
+                                            {{ url_flicker }}
+                                            {% if url_flicker.errors %}<span class="help-block">{{ url_flicker.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** TWITTER *** -->
+                                        {% with form.url_twitter as url_twitter %}
+                                        <div class="col-sm-6 form-group{% if url_twitter.errors %} has-error{% endif %}">
+                                            {{ url_twitter.label_tag }}
+                                            {{ url_twitter }}
+                                            {% if url_twitter.errors %}<span class="help-block">{{ url_twitter.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <!-- *** INSTAGRAM *** -->
+                                        {% with form.url_instagram as url_instagram %}
+                                        <div class="col-sm-6 form-group{% if url_instagram.errors %} has-error{% endif %}">
+                                            {{ url_instagram.label_tag }}
+                                            {{ url_instagram }}
+                                            {% if url_instagram.errors %}<span class="help-block">{{ url_instagram.errors.0 }}</span>{% endif %}
+                                        </div>
+                                        {% endwith %}
+                                        <div class="col-sm-12 form-group">
+                                            <button type="submit" class="btn btn-success fa fa-save"> Salvar</button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </form>
+                        </div>
+                        <!-- NOTIFICAÇÕES --->
+                        <div class="tab-pane fade" id="tab-notificacoes">
+                            <div class="form-group">
+                                <div class="checkbox-nice">
+                                    <input type="checkbox" id="checkbox-notificar-correcao" {% if aluno.notificar_correcao == True %}checked="checked"{% endif %}>
+                                    <label for="checkbox-notificar-correcao">
+                                        Receber E-mail quando um aluno Corrigir sua Resposta?
+                                    </label>
+                                </div>
+                                <div class="checkbox-nice">
+                                    <input type="checkbox" id="checkbox-notificar-comentario" {% if aluno.notificar_comentario == True %}checked="checked"{% endif %}>
+                                    <label for="checkbox-notificar-comentario">
+                                        Receber E-mail quando um aluno Comentar sua Correção?
+                                    </label>
+                                </div>
+                                <div class="checkbox-nice">
+                                    <input type="checkbox" id="checkbox-notificar-avaliacao" {% if aluno.notificar_avaliacao == True %}checked="checked"{% endif %}>
+                                    <label for="checkbox-notificar-avaliacao">
+                                        Receber E-mail quando um aluno Curtir sua Correção?
+                                    </label>
+                                </div>
+                                <div class="checkbox-nice">
+                                    <input type="checkbox" id="checkbox-notificar-seguir" {% if aluno.notificar_seguir == True %}checked="checked"{% endif %}>
+                                    <label for="checkbox-notificar-seguir">
+                                        Receber E-mail quando um aluno começar a te seguir?
+                                    </label>
+                                </div>
+                                <div class="checkbox-nice">
+                                    <input type="checkbox" id="checkbox-notificar-responder-seguir" {% if aluno.notificar_responder_seguir == True %}checked="checked"{% endif %}>
+                                    <label for="checkbox-notificar-responder-seguir">
+                                        Receber e-mail toda vez que outro(a) aluno(a) que eu sigo responder uma questão?
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="alert alert-info">
+                                <p><i class="fa fa-info-circle fa-fw fa-lg"></i>
+                                <strong>Aviso!</strong> O <strong>JusTutor</strong> repudia a venda ou cessão de cadastros.</p>
+                                <p>Assim, fique tranquilo(a), pois você não receberá e-mails de nossos parceiros por conta de seu cadastro no JusTutor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $( "[type='checkbox']" ).bind( "change", function(e) {
+        var valor = $(e.target).prop('checked');
+        Dajaxice.apps.aluno.ativar_notificacao(Dajax.process, {'notificacao': e.target.id, 'valor': valor});
+    });
+</script>
+{% endblock %}

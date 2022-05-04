@@ -1,0 +1,11 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    <b>{{ corretor }}</b> efetuou um pré-cadastro.
+{% endblock %}
+{% block texto1 %}
+    <p><a href="{{ dominio }}/admin/corretor/corretor/{{ corretor.id }}/change/">Clique aqui</a> para visualizar as informações.</p>
+{% endblock %}
+
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}{% endblock %}

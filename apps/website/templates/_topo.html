@@ -1,0 +1,170 @@
+<div class="topo-degrade">
+        <div class="container">
+            <div class="col-sm-3">
+                <a href="{% url 'website:index' %}" class="logotipo pull-left">
+                    <img src="{{ STATIC_URL }}assets/images/logotype-jus.svg">
+                </a>
+
+                <div class="categoria-mobile">
+                    <ul>
+                        <li class="categoria-mob01">
+                            <a href="#">
+                                <div class="cg-laranja">
+                                    <img src="{{ STATIC_URL }}assets/img/icon-sentenca-white.svg">
+                                </div>
+
+                                <div class="clear"></div>
+                            </a>
+                        </li>
+                        <li class="categoria-mob01">
+                            <a href="#">
+                                <div class="cg-verde">
+                                    <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg">
+                                </div>
+
+                                <div class="clear"></div>
+                            </a>
+                        </li>
+                        <li class="categoria-mob01">
+                            <a href="#">
+                                <div class="cg-azul">
+                                    <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg">
+                                </div>
+
+                                <div class="clear"></div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="col-sm-4">
+                <div class="navegacao-desktop">
+                    <nav class="menu-navegacao01">
+                        <ul class="navegacao">
+                            <li>
+                                <a href="#">
+                                    Cursos e Aulas
+                                        <span>
+                                            <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <g id="Camada_x0020_1"> <polygon fill="#000" points="9.918,13.242 14.475,6.79 9.918,6.79 5.362,6.79     "/> </g> </svg>
+                                        </span>
+                                    <div class="clear"></div>
+                                </a>
+                                <ul>
+                                    {% for categoria in proc_curso.categorias %}
+                                    <li>
+                                        <a href="{{ categoria.get_absolute_url }}">{{ categoria.titulo_menu }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    <div class="clear"></div>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </nav>
+                    <nav class="menu-navegacao02">
+                        <ul class="navegacao">
+                            <li>
+                                <a href="">
+                                    <span class="sumir">Ranking</span>
+                                        <span>
+                                            <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <g> <g> <defs> <rect id="SVGID_1_" x="1.458" y="1.811" width="17.169" height="15.897"/> </defs> <clipPath id="SVGID_2_"> <use xlink:href="#SVGID_1_"  overflow="visible"/> </clipPath> <path clip-path="url(#SVGID_2_)" d="M18.274,2.416c-0.761-0.633-1.941-1.034-3.468,0.186c-0.003-0.186-0.005-0.367-0.011-0.561 H5.078C5.07,2.235,5.07,2.418,5.067,2.602c-1.526-1.22-2.706-0.819-3.466-0.186l-0.143,0.12l0.008,0.181 c0.009,0.179,0.229,4.348,2.517,6.239c0.8,0.659,1.752,0.965,2.831,0.901c-0.073,0.233-0.218,0.55-0.386,0.833l0.635,0.381 c0.118-0.2,0.318-0.565,0.437-0.937c0.844,0.682,1.581,0.89,1.581,1.395c0,1.138-2.815,1.878-2.916,2.592H5.773v0.3H5.355v2.984 h9.069v-2.984H14.06v-0.3h-0.351c-0.1-0.714-2.916-1.454-2.916-2.592c0-0.508,0.738-0.713,1.581-1.395 c0.119,0.371,0.318,0.736,0.438,0.937l0.634-0.381c-0.168-0.282-0.313-0.6-0.388-0.833c1.082,0.064,2.034-0.242,2.833-0.901 c2.287-1.891,2.507-6.063,2.516-6.239l0.01-0.184L18.274,2.416z M4.457,8.386c-1.78-1.47-2.166-4.699-2.236-5.514 C3.06,2.279,3.996,2.515,5.07,3.596c0.006,0.14,0.014,0.272,0.021,0.407C4.829,4.251,4.48,4.577,4.159,4.866l0.497,0.548 c0.191-0.17,0.359-0.323,0.504-0.458c0.217,2.026,0.763,3.307,1.379,4.16C5.748,9.117,5.047,8.872,4.457,8.386L4.457,8.386z M13.08,16.782H6.874v-1.517h6.207V16.782z M15.417,8.386c-0.589,0.486-1.291,0.729-2.082,0.731 c0.615-0.854,1.161-2.134,1.378-4.16c0.148,0.134,0.313,0.285,0.505,0.458l0.497-0.548c-0.321-0.29-0.673-0.615-0.93-0.866 c0.006-0.132,0.014-0.264,0.019-0.404c1.071-1.081,2.008-1.316,2.85-0.724C17.583,3.687,17.197,6.913,15.417,8.386L15.417,8.386z M15.417,8.386"/> </g> </g> </svg>
+                                        </span>
+
+                                    <div class="clear"></div>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{% url 'enunciado:ranking' %}">Permanete</a>
+                                    </li>
+                                    <div class="clear"></div>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </nav>
+                    <nav class="menu-navegacao03">
+                        <ul class="navegacao">
+                            <li>
+                                <a href="">
+                                    <span class="sumir">Buscar</span>
+                                        <span>
+                                            <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <g> <path d="M18.188,16.942l-3.627-3.627c0.874-1.262,1.312-2.667,1.312-4.218c0-1.008-0.196-1.972-0.587-2.892 c-0.392-0.919-0.92-1.713-1.587-2.379C13.034,3.16,12.24,2.631,11.32,2.24c-0.919-0.391-1.883-0.587-2.891-0.587 c-1.008,0-1.972,0.196-2.892,0.587C4.618,2.631,3.824,3.16,3.158,3.826c-0.666,0.666-1.195,1.46-1.586,2.379 c-0.391,0.92-0.587,1.884-0.587,2.892s0.196,1.972,0.587,2.891c0.391,0.92,0.92,1.714,1.586,2.379 c0.666,0.667,1.46,1.195,2.379,1.587c0.92,0.391,1.884,0.587,2.892,0.587c1.55,0,2.958-0.438,4.218-1.312l3.627,3.616 c0.253,0.267,0.571,0.401,0.952,0.401c0.365,0,0.683-0.135,0.951-0.401c0.268-0.269,0.401-0.586,0.401-0.951 C18.579,17.521,18.45,17.202,18.188,16.942L18.188,16.942z M11.776,12.444c-0.929,0.926-2.043,1.39-3.347,1.39 s-2.419-0.464-3.347-1.39c-0.927-0.929-1.39-2.044-1.39-3.347c0-1.304,0.463-2.42,1.39-3.347C6.01,4.823,7.125,4.36,8.429,4.36 s2.418,0.463,3.347,1.39c0.926,0.927,1.39,2.042,1.39,3.347C13.166,10.4,12.702,11.516,11.776,12.444L11.776,12.444z M11.776,12.444"/> </g> </svg>
+                                        </span>
+
+                                    <div class="clear"></div>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <form>
+                                            <input type="text">
+                                            <button>Buscar</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </nav>
+                </div>
+                <div class="navegacao-mobile">
+                    <ul class="mob">
+                        <li>
+                            <a href="#">
+                                <div class="pull-left">
+                                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <g> <rect x="2.908" y="3.572" width="14.184" height="1.286"/> <rect x="2.908" y="7.558" width="14.184" height="1.286"/> <rect x="2.908" y="11.543" width="14.184" height="1.285"/> <rect x="2.908" y="15.143" width="14.184" height="1.285"/> </g> </svg>
+                                </div>
+                                <div class="pull-left">Menu</div>
+                                <div class="clear"></div>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="#">Cursos e aulas</a>
+                                    <ul>
+                                        {% for curso in proc_curso.cursos %}
+                                        <li>
+                                            <a href="{{ curso.get_absolute_url }}">{{ curso }}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <nav>
+                    <ul class="menu-categoria">
+                        <li>
+                            <a href="{% url 'enunciado:tipo' 'questao' %}">
+                                <div class="cg-azul">
+                                    <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg">
+                                </div>
+                                <div class="pull-left">Questões</div>
+                                <div class="clear"></div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'enunciado:tipo' 'peca' %}">
+                                <div class="cg-verde">
+                                    <img src="{{ STATIC_URL }}assets/img/icon-peca-white.svg">
+                                </div>
+                                <div class="pull-left">Peças Práticas</div>
+                                <div class="clear"></div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'enunciado:tipo' 'sentenca' %}">
+                                <div class="cg-laranja">
+                                    <img src="{{ STATIC_URL }}assets/img/icon-sentenca-white.svg">
+                                </div>
+                                <div class="pull-left">Sentenças</div>
+                                <div class="clear"></div>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>

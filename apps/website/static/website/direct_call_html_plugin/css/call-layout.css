@@ -1,0 +1,475 @@
+/*=================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 8, Sep 2019
+@version: 1.0
+ 
+===================================================*/
+
+/*==================================================
+[Table of Contents For Main Layout]
+* Click To Call Main Layout CSS
+* Click To Call Sidebar Togle CSS
+* Click To Call Style10 DropDown Menu CSS
+====================================================*/
+
+
+a:hover, a:focus{
+    text-decoration: none;
+    outline: none;
+}
+
+/*========================================
+	Start Click To Call Main Layout CSS
+==========================================*/
+/* Layout Section Seperator Line */
+.layout .wrapper{
+	padding-bottom: 115px;
+	margin-top: -15px;
+}
+.layout .wrapper .divider{
+	position: relative;
+	margin-top: 90px;
+	height: 1px;
+}
+.layout .wrapper .div-transparent:before{
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 5%;
+	right: 5%;
+	width: 90%;
+	height: 1px;
+	background-image: linear-gradient(to right, transparent, rgb(48,49,51), transparent);
+}
+.layout .wrapper .div-dot:after{
+	content: "";
+	position: absolute;
+	z-index: 1;
+	top: -9px;
+	left: calc(50% - 9px);
+	width: 18px;
+	height: 18px;
+	border: 1px solid rgb(48,49,51);
+	border-radius: 50%;
+	box-shadow: inset 0 0 0 2px white,
+					0 0 0 4px white;
+}
+
+/* Layout Title Section */
+.layout .title{
+	padding: 25px;
+}
+
+/* Layout Heading */
+.layout .layout-heading{
+	margin-top: 20px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+.layout .layout-heading img{
+	width: 100px;
+}
+.layout .layout-heading h2{
+	display: inline-block;
+	position: relative;
+	font-size: 25px;
+	font-weight: 700;
+	text-transform: capitalize;
+}
+.layout .layout-heading p{
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+
+
+/* Layout features */
+.layout .layout-style{
+	padding-bottom: 20px;
+}
+.layout .layout-style-title{
+	margin-bottom: 63px;
+	text-align: center;
+}
+.layout .layout-style-title h3{
+	display: inline-block;
+	position: relative;
+	font-weight: 700;
+	font-size: 20px;
+	text-transform: capitalize;
+}
+.layout .layout-style-title p{
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+
+/* Style Images */
+.cc-thumb{
+    margin-bottom: 30px;
+}
+img.cc-zoom {
+    border-radius:5px;
+    object-fit:cover;
+	box-shadow: 0px 0px 10px #bcbaba;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+}
+.transition {
+    -webkit-transform: scale(1.1); 
+    -moz-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+/* Layout features */
+.layout .layout-features-title{
+	margin-bottom: 22px;
+	text-align: center;
+}
+.layout .layout-features-title h3{
+	display: inline-block;
+	position: relative;
+	font-weight: 700;
+	font-size: 20px;
+	text-transform: capitalize;
+}
+.layout .layout-features-title p{
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+
+/* Layout Features */
+.layout .layout-features{
+	padding: 40px 5px;
+	text-align: center;
+}
+.layout .layout-features i{
+    font-size: 45px;
+	border-radius: 10px;
+}
+.layout .layout-features h4{
+	margin-top: 20px;
+	font-size: 18px;
+    font-weight: 600;
+}
+.layout .layout-features p{
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+
+/* Layout Funcation */
+.layout .layout-funcation-title{
+	margin-bottom: 64px;
+	text-align: center;
+}
+.layout .layout-funcation-title h3{
+	display: inline-block;
+	position: relative;
+	font-weight: 700;
+	font-size: 20px;
+	text-transform: capitalize;
+}
+.layout .layout-funcation-title p{
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+.layout .layout-funcation .layout-funcation-odd{
+    padding: 20px 20px 25px;
+	width: 100%;
+	text-align: center;
+}
+.layout .layout-funcation .layout-funcation-even{
+	padding: 20px;
+	width: 100%;
+	text-align: center;
+	border-left: 10px solid #eee;
+	border-right: 10px solid #eee;
+}
+.layout .layout-funcation .icon-space{
+    font-size: 30px;
+}
+.layout .layout-funcation h4{
+	margin-top: 20px;
+	font-size: 18px;
+    font-weight: 600;
+}
+.layout .layout-funcation p{
+	margin-bottom: 5px;
+	font-size: 15px;
+    font-weight: 400;
+}
+.layout .footer{
+	padding: 20px;
+	text-align: center;
+	background-color: #222;
+}
+.layout .footer p{
+	margin-bottom: 0;
+    width: 100%;
+	font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+}
+/*========================================
+	End Click To Call Main Layout CSS
+==========================================*/
+
+/*==============================================
+	Start Click To Call Sidebar Togle CSS
+================================================*/
+
+/* MP Color */  
+.cc-setting{
+	display: block;
+	position: fixed;
+	top: 8%;
+	left: 0px;
+	width: 210px;
+	box-shadow: 3px 0px 5px rgba(68, 68, 68, 0.18);
+	z-index: 99;
+}
+.cc-setting .icon{
+	position: absolute;
+	margin-top: -13.5px;
+	top: 50%;
+	bottom: -24px;
+	right: -49px;
+	width: 50px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 32px;
+	text-align: center;
+	border-radius: 0 6px 6px 0;
+	box-shadow: 3px 0px 5px rgba(68, 68, 68, 0.18);
+	cursor: pointer;
+}
+.cc-setting,
+.cc-setting .icon{
+	background-color: #fff;	
+}
+.cc-setting .icon i{
+	padding: 10px;
+	font-size: 30px;
+	cursor: pointer;	
+}
+.cc-header{
+	display: block;
+	padding: 10px;
+	text-align: center;
+}
+.cc-setting .cc-header h4{
+	margin-bottom: 0rem;
+	font-size: 14px;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: #fff;
+}
+.cc-setting .icon{
+	font-size: 13px;
+}
+.cc-setting .cc-color{	
+	padding: 18px 12px 12px;
+	text-align: center;
+}
+.cc-setting .cc-color span{
+	display: inline-block;
+	margin: 5px;
+	width: 24px;
+	height: 20px;
+	border-radius: 0;
+	cursor: pointer;
+}
+.cc-setting .cc-color span.color1{
+	background: linear-gradient(to right, #796c6c, #362626);/* Light Black */
+}
+.cc-setting .cc-color span.color2{
+	background: linear-gradient(to right, #00eefa, #05b6eb);/* Blue */
+}
+.cc-setting .cc-color span.color3{
+	background: linear-gradient(to right, #26C281, #09e072);/* Green */
+}
+.cc-setting .cc-color span.color4{
+	background: linear-gradient(to right, #ff9f0e, #ff4a10);/* Orange */
+}
+.cc-setting .cc-color span.color5{
+	background: linear-gradient(to right, #ff729b, #ce002f);/* Pink */
+}
+.cc-setting .cc-color span.color6{
+	background: linear-gradient(to right, #b76cd2, #4c3bb3);/* Purple */
+}
+.cc-setting .cc-color span.color7{
+	background: linear-gradient(to right, #fa7d7d, #eb0505);/* Red */
+}
+.cc-setting .cc-color span.color8{
+	background: linear-gradient(to left, #50cc7f, #f5d100);/* Dark Yellow */
+}
+.cc-setting .cc-color span.color1:hover,
+.cc-setting .cc-color span.color2:hover,
+.cc-setting .cc-color span.color3:hover,
+.cc-setting .cc-color span.color4:hover,
+.cc-setting .cc-color span.color5:hover,
+.cc-setting .cc-color span.color6:hover,
+.cc-setting .cc-color span.color7:hover,
+.cc-setting .cc-color span.color8:hover{
+	box-shadow: 1px 2px 3px;
+}
+
+/* Media Css for Smaller Device */
+@media(max-width: 576px){
+	.cc-setting{
+	    top: 3%;
+	}
+}
+
+/*==============================================
+	End Click To Call Sidebar Togle CSS
+================================================*/
+
+/*==============================================
+	Start Click To Call Style10 DropDown Menu CSS
+================================================*/
+/* Layout Button */
+.layout .layout-button-title{
+	margin-bottom: 22px;
+	text-align: center;
+}
+.layout .layout-button-title h3{
+	display: inline-block;
+	position: relative;
+	font-weight: 700;
+	font-size: 20px;
+	text-transform: capitalize;
+}
+.layout .layout-button-title p{
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+
+/* Click To Call Button Style DropDown */
+.old-select{
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+.cc-dropdown .new-select{
+    width: 300px;
+    height: 50px;
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 60px;
+    text-align: center;
+    line-height: 50px;
+    position: relative;
+}
+.cc-dropdown .new-select .selection:active{
+    transform:         rotateX(42deg);
+    -o-transform:      rotateX(42deg);
+    -ms-transform:     rotateX(42deg);
+    -moz-transform:    rotateX(42deg);
+    -webkit-transform: rotateX(42deg);
+    transform-style:         preserve-3d;
+    -o-transform-style:      preserve-3d;
+    -ms-transform-style:     preserve-3d;
+    -moz-transform-style:    preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transform-origin:         top;
+    -o-transform-origin:      top;
+    -ms-transform-origin:     top;
+    -moz-transform-origin:    top;
+    -webkit-transform-origin: top;
+    transition:         transform         200ms ease-in-out;
+    -o-transition:      -o-transform      200ms ease-in-out;
+    -ms-transition:     -ms-transform     200ms ease-in-out;
+    -moz-transition:    -moz-transform    200ms ease-in-out;
+    -webkit-transition: -webkit-transform 200ms ease-in-out;
+}
+.cc-dropdown .new-select .selection{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    cursor: pointer;
+    position: relative;
+    z-index: 20; /* Doit être supérieur au nombre d'option */ 
+    transform:         rotateX(0deg);
+    -o-transform:      rotateX(0deg);
+    -ms-transform:     rotateX(0deg);
+    -moz-transform:    rotateX(0deg);
+    -webkit-transform: rotateX(0deg);
+    transform-style:         preserve-3d;
+    -o-transform-style:      preserve-3d;
+    -ms-transform-style:     preserve-3d;
+    -moz-transform-style:    preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transform-origin:         top;
+    -o-transform-origin:      top;
+    -ms-transform-origin:     top;
+    -moz-transform-origin:    top;
+    -webkit-transform-origin: top;
+    transition:         transform         200ms ease-in-out;
+    -o-transition:      -o-transform      200ms ease-in-out;
+    -ms-transition:     -ms-transform     200ms ease-in-out;
+    -moz-transition:    -moz-transform    200ms ease-in-out;
+    -webkit-transition: -webkit-transform 200ms ease-in-out;
+}
+.cc-dropdown .new-select .selection p{
+    width: calc(100% - 60px);
+    position: relative;
+    
+    transition:         all 200ms ease-in-out;
+    -o-transition:      all 200ms ease-in-out;
+    -ms-transition:     all 200ms ease-in-out;
+    -moz-transition:    all 200ms ease-in-out;
+    -webkit-transition: all 200ms ease-in-out;
+}
+.cc-dropdown .new-select .selection i{
+    display: block;
+    width: 1px;
+    height: 70%;
+    position: absolute;
+    right: -1px; top: 15%; bottom: 15%;
+    border: none;
+    background-color: #bbb;
+}
+.cc-dropdown .new-select .selection > span{
+    display: block;
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 14px 8px 0 8px;   
+}
+.cc-dropdown .new-select .selection.open > span{
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 8px 14px 8px;
+}
+.cc-dropdown .new-option{
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #dedcdc;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    position: relative;
+    margin-top: -1px;    
+    position: absolute;
+    left: 0; right: 0;    
+    transition:         all 300ms ease-in-out;
+    -o-transition:      all 300ms ease-in-out;
+    -ms-transition:     all 300ms ease-in-out;
+    -moz-transition:    all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+}
+.cc-dropdown .new-option p{
+	margin-bottom: 0;
+    width: calc(100% - 60px);
+}
+/*==============================================
+	End Click To Call Style10 DropDown Menu CSS
+================================================*/

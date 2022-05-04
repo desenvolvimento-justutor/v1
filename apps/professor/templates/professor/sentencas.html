@@ -1,0 +1,127 @@
+{% extends 'professor/_base.html' %}
+{% load thumbnail curso %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2>Filtro</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    {% include 'professor/_filter-sentencas.html' %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>Sentenças</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <ul class="widget-users row">
+                        {% for sentenca in sentencas %}
+                            <li class="col-md-4">
+                                <div class="img">
+                                    {% thumbnail sentenca.aluno.foto "50x50" crop="center" as im %}
+                                        <img src="{{ im.url }}" alt="{{ aluno }}">
+                                    {% empty %}
+                                        <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                    {% endthumbnail %}
+                                </div>
+                                <div class="details">
+                                    <div class="name">
+                                        <a href="{{ sentenca.aluno.get_absolute_url }}">{{ sentenca.aluno.nome_resumido }}</a>
+                                        <small style="color: #1ABC9C; font-size: 0.75em">({{ sentenca }})</small>
+                                    </div>
+                                    <div class="time">
+                                        {{ sentenca.span_status|safe }}
+                                        {% if sentenca.data_conclusao %}
+                                            <span class="label label-success">{{ sentenca.data_conclusao|date:"SHORT_DATETIME_FORMAT" }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="actions">
+                                        {% if sentenca.status != 'I' %}
+                                            {% if sentenca.arquivo %}
+                                            <a target="_blank" href="{{ sentenca.arquivo.url }}"
+                                               class="table-link text-success" data-toggle="tooltip" data-original-title="Baixar Resolução do Aluno: {{ sentenca.data_upload|date:"SHORT_DATETIME_FORMAT" }}">
+                                                <i class="fa fa-lg fa-fw  fa-file-pdf-o text-danger"></i>
+                                            </a>
+                                            {% else %}
+                                            <a href="{% url 'curso:download-tarefa' sentenca.pk %}?tipo=st"
+                                               class="table-link text-success" data-toggle="tooltip"
+                                               data-original-title="Baixar Resolução do Aluno">
+                                                <i class="fa fa-lg fa-fw  fa-cloud-download"></i>
+                                            </a>
+                                            {% endif %}
+                                    {% endif %}
+                                    {% if sentenca.correcao %}
+                                        <a target="_blank" href="{{ sentenca.correcao.url }}"
+                                           class="table-link text-danger" data-toggle="tooltip"
+                                           data-original-title="Baixar Correção">
+                                            <i class="fa fa-lg fa-fw  fa-download"></i>
+                                        </a>
+                                    {% else %}
+                                        {% ifequal sentenca.status 'A' %}
+                                        <a href="#" class="table-link" data-toggle="modal" data-target="#modalUpload"
+                                           data-titulo="{{ sentenca }}" data-pk="{{ sentenca.pk }}"
+                                           data-action="sentenca">
+                                            <i class="fa fa-lg fa-fw  fa-upload" data-toggle="tooltip"
+                                               data-original-title="Enviar Correção"></i>
+                                        </a>
+                                            <a href="{% url 'professor:formulario-correcao-sentenca' sentenca.pk %}"
+                                               class="table-link">
+                                                <i class="fa fa-lg fa-fw  fa-edit" data-toggle="tooltip"
+                                                   data-original-title="Correção Individual"></i>
+                                            </a>
+                                        {% endifequal %}
+                                    {% endif %}
+                                        {% get_tabela_correcao_aluno_st sentenca.sentenca_avulsa sentenca.aluno as tabela_correcao_aluno %}
+                                        {% if tabela_correcao_aluno %}
+                                            <a href="{% url 'professor:formulario-correcao-sentenca' sentenca.pk %}"
+                                               class="table-link">
+                                                <i class="fa fa-lg fa-fw fa-gavel text-danger" data-toggle="tooltip"
+                                                   data-original-title="Correção Individual"></i>
+                                            </a>
+                                        {% endif %}
+                                        <a href="{% url 'professor:sentenca_view' sentenca.sentenca_avulsa_id %}"
+                                           target="_blank" class="table-link">
+                                            <i class="fa fa-lg fa-fw fa-eye text-primary" data-toggle="tooltip"
+                                               data-original-title="Visualizar sentença"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Default bootstrap modal example -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-info" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('[data-toggle="popover"]').popover()
+
+        $("#myModal").on("show.bs.modal", function (e) {
+            var link = $(e.relatedTarget);
+            $("#myModalLabel").html(link.data('title'))
+            $(this).find(".modal-body").load(link.attr("href"));
+        });
+    </script>
+{% endblock %}

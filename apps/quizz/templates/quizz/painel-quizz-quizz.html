@@ -1,0 +1,94 @@
+{% extends 'quizz/painel-quizz.html' %}
+{% load  thumbnail aluno_tags quizz_tags %}
+
+{% block side_rigth %}
+    <div class="main-box clearfix project-box green-box">
+        <div class="main-box-body clearfix">
+            <div class="project-box-header green-bg">
+                <div class="name">
+                    <a href="#">
+                        Resumo
+                    </a>
+                </div>
+            </div>
+            {% get_total bloco as total %}
+            <div class="project-box-content">
+                <div class="project-box-content">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <span class="chart" data-percent="{{ total.corr }}" data-bar-color="#4edd6c">
+                            <span class="percent"></span>%<br/>
+                            <span class="lbl">Acerto</span></span>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <span class="chart" data-percent="{{ total.err }}" data-bar-color="#db1717">
+                            <span class="percent"></span>%<br/>
+                            <span class="lbl">Erro</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="project-box-footer clearfix">
+                <a href="#">
+                    <span class="value">{{ total.corretas }}</span>
+                    <span class="label">Acerto{{ total.corretas|pluralize }}</span>
+                </a>
+                <a href="#">
+                    <span class="value">{{ total.erradas }}</span>
+                    <span class="label">Erro{{ total.erradas|pluralize }}</span>
+                </a>
+                <a href="#">
+                    <span class="value">{{ total.total }}</span>
+                    <span class="label">Pergunta{{ total.total|pluralize }}</span>
+                </a>
+            </div>
+            {% if total.completo %}
+            <div class="project-box-ultrafooter clearfix text-center">
+                <form method="post" id="formLimpar">
+                    {% csrf_token %}
+                    <input type="hidden" value="reiniciar" name="action">
+                    <button type="button" onclick="removeRespostas()" class="btn btn-danger">Reiniciar este questionário</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script src="{{ STATIC_URL }}perfil/js/jquery.easypiechart.min.js"></script>
+
+    <script>
+    $('.chart').easyPieChart({
+        easing: 'easeOutBounce',
+        onStep: function(from, to, percent) {
+            $(this.el).find('.percent').text(Math.round(percent));
+        },
+        barColor: '#4edd6c',
+        trackColor: '#f2f2f2',
+        scaleColor: false,
+        lineWidth: 8,
+        size: 130,
+        animate: 1500
+    });
+
+    // REINICIAR
+    function removeRespostas(curso_id, nome_curso) {
+        Swal.fire({
+            title: "Deseja reiniciar o questionário?",
+            text: "Esta ação vai apagar todas as suas respostas.",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            cancelButtonColor: '#DD6B55',
+            confirmButtonColor: "#4edd6c",
+            confirmButtonText: "Sim, pode apagar.",
+        }).then(function (result) {
+            if (result.value) {
+                $('#formLimpar').submit()
+            }
+        });
+    }
+    </script>
+{% endblock %}
+

@@ -1,0 +1,15 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    Aprenda com seus colegas!
+{% endblock %}
+{% block texto1 %}
+    <p>Você nos pediu e aqui estamos para te informar: <a href="{{ dominio }}{{ aluno_de.get_absolute_url }}">{{ aluno_de }}</a> acaba de responder ao
+        enunciado <a href="{{ dominio }}{{ resposta.get_absolute_url }}">{{ resposta.enunciado }}</a>.
+        Acesse agora mesmo o JusTutor e leia a resposta.
+    </p>
+    <p>Aproveite para fazer uma correção e acumular ainda mais pontos para o seu ranking.</p>
+{% endblock %}
+
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}Este e-mail foi enviado porque você selecionou esse enunciado para acompanhar.{% endblock %}

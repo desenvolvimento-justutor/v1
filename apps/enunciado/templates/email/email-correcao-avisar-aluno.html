@@ -1,0 +1,11 @@
+{% extends 'email/_base.html' %}
+{% block titulo1 %}Avançando nos estudos!{% endblock %}
+{% block texto1 %}
+    <p>Sua resposta à <a href="{{ dominio }}{{ correcao.get_absolute_url }}">{{ correcao.resposta.enunciado }}</a>
+        acaba de receber uma correção!</p>
+{% endblock %}
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}
+    Acesse o site do JusTutor para ler a avaliação e aprimorar ainda mais os seus conhecimentos. E,
+    se quiser, lembre-se que você pode fazer comentários à correção.
+{% endblock %}

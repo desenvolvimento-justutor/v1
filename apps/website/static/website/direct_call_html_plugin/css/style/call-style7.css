@@ -1,0 +1,223 @@
+/*======================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 8, Sep 2019
+@version: 1.0
+
+========================================================*/
+
+/* Click To Call Main Panel */
+.cc-style7{
+	font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Click To Call Floating Button */
+.cc-style7 .cc-button{
+	position: fixed;
+	width: 50px;
+	height: 50px;
+	bottom: 20px;
+	right: 20px;
+	border: 1px solid #fff;
+	border-radius: 50px;
+	text-align: center;
+	box-shadow: 0 0 10px rgba(12, 12, 12, 0.3);	
+	cursor: pointer;
+}
+
+.closer{
+	z-index: 10000 !important;
+	bottom: 0;
+	right: 0;
+	top: 20px !important;
+}
+
+.cc-style7 .cc-button:hover{
+	box-shadow: 0 0 10px rgba(12, 12, 12, 0.5);
+}
+.cc-style7 .cc-button i{
+	margin-top: 13px;
+	font-size: 25px;
+}
+
+/* The Popup Chat - Hidden By Default */
+.cc-style7 .cc-panel{
+  	display: none;
+  	position: fixed;
+  	width: 40em;
+  	bottom: 15px;
+	left: 20px;
+	border-radius: 10px;
+  	box-shadow: 0 3px 6px #b4b4b4;
+  	z-index: 9990;
+}
+
+/* Click To Call Header */
+.cc-style7 .cc-panel .cc-header{
+	display: flex;
+	padding: 15px 20px;
+	text-align: center;
+	border-radius: 7px 7px 0 0;
+}
+.cc-style7 .cc-header .cc-img-cont{
+    position: relative;
+    padding: 3px;
+    margin-bottom: 4px;
+    height: 52px;
+    width: 52px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+	overflow: hidden;
+    transition: transform 200ms ease-in-out;
+}
+.cc-style7 .cc-img-cont .cc-user-img{
+    display: block;
+    margin: 0 auto;
+	max-width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.cc-style7 .cc-header .cc-user-info{
+	margin-left: 15px;
+	margin-top: 15px;
+    text-align: left;
+}
+.cc-style7 .cc-user-info strong{
+	font-size: 15px;
+	line-height: 20px;
+}
+.cc-style7 .cc-user-info p{
+	margin-bottom: 0;
+	font-size: 12px;
+	line-height: 20px;
+}
+
+/* Click To Call Body */
+.cc-style7 .cc-body{
+  	display: flex;
+  	flex-direction: column;
+    position: relative;
+  	padding: 16px 20px 16px 10px;
+  	background-color: rgb(230, 221, 212);
+	min-height: 300px;
+}
+.cc-style7 .cc-body::before{
+	content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0.08;
+    z-index: 0;
+    background-image: url(https://elfsight.com/assets/chats/patterns/whatsapp.png); 
+}
+
+/* CSS Chat Bubble */
+.cc-style7 .cc-content {
+	z-index: 1;
+	height: 300px;
+}
+
+.cc-style7 .cc-content textarea {
+	width:96% !important;
+	display:block;
+	line-height:1.5;
+	padding:unset;
+	height: 100%;
+	border:unset;
+	background: transparent;
+}
+.cc-style7 .cc-content textarea:focus {
+	border: unset;
+	outline: none !important;
+    border: unset;
+    box-shadow: unset;
+}
+.cc-style7 .cc-content .cc-bubble{
+	display: inline-block;
+  	position: relative;
+	padding: 7px 14px 8px;
+    margin-top: 0;
+    margin-left: 15px;
+	width: 200px;
+	height: auto;
+	border-radius: 0 8px 8px 8px;
+    transition: 0.3s ease all;
+}
+.cc-style7 .cc-content .tri-right.border.left-top:before{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+  	left: -40px;
+	right: auto;
+  	top: -8px;
+	bottom: auto;
+	border: 32px solid;
+	border-color: #666 transparent transparent transparent;
+}
+.cc-style7 .cc-content .tri-right.left-top:after{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+  	left: -20px;
+	right: auto;
+  	top: 0px;
+	bottom: auto;
+	border: 22px solid;
+	border-color: #fff transparent transparent transparent;
+}
+.cc-style7 .cc-content .cc-bubble span{
+	font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+}
+.cc-style7 .cc-content .cc-bubble p{
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-bottom: 5px;
+	margin-bottom: 0;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+/* Click To Call Footer */
+.cc-style7 .cc-footer{
+    margin: 20px;
+    border-radius: 18px;
+}
+.cc-style7 .cc-footer .cc-list{
+    display: flex;
+    position: relative;
+    padding: 8px 0;
+    margin: 20px 20px;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    line-height: 20px;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    overflow: hidden;    
+}
+.cc-style7 .cc-footer .cc-list:hover{
+	box-shadow: 0 0 10px rgba(12, 12, 12, 0.3);
+	-webkit-transition: background 0.3s ease;
+  	-moz-transition: background 0.3s ease;
+  	-ms-transition: background 0.3s ease;
+  	-o-transition: background 0.3s ease;
+  	transition: background 0.3s ease;
+}
+.cc-style7 .cc-list p{
+	margin-bottom: 0;
+	margin-left: 8px;
+    margin-right: 8px;
+	font-size: 15px;
+}
+.cc-style7 .cc-list i{
+	font-size: 20px;
+}

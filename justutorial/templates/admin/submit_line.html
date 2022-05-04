@@ -1,0 +1,32 @@
+{% load i18n enunciado %}
+<div class="submit-row clearfix">
+<p>{{ opts.model_name }}</p>
+  {% if show_save %}<button type="submit" class="btn btn-high btn-info" name="_save">{% trans 'Save' %}</button>{% endif %}
+  {% if show_save_and_continue %}<button type="submit" name="_continue" class=" btn btn-high">{% trans 'Save and continue editing' %}</button>{% endif %}
+  {% if show_save_as_new %}<button type="submit" name="_saveasnew" class="btn">{% trans 'Save as new' %}</button>{%endif%}
+  {% if show_save_and_add_another %}<button type="submit" name="_addanother" class="btn">{% trans 'Save and add another' %}</button>{% endif %}
+  {% if opts.model_name in 'simulado,assuntogeral,assuntoespecifico,nota,atividade,cupom,enunciadopropostasentenca,enunciadopropostapratica,enunciadopropostadiscursiva,curso,formulario,sentencaavulsa' %}
+    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-success"  name="_copy" class="btn" value="True">Salvar e Duplicar</button>{% endif %}
+  {% endif %}
+{#    <p>{{ opts.model_name }}</p>#}
+  <hr style="margin: 10px 0"/>
+  {% if opts.model_name in 'curso,livro,simulado' %}
+    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-info"  name="_lista_emails" class="btn" value="True">Lista de email's</button>{% endif %}
+  {% elif opts.model_name in 'questaoc,questaom' %}
+    {% if show_save_and_add_another and original.situacao == 'E' %}<button type="submit" class="btn btn-high btn-info"  name="_send_approve" class="btn" value="True">Solicitar Aprovação</button>{% endif %}
+  {% elif opts.model_name in 'tabela' %}
+    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-info"  name="_send_back" class="btn" value="True">Salvar e ver formulário</button>{% endif %}
+  {% endif %}
+</div>
+
+<ul class="box menu-box" style="text-align: left !important">
+    {% if opts.model_name == 'formulario' and show_save_and_add_another%}
+    <li><a href="/admin/formulario_correcao/tabela/?q=&formulario__id__exact={{original.pk}}" class="historylink"><i class="icon-book icon-alpha75"></i> Tabelas</a></li>
+    {% endif %}
+    {% if opts.model_name == 'aluno' and show_save_and_add_another%}
+    <li><a href="livros/" class="historylink"><i class="icon-book icon-alpha75"></i> Livros</a></li>
+    {% endif %}
+    {% if show_delete_link %}
+    <li><a href="delete/" class="historylink text-error deletelink"><i class="icon-trash icon-alpha75"></i> {% trans "Delete" %}</a></li>
+    {% endif %}
+</ul>

@@ -1,0 +1,45 @@
+<section class="row">
+        <div class="container">
+            <div class="col-sm-12">
+                <div class="categoria-aba">
+                    {% if enunciado.classificacao == 'ST' %}
+                        <div class="quadrado-ligado">
+                            <div class="quadrado-sozinho quad02"></div>
+                            <div class="pull-left">Sentença</div>
+                        </div>
+                        {% if enunciados %}
+                        <a class="quad03 quadrado-junto" href="{% url 'enunciado:tipo' 'questao' %}">Quetão</a>
+                        <a class="quad01 quadrado-junto" href="{% url 'enunciado:tipo' 'peca' %}">Peça</a>
+                        {% endif %}
+                        <div class="clear"></div>
+                        <div class="quad02 linha-aba"></div>
+                    {% elif enunciado.classificacao == 'QD' %}
+                        <div class="quadrado-ligado">
+                            <div class="quadrado-sozinho quad03"></div>
+                            <div class="pull-left">Questão</div>
+                        </div>
+                        {% if enunciados  %}
+                        <a class="quad01 quadrado-junto" href="{% url 'enunciado:tipo' 'peca' %}">Peça</a>
+                        <a class="quad02 quadrado-junto" href="{% url 'enunciado:tipo' 'sentenca' %}">Sentença</a>
+                        {% endif %}
+                        <div class="clear"></div>
+                        <div class="quad03 linha-aba"></div>
+                    {% else %}
+                        <div class="quadrado-ligado">
+                            <div class="quadrado-sozinho quad01"></div>
+                            <div class="pull-left">Peça</div>
+                        </div>
+                        {% if enunciados %}
+                        <a class="quad03 quadrado-junto" href="{% url 'enunciado:tipo' 'questao' %}">Questão</a>
+                        <a class="quad02 quadrado-junto" href="{% url 'enunciado:tipo' 'sentenca' %}">Sentença</a>
+                        {% endif %}
+                        <div class="clear"></div>
+                        <div class="quad01 linha-aba"></div>
+                    {% endif %}
+                </div>
+                {% if enunciado.audio %}
+                {{ enunciado.audio|safe }}
+                {% endif %}
+            </div>
+        </div>
+    </section>

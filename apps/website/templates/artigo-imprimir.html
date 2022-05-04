@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JusTuror | Textos & Artigos</title>
+</head>
+<body>
+<h1>{{ artigo }}</h1>
+<p style="font-size: small; font-family: 'Courier New', Courier, monospace">Autor.: {{ artigo.autor }}</p>
+<p style="font-size: small;font-family: 'Courier New', Courier, monospace">Índice: {{ artigo.indice }}</p>
+<p style="font-size: small; font-family: 'Courier New', Courier, monospace">Data..: {{ artigo.data }}</p>
+
+{{ artigo.conteudo|safe }}
+<script>
+    window.print()
+</script>
+</body>
+</html>

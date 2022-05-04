@@ -1,0 +1,10 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}Parabéns!{% endblock %}
+{% block texto1 %}
+    <p>
+        A sua Resposta {{ resposta }} elaborada no JusTutor recebeu uma avaliação por meio de nota. <a href="{{ dominio }}{{ resposta.get_absolute_url }}">Clique aqui para acessar a sua resposta</a>.
+    </p>
+{% endblock %}
+
+{% block section2 %}{% endblock %}

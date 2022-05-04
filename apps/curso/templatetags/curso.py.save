@@ -1,0 +1,146 @@
+from django import template
+from ..models import TarefaAtividade, Categoria, Serie, Curso
+from apps.pagseguro.models import Checkout
+from django.db import connection
+from django.db.models import Count
+from decimal import Decimal
+import locale
+from django.utils import timezone
+from apps.formulario_correcao.models import TabelaCorrecaoAluno, TabelaAluno, Formulario
+from django.db.models import Sum
+
+locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
+
+
+register = template.Library()
+
+
+@register.assignment_tag(takes_context=True)
+def get_correcao_pendentes(context, curso):
+    try:
+        aluno = context['request'].user.aluno
+        tarefas_total = TarefaAtividade.objects.filter(
+            atividade__tipo_retorno='C',
+            atividade__curso=curso,
+            aluno=aluno,
+            corrigido=True
+        )
+        limitar_correcao = curso.limitar_correcao
+        if tarefas_total:
+            if tarefas_total.count() >= limitar_correcao:
+                total = 0
+            else:
+                total = limitar_correcao - tarefas_total.count()
+        else:
+            total = limitar_correcao
+    except TarefaAtividade.DoesNotExist:
+        total = 0
+    return total
+
+
+@register.assignment_tag
+def get_correcao_tarefa(atividade, aluno):
+    try:
+        tarefa = TarefaAtividade.objects.get(
+            atividade=atividade,
+            aluno=aluno,
+            corrigido=True
+        )
+    except TarefaAtividade.DoesNotExist:
+        tarefa = False
+    return tarefa
+
+
+@register.assignment_tag
+def get_tarefa(atividade, aluno):
+    try:
+        tarefa = TarefaAtividade.objects.get(
+            atividade=atividade,
+            aluno=aluno,
+        )
+    except TarefaAtividade.DoesNotExist:
+        tarefa = False
+    return tarefa
+
+
+@register.assignment_tag(takes_context=True)
+def get_recursos_abertos(context):
+    try:
+         p = context['request'].user.professor
+         return TabelaCorrecaoAluno.objects.filter(status='solicitado', professor=p).count()
+     except:
+         return None
+
+@register.assignment_tag
+def get_tabela_correcao_aluno(atividade, aluno, corrigido=True):
+    try:
+        formulario = Formulario.objects.get(atividade=atividade)
+        tabela_correcao = TabelaCorrecaoAluno.objects.filter(
+            aluno=aluno, formulario=formulario, corrigido=corrigido
+        ).first()
+    except Formulario.DoesNotExist as exc:
+        tabela_correcao = None
+    return tabela_correcao
+
+
+@register.assignment_tag
+def get_tarefa_nota(atividade):
+    formulario = atividade.get_formulario()
+    tot = 0
+    if formulario:
+        tabela = TabelaAluno.objects.filter(
+            tabela_correcao__aluno=atividade.aluno,
+            tabela_correcao__formulario=formulario
+        ).aggregate(total=Sum('nota'))
+        tot = tabela.get('total')
+    return tot
+
+
+@register.assignment_tag
+def get_checkout_years():
+    truncate_date = connection.ops.date_trunc_sql('year', 'date')
+    qs = Checkout.objects.extra({
+        'year': truncate_date}
+    )
+    ret = qs.values('year').annotate(Count('pk')).order_by('year')
+    return ret
+
+
+@register.filter(is_safe=True)
+def moeda(value):
+    if not value:
+        return value
+    if isinstance(value, unicode):
+        value = Decimal(value)
+    return locale.currency(value, grouping=True)
+
+
+@register.filter(is_safe=True)
+def moeda_slice(value):
+    m = moeda(value)
+    return m.split(',')
+
+
+@register.assignment_tag
+def get_categorias(tipo="C"):
+    qs = Categoria.objects.filter(tipo=tipo)
+    return qs
+
+
+@register.assignment_tag
+def get_series():
+    qs = Serie.objects.all()
+    return qs
+
+
+@register.assignment_tag
+def get_last_livro():
+    qs = Curso.objects.filter(categoria__tipo="L").last()
+    return qs
+
+
+@register.assignment_tag
+def get_cursos_lancamento():
+    now = timezone.now()
+    qs = Curso.objects.all().order_by('data_fim')[:3]
+    return qs

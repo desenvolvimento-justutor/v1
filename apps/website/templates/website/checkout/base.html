@@ -1,0 +1,206 @@
+{% extends '_base.html' %}
+{% load static thumbnail curso %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'website/checkout/assets/scripts/ionicons/css/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'website/checkout/assets/scripts/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'website/checkout/assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'website/checkout/assets/css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'website/checkout/assets/css/demo.css' %}">
+{% endblock %}
+
+{% block body %}
+    <!--
+<div class="helpme">
+			<div class="helpme-content">
+				<div class="helpme-icon"><i class="ion ion-help-buoy"></i></div>
+				<h2 class="helpme-title">Suporte</h2>
+				<div class="helpme-content-scrollable">
+					<div class="helpme-cards">
+						<div class="helpme-card">
+							<h4>Precisa de ajuda?</h4>
+							<div class="helpme-card-content">
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+								tempor incididunt ut labore et dolore magna aliqua.</p>
+							</div>
+						</div>
+						<div class="helpme-card">
+							<h4>Como aplicar o cupom?</h4>
+							<div class="helpme-card-content">
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+								tempor incididunt ut labore et dolore magna aliqua.</p>
+							</div>
+						</div>
+						<div class="helpme-card">
+							<h4>Como cancelar o pedido?</h4>
+							<div class="helpme-card-content">
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+								tempor incididunt ut labore et dolore magna aliqua.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="helpme-inner">
+				<div class="icon">
+					<i class="ion ion-help-buoy"></i>
+					<i class="ion ion-close"></i>
+				</div>
+				<div class="text">Precisa de ajuda?</div>
+			</div>
+		</div>
+    -->
+		<div class="wrapper">
+			<header class="primary">
+				<div class="navbar navbar-primary">
+					<div class="container">
+						<div class="navbar-header">
+							<a href="#" class="navbar-brand">
+                                <img src="{% static 'images/logos/logotype-jus-negativo.svg' %}" width="160">
+                            </a>
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							</button>
+						</div>
+
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav navbar-right">
+								<li><a href="{% url 'website:index' %}">Home</a></li>
+								<li class="active"><a href="#">Checkout</a></li>
+							</ul>
+						</div>
+					</div> <!-- /.container -->
+				</div>
+				<div class="navbar navbar-secondary">
+					<div class="steps">
+						<div class="steps-inner">
+							<div class="step-item active">
+								<div class="step-count">1</div>
+								<div class="step-label">Itens</div>
+							</div> <!-- /.item-step-item -->
+							<div class="step-item">
+								<div class="step-count">2</div>
+								<div class="step-label">Pagamento</div>
+							</div> <!-- /.step-item -->
+							<div class="step-item">
+								<div class="step-count">3</div>
+								<div class="step-label">Confirmação</div>
+							</div> <!-- /.step-item -->
+						</div>
+					</div> <!-- /.steps -->
+				</div>
+			</header> <!-- /.primary -->
+
+			<section class="section">
+				<div class="container">
+					<div class="section-inner">
+						<div class="section-body">
+							<h2 class="section-title padding-top">Itens</h2>
+							<div class="line"></div>
+							<div class="items">
+								<p class="section-p">Mussum Ipsum, cacilds vidis litro abertis.
+                                {% for item in cart.items %}
+								<div class="item">
+									<div class="item-inner">
+										<figure>
+											<a href="#">
+                                                {% thumbnail item.product.imagem "100x100" crop="center" as im %}
+                                                    <img src="{{ im.url }}">
+                                                {% empty %}
+                                                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                                                {% endthumbnail %}
+											</a>
+										</figure>
+										<div class="item-details">
+											<div class="item-title"><a href="#">{{ item.product }}</a></div>
+											<div class="item-description">
+                                                {% if item.product.aluno %}
+                                                    Pacote montado por você
+                                                {% else %}
+                                                    {{ item.product.categoria.nome }}
+                                                {% endif %}
+                                            </div>
+										</div> <!-- /.item-details -->
+										<div class="item-price">
+											<div class="value" id="item-1-price">R$ {{ item.subtotal }}</div>
+										</div> <!-- /.item-price -->
+										<div class="close"><i class="ion-close"></i></div>
+									</div> <!-- /.item-inner -->
+								</div> <!-- /.item -->
+                                {% endfor %}
+							</div> <!-- /.items -->
+						</div> <!-- /.section-body -->
+						<div class="section-footer">
+							<div class="row">
+								<div class="col-md-6 col-sm-6">
+									<div class="coupon">
+										<div class="coupon-inner">
+											<form class="coupon-form" id="coupon-form">
+												<h2 class="section-title sm">Cupom</h2>
+												<div class="line sm"></div>
+												<div class="form-group">
+													<input type="text" name="coupon" class="form-control" placeholder="Código">
+													<button type="submit" class="btn btn-default">Aplicar</button>
+													<div class="help-text">Aenean aliquam? <a href="#">clique aqui</a>.</div>
+												</div> <!-- /.form-group -->
+											</form> <!-- /.coupon-form -->
+										</div> <!-- /.coupon-inner -->
+									</div> <!-- /.coupon -->
+								</div> <!-- /.col-md-6 -->
+								<div class="col-md-6 col-sm-6">
+									<h2 class="section-title sm">Resumo</h2>
+									<div class="line sm"></div>
+									<div class="total-info" data-calculate-me>
+										<div class="total-item">
+											<div class="total-name">Valor total</div>
+											<div class="total-value" id="total-order" data-price>{{ cart.total|moeda }}</div>
+										</div> <!-- /.total-item -->
+										<div class="total-item" data-calculate-min="true">
+											<div class="total-name">Desconto</div>
+											<div class="total-value" id="total-discount" data-price>{{ cart.discount|moeda }}</div>
+										</div> <!-- /.total-item -->
+										<div class="total-item total">
+											<div class="total-name">Subtotal</div>
+											<div class="total-value"  data-price>{{ cart.total_payment|moeda }}</div>
+										</div> <!-- /.total-item -->
+									</div> <!-- /.total-info -->
+								</div> <!-- /.col-md-6 -->
+							</div> <!-- /.row -->
+						</div> <!-- /.footer -->
+						<div class="section-cta">
+							<p>Continue para efetuar o pagamento</p>
+							<button class="btn btn-primary" data-href="step2.html">Continuar <i class="ion-ios-arrow-thin-right"></i></button>
+						</div> <!-- /.section-cta -->
+					</div> <!-- /.section-inner -->
+				</div> <!-- /.container -->
+			</section> <!-- /.section -->
+
+			<footer class="primary">
+				<div class="container">
+					<div class="copyright">
+                        Copyright <strong>Jusutor</strong> 2015-{% now 'Y' %}.
+						<div class="payment-methods">
+							<img src="{% static 'website/checkout/assets/img/mastercard.png' %}">
+							<img src="{% static 'website/checkout/assets/img/visa.png' %}">
+							<img src="{% static 'website/checkout/assets/img/paypal.png' %}">
+							<img src="{% static 'website/checkout/assets/img/americanexpress.png' %}">
+						</div>
+					</div> <!-- /.copyright -->
+				</div> <!-- /.container -->
+			</footer> <!-- /.footer-primary -->
+		</div> <!-- /.wrapper -->
+
+		<script src="{% static 'website/checkout/assets/scripts/jquery/jquery-3.1.1.min.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/scripts/bootstrap/js/bootstrap.min.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/scripts/icheck/icheck.min.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/scripts/nicescroll/nicescroll.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/scripts/scroll-up-bar/dist/scroll-up-bar.min.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/js/number_format.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/js/config.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/js/letscheckout.js' %}"></script>
+		<script src="{% static 'website/checkout/assets/js/demo.js' %}"></script>
+{% endblock %}

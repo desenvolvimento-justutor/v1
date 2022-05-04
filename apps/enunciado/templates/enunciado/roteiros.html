@@ -1,0 +1,106 @@
+{% extends '_base.html' %}
+{% block section %}
+    <section id="questoes-destaque" class="col-sm-8">
+        <div class="titulo-home  mg-bot20" style="padding-bottom: 10px">
+            <h4 class="pd-home titulo-home bold">Roteiros de Estudo</h4>
+            <div class="linha-aba"></div>
+        </div>
+        <form class="form-inline" id="formBusca">
+            <div class="form-group">
+                <label>Iniciados por: {{ filtro.iniciados }}</label><br>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    {% for ascii in ascii_uppercase %}
+                        {% if filtro.iniciados == ascii %}
+                            <label class="btn btn-info active">
+                                <input name="iniciados" type="radio" autocomplete="off" checked value="{{ ascii }}">{{ ascii }}
+                            </label>
+                        {% else %}
+                            <label class="btn btn-info">
+                                <input name="iniciados" type="radio" autocomplete="off" value="{{ ascii }}">{{ ascii }}
+                            </label>
+                        {% endif %}
+                    {% endfor %}
+                    {% if not filtro.iniciados %}
+                        <label class="btn btn-info active">
+                            <input name="iniciados" type="radio" autocomplete="off" value="" checked>Todos
+                        </label>
+                    {% else %}
+                        <label class="btn btn-info">
+                            <input name="iniciados" type="radio" autocomplete="off" value="">Todos
+                        </label>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Tipo:</label><br>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    {% if filtro.tipo == 'D' %}
+                        <label class="btn btn-info active">
+                            <input name="tipo" type="radio" autocomplete="off" value="D" checked>Disciplina
+                        </label>
+                    {% else %}
+                        <label class="btn btn-info">
+                            <input name="tipo" type="radio" autocomplete="off" value="D">Disciplina
+                        </label>
+                    {% endif %}
+                    {% if filtro.tipo == 'E' %}
+                        <label class="btn btn-info active">
+                            <input name="tipo" type="radio" autocomplete="off" value="E" checked>Edital
+                        </label>
+                    {% else %}
+                        <label class="btn btn-info">
+                            <input name="tipo" type="radio" autocomplete="off" value="E">Edital
+                        </label>
+                    {% endif %}
+                    {% if not filtro.tipo %}
+                        <label class="btn btn-info active">
+                            <input name="tipo" type="radio" autocomplete="off" value="" checked>Todos
+                        </label>
+                    {% else %}
+                        <label class="btn btn-info">
+                            <input name="tipo" type="radio" autocomplete="off" value="">Todos
+                        </label>
+                    {% endif %}
+
+                </div>
+            </div>
+        </form>
+        <div class="row" style="padding-top: 10px">
+            {% for roteiro in roteiros %}
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <a href="{{ roteiro.get_absolute_url }}">
+                            <li class="list-group-item">
+                                <span class="badge">{{ roteiro.get_total }}</span>
+                                {% if roteiro.edital %}
+                                    <span class="label label-primary" style="margin-right: 4px">E</span>
+                                {% else %}
+                                    <span class="label label-success" style="margin-right: 4px">D</span>
+                                {% endif %}
+                                {{ roteiro }}
+
+                            </li>
+                        </a>
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="col-sm-4">
+        <div class="titulo-home mg-bot20">
+            <h4 class="pd-home titulo-home bold">Publicidade</h4>
+            <div class="linha-aba"></div>
+            <div class="mg-top20">
+                {% include '_widget-anuncio.html' %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+    $('input:radio').change(function(){
+        $('#formBusca').submit();
+    });
+</script>
+{% endblock %}

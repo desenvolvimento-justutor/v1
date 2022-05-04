@@ -1,0 +1,33 @@
+{% load static %}
+{% load curso %}
+{% load thumbnail %}
+
+<div class="item">
+    <div class="item-inner">
+        <figure>
+            <a href="#">
+                {% thumbnail item.product.imagem "100x100" crop="center" as im %}
+                    <img src="{{ im.url }}">
+                {% empty %}
+                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                {% endthumbnail %}
+            </a>
+        </figure>
+        <div class="item-details">
+            <div class="item-title"><a href="#">{{ item.product }}{% if item.configuracao_pacote %}
+                <strong style="color: #41c372"> ({{ item.quantidade }} Créditos)</strong>{% endif %}</a></div>
+            <div class="item-description">
+                {% if item.product.aluno %}
+                    Pacote montado por você
+                {% else %}
+                    {{ item.product.categoria.nome }}
+                {% endif %}
+            </div>
+        </div> <!-- /.item-details -->
+        <div class="item-price">
+            <div class="value" id="item-1-price">{{ item.subtotal|moeda }}</div>
+        </div> <!-- /.item-price -->
+        <div class="close" onclick="removeProd({{ item.product.id }}, '{{ item.product }}')"><i class="ion-close"></i>
+        </div>
+    </div> <!-- /.item-inner -->
+</div> <!-- /.item -->

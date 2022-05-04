@@ -1,0 +1,22 @@
+{% extends 'checkout/base.html' %}
+{% load static %}
+
+{% block section_body_content %}
+    <div class="thankyou">
+        <div class="section-title text-red">Seu carrinho está vazio!</div>
+        <div class="thankyou-icon">
+            <img src="{% static 'website/asset/img/svg/empty-cart.svg' %}">
+        </div> <!-- /.thankyou-icon -->
+        <p class="section-p text-center text-bold text-primary">Então aproveite e veja abaixo as novidades que o
+            JusTutor tem a oferecer.</p>
+        <div class="line sm"></div>
+        <div class="thankyou-inner text-left">
+            <div class="section-subtitle">Novidades</div>
+            <div class="items">
+                {% for curso in cursos %}
+                    {% include "checkout/widgets/item_curso.html" %}
+                {% endfor %}
+            </div> <!-- /.items -->
+        </div> <!-- /.thankyou-inner -->
+    </div>
+{% endblock %}

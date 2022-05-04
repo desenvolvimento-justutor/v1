@@ -1,0 +1,67 @@
+{% load humanize aluno_tags %}
+<!-- Modal -->
+{% with request.user.aluno as aluno %}
+    {% with aluno.get_creditos_amount as meus_creditos %}
+        <div class="modal fade" id="modal-credito" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">JusTutor - {{ enunciado }}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="bs-callout bs-callout-info" id="callout-helper-context-color-specificity">
+                            <h4>Corrija sua resposta.</h4>
+                            <p>
+                                Adquirindo o sistema de autocorreção para este enunciado, você terá acesso a um
+                                formulário
+                                eletrônico que, depois de preenchido por você, dará a sua nota.
+                            </p>
+                        </div>
+
+                        <ul class="list-group">
+                            <li class="list-group-item active">
+                                ADQUIRIR AUTOCORREÇÃO
+                            </li>
+                            <li class="list-group-item">
+                                <span class="label label-info">{{ enunciado.formulario_autocorrecao.creditos|intcomma }}</span>
+                                Créditos necessários
+                            </li>
+                            <li class="list-group-item">
+                                <span class="label label-{% if meus_creditos %}success{% else %}danger{% endif %}">{{ meus_creditos|intcomma }}</span>
+                                Seus créditos
+                            </li>
+                        </ul>
+                        {% if meus_creditos >= enunciado.formulario_autocorrecao.creditos %}
+                            <div class="alert alert-success" role="alert">
+                                Falta pouco para você aprimorar seus estudos!
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                Os seus créditos não são suficientes para adquirir este formulário de autocorreção,
+                                mas você pode adquirir créditos agora mesmo.
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-error" data-dismiss="modal">Cancelar</button>
+                        {% if meus_creditos >= enunciado.formulario_autocorrecao.creditos %}
+                            <form method="post" id="adquirir" class="hide">
+                                {% csrf_token %}
+                                <input type="hidden" name="enunciado_id" value="{{ enunciado.pk }}">
+                            </form>
+                            <button type="button" class="btn btn-success" id="btn_adquirir"
+                                    data-pk="{{ enunciado.pk }}">ADQUIRIR AUTOCORREÇÃO
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-success" data-toggle="modal"
+                                    data-target="#modalComprarCreditos">VER PACOTES DE CRÉDITOS
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+{% endwith %}

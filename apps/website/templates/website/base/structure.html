@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="author" content="SemiColonWeb"/>
+
+  <!-- Stylesheets
+    ============================================= -->
+  {% block stylesheets %}
+    {% include 'website/base/includes/stylesheets.html' %}
+  {% endblock %}
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'v2/website/images/logos/favicon.png' %}">
+
+
+  <!-- Document Title
+    ============================================= -->
+  <title>{{ website.config.titulo }}{% if titulo %} | {{ titulo }}{% endif %}</title>
+
+</head>
+
+<body class="{% block class_body %}stretched{% endblock %}">
+
+<div id="side-panel">
+
+  <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a></div>
+
+  <div class="side-panel-wrap">
+
+    <div class="widget clearfix">
+
+      <h4 class="t400">Acesse através da Redes Sociais</h4>
+
+      <a href="#" class="button button-rounded t400 btn-block center si-colored noleftmargin si-facebook">
+        <i class="icon-facebook"></i>Facebook
+      </a>
+      <a href="#" class="button button-rounded t400 btn-block center si-colored noleftmargin si-twitter">
+        <i class="icon-twitter"></i>Twitter
+      </a>
+
+      <div class="line"></div>
+
+      <h4 class="t400">Existing Account?</h4>
+
+      <form id="login-form" name="login-form" class="nobottommargin" action="#" method="post">
+
+        <div class="col_full">
+          <label for="login-form-username" class="t400">Username:</label>
+          <input type="text" id="login-form-username" name="login-form-username" value="" class="form-control"/>
+        </div>
+
+        <div class="col_full">
+          <label for="login-form-password" class="t400">Password:</label>
+          <input type="password" id="login-form-password" name="login-form-password" value="" class="form-control"/>
+        </div>
+
+        <div class="col_full nobottommargin">
+          <button class="button button-rounded t400 nomargin" id="login-form-submit" name="login-form-submit"
+                  value="login">Login
+          </button>
+          <a href="#" class="fright">Forgot Password?</a>
+        </div>
+
+      </form>
+
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Document Wrapper
+  ============================================= -->
+<div id="wrapper" class="{% block class_div_wrapper %}clearfix{% endblock %}">
+  <!-- Top Bar
+  ============================================= -->
+  {% block top_bar %}
+    {% include 'website/base/includes/top_bar.html' %}
+  {% endblock %}
+  <!-- #top-bar end -->
+
+  <!-- Header
+      ============================================= -->
+  <header id="header" class="{% block class_header %}full-header{% endblock %}">
+    {% block header_wrap %}
+      <div id="header-wrap">
+        <div class="container clearfix">
+
+          <div id="primary-menu-trigger"><i class="icon-reorder"></i></div>
+
+          <!-- Logo
+                    ============================================= -->
+          <div id="logo">
+            <a href="/" class="standard-logo" data-dark-logo="{% static 'website/images/logos/126x100.png' %}">
+              <img src="{% static 'website/images/logos/126x100.png' %}" alt="JusTutor Logo">
+            </a>
+            <a href="/" class="retina-logo" data-dark-logo="{% static 'website/images/logos/126x100.png' %}">
+              <img src="{% static 'website/images/logos/126x100.png' %}" alt="JusTutor Logo">
+            </a>
+          </div><!-- #logo end -->
+
+          <!-- Primary Navigation
+                    ============================================= -->
+          {% block navigation %}
+            {% include 'website/base/includes/navigation.html' %}
+          {% endblock %}
+          <!-- #primary-menu end -->
+        </div>
+      </div>
+    {% endblock %}
+  </header>
+  <!-- #header end -->
+
+  {% block sections %}
+
+  {% endblock %}
+
+  <!-- Footer
+      ============================================= -->
+  {% include 'website/base/includes/footer.html' %}
+  <!-- #footer end -->
+</div>
+<!-- #wrapper end -->
+
+<!-- Go To Top
+  ============================================= -->
+<div id="gotoTop" class="icon-angle-up"></div>
+
+<!-- External JavaScripts
+  ============================================= -->
+{% block javascripts %}
+  {% include 'website/base/includes/javascripts.html' %}
+  {#        <script>#}
+  {#            window.fbAsyncInit = function () {#}
+  {#                FB.init({#}
+  {#                    appId: '639275492940211', //'427897524078010',#}
+  {#                    xfbml: true,#}
+  {#                    version: 'v2.12'#}
+  {#                });#}
+  {#            };#}
+  {##}
+  {#            (function (d, s, id) {#}
+  {#                var js, fjs = d.getElementsByTagName(s)[0];#}
+  {#                if (d.getElementById(id)) {#}
+  {#                    return;#}
+  {#                }#}
+  {#                js = d.createElement(s);#}
+  {#                js.id = id;#}
+  {#                js.src = "//connect.facebook.net/pt_BR/sdk.js";#}
+  {#                fjs.parentNode.insertBefore(js, fjs);#}
+  {#            }(document, 'script', 'facebook-jssdk'));#}
+  {#        </script>#}
+
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '427897524078010',
+        xfbml: true,
+        version: 'v6.0'
+      });
+
+      FB.AppEvents.logPageView();
+
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://connect.facebook.net/pt_BR/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+{% endblock %}
+
+</body>
+</html>

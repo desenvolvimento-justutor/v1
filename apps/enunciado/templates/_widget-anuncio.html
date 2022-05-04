@@ -1,0 +1,5 @@
+{% for anuncio in anuncios %}
+    <a class="banner-pub-menor" href="{{ anuncio.link }}" target="_blank">
+        <img src="{{ anuncio.imagem.url }}" class="img-thumbnail">
+    </a>
+{% endfor %}

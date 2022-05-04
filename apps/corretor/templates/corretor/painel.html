@@ -1,0 +1,114 @@
+{% extends 'corretor/_base.html' %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left">Cotações do dia</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="row">
+                        <div class="map-stats">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-hover">
+                                    <tbody>
+                                    <tr>
+                                        <td> Questões discurssivas</td>
+                                        <td class="text-right status green"><span class="pull-left">R$</span>6,70 <i class="fa fa-level-up"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td> Peças práticas</td>
+                                        <td class="text-right status red"><span class="pull-left">R$</span>19,80 <i class="fa fa-level-down"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td> Sentenças</td>
+                                        <td class="text-right status red"><span class="pull-left">R$</span>22,00 <i class="fa fa-level-down"></i></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- HISTORICO -->
+        <div class="col-sm-4">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left">Histórico</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="row">
+                        <div class="map-stats">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-hover">
+                                    <tbody>
+                                    <tr>
+                                        <td>Correções acumuladas</td>
+                                        <td class="text-right status green"><span class="pull-left">R$</span> 7.560,00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Corretor(a) campeão(ã)</td>
+                                        <td class="text-right status green"><span class="pull-left">R$</span> 1.450,00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nº de correções já feitas</td>
+                                        <td class="text-right status green">654</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CAMPEÕES -->
+        <div class="col-sm-4">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left">Campeões(ãs)</h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="row">
+                        <div class="map-stats">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-hover">
+                                    <tbody>
+                                    <tr>
+                                        <td>Mais bem avaliado</td>
+                                        <td class="text-right"><strong>Camila dos Reis Araújo</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Preferido(a) dos alunos</td>
+                                        <td class="text-right"><strong>Paulo Renato Alcântara</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quem mais corrigiu</td>
+                                        <td class="text-right"><strong>Ana Luiza de Souza Alves</strong></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="main-box small-graph-box emerald-bg">
+                <span class="value">122</span>
+                <span class="headline">Questões disponíveis neste momento</span>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="main-box small-graph-box green-bg">
+                <span class="value">R$ 847,40</span>
+                <span class="headline">Em questões disponíveis neste momento</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}

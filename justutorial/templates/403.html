@@ -1,0 +1,9 @@
+{% extends '_base.html' %}
+{% block section %}
+<div class="jumbotron">
+  <h2 class="mg-bot20"><strong class="text-danger">403</strong> <small>Acesso Negado!</small></h2>
+  <p>Você não tem permissão para visualizar está página.</p>
+  <p><a class="btn btn-success btn-lg fa fa-chevron-circle-left" href="{% url 'website:index' %}" role="button"> Página inicial</a></p>
+</div>
+<!-- / -->
+{% endblock %}

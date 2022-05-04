@@ -1,0 +1,134 @@
+{% extends 'professor/_base.html' %}
+{% load  thumbnail %}
+
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2><strong>Resposta</strong><a href="{% url 'curso:download-tarefa' tarefa.pk %}" target="_blank" id="btn-imprimir" class="btn btn-link pull-right">
+                        <i class="fa fa-download"></i>
+                    </a></h2>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="content">
+                        {{ tarefa.resposta|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="main-box">
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left"><strong>Elabore sua correção</strong><br/><small>{{ tarefa.professor|default_if_none:'-' }}</small></h2>
+                    <div class="icon-box pull-right">
+                        <a href="/professor/" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Voltar para o curso" data-trigger="hover">
+                            <i class="fa fa-long-arrow-left"></i> Voltar
+                        </a>
+                        <a id="btn-salvar" disabled="true" href="javascript:saveResposta(finalizar=false)" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Salvar sua resposta" data-trigger="hover">
+                            <i class="fa fa-save"></i> Salvar
+                        </a>
+                        <a id="btn-finalizar" href="javascript:saveResposta(finalizar=true)" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Marcar como concluído" data-trigger="hover">
+                            <i class="fa fa-check"></i> Finalizar
+                        </a>
+                    </div>
+                </header>
+                <div class="main-box-body clearfix">
+                    <textarea class="ckeditor" id="content" name="content">
+                        {% if not tarefa.gabarito %}
+                            {{ tarefa.atividade.gabarito }}
+                        {% else %}
+                            {{ tarefa.gabarito }}
+                        {% endif %}
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ STATIC_URL }}assets/ckeditor/ckeditor.js"></script>
+    <script src="{{ STATIC_URL }}assets/ckeditor/config.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/timer.jquery.js"></script>
+    <script>
+        window.timer = false;
+        $(document).on('ready', function() {
+            var editor = CKEDITOR.replace( 'content', {
+                language: 'pt-br',
+                height: 400,
+                // Define the toolbar groups as it is a more accessible solution.
+                //toolbar: [
+                //    {name: 'basicstyles', items : [ 'Bold','Italic', '-', 'BulletedList','-','Outdent','Indent','-','Blockquote', '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Subscript','Superscript', 'Print', '-', 'Maximize']},
+                //],
+                // Remove the redundant buttons from toolbar groups defined above.
+                removeButtons: 'Underline,Strike,Anchor,Styles,Specialchar',
+                skin: 'bootstrapck',
+            });
+            editor.on('key', function(event) {
+                window.safe = false;
+                $('#btn-salvar').attr('disabled', false);
+                {% if not tarefa.corrigido %}
+                CKEDITOR.instances.content.setReadOnly(false);
+                {% endif %}
+            });
+            editor.on("instanceReady", function(){
+                {% if tarefa.corrigido %}
+                    CKEDITOR.instances.content.setReadOnly(true);
+                    $('#btn-finalizar').attr('disabled', true);
+                {% endif %}
+            });
+            console.log('ready...');
+            window.safe = true;
+            $('[data-toggle=popover]').popover();
+            $('.content').slimScroll({
+                height: '460px'
+            });
+            $(window).load(function(){
+                console.log('load...');
+                $('#make-small-nav').click();
+                $('#make-small-nav').popover('show');
+                setTimeout(function(){
+                    $('[data-toggle=popover]').popover('hide');
+                    $('#btclose').click();
+                }, 5000);
+            });
+        });
+        function saveResposta(finalizar) {
+            $('#timer').timer('pause');
+            $.ajax({
+              method: "POST",
+              url: "{% url 'curso:post-correcao' tarefa.id %}",
+              data: {
+                  content: CKEDITOR.instances.content.getData(),
+                  concluido: finalizar
+              }
+            })
+              .done(function( msg ) {
+                  window.safe = true;
+                  $('#btn-salvar').attr('disabled', true);
+                  _toastr(msg.msg, "top-center", msg.flag, false);
+                  if (finalizar == true) {
+                      CKEDITOR.instances.content.setReadOnly();
+                      Swal.fire('Sucesso', 'Tarefa finalizada.', 'success');
+                      window.location.reload();
+                      $('#btn-finalizar').attr('disabled', true);
+                  }
+                  console.log( "Data Saved: ", msg );
+              });
+
+        };
+
+        window.onbeforeunload = function (e) {
+            e = e || window.event;
+            if (window.safe == false) {
+                // For IE and Firefox
+                if (e) {
+                    e.returnValue = 'Deseja sair sem salvar a resposta?';
+                }
+                // For Safari
+                return 'Deseja sair sem salvar a resposta?';
+            }
+        };
+    </script>
+{% endblock %}

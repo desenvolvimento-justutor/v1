@@ -1,0 +1,15 @@
+{% extends 'email/_base.html' %}
+{% block titulo1 %}Tem alguém gostando da sua produção no site!{% endblock %}
+
+{% block texto1 %}
+    <p><a href="{{ dominio }}/aluno/perfil-aluno/{{ aluno.id }}/">{{ aluno }}</a> começou a te seguir no JusTutor.
+    </p>
+{% endblock %}
+
+{% block titulo2 %}Nota{% endblock %}
+
+{% block texto2 %}
+    <p>Lembre-se: quanto mais pessoas te seguem, maiores são as chances de suas respostas serem corrigidas,
+        contribuindo para o seu aprendizado. E, claro, cada vez que alguém corrige uma resposta sua, você
+        também ganha pontos para o ranking.</p>
+{% endblock %}

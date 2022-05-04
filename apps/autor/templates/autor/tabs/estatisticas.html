@@ -1,0 +1,48 @@
+{% load autor %}
+<div class="row">
+    {% with questionario_aluno.estatistica_set.all as estatisticas %}
+        {% if estatisticas %}
+            {% for estatistica in estatisticas %}
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table ta-ble-bordered">
+                            <thead>
+                            <tr class="gray-bg">
+                                <th>Grupo</th>
+                                <th class="text-center">Nota minima %</th>
+                                <th class="text-center">Nota aluno %</th>
+                                <th class="text-center">Sucesso</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>{{ estatistica }}</strong></td>
+                                <td class="text-center">{{ estatistica.grupo_simulado.nota_minima }}</td>
+                                <td class="text-center">{{ estatistica.porcentagem_acertos }}</td>
+                                <td class="text-center">{{ estatistica.aprovado|yesno }}</td>
+                            </tr>
+                            {% for disciplina in estatistica.estatisticadisciplina_set.all %}
+                                <tr class="text-info">
+                                    <td class="text-center"><small>{{ disciplina.disciplina_grupo }}</small></td>
+                                    <td class="text-center">{{ disciplina.disciplina_grupo.nota_minima }}</td>
+                                    <td class="text-center">{{ disciplina.porcentagem_acertos }}</td>
+                                    <td class="text-center">{{ disciplina.aprovado|yesno }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-sm-offset-3 col-sm-6">
+                <div class="main-box infographic-box colored red-bg">
+                    <i class="fa fa-close"></i>
+                    <span class="value">Atenção</span>
+                    <span class="headline">A estatística será exibida assim que você finalizar o seu simulado.</span>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+</div>
+

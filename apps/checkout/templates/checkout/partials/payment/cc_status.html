@@ -1,0 +1,8 @@
+{% load static %}
+<div class="thankyou-icon">
+    <img src="{% static 'checkout/assets/img/payment-method.svg' %}">
+</div> <!-- /.thankyou-icon -->
+<div class="section-title">
+    Agradecemos pela compra {{ checkout.get_transaction_status_display }}
+</div>
+<p class="section-p">Enviamos um email para confirmar a sua compra</p>

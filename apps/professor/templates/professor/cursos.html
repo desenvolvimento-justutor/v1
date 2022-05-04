@@ -1,0 +1,36 @@
+{% extends 'professor/_base.html' %}
+{% block panel_header %}
+    <div class="clearfix">
+        <h1>Cursos <small>{{ curso }}</small></h1>
+    </div>
+    <div class="col-lg-12" style="margin-bottom: 10px">
+        <form class="form-inline">
+            <div class="form-group form-group-select2" style="margin-left: 10px">
+                <select id="sel2" name="curso">
+                    <option></option>
+                    {% for curso in cursos %}
+                        <option value="{{ curso.pk }}">{{ curso }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success mb-2"><i class="fa fa-arrow-circle-right"></i></button>
+        </form>
+    </div>
+
+{% endblock %}
+{% block panel_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            {% include 'professor/widgets/cursos.html' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#sel2').select2({
+            placeholder: "Selecion um Curso",
+            allowClear: true
+        });
+    </script>
+{% endblock %}

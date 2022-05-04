@@ -1,0 +1,14 @@
+/* 
+ * Custom Style
+ * ============================================= 
+ * Place your custom styles here
+ * We recommend you to put your css style code here, 
+ * and DO NOT change anything in our default style code file 
+ * because it's easy to update
+*/
+
+/*# sourceMappingURL=custom.css.map */
+.items .item figure {
+    width: 80px !important;
+    height: 80px !important;
+}

@@ -1,0 +1,17 @@
+{% extends '_base.html' %}
+{% block section %}
+    <section id="questoes-destaque" class="col-sm-12">
+        <div class="titulo-home  mg-bot20">
+            {% if tipo == 'item' %}
+                <h4 class="pd-home titulo-home bold"><a class="btn btn-link" href="{% url 'enunciado:roteiro' roteiro.roteiro.slug %}"><i class="fa fa-arrow-left"></i></a> Roteiro de Estudo <small><strong>{{ roteiro }}</strong></small></h4>
+            {% else %}
+                <h4 class="pd-home titulo-home bold"><a class="btn btn-link" href="{% url 'enunciado:roteiro' roteiro.item.roteiro.slug %}"><i class="fa fa-arrow-left"></i></a> Roteiro de Estudo <small><strong>{{ roteiro.item }} &nrightarrow; {{ roteiro }}</strong></small></h4>
+            {% endif %}
+            <div class="linha-aba"></div>
+        </div>
+        <div style="padding-bottom: 10px"></div>
+    </section>
+    {% include 'busca-resultado.html' with hide_ranking=True %}
+
+{% endblock %}
+{% block busca %}{% endblock %}

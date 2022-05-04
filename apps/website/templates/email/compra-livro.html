@@ -1,0 +1,15 @@
+{% extends 'email/_base.html' %}
+{% block titulo1 %}Obrigado por ter adquirido uma obra do JusTutor!{% endblock %}
+
+{% block texto1 %}
+    <p>O acesso a ela já está disponível e pode ser feito por meio do seguinte link: <a href="http://www.justutor.com.br/aluno/livros/">Livros</a></p>
+    <p>A senha de acesso ao arquivo é: <strong>{{ cpf }}.</strong></p>
+    <p style="text-align: justify; margin-top: 10px; color: red; font-weight: 400; font-style: italic">Caso a senha acima esteja em branco, complete o seu cadastro no JusTutor antes de fazer o download da sua obra e a senha será exibida na sua área de livros.</p>
+    <p style="text-align: justify; margin-top: 10px; color: red; font-weight: 400; font-style: italic">Lembramos que a aquisição da obra se dá em caráter pessoal, ou seja, você pode utilizar da maneira como desejar, inclusive imprimindo, mas é vedada a disponibilização parcial ou integral da obra para terceiros, por qualquer meio, sob pena de responsabilização cível e penal.</p>
+{% endblock %}
+
+{% block titulo2 %}Boa leitura!{% endblock %}
+
+{% block texto2 %}
+    <p>Equipe JusTutor</p>
+{% endblock %}

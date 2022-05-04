@@ -1,0 +1,211 @@
+{% load static thumbnail curso %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{{ title }} | JusTutor</title>
+    {% include 'checkout/includes/base.css.html' %}
+    {% block css %}{% endblock %}
+</head>
+
+<body>
+<div id="overlay" class="hide" style="background-color: rgba(211, 211, 211, 0.6);">
+    <div id="holdon-content-container">
+        <div id="holdon-content">
+            <div style="text-align: center;">
+                <div class="loader loader1">
+                    <svg width="26px" height="40px" viewBox="0 0 26 40" fill="#4FB95C">
+                        <rect x="0" y="5" ry="3" width="6" height="30"></rect>
+                        <rect x="10" y="5" ry="3" width="6" height="30"></rect>
+                        <rect x="20" y="5" ry="3" width="6" height="30"></rect>
+                    </svg>
+                    <span style="font-size: 1em; font-weight: bold; bottom: 0px; color: #4ac372;"><p>VERIFICANDO: <strong
+                            class="text-danger" id="count"></strong></p></span>
+                </div>
+            </div>
+        </div>
+        <div id="holdon-message" style="color: rgb(74, 195, 114);"></div>
+    </div>
+</div>
+{% block helpme %}
+
+{% endblock %}
+<div class="wrapper">
+    <header class="primary">
+        <div class="navbar navbar-primary">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="{% url 'website:index' %}" class="navbar-brand">
+                        <img src="{% static 'images/logos/logotype-jus-negativo.svg' %}" height="100%">
+                    </a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <!--ul class="nav navbar-nav navbar-left">
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><div class="flag id"></div></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-title">Language</li>
+                            <li><a href="#"><div class="flag id"></div> Indonesia</a></li>
+                            <li><a href="#"><div class="flag us"></div> English</a></li>
+                        </ul>
+                    </li>
+                </ul-->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{% url 'website:index' %}">Home</a></li>
+                        <li disabled class="menu-item dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Cursos <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                {% for categoria in proc_curso.categorias %}
+                                    <li class="menu-item dropdown">
+                                        <a data-href="{{ categoria.get_absolute_url }}" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                                    </li>
+                                {% endfor %}
+                                {% if proc_curso.sentencas_oab %}
+                                <!-- SENTENÇAS OAB -->
+                                <li disabled class="menu-item dropdown-submenu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> OAB 2ª Fase </a>
+                                    <ul class="dropdown-menu">
+                                        {% for categoria in proc_curso.sentencas_oab %}
+                                            <li class="menu-item dropdown">
+                                                <a data-href="{{ categoria.get_absolute_url }}" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                <!-- Atividades Avulsas -->
+                                {% if proc_curso.sentencas_avulsas %}
+                                    <li class="dropdown-header">Atividades Avulsas</li>
+                                    {% for categoria in proc_curso.sentencas_avulsas %}
+                                        <li class="menu-item dropdown">
+                                            <a data-href="{{ categoria.get_absolute_url }}" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    <li>
+                                        <a href="{% url 'curso:montar-pacote' %}">Pacotes personalizados</a>
+                                    </li>
+                                {% endif %}
+                                <li role="separator" class="divider"></li>
+                                <!-- CURSOS GRÁTIS -->
+                                <li class="dropdown-header">Cursos Grátis</li>
+                                {% for serie in proc_curso.series %}
+                                    <li class="menu-item dropdown">
+                                        <a data-href="{{ serie.get_absolute_url }}" class="dropdown-toggle" data-toggle="dropdown">{{ serie }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+
+                {% if proc_curso.livraria %}
+                <!-- LIVRARIA -->
+                <li disabled class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> Livraria <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for categoria in proc_curso.livraria %}
+                            <li class="menu-item dropdown">
+                                <a data-href="{{ categoria.get_absolute_url }}" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if proc_curso.simulados %}
+                <!-- SENTENÇAS OAB -->
+                <li disabled class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> Simulados <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for categoria in proc_curso.simulados %}
+                            <li class="menu-item dropdown">
+                                <a data-href="{{ categoria.get_absolute_url }}" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                        <li class="active"><a href="{% url 'checkout:cart' %}">Carrinho</a></li>
+                    </ul>
+                </div>
+            </div> <!-- /.container -->
+        </div>
+        <div class="navbar navbar-secondary">
+            <div class="steps">
+                <div class="steps-inner">
+                    <div class="steps-inner">
+                        <div class="step-item{% ifequal title 'Carrinho' %} active{% endifequal %}">
+                            <div class="step-count"><i class="ion-ios-cart"></i></div>
+                            <div class="step-label">Carrinho</div>
+                        </div> <!-- /.item-step-item -->
+                        <div class="step-item{% ifequal title 'Pagamento' %} active{% endifequal %}">
+                            <div class="step-count"><i class="ion-social-usd"></i></div>
+                            <div class="step-label">Pagamento</div>
+                        </div> <!-- /.step-item -->
+                        <div class="step-item{% ifequal title 'Conclusão' %} active{% endifequal %}">
+                            <div class="step-count"><i class="ion-android-checkmark-circle"></i></div>
+                            <div class="step-label">Conclusão</div>
+                        </div> <!-- /.step-item -->
+                    </div>
+                </div>
+            </div> <!-- /.steps -->
+        </div>
+    </header> <!-- /.primary -->
+
+    <section class="section">
+        <div class="container">
+            <div class="section-inner">
+                <div class="section-body">
+                    {% block section_navigation %}
+                        <div class="section-nav-group">
+                            <div class="section-nav back" data-href="{% url 'website:index' %}">
+                                <i class="ion-android-arrow-back"></i>
+                                <div>Ir para a home</div>
+                            </div> <!-- /.section-nav.back -->
+                        </div>
+                    {% endblock %}
+                    {% block section_title %}
+                        <h2 class="section-title padding-top">{{ title }}</h2>
+                        <div class="line"></div>
+                    {% endblock %}
+                    {% block section_body_content %}{% endblock %}
+                </div> <!-- /.section-body -->
+
+                {% block section_footer %}
+                    <div class="section-footer">
+                        {% block section_footer_content %}{% endblock %}
+                    </div> <!-- /.footer -->
+                {% endblock %}
+                {% block section_cta %}
+                    <div class="section-cta">
+                        {% block section_cta_content %}{% endblock %}
+                        <hr/>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p class="pull-right">Esta compra está sendo feita no <strong>Brasil </strong>
+                                    <img src="{% static 'images/logos/flag_br.png' %}"/></p>
+                            </div>
+                            <div class=" cols-sm-12 text-center">
+                            </div>
+                        </div>
+                    </div> <!-- /.section-cta -->
+                {% endblock %}
+            </div> <!-- /.section-inner -->
+        </div> <!-- /.container -->
+    </section> <!-- /.section -->
+
+    <footer class="primary">
+        <div class="container">
+            <div class="copyright">
+                Copyright <strong>JusTutor</strong> 2015-{% now 'Y' %}.
+                <br/><br/><p><img src="https://assets.pagseguro.com.br/ps-shop-test/v1.2.18/_next/static/796cd8f12ae31d44225cbb0b0da6c5bd.png"/></p>
+            </div> <!-- /.copyright -->
+        </div> <!-- /.container -->
+    </footer> <!-- /.footer-primary -->
+</div> <!-- /.wrapper -->
+{% include 'checkout/includes/base.js.html' %}
+{% block js %}{% endblock %}
+</body>
+</html>

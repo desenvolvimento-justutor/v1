@@ -1,0 +1,114 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail threadedcomments_tags %}
+
+{% block panel_content %}
+    {% get_comment_list for discuss as comment_list %}
+    <div class="row">
+        <div class="main-box clearfix">
+            <header class="main-box-header clearfix">
+                <h2>Comentários <span class="label label-{{ discuss.status.label }}">{{ discuss.status.status }}</span></h2>
+                <blockquote>{{ discuss.descricao }}</blockquote>
+                {% if backto == 'simulado' %}
+                    <a href="javascript:window.history.back()" class="btn btn-link"><i class="fa fa-arrow-left"></i> Voltar para o simulado</a>
+                {% else %}
+                    <a href="{% url 'aluno:cursos' %}?videos={{ check.pk }}" class="btn btn-link"><i class="fa fa-arrow-left"></i> Voltar</a>
+                {% endif %}
+                <div class="comments_length">
+                    <p>{{ comment_list|length }} Comentário{{ comment_list|length|pluralize }}</p>
+                </div>
+            </header>
+            <div class="main-box-body clearfix">
+                <div class="conversation-wrapper">
+                    <div class="conversation-content">
+                        <div id="slim">
+
+                            <div class="comments_wrapper" id="comments">
+                            {% render_comment_list for discuss flat %}
+
+{#                            <div id="wrap_write_comment">#}
+{#                                {% render_comment_form for discuss %}#}
+{#                            </div>#}
+                        </div>
+                        </div>
+                    </div>
+                    {% if discuss.status.status  == 'Iniciado'%}
+                    <div id="wrap_write_comment">
+                    <div class="conversation-new-message">
+                        {% get_comment_form for discuss as form %}
+                            <div id="form-comment" style="min-width: 80%; display: inline-block">
+                                <form action="/comments/post/" method="POST" style="margin-left: 60px">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        {{ form.comment }}
+                                    </div>
+                                    {{ form.content_type }}
+                                    {{ form.object_pk }}
+                                    {{ form.timestamp }}
+                                    {{ form.security_hash }}
+                                    {{ form.parent }}
+                                    <input id="id_email" name="email" type="hidden" value="{{ request.user.aluno.email }}">
+                                    <input type="hidden" name="next" value="{% url 'aluno:curso-discussao' discuss.id %}" />
+                                    <div class="clearfix pull-right">
+                                        <a href="#c0" id="cancel_reply" class="btn btn-danger hide">Cancelar</a>
+                                        <button id="id_submit" type="submit" class="btn btn-success">Comentar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function () {
+    $('#slim').slimScroll({
+            height: '500px',
+            size: '15px',
+            alwaysVisible: true,
+            railVisible: true,
+            color: '#100f2e',
+            wheelStep: 5,
+            start: 'bottom',
+            allowPageScroll: false
+        });
+    $('#id_comment').addClass("form-control");
+    $('#id_comment').attr('rows', 1);
+    $('#id_comment').attr('placeholder', '[Digite aqui seu comentário]');
+    function h(e) {
+        $(e).css({'height': 'auto', 'overflow-y': 'hidden'}).height(e.scrollHeight);
+    }
+
+    $('textarea').each(function () {
+        h(this);
+    }).on('input', function () {
+        h(this);
+    });
+    // COMENTS
+    function show_reply_form(event) {
+        var $this = $(this);
+        var comment_id = $this.data('comment-id');
+        $('#cancel_reply').removeClass('hide');
+        $('#id_parent').val(comment_id);
+        $('#form-comment').insertAfter($this.closest('.comment'));
+    };
+
+    function cancel_reply_form(event) {
+        $('#cancel_reply').addClass('hide');
+        $('#id_comment').val('');
+        $('#id_parent').val('');
+        $('#form-comment').appendTo($('#wrap_write_comment'));
+    }
+
+    $.fn.ready(function() {
+        $('.comment_reply_link').click(show_reply_form);
+        $('#cancel_reply').click(cancel_reply_form);
+    })
+
+})
+</script>
+{% endblock %}

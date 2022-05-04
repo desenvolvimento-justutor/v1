@@ -1,0 +1,48 @@
+<div class="container">
+        <form method="get">
+            <div class="row">
+                <div class="form-group col-sm-2">
+                    {% if tipo_filtro == 'oab' %}
+                        <label class="" for="orderBy">Peça</label>
+                    {% else %}
+                        <label class="" for="orderBy">Sentença</label>
+                    {% endif %}
+                    <select class="form-control" name="sentenca_avulsa">
+                        <option value="">---</option>
+                        {% for row in sentencas_avulsas %}
+                        <option value="{{ row.id }}" {% ifequal filtro.sentenca_avulsa_id row.id|slugify %}selected{% endifequal %}>{{ row }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="" for="orderBy">Status</label>
+                    <select class="form-control" name="status">
+                        <option value="">---</option>
+                        <option value="I" {% ifequal filtro.status 'I' %}selected{% endifequal %}>Iniciado</option>
+                        <option value="A" {% ifequal filtro.status 'A' %}selected{% endifequal %}>Aguardando Correção</option>
+                        <option value="C" {% ifequal filtro.status 'C' %}selected{% endifequal %}>Corrigido</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="" for="orderBy">Correção Enviada</label>
+                    <select class="form-control" name="corrigido">
+                        <option value="">---</option>
+                        <option value="S" {% ifequal filtro.correcao__isnull False %}selected{% endifequal %}>Sim</option>
+                        <option value="N" {% ifequal filtro.correcao__isnull True %}selected{% endifequal %}>Não</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="" >Tipo</label>
+                     <select class="form-control" name="tipo">
+                        <option value="">---</option>
+                        <option value="Sentenças Avulsas Cíveis" {% ifequal filtro.sentenca_avulsa__curso__categoria__nome 'Sentenças Avulsas Cíveis' %}selected{% endifequal %}>Sentenças Avulsas Cíveis</option>
+                        <option value="Sentenças Avulsas Criminais" {% ifequal filtro.sentenca_avulsa__curso__categoria__nome 'Sentenças Avulsas Criminais' %}selected{% endifequal %}>Sentenças Avulsas Criminais</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <br>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> Filtar</button>
+                </div>
+            </div>
+        </form>
+</div>

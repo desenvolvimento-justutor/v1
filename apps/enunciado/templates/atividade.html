@@ -1,0 +1,139 @@
+{% extends '_base-enunciado.html' %}
+{% block extra_css %}
+<style>
+    .holder {
+        margin:15px 0;
+        text-align: center;
+    }
+    .holder a {
+        font-size:12px;
+        cursor:pointer;
+        margin:0 5px;
+        color:#333;
+    }
+    .holder a:hover {
+        background-color:#222;
+        color:#fff;
+    }
+    .holder a.jp-previous {
+        margin-right:15px;
+    }
+    .holder a.jp-next {
+        margin-left:15px;
+    }
+    .holder a.jp-current,a.jp-current:hover {
+        color:#FF4242;
+        font-weight:bold;
+    }
+    .holder a.jp-disabled,a.jp-disabled:hover {
+        color:#bbb;
+    }
+    .holder a.jp-current,a.jp-current:hover,.holder a.jp-disabled,a.jp-disabled:hover {
+        cursor:default;
+        background:none;
+    }
+    .holder span {
+        margin:0 5px;
+    }
+    input {
+        width:30px;
+        text-align: center;
+    }
+    .pull-left > a {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+    }
+</style>
+{% endblock %}
+{% block bloco_dir_lg %}4{% endblock %}
+{% block cabecalho %}{% endblock %}
+
+{% block bloco_esq %}
+    <section id="questoes-destaque" class="col-sm-12">
+        <!-- Últimas Respostas -->
+        <div class="col-sm-4">
+            <div class="holder" id="holder-respostas"></div>
+            <div class="panel panel-success">
+                <div class="panel-heading bold">Últimas Respostas</div>
+                <ul class="list-group" id="pagination-respostas">
+                    {% for resposta in respostas %}
+                    <li class="list-group-item" style="min-height: 72px">
+                        <span class="pull-left"><a href="{{ resposta.aluno.get_absolute_url }}">{{ resposta.aluno }}</a> elaborou a <a href="{{ resposta.get_absolute_url }}">Resposta {{ resposta }}</a> à <a href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a></span>
+                        <div class="clearfix"></div>
+                        <span class="pull-right text-info"><i class="fa fa-clock-o"> {{ resposta.str_data }}</i></span>
+                        <div class="clearfix"></div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- Últimas Avaliações -->
+        <div class="col-sm-4">
+            <div class="holder" id="holder-correcoes"></div>
+            <div class="panel panel-info">
+                <div class="panel-heading bold">Últimas Avaliações</div>
+                <ul class="list-group" id="pagination-correcoes">
+                    {% for avaliacao in avaliacoes %}
+                    <li class="list-group-item" style="min-height: 72px">
+                        <span class="pull-left"><a href="{{ avaliacao.aluno.get_absolute_url }}">{{ avaliacao.aluno }}</a> deu nota <span class="text-danger" style="font-weight: bold">{{ avaliacao.nota }}</span> à <a href="{{ avaliacao.resposta.get_absolute_url }}">Resposta {{ avaliacao.resposta }}</a></span>
+                        <div class="clearfix"></div>
+                        <span class="pull-right text-info"><i class="fa fa-clock-o"> {{ avaliacao.str_data }}</i></span>
+                        <div class="clearfix"></div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- Últimas Comentarios -->
+        <div class="col-sm-4">
+            <div class="holder" id="holder-comentarios"></div>
+            <div class="panel panel-default">
+                <div class="panel-heading bold">Últimos Comentários</div>
+                <ul class="list-group" id="pagination-comentarios">
+                    {% for comentario in comentarios %}
+                    <li class="list-group-item" style="min-height: 72px">
+                        <span class="pull-left"><a href="{{ comentario.aluno.get_absolute_url }}">{{ comentario.aluno }}</a> comentou a <a href="{{ comentario.resposta.get_absolute_url }}#C{{ comentario.id }}">Resposta {{ comentario.resposta }}</a></span>
+                        <div class="clearfix"></div>
+                        <span class="pull-right text-info"><i class="fa fa-clock-o"> {{ comentario.str_data }}</i></span>
+                        <div class="clearfix"></div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block busca %}
+    {% include 'busca.html' %}
+{% endblock %}
+{% block extra_js %}
+    <script src="{{ STATIC_URL }}assets/js/jPages.min.js"></script>
+    <script>
+    /* when document is ready */
+    $(function () {
+        /* initiate plugin */
+        $("#holder-respostas").jPages({
+            containerID: "pagination-respostas",
+            next: "Próximo →",
+            previous: "← Anterior"
+        });
+    });
+    $(function () {
+        /* initiate plugin */
+        $("#holder-correcoes").jPages({
+            containerID: "pagination-correcoes",
+            next: "Próximo →",
+            previous: "← Anterior"
+        });
+    });
+    $(function () {
+        /* initiate plugin */
+        $("#holder-comentarios").jPages({
+            containerID: "pagination-comentarios",
+            next: "Próximo →",
+            previous: "← Anterior"
+        });
+    });
+    </script>
+{% endblock %}

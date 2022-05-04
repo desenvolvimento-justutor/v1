@@ -1,0 +1,72 @@
+{% extends 'curso/base.html' %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'website/demos/news/news.css' %}" type="text/css">
+{% endblock %}
+
+{% block page_title %}
+    <section id="page-title" class="page-title-mini">
+        <div class="container clearfix">
+            <h1 data-animate="fadeInUp"><i class="icon-note"></i> </h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'website:index' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Noticia</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ object.nome }}</li>
+            </ol>
+        </div>
+    </section>
+{% endblock %}
+
+{% block left %}
+        <div class="single-post nobottommargin">
+
+            <div class="entry clearfix">
+
+                <div class="entry-title">
+                    <h2>{{ object }}</h2>
+                </div>
+
+                <ul class="entry-meta clearfix">
+                    <li><i class="icon-calendar3"></i> {{ noticia.ativo_inicio|date:"SHORT_DATE_FORMAT" }}</li>
+                    <li><i class="icon-eye-open"></i> {{ noticia.noticialida_set.all.count }}</li>
+                </ul>
+
+
+                <div class="entry-content notopmargin">
+                    {{ object.conteudo|safe }}
+                </div>
+            </div>
+            <div>
+                <div>
+                    <a href="https://twitter.com/share" class="twitter-share-button" {count} data-text="JusTutor">Tweet</a>
+                </div>
+                <div>
+                    <div class="fb-like"  data-width="" data-layout="button" data-action="like" data-size="small" data-share="true"></div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block sidebar %}
+    <!-- Anúncio -->
+    {% include 'website/partials/widget_anuncios.html' %}
+    {% include 'website/home/partials/noticias_recentes.html' with noticias=mais_lidas titulo='As 10 mais' show_view=True trunck=False %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <div class="fb-like" data-width="" data-layout="button" data-action="like" data-size="small" data-share="true"></div>
+    <!-- TWITTER --->
+    <script>!function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+        if (!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p + '://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js, fjs);
+        }
+    }(document, 'script', 'twitter-wjs');
+    </script>
+{% endblock %}

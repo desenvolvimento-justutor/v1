@@ -1,0 +1,48 @@
+<div class="titulo-home">
+    <h4 class="pd-home titulo-home bold">Elabore sua Correção abaixo!</h4>
+    <div class="linha-aba mg-bot20"></div>
+    <span class="faixa-vermelha mg-top20">
+        Veja as respostas já elaboradas <span class="fonte-amarela">para este enunciado</span>
+    </span>
+</div>
+
+<!-- EDITOR HTML --------------------------------------------------------->
+<div id="block">
+    <form id="form-resposta" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="correcao">
+        <div class="text-center">
+            Dê sua nota abaixo.<span class="text-danger">Obrigatório</span>
+            <select id="rating" name="rating">
+                <option value=""></option>
+                <option value="0"{% if rating == '0' %} selected{% endif %}>0</option>
+                <option value="1"{% if rating == '1' %} selected{% endif %}>1</option>
+                <option value="2"{% if rating == '2' %} selected{% endif %}>2</option>
+                <option value="3"{% if rating == '3' %} selected{% endif %}>3</option>
+                <option value="4"{% if rating == '4' %} selected{% endif %}>4</option>
+                <option value="5"{% if rating == '5' %} selected{% endif %}>5</option>
+                <option value="6"{% if rating == '6' %} selected{% endif %}>6</option>
+                <option value="7"{% if rating == '7' %} selected{% endif %}>7</option>
+                <option value="8"{% if rating == '8' %} selected{% endif %}>8</option>
+                <option value="9"{% if rating == '9' %} selected{% endif %}>9</option>
+                <option value="10"{% if rating == '10' %} selected{% endif %}>10</option>
+            </select>
+        </div>
+        <div class="text-right mg-top10">
+            <span class="text-danger">Utilize o espaço abaixo para redigir a sua correção. <i class="fa fa-info-circle"></i></span>
+        </div>
+        <textarea id="content" name="content">
+            {% if content %}{{ content }}{% endif %}
+        </textarea>
+    </form>
+    <div class="row mg-top10">
+        <div class="col-md-6">
+        Mínimo de caracteres <span class="label label-danger pull-right">150</span>
+        </div>
+</div>
+</div>
+<div class="row" style="padding: 15px">
+    <button id="btn-enviar" class="btn btn-success fa fa-send-o fg-lg pull-right" onclick="enviarCorrecao()">
+        &nbspENVIAR CORREÇÃO
+    </button>
+</div>

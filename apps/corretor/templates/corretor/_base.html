@@ -1,0 +1,460 @@
+{% load dajaxice_templatetags thumbnail %}
+{% with request.user.corretor as corretor %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>{{ website.config.titulo }}{% if menu %} | {{ menu|capfirst }}{% endif %}</title>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}images/logos/favicon.png" type="image/x-icon"/>
+
+    <style>
+        .load {
+            display:    none;
+            position:   fixed;
+            z-index:    100000;
+            top:        0;
+            left:       0;
+            height:     100%;
+            width:      100%;
+            background: rgba( 255, 255, 255, .5 )
+                        url('{{ STATIC_URL }}assets/images/hourglass.svg')
+                        50% 50%
+                        no-repeat;
+        }
+        body.loading {
+            overflow: hidden;
+        }
+
+        body.loading .load {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/nanoscroller.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/compiled/theme_styles.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/extra.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/toastr/toastr.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/ns-default.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/ns-style-growl.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/ns-style-bar.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/ns-style-attached.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/ns-style-other.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}perfil/css/libs/ns-style-theme.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/bootstrap-fileinput/css/fileinput.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap-popover-x.min.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}perfil/css/libs/datepicker.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}perfil/css/libs/daterangepicker.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/sweetalert.css">
+    {#    <link type="image/x-icon" href="favicon.png" rel="shortcut icon"/>#}
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700,300|Titillium+Web:200,300,400' rel='stylesheet'
+          type='text/css'>
+    <script src="{{ STATIC_URL }}perfil/js/jquery.js"></script>
+    <script src="{{ STATIC_URL }}perfil/js/bootstrap.js"></script>
+
+    {% block css %} {% endblock %}
+    <!--[if lt IE 9]>
+            <script src="js/html5shiv.js"></script>
+            <script src="js/respond.min.js"></script>
+        <![endif]-->
+</head>
+<body>
+<div id="theme-wrapper">
+    <!-- HEADER ------------------------->
+    {% include 'corretor/_header-navbar.html' %}
+    <!--/HEADER/------------------------->
+    <div id="page-wrapper" class="container">
+        <div class="row">
+            <!-- MENU ESQUERDO ------------------>
+            {% include 'corretor/_menu-esquerdo.html' %}
+            <!--/MENU ESQUERDO/------------------>
+            <div id="content-wrapper">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- HEADER TITLE -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h1>{{ titulo|capfirst }}{% if submenu %} <small> >> {{ submenu }}</small>{% endif %}</h1>
+                            </div>
+                        </div>
+                        <!-- PANEL CONTENT -->
+                        <div class="main-box clearfix">
+                            {% block panel_content %}
+                                {% include 'perfil.html' %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="config-tool" class="closed">
+    <a id="config-tool-cog">
+        <i class="fa fa-cog"></i>
+    </a>
+    <!-- LAYOUT OPTIONS -->
+    <div id="config-tool-options">
+        <h4>Personalize seu painel</h4>
+        <ul>
+            <li>
+                <div class="checkbox-nice">
+                    <input type="checkbox" id="config-fixed-header"/>
+                    <label for="config-fixed-header">
+                        Menu Superior Fixo
+                    </label>
+                </div>
+            </li>
+            <li>
+                <div class="checkbox-nice">
+                    <input type="checkbox" id="config-fixed-sidebar"/>
+                    <label for="config-fixed-sidebar">
+                        Menu Lateral Fixo
+                    </label>
+                </div>
+            </li>
+            <li>
+                <div class="checkbox-nice">
+                    <input type="checkbox" id="config-fixed-footer"/>
+                    <label for="config-fixed-footer">
+                        Rodapé Fixo
+                    </label>
+                </div>
+            </li>
+            <li>
+                <div class="checkbox-nice">
+                    <input type="checkbox" id="config-boxed-layout"/>
+                    <label for="config-boxed-layout">
+                        Boxed Layout
+                    </label>
+                </div>
+            </li>
+            <!--li>
+                <div class="checkbox-nice">
+                    <input type="checkbox" id="config-rtl-layout"/>
+                    <label for="config-rtl-layout">
+                        Right-to-Left
+                    </label>
+                </div>
+            </li-->
+        </ul>
+        <br/>
+        <h4>Skin Color</h4>
+        <ul id="skin-colors" class="clearfix">
+            <li>
+                <a class="skin-changer" data-skin="" data-toggle="tooltip" title="Default"
+                   style="background-color: #34495e;">
+                </a>
+            </li>
+            <li>
+                <a class="skin-changer" data-skin="theme-white" data-toggle="tooltip" title="Banco/Verde"
+                   style="background-color: #2ecc71;">
+                </a>
+            </li>
+            <li>
+                <a class="skin-changer blue-gradient" data-skin="theme-blue-gradient" data-toggle="tooltip"
+                   title="Gradiente Azul">
+                </a>
+            </li>
+            <li>
+                <a class="skin-changer" data-skin="theme-turquoise" data-toggle="tooltip" title="Verde Mar"
+                   style="background-color: #1abc9c;">
+                </a>
+            </li>
+            <li>
+                <a class="skin-changer" data-skin="theme-amethyst" data-toggle="tooltip" title="Ametista"
+                   style="background-color: #9b59b6;">
+                </a>
+            </li>
+            <li>
+                <a class="skin-changer" data-skin="theme-blue" data-toggle="tooltip" title="Azul"
+                   style="background-color: #2980b9;">
+                </a>
+            </li>
+            <li>
+                <a class="skin-changer" data-skin="theme-red" data-toggle="tooltip" title="Vermelho"
+                   style="background-color: #e74c3c;">
+                </a>
+            </li>
+            <li>
+                <a class="skin-changer" data-skin="theme-whbl" data-toggle="tooltip" title="Branco/Azul"
+                   style="background-color: #3498db;">
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="load"><!-- Place at bottom of page --></div>
+</div>
+{% if not request.user.aluno %}
+{% include 'login-modal.html' %}
+{% endif %}
+<script src="{{ STATIC_URL }}perfil/js/demo-skin-changer.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/jquery.nanoscroller.min.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/demo.js"></script>
+
+<script src="{{ STATIC_URL }}perfil/js/modernizr.custom.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/snap.svg-min.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/classie.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/notificationFx.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/bootstrap-datepicker.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/moment.min.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/daterangepicker.js"></script>
+
+<script src="{{ STATIC_URL }}perfil/js/jquery.slimscroll.min.js"></script>
+
+<script src="{{ STATIC_URL }}perfil/js/jquery.magnific-popup.min.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/scripts.js"></script>
+<script src="{{ STATIC_URL }}perfil/js/pace.min.js"></script>
+
+<script src="{{ STATIC_URL }}bootstrap/js/bootstrap-popover-x.min.js"></script>
+<script src="{{ STATIC_URL }}assets/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="{{ STATIC_URL }}assets/bootstrap-fileinput/js/locales/pt-BR.js"></script>
+<script src="{{ STATIC_URL }}assets/js/sweetalert.min.js"></script>
+<script src="{{ STATIC_URL }}assets/toastr/toastr.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}dajax/jquery.dajax.core.js" charset="UTF-8"></script>
+<!-- MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalUpload">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'curso:enviar-correcao' %}" method="post" enctype="multipart/form-data">
+                    <label class="control-label">Selecione o arquivo</label>
+                    <input id="inputUpload" name="inputUpload" type="file" class="file file-loading" data-allowed-file-extensions='["pdf", "odt", "htm", "html", "txt", "doc", "docx"]'>
+                    <small class="text-danger">Arquivos permitidos: [.pdf, .odt, .htm, .html, .txt, .doc, .docx]</small>
+                    <input type="hidden" value="" name="id_tarefa" id="idTarefa">
+                    <input type="hidden" value="{{ request.path }}" name="redirect">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    $('#modalUpload').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var titulo = button.data('titulo');
+        var pk = button.data('pk');
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this);
+        modal.find('.modal-title').text(titulo);
+        $('#idTarefa').val(pk);
+        $('#btn-tarefa').prop('href', '/curso/atividade/responder/' + pk);
+        $('#btn-imprimir').prop('href', '/curso/atividade/imprimir/' + pk);
+    })
+</script>
+{% dajaxice_js_import %}
+
+<script src="https://js.pusher.com/3.0/pusher.min.js"></script>
+<script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-43958317-18', 'auto');
+    ga('send', 'pageview');
+
+    $(document).ready(function () {
+        $('.conversation-inner').slimScroll({
+            height: '600px'
+        });
+        $('[data-scroll="slimscroll"]').slimScroll({
+            height: '600px',
+        });
+    });
+    /* TOOLTIPS */
+    $('[data-toggle="tooltip"]').tooltip();
+    function _toastr(e, t, a, r) {
+        var i = jQuery(".toastr-notify");
+        i.bind("click", function (e) {
+            e.preventDefault();
+            var t = jQuery(this).attr("data-message"), a = jQuery(this).attr("data-notifyType") || "default", r = jQuery(this).attr("data-position") || "top-right", i = "true" == jQuery(this).attr("data-progressBar") ? !0 : !1, n = "true" == jQuery(this).attr("data-closeButton") ? !0 : !1, o = "true" == jQuery(this).attr("data-debug") ? !0 : !1, s = "true" == jQuery(this).attr("data-newestOnTop") ? !0 : !1, l = "true" == jQuery(this).attr("data-preventDuplicates") ? !0 : !1, u = jQuery(this).attr("data-showDuration") || "300", c = jQuery(this).attr("data-hideDuration") || "1000", d = jQuery(this).attr("data-timeOut") || "5000", p = jQuery(this).attr("data-extendedTimeOut") || "1000", h = jQuery(this).attr("data-showEasing") || "swing", f = jQuery(this).attr("data-hideEasing") || "linear", y = jQuery(this).attr("data-showMethod") || "fadeIn", m = jQuery(this).attr("data-hideMethod") || "fadeOut";
+            toastr.options = {
+                closeButton: n,
+                debug: o,
+                newestOnTop: s,
+                progressBar: i,
+                positionClass: "toast-" + r,
+                preventDuplicates: l,
+                onclick: null,
+                showDuration: u,
+                hideDuration: c,
+                timeOut: d,
+                extendedTimeOut: p,
+                showEasing: h,
+                hideEasing: f,
+                showMethod: y,
+                hideMethod: m
+            }, toastr[a](t)
+        }), 0 != e && (onclick = 0 != r ? function () {
+            window.location = r
+        } : null, toastr.options = {
+            closeButton: !0,
+            debug: !1,
+            newestOnTop: !1,
+            progressBar: !0,
+            positionClass: "toast-" + t,
+            preventDuplicates: !1,
+            onclick: onclick,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "5000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        }, setTimeout(function () {
+            toastr[a](e)
+        }, 10))
+    }
+    // CREATE THE NOTIFICATION
+    function notif(message, tipo) {
+        var notification = new NotificationFx({
+            target: 'body',
+            message : message,
+            layout : 'growl',
+            effect : 'jelly',
+            type : tipo, // notice, warning, error or success
+            //onClose : function() {
+            //    ;
+           // }
+        });
+        // show the notification
+        notification.show();
+    }
+
+    // Enable pusher logging - don't include this in production
+    Pusher.log = function (message) {
+        if (window.console && window.console.log) {
+            window.console.log(message);
+        }
+    };
+    function msgToastr(msg, type) {
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": false,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "0",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        },
+        toastr["info"](msg)
+    }
+    {% for message in messages %}
+        new _toastr("{{ message }}","top-right","{{ message.tags }}", false);
+    {% endfor %}
+    {% if request.user.aluno %}
+    /* PUSH NOTIFICATIONS */
+    var pusher = new Pusher('c0d5a64b812bb1b35d3a', {
+        encrypted: true
+    });
+    var channel = pusher.subscribe('painel_channel');
+    channel.bind('notificar_aluno', function (data) {
+        var aluno_id = {{ request.user.aluno.id }};
+        if (aluno_id == data.aluno_id){
+            msgToastr(data.message);
+        }
+    });
+    {% endif %}
+    // FILE INPUT
+    var btnCust = '<button type="button" class="btn btn-default" title="Add picture tags" ' +
+        'onclick="alert(\'Call your custom code here.\')">' +
+        '<i class="glyphicon glyphicon-tag"></i>' +
+        '</button>';
+    $("#avatar").fileinput({
+        language: "pt-BR",
+        overwriteInitial: true,
+        maxFileSize: 1500,
+        showClose: false,
+        showCaption: false,
+        browseLabel: '',
+        removeLabel: '',
+        browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
+        removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
+        removeTitle: 'Cancelar ou resetar alterações',
+        elErrorContainer: '#kv-avatar-errors',
+        msgErrorClass: 'alert alert-block alert-danger',
+        {% thumbnail aluno.foto "160x160" crop="center" as im %}
+            defaultPreviewContent: '<img src="{{ im.url }}">',
+        {% empty %}
+            defaultPreviewContent: '<img src="{{ STATIC_URL }}images/logos/icone24-borda.svg">',
+        {% endthumbnail %}
+
+        layoutTemplates: {main2: '{preview} {browse}'},
+        allowedFileExtensions: ["jpg", "png", "gif"],
+        uploadUrl: "{% url 'aluno:configuracoes' %}", // server upload action
+        uploadAsync: true
+    }).on('fileuploaded', function(event, data, id, index) {
+        window.location.reload()
+    });
+    $body = $("body");
+    function startLoad() {
+        $body.addClass("loading");
+    }
+    function stopLoad() {
+        $body.removeClass("loading");
+    }
+    $(document).on({
+        ajaxStart: function() { startLoad },
+        ajaxStop: function() { stopLoad }
+    });
+    ;(function($){
+        $.fn.datepicker.dates['pt-BR'] = {
+            days: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+            daysShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            daysMin: ["Do", "Se", "Te", "Qu", "Qu", "Se", "Sa"],
+            months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+            monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+            today: "Hoje",
+            monthsTitle: "Meses",
+            clear: "Limpar",
+            format: "dd/mm/yyyy"
+        };
+    }(jQuery));
+    $('[data-type="date"]').datepicker({
+        language: 'pt-BR',
+        format: "dd/mm/yyyy"
+    });
+    // ENVIAR MENSAGEM
+    function enviarMensagem2() {
+        var texto = $('#text-msg').val();
+        var pid = $('#aid').val();
+        var cid = $('#cid').val();
+        if (texto == "") {
+            notif('Informe o texto da mensagem', 'error');
+            $('#modal-msg').blur();
+        } else {
+            $("#modal-msg").modal("hide");
+            $("#text-msg").val("");
+            startLoad();
+            Dajaxice.apps.professor.enviar_mensagem(Dajax.process, {'cid': cid, 'pid': pid, 'mensagem': texto, 'tp': 'P' });
+        }
+    }
+</script>
+
+{% block js %}{% endblock %}
+</body>
+</html>
+{% endwith %}

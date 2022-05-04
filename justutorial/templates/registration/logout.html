@@ -1,0 +1,37 @@
+{% extends '_base.html' %}
+{% block section %}
+    <div class="jumbotron">
+
+        <h2 class="mg-bot20">Sessão encerrada!</h2>
+        <p>Obrigado por acessar nosso website.</p>
+        <h3 class="text-center text-primaryz">
+            Você será redireciodo para <a href="{% url 'website:index' %}">página inicial</a> em <span class="label lebel-info" id="countdown">10</span> seconds
+        </h3>
+        <p><a class="btn btn-success btn-lg fa fa-chevron-circle-left" href="{% url 'website:index' %}" role="button">
+            Página inicial</a></p>
+    </div>
+    <!-- / -->
+{% endblock %}
+{% block extra_js %}
+    <!-- JavaScript part -->
+    <script type="text/javascript">
+        // Total seconds to wait
+        var seconds = 5;
+
+        function countdown() {
+            seconds = seconds - 1;
+            if (seconds < 0) {
+                // Chnage your redirection link here
+                window.location = "/";
+            } else {
+                // Update remaining seconds
+                document.getElementById("countdown").innerHTML = seconds;
+                // Count down using javascript
+                window.setTimeout("countdown()", 1000);
+            }
+        }
+
+        // Run countdown function
+        {#countdown();#}
+    </script>
+{% endblock %}

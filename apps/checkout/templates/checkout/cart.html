@@ -1,0 +1,89 @@
+{% extends 'checkout/base.html' %}
+{% load thumbnail %}
+{% load carton_tags %}
+{% load curso %}
+{% load dajaxice_templatetags %}
+{% load static %}
+
+{% block section_body_content %}
+    <div class="items">
+        {% for item in cart.items %}
+            {% include "checkout/widgets/item.html" %}
+        {% endfor %}
+    </div> <!-- /.items -->
+{% endblock %}
+
+{% block section_footer_content %}
+    <div class="col-md-6 col-sm-6">
+        <div class="coupon">
+            <div class="coupon-inner">
+                <form class="coupon-form" method="post">
+                    {% csrf_token %}
+                    <h2 class="section-title sm">Cupom</h2>
+                    <div class="line sm"></div>
+                    <div class="form-group">
+                        {{ form.codigo }}
+                        {{ form.remover }}
+                        {% if cart.cupom %}
+                            <button type="submit" id="" class="btn btn-danger">Remover</button>
+                        {% else %}
+                            <button type="submit" id="" class="btn btn-default">Aplicar</button>
+                        {% endif %}
+                        {% if form.codigo.errors %}
+                            <small class="text-danger">{{ form.codigo.errors }}</small>
+                        {% endif %}
+                    </div> <!-- /.form-group -->
+                </form> <!-- /.coupon-form -->
+            </div> <!-- /.coupon-inner -->
+        </div> <!-- /.coupon -->
+    </div> <!-- /.col-md-6 -->
+    <div class="col-md-6 col-sm-6">
+        <h2 class="section-title sm">Resumo</h2>
+        <div class="line sm"></div>
+        <div class="total-info" data-calculate-me>
+            <div class="total-item">
+                <div class="total-name">Valor total</div>
+                <div class="total-value" id="total-order" data-price>{{ cart.total|moeda }}</div>
+            </div> <!-- /.total-item -->
+            <div class="total-item" data-calculate-min="true">
+                <div class="total-name">Desconto</div>
+                <div class="total-value" id="total-discount" data-price>{{ cart.discount|moeda }}</div>
+            </div> <!-- /.total-item -->
+            <div class="total-item total">
+                <div class="total-name">Subtotal</div>
+                <div class="total-value" data-price>{{ cart.total_payment|moeda }}</div>
+            </div> <!-- /.total-item -->
+        </div> <!-- /.total-info -->
+    </div> <!-- /.col-md-6 -->
+{% endblock %}
+
+{% block section_cta_content %}
+    <btn class="btn btn-primary" data-href="{% url 'checkout:payment' %}">
+        Continuar <i class="ion-ios-arrow-thin-right"></i>
+    </btn>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}dajax/jquery.dajax.core.js" charset="UTF-8" defer></script>
+    {% dajaxice_js_import %}
+    <script>
+        function removeProd(curso_id, nome_curso) {
+            Swal.fire({
+                width: '500px',
+                icon: 'error',
+                title: "Deseja remover o item?",
+                html: '<b style="font-size: 1em; color: #4A91D3">' + nome_curso + '</b>',
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Não, deixe como está.',
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim, remova o item!",
+                closeOnConfirm: false,
+            }).then(function (result) {
+                if (result.value) {
+                    Dajaxice.apps.curso.remove_item(Dajax.process, {'curso_id': curso_id});
+                }
+            });
+        }
+    </script>
+{% endblock %}

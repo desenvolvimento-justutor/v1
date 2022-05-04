@@ -1,0 +1,11 @@
+{% extends 'email/_base.html' %}
+
+{% block titulo1 %}
+    Sua Peça já foi corrigida!
+{% endblock %}
+{% block texto1 %}
+    <p>A sua Peça <strong>{{ sentenca }}</strong> já foi corrigida e está disponível para você.</p>
+{% endblock %}
+
+{% block titulo2 %}{% endblock %}
+{% block texto2 %}<p><a href="{{ dominio }}/aluno/sentencas-oab/">Clique aqui</a> para ir para a área do aluno no JusTutor e conferir a correção.</p>{% endblock %}

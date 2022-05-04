@@ -1,0 +1,365 @@
+{% extends '_base.html' %}
+{% load curso %}
+{% block stylesheet %}
+    <link href="{{ STATIC_URL }}video-js/video-js.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block javascripts %}
+    <link href="{{ STATIC_URL }}video-js/video.js" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block section %}
+    <style>
+        .label {
+            border: #fff 1px solid;
+        }
+        .black-table-area {
+            background-color: #1A1B20;
+            color: #fff;
+        }
+
+        .small-table-area {
+            background: transparent url("http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/geometry.png") repeat scroll 0% 0%;
+        }
+
+        .section-title {
+            color: #fff;
+            display: inline-block;
+            font-size: 20px;
+            letter-spacing: 0.1rem;
+            padding: 10px 24px;
+            text-transform: uppercase;
+        }
+
+        .blue-heading {
+            background-color: #3498db;
+        }
+
+        .aqua-heading {
+            background-color: #1abc9c;
+        }
+
+        .red-heading {
+            background-color: #fa5137;
+        }
+
+        .purple-heading {
+            background-color: #c4394e;
+        }
+
+        .box-shadow-mixin {
+            box-shadow: 0px 2px 10px 2px rgba(221, 221, 221, 0.73);
+        }
+
+        .black-box-shadow-mixin {
+            box-shadow: 0px 2px 9px 10px rgba(20, 21, 25, 0.78);
+        }
+
+        .pricing-button a.btn {
+            color: #fff;
+            letter-spacing: 0.1rem;
+            padding: 12px 55px;
+        }
+
+        .pricing-button a.btn:hover {
+            opacity: 0.9;
+        }
+
+        .design-credit a {
+            text-decoration: underline;
+            -webkit-text-decoration-style: dotted;
+            -moz-text-decoration-style: dotted;
+            text-decoration-style: dotted;
+        }
+
+        .gg-pricing-table .price {
+            font-family: 'Signika', sans-serif;
+        }
+
+        .icon-table .single-pricing-table {
+            padding: 20px;
+            box-shadow: 0px 2px 10px 2px rgba(221, 221, 221, 0.73);
+        }
+
+        .icon-table .single-pricing-table .pricing-table-heading h2 {
+            color: #3d6370;
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 0.1rem;
+            margin-top: 30px;
+            position: relative;
+            width: 100%;
+        }
+
+        .icon-table .single-pricing-table .pricing-table-heading h2:after {
+            border: 1px dashed #eee;
+            content: "";
+            left: 0;
+            position: absolute;
+            top: 13px;
+            width: 100%;
+            z-index: -11111;
+        }
+
+        .icon-table .single-pricing-table .price span {
+            color: #fa5137;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .icon-table .single-pricing-table .pricing-item {
+            padding: 20px 0;
+        }
+
+        .icon-table .single-pricing-table .pricing-item ul {
+            padding-left: 0;
+        }
+
+        .icon-table .single-pricing-table .pricing-item ul li {
+            list-style: none;
+        }
+
+        .icon-table .single-pricing-table .pricing-item ul li p strong {
+            color: #325D6A;
+        }
+
+        .icon-table .single-pricing-table .pricing-button {
+            padding: 20px 0;
+        }
+
+        .icon-table .single-pricing-table .pricing-button a.btn-pricing {
+            background-color: #fa5137;
+        }
+
+        .dark-table .pricing-special {
+            border: 3px solid #c4394e;
+        }
+
+        .dark-table .single-pricing-table {
+            box-shadow: 0px 2px 9px 10px rgba(20, 21, 25, 0.78);
+            padding: 20px;
+        }
+
+        .dark-table .single-pricing-table .pricing-table-heading h2 {
+            font-size: 25px;
+            font-weight: 500;
+            letter-spacing: 0.1rem;
+            margin-top: 30px;
+        }
+
+        .dark-table .single-pricing-table .pricing-table-heading p {
+            font-size: 13px;
+        }
+
+        .dark-table .single-pricing-table .price {
+            padding: 25px 0;
+        }
+
+        .dark-table .single-pricing-table .price span {
+            font-size: 42px;
+            font-weight: 700;
+            margin-top: 50px;
+            color: #c4394e;
+        }
+
+        .dark-table .single-pricing-table .pricing-item {
+            padding: 20px 0;
+        }
+
+        .dark-table .single-pricing-table .pricing-item ul {
+            padding-left: 0;
+        }
+
+        .dark-table .single-pricing-table .pricing-item ul li {
+            list-style: none;
+        }
+
+        .dark-table .single-pricing-table .pricing-item ul li p {
+            color: #E4E4E5;
+        }
+
+        .dark-table .single-pricing-table .pricing-button {
+            padding: 20px 0;
+        }
+
+        .dark-table .single-pricing-table .pricing-button a.btn-pricing {
+            background-color: #c4394e;
+            text-transform: uppercase;
+            border-radius: 0px;
+        }
+
+        .small-table .single-pricing-table {
+            padding: 20px;
+            border-radius: 20px;
+            background: #fff;
+            box-shadow: 0px 2px 10px 2px rgba(221, 221, 221, 0.73);
+        }
+
+        .small-table .single-pricing-table .price {
+            font-weight: 700;
+            font-size: 60px;
+            color: #303030;
+        }
+
+        .small-table .single-pricing-table .pricing-table-heading h2 {
+            color: #656565;
+            text-transform: uppercase;
+            font-size: 18px;
+        }
+
+        .small-table .single-pricing-table .pricing-table-heading p {
+            color: #AFAFAF;
+        }
+
+        .small-table .single-pricing-table .pricing-button {
+            padding: 20px 0;
+        }
+
+        .small-table .single-pricing-table .pricing-button a.btn-pricing {
+            background-color: #1abc9c;
+            text-transform: uppercase;
+            border-radius: 20px;
+        }
+    </style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+           <h3 class="text-center mg-bot20" style="font-weight: bolder">{{ curso }}</h3>
+        </div>
+        <div class="col-sm-7">
+            <div class="clear"></div>
+            <section class="conteudo-curso mg-top20">
+                {% if curso.categoria.tipo == 'C' %}
+                    <h3>Conteúdo dos vídeos disponibilizados</h3>
+                    <div class="linha-aba mg-bot20"></div>
+                    {% for modulo in curso.modulo_set.all %}
+                    <table class="table table-striped tabela-curso mg-bot20">
+                        <thead>
+                            <tr>
+                                <td style="width: 30px">{{ forloop.counter|stringformat:"02d" }}</td>
+                                <td>{{ modulo }}</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for video in modulo.videomodulo_set.all %}
+                            <tr>
+                                <td colspan="2">
+                                    <span class="laranja">Vídeo {{ forloop.counter|stringformat:"02d" }} - </span>
+                                    {{ video }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endfor %}
+                {% else %}
+                    <h3>O que está incluído no pacote:</h3><br>
+                    {% for curso in curso.cursos.all %}
+                    <table class="table table-striped tabela-curso mg-bot20">
+                        <thead>
+                            <tr>
+                                <td style="width: 84px">{{ forloop.counter|stringformat:"02d" }} {{ curso.sentenca_avulsa.span_nivel|safe }}</td>
+                                <td>{{ curso }} <a class="pull-right btn btn-link" href="{{ curso.get_absolute_url }}"><small style="color: yellow">Saiba <i class="fa fa-plus"></i></small></a></td>
+                            </tr>
+                        </thead>
+                    </table>
+                    {% endfor %}
+                {% endif %}
+            </section>
+        </div>
+        <div class="col-sm-5 mg-top20">
+            <h3>{% if curso.categoria.tipo == 'B' %}Como funciona{% else %}Sobre o Curso{% endif %}</h3>
+            <div class="linha-aba mg-bot20"></div>
+            {% if not curso.aluno %}
+                {% if curso.imagem %}
+                    <img src="{{ curso.imagem.url }}" class="img-thumbnail" style="width: 100%; alignment: center">
+                {% else %}
+                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg" style="width: 100%; alignment: center">
+                {% endif %}
+            {% endif %}
+            <div class="conteudo-vantagens" style="text-align: justify">
+                {{ curso.descricao }}
+            </div>
+            <div class="text-center">
+                {% if curso.saiba_mais %}<a class="btn btn-success" href="#id_saiba_mais"><b>Saiba</b> &nbsp;<i class="fa fa-plus"></i></a>{% endif %}
+            </div>
+            <div class="clear"></div>
+            {% if curso.inicio_gratis %}
+            <div class="categoria-curso">
+                Início Grátis
+            </div>
+            {% endif %}
+            <!-- VALOR -->
+            <hr class="mg-top20"/>
+            <div class="mg-top20"></div>
+
+            <div class="gg-pricing-table small-table col-md-12 mb-top20" id="id_valor">
+                <!-- Single Table -->
+                <div class="col-md-12">
+                    <div class="single-pricing-table text-center clearfix">
+                        <!-- Price -->
+                        <div class="price">
+                            <span>{{ curso.valor|moeda }}</span>
+                        </div>
+                        <!-- Heading -->
+                        <div class="pricing-table-heading">
+                            <h2>À vista ou parcele no cartão</h2>
+                            {% if curso.economia %}<p>Economia de <strong class="text-danger">{{ curso.economia|moeda }}</strong> </p>{% endif %}
+                        </div>
+                        <!-- Button -->
+                        <div class="pricing-button">
+                            {% if curso.ativo == False %}
+                                <a href="javascript:void(0);" class="comprar" style="background-color: red">
+                                    Inscrições encerradas
+                                </a><br>
+                            {% endif %}
+                            {% if request.user.aluno %}
+                                {% if checkout.transaction_status == 3 or checkout.transaction_status == 4 %}
+                                <a href="{% url 'aluno:cursos' %}" class="comprar" style="background-color: orangered">
+                                    ACESSAR O {% if curso.categoria.tipo == 'B' %}Pacote{% else %}Curso{% endif %}
+                                </a>
+                                {% else %}
+                                    {% if curso.ativo %}
+                                    <a onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ curso.id }}});block()" href="javascript:void(0);" class="btn btn-pricing">
+                                        <i class="fa fa-cart-plus"></i> COMPRAR ESTE {% if curso.categoria.tipo == 'B' %}Pacote{% else %}Curso{% endif %}
+                                    </a>
+                                    {% else %}
+                                        {% get_codigo_liberacao request.user.aluno curso as codigo %}
+                                        {% if codigo %}
+                                            {% include '_liberar_curso.html' with codigo=codigo %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                <a onclick="login()" href="javascript:void(0);" class="comprar">
+                                    Efetue Login ou seu Cadastramento para poder comprar o curso
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Table -->
+            </div>
+
+        </div>
+        {% if curso.saiba_mais %}
+        <div id="id_saiba_mais" class="col-sm-12">
+           <h3 class="text-center mg-bot20">Saiba mais</h3>
+            <div class="linha-aba mg-bot20"></div>
+            {{ curso.saiba_mais|safe }}
+        </div>
+        <div class="arrow bounce">
+          <a class="fa fa-arrow-down fa-2x" href="#"></a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+    $('#modalBody').slimScroll({
+        start: 'top',
+        height: '200px'
+    });
+</script>
+{% endblock %}

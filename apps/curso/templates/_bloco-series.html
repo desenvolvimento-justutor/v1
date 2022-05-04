@@ -1,0 +1,22 @@
+{% load thumbnail %}
+<div class="col-sm-3">
+    <a href="{{ curso.get_absolute_url }}" class="curso-x">
+        <div class="img-curso">
+            <div class="curso-gratis">
+                Grátis
+            </div>
+            {% thumbnail curso.thumbnail "270x170" crop="center" as im %}
+                <img src="{{ im.url }}">
+            {% empty %}
+                <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+            {% endthumbnail %}
+        </div>
+        <div class="descricao-curso">
+            <h2>{{ curso }}</h2>
+            <div>
+                {{ curso.descricao|truncatechars:"120" }}
+            </div>
+        </div>
+        <div class="clear"></div>
+    </a>
+</div>

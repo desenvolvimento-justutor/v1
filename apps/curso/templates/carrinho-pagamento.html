@@ -1,0 +1,773 @@
+{% extends '_base.html' %}
+{% load staticfiles %}
+{% block extra_css %}
+<style>
+.sweet-alert h2 {
+    text-align: left;
+}
+.sweet-alert p {
+    text-align: left;
+}
+</style>
+{% endblock %}
+{% block section_attrs %}id="carrinho"{% endblock %}
+{% block section %}
+    <div class="container">
+        <div class="col-sm-12">
+            <div class="center-carrinho-navegacao mg-top20">
+                <div class="carrinho-navegacao">
+                    <a href="#">
+                        <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35px" height="35px" viewBox="0 0 35 35" enable-background="new 0 0 35 35" xml:space="preserve">
+                        <polygon points="22.647,28.045 11.79,17.5 22.647,6.955 23.21,7.534 12.949,17.5 23.21,27.466 			"></polygon>
+                    </svg>
+                    </a>
+
+                    <div>
+                        <div>
+                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35px" height="35px" viewBox="234.628 234.628 35 35" enable-background="new 234.628 234.628 35 35" xml:space="preserve"> <path d="M263.029,246.049l-17.508-0.003l-0.734-2.527c-0.109-0.376-0.413-0.674-0.792-0.776l-2.568-0.695 c-0.097-0.026-0.196-0.04-0.296-0.04c-0.509,0-0.958,0.344-1.092,0.836c-0.079,0.292-0.04,0.597,0.111,0.859 c0.15,0.262,0.394,0.45,0.686,0.528l1.955,0.529l3.968,14.312c-0.565,0.278-0.932,0.856-0.932,1.5c0,0.923,0.75,1.673,1.673,1.673 c0.922,0,1.673-0.75,1.673-1.673c0-0.021,0-0.044-0.001-0.065h8.078c-0.001,0.021-0.002,0.044-0.002,0.065 c0,0.923,0.751,1.673,1.674,1.673c0.922,0,1.673-0.75,1.673-1.673c0-0.848-0.645-1.559-1.47-1.66 c-2.008-0.324-10.201-0.721-10.201-0.721l-0.269-1.053h10.223c0.522,0,0.987-0.352,1.13-0.854l2.21-7.783h0.812 c0.678,0,1.227-0.549,1.227-1.227C264.256,246.598,263.707,246.049,263.029,246.049z M250.008,254.535h-1.917 c-0.052-0.001-0.129,0.011-0.165-0.112c-0.044-0.157-0.107-0.372-0.107-0.372l-1.502-5.291c-0.007-0.026-0.002-0.054,0.014-0.075 c0.017-0.021,0.042-0.034,0.069-0.034h2.329c0.041,0,0.075,0.027,0.084,0.067l1.27,5.688l0.005,0.018 c0.002,0.008,0.003,0.016,0.003,0.024C250.092,254.496,250.055,254.534,250.008,254.535z M254.898,248.755l-1.035,5.712 c-0.009,0.039-0.044,0.067-0.084,0.067h-1.446c-0.041,0-0.075-0.028-0.084-0.067l-1.035-5.712c-0.005-0.025,0-0.052,0.017-0.072 s0.041-0.032,0.067-0.032h3.516c0.026,0,0.051,0.012,0.066,0.032C254.897,248.704,254.904,248.73,254.898,248.755z M259.795,248.76 l-1.622,5.712c-0.01,0.036-0.044,0.063-0.083,0.063h-1.982c-0.026,0-0.051-0.012-0.067-0.032s-0.022-0.047-0.017-0.073l1.275-5.711 c0.009-0.039,0.044-0.067,0.084-0.067h2.329c0.026,0,0.053,0.013,0.068,0.034C259.797,248.707,259.802,248.734,259.795,248.76z"></path> </svg>
+                        </div>
+                        <div>
+                            Pagamento
+                        </div>
+                    </div>
+                    <a href="#">
+                        <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35px" height="35px" viewBox="0 0 35 35" enable-background="new 0 0 35 35" xml:space="preserve"> <polygon points="11.79,27.466 22.051,17.5 11.79,7.534 12.353,6.955 23.21,17.5 12.353,28.045"></polygon> </svg>
+                    </a>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <!---------navegacao------carrinho---------->
+        </div>
+        <div class="col-sm-12">
+            <div class="cabecalho-cursos">
+                <h1>Pagamento</h1>
+
+                <div class="linha-breadcrumb">
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="{% url 'website:index' %}">Home</a>
+                        </li>
+                        <li>
+                            <a href="#">Cursos</a>
+                        </li>
+                        <li class="active">
+                            <a href="{% url 'curso:carrinho' %}">Carrinho</a>
+                        </li>
+                        <li class="active">Pagamento</li>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+            </div>
+            <div class="col-sm-4">
+                <div class="preco">
+                    <span class="titulo04">Valor Total:</span>
+                    <span class="total bold text-danger pull-right total-payment">{{ proc_curso.cart.total_payment }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+            </div>
+            <div class="col-sm-4">
+                <div class="preco">
+                    <span class="titulo04" style="font-size: medium">Esta compra esta sendo feita no <strong>Brasil </strong></span>
+                    <span class="total bold"><img src="{% static 'images/logos/flag_br.png' %}"/></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="row">
+
+        <div class="col-sm-4 well">
+            <form class="form-horizontal" role="form">
+                <fieldset>
+                    <legend>Dados Pessoais</legend>
+                    <!-- EMAIL -->
+                    <div class="control-group">
+                        <label class="control-label" for="ps_email">E-mail</label>
+                        <input id="ps_email" type="text" placeholder="Seu E-mail" class="form-control"
+                               value="{{ aluno.email|default_if_none:'' }}">
+                    </div>
+                    <!-- NOME -->
+                    <div class="control-group">
+                        <label class="control-label" for="ps_nome">Nome</label>
+                        <input id="ps_nome" type="text" placeholder="Informe seu nome" class="form-control"
+                        value="{{ aluno.nome|default_if_none:'' }}">
+                    </div>
+                    <!-- CPF -->
+                    <div class="control-group">
+                        <label class="control-label" for="ps_cpf">C.P.F</label>
+                        <input id="ps_cpf" type="text" placeholder="xxx.xxx.xxx-xx" class="form-control"
+                        value="{{ aluno.cpf|default_if_none:'' }}">
+                    </div>
+                    <!-- TELEFONE -->
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="control-label" for="ps_ddd">DDD</label>
+                                    <input id="ps_ddd" type="number" aria-valuemax="2" placeholder="XX" class="form-control">
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="control-label" for="ps_ddd">Telefone</label>
+                                    <input id="ps_telefone" type="number" maxlength="9" placeholder="Informe seu telefone" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset style="margin-top: 4px">
+                    <legend>Endereço</legend>
+                    <!-- Logradouro -->
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <label class="control-label" for="end_logradouro">Logradouro</label>
+                                    <input id="end_logradouro" type="text" placeholder="Logradouro" class="form-control"
+                                           value="{{ aluno.logradouro|default_if_none:'' }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label" for="end_numero">Número</label>
+                                    <input id="end_numero" type="text" placeholder="N°" class="form-control"
+                                           value="{{ aluno.numero|default_if_none:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Logradouro -->
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="control-label" for="end_bairro">Bairro</label>
+                                    <input id="end_bairro" type="text" placeholder="Bairro" class="form-control"
+                                    value="{{ aluno.bairro|default_if_none:'' }}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label" for="end_cep">CEP</label>
+                                    <input id="end_cep" type="text" placeholder="CEP" class="form-control"
+                                           value="{{ aluno.cep|default_if_none:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- CITY -->
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <label class="control-label" for="end_cidade">Cidade</label>
+                                    <input id="end_cidade" type="text" placeholder="Cidade" class="form-control"
+                                    value="{{ aluno.cidade|default_if_none:'' }}">
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="control-label" for="end_uf">UF</label>
+                                    <select id="end_uf" type="number" aria-valuemax="2" placeholder="XX" class="form-control">
+                                        <option value="">--</option>
+                                        {% for uf in estados %}
+                                            <option value="{{ uf.0 }}" {% ifequal uf.0 aluno.uf %}selected{% endifequal %}>{{ uf.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col-sm-8">
+            {% with payment_methods.paymentMethods as pm %}
+            <div class="" data-example-id="togglable-tabs">
+                <ul id="myTabs" class="nav nav-tabs nav-justified" role="tablist">
+                    <li role="presentation" class="active"><a href="#credito" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Cartão de Crédito</a></li>
+                    <li role="presentation"><a href="#debito" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile">Cartão de Débito</a></li>
+                    <li role="presentation"><a href="#boleto" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile">Boleto</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="credito" aria-labelledby="home-tab">
+                        <div class="dados-cartao mg-top20">
+                            <div class="row">
+                                <form>
+                                    <div class="col-sm-12 mg-bot20">
+                                        {% for key, value in pm.CREDIT_CARD.options.items %}
+                                        <div class="col-sm-3">
+                                            <label class="radio-inline">
+                                                <input required="" type="radio" name="creditcard" value="{{ key|lower }}"><img src="https://stc.pagseguro.uol.com.br{{ value.images.SMALL.path }}"><span> {{ value.displayName }}</span>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <hr class="hr2">
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <fieldset>
+                                            <!--legend>Payment</legend-->
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <label label-default="" class="control-label">Nome no Cartão</label>
+                                                    <input id="cc_nome" type="text" class="form-control" pattern="\w+ \w+.*" title="Nome Completo" required="">
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label label-default="" class="control-label">Número do Cartão</label>
+                                                <div class="controls">
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <label label-default="" class="control-label">Coluna 1</label>
+                                                            <input id="cc_col1" type="text" class="form-control" autocomplete="off" maxlength="4" pattern="\d{4}" title="1ª coluna com 4 dígitos" required="">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label label-default="" class="control-label">Coluna 2</label>
+                                                            <input id="cc_col2" type="text" class="form-control" autocomplete="off" maxlength="4" pattern="\d{4}" title="2ª coluna com 4 dígitos" required="">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label label-default="" class="control-label">Coluna 3</label>
+                                                            <input id="cc_col3" type="text" class="form-control" autocomplete="off" maxlength="4" pattern="\d{4}" title="3ª coluna com 4 dígitos" required="">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label label-default="" class="control-label">Coluna 4</label>
+                                                            <input id="cc_col4" type="text" class="form-control" autocomplete="off" maxlength="4" pattern="\d{4}" title="4ª coluna com 4 dígitos" required="">
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-offset-1">
+                                                            <label label-default="" class="control-label">Cod. Segurança</label>
+                                                            <input id="cc_seg" type="text" class="form-control" autocomplete="off" maxlength="4" pattern="\d{4}" title="Três ou quatro dígitos de segurança do seu cartão" required="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <label label-default="" class="control-label">Data de Validade</label>
+                                                            <select class="form-control" id="cc_mes">
+                                                                <option value="">Mês</option>
+                                                                <option value="01">01 - Janeiro</option>
+                                                                <option value="02">02 - Fevereiro</option>
+                                                                <option value="03">03 - Março</option>
+                                                                <option value="04">04 - Abril</option>
+                                                                <option value="05">05 - Maio</option>
+                                                                <option value="06">06 - Junho</option>
+                                                                <option value="07">07 - Julho</option>
+                                                                <option value="08">08 - Agosto</option>
+                                                                <option value="09">09 - Setembro</option>
+                                                                <option value="10">10 - Outubro</option>
+                                                                <option value="11">11 - Novembro</option>
+                                                                <option value="12">12 - Dezembro</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label label-default="" class="control-label">&nbsp;</label>
+                                                            <select class="form-control" id="cc_ano">
+                                                                <option value="">Ano</option>
+                                                                <option value="2015">2015</option>
+                                                                <option value="2016">2016</option>
+                                                                <option value="2017">2017</option>
+                                                                <option value="2018">2018</option>
+                                                                <option value="2019">2019</option>
+                                                                <option value="2020">2020</option>
+                                                                <option value="2021">2021</option>
+                                                                <option value="2022">2022</option>
+                                                                <option value="2023">2023</option>
+                                                                <option value="2024">2024</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label label-default="" class="control-label">Parcelas</label>
+                                                            <select class="form-control" name="cc_parcelas" id="cc_parcelas" disabled>
+                                                            </select>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="debito" aria-labelledby="profile-tab">
+                        <div class="dados-cartao mg-top20">
+                            <div class="row">
+                                <form>
+                                    <div class="col-sm-12 mg-bot20">
+                                        {% for key, value in pm.ONLINE_DEBIT.options.items %}
+                                        <div class="col-sm-4">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="eft" value="{{ key|lower }}"><img src="https://stc.pagseguro.uol.com.br{{ value.images.MEDIUM.path }}"><span> {{ value.displayName }}</span>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="boleto" aria-labelledby="dropdown1-tab">
+                        <div class="dados-cartao mg-top20">
+                            <div class="row">
+                                <form>
+                                    <div class="col-sm-12 mg-bot20">
+                                        {% for key, value in pm.BOLETO.options.items %}
+                                        <div class="col-sm-4">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="boleto" value="{{ key|lower }}"><img src="https://stc.pagseguro.uol.com.br{{ value.images.MEDIUM.path }}"><span> {{ value.displayName }}</span>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+            <br>
+            <hr>
+            <br>
+        <div class="row">
+            <div class="col-sm-7"></div>
+            <div class="col-sm-5">
+                <form class="form-horizontal" role="form">
+                    <fieldset>
+                        <div class="control-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-lg" id="cupom-desconto" placeholder="Cupom de desconto">
+                                <div class="input-group-addon">
+                                    <button id="btn-cupom" type="button" class="btn btn-sm btn-success">Validar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+            <div class="discount">
+                {% if proc_curso.cart.discount > 0 %}
+                    {% include "carrinho-pagamento-com-desconto.html" %}
+                {% else %}
+                    {% include "carrinho-pagamento-sem-desconto.html" %}
+                {% endif %}
+            </div>
+
+        </div>
+        </div>
+        <div class="container">
+            <div class="col-sm-12">
+                <div class="center-carrinho-navegacao mg-top20">
+                    <div class="col-sm-6">
+                        <div class="carrinho-navegacao pull-left">
+                            <a href="{% url 'curso:carrinho' %}" class="btn-continuar">
+                                <div>
+                                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35px" height="35px" viewBox="0 0 35 35" enable-background="new 0 0 35 35" xml:space="preserve">
+                                <polygon points="22.647,28.045 11.79,17.5 22.647,6.955 23.21,7.534 12.949,17.5 23.21,27.466 			"></polygon>
+                            </svg>
+                                </div>
+                                <div class="">Voltar ao Carrinho</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="carrinho-navegacao pull-right">
+                            <a onclick="validarDados()" href="javascript:void(0)" class="btn-continuar">
+                                <div class="">Finalizar Compra</div>
+                                <div>
+                                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35px" height="35px" viewBox="0 0 35 35" enable-background="new 0 0 35 35" xml:space="preserve"> <polygon points="11.79,27.466 22.051,17.5 11.79,7.534 12.353,6.955 23.21,17.5 12.353,28.045"></polygon> </svg>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!---------navegacao------carrinho---------->
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <script>
+        function remove(curso_id, nome_curso) {
+            Swal.fire({
+                title: "Deseja remover o item?",
+                html: '<b style="font-size: 24px; color: #4A91D3">' + nome_curso + '</b>',
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Não, deixe como está.',
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim, remova o item!",
+                closeOnConfirm: false,
+            }).then(function (result) {
+                if (result.value) {
+                    Dajaxice.apps.curso.remove_item(Dajax.process, {'curso_id': curso_id});
+                }
+            });
+        }
+    </script>
+    <form id="form_payment_methods" action="{% url 'curso:carrinho-pagamento' %}" method="POST">
+        <input id="payment_methods" type="hidden" value="" name="payment_methods" />
+    </form>
+
+{% endblock %}
+{% block busca %} {% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+<script type="text/javascript">
+    window.pm_type = '';
+    window.pm_name ='';
+    window.cc_token ='';
+    Number.prototype.formatMoney = function(c, d, t){
+    var n = this,
+        c = isNaN(c = Math.abs(c)) ? 2 : c,
+        d = d == undefined ? "." : d,
+        t = t == undefined ? "," : t,
+        s = n < 0 ? "-" : "",
+        i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+       return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+     };
+    PagSeguroDirectPayment.setSessionId('{{ session_id }}');
+
+        function PaymentsMethod(value) {
+            block('Obtendo meios de pagamento...');
+            PagSeguroDirectPayment.getPaymentMethods({
+                amount: value,
+                success: function (response) {
+                    $('#payment_methods').val(JSON.stringify(response));
+                    $('#form_payment_methods').submit()
+                },
+                error: function (response) {
+                    console.log('tratamento do erro')
+                },
+                complete: function (response) {
+                    unBlockFunction();
+                }
+            });
+        };
+
+    function createCardToken(cc_number, cc_brand, cc_cvv, cc_month, cc_year, data) {
+        block('Gerando token do cartão...');
+        console.log('token', cc_number, cc_brand, cc_cvv, cc_month, cc_year, data);
+        var param = {
+            cardNumber: cc_number,
+            brand: cc_brand,
+            cvv: cc_cvv,
+            expirationMonth: cc_month,
+            expirationYear: cc_year,
+            success: function(response) {
+                data['cc_token'] = response.card.token;
+                checkout(data);
+            },
+            error: function(response) {
+                console.log('Token error', response);
+                var msg = '';
+                $.each(response.errors, function(index, value) {
+                    msg += index + ': ' + value + '<br>';
+                    console.log('>T1', value, index);
+                });
+                Swal.fire({
+                    title: "",
+                    html: msg,
+                    type: "error",
+                });
+                return false;
+            },
+            complete: function (response) {
+                unBlockFunction();
+            }
+        };
+        return PagSeguroDirectPayment.createCardToken(param);
+    }
+    function getInstallments(brand) {
+        block('Calculando parcelas...');
+        PagSeguroDirectPayment.getInstallments({
+            amount: {{ proc_curso.cart.total_payment|stringformat:".2f" }},
+            //maxInstallmentNoInterest: {quantidade de parcelas sem juros},
+            brand: brand,
+            success: function (response) {
+                console.log('getInstallments success', response);
+                var sel = document.getElementById('cc_parcelas');
+                $(sel).html('');
+                $(sel).attr('disabled', false);
+                var fragment = document.createDocumentFragment();
+                var opt = document.createElement('option');
+                opt.innerHTML = 'Parcelas';
+                opt.value = 0;
+                fragment.appendChild(opt);
+
+                $.each(response.installments, function(index, value) {
+                    $.each(value, function(i, v) {
+                        console.log(i, '+', v);
+                        var opt = document.createElement('option');
+                        var text = v.quantity + 'x de ' + (v.installmentAmount).formatMoney(2, '.', ',') + ' Total: ' + (v.totalAmount).formatMoney(2, '.', ',');
+                        opt.innerHTML = text;
+                        opt.value = v.quantity;
+                        opt.setAttribute('data-value', (v.installmentAmount).formatMoney(2));
+                        fragment.appendChild(opt);
+                    });
+                });
+                sel.appendChild(fragment);
+            },
+            error: function (response) {
+                console.log('getInstallments erro', response)
+            },
+            complete: function (response) {
+                unBlockFunction();
+                console.log('getInstallments complete', response);
+            }
+        });
+    };
+
+    $('[name=creditcard]').on('change', function() {
+        var brand = $(this).val();
+        getInstallments(brand);
+    });
+
+    $('[type=radio]').on('change', function() {
+        var pm_type = $(this).attr('name');
+        var pm_name = $(this).attr('value');
+        window.pm_type = pm_type;
+        window.pm_name = pm_name;
+    });
+
+    $('[role=presentation]').on('click', function() {
+        $('[type=radio]').attr('checked', false);
+        window.pm_type = '';
+        window.pm_name = '';
+    });
+
+    function checkout(data) {
+        console.log('dados', data);
+        block('Finalizando venda...');
+        $.post( "{% url 'curso:checkout' %}", data)
+            .done(function(response) {
+                if (response.success == false) {
+                    var msg = '';
+                    $.each(response.errors, function(index, value) {
+                        msg += value.code + ': ' + value.message + '<br>';
+                        console.log('>T1', value, index);
+                    });
+                    Swal.fire({
+                        title: "",
+                        html: msg,
+                        type: "error",
+                    })
+                } else {
+                    if (response.link != '') {
+                        window.open(response.link,'_blank');
+                    }
+                    window.location = '{% url 'curso:trans' %}' + '?code=' + response.code
+                }
+                console.log( "Data Loaded: ", response);
+                unBlockFunction();
+            });
+    };
+
+    function validarDados() {
+        var ret = true;
+        var dados = {}
+        var msg = '';
+        // PESSOA
+        var nome = $('#ps_nome');
+        var email = $('#ps_email');
+        var cpf = $('#ps_cpf');
+        var ddd = $('#ps_ddd');
+        // ENDERECO
+        var logradouro = $('#end_logradouro');
+        var numero = $('#end_numero');
+        var bairro = $('#end_bairro');
+        var cep = $('#end_cep');
+        var cidade = $('#end_cidade');
+        var uf = $('#end_uf');
+        // CARTAO
+        var telefone = $('#ps_telefone');
+        var cc_nome = $('#cc_nome');
+        var cc_col1 = $('#cc_col1');
+        var cc_col2 = $('#cc_col2');
+        var cc_col3 = $('#cc_col3');
+        var cc_col4 = $('#cc_col4');
+        var cc_seg = $('#cc_seg');
+        var cc_mes = $('#cc_mes');
+        var cc_ano = $('#cc_ano');
+        var cc_parcelas = $('#cc_parcelas');
+        // VALIDAR PESSOS
+        if (email.val() == '') {
+            msg += '&bull; Informe seu email<br>';
+            ret = false;
+            email.parent().addClass('has-error');
+        } else { email.parent().removeClass('has-error') }
+        if (nome.val() == '') {
+            msg += '&bull; Informe seu Nome<br>';
+            ret = false;
+            nome.parent().addClass('has-error');
+        } else { nome.parent().removeClass('has-error') }
+        if (cpf.val() == '') {
+            msg += '&bull; Informe seu C.P.F<br>';
+            ret = false;
+            cpf.parent().addClass('has-error')
+        } else { cpf.parent().removeClass('has-error') }
+        if (ddd.val() == '') {
+            msg += '&bull; Informe o DDD<br>';
+            ret = false;
+            ddd.parent().addClass('has-error')
+        } else { ddd.parent().removeClass('has-error') }
+        if (telefone.val() == '') {
+            msg += '&bull; Informe o Telefone<br>';
+            ret = false;
+            telefone.parent().addClass('has-error')
+        } else { telefone.parent().removeClass('has-error') }
+        // VALIDAR ENDERECO
+        if (logradouro.val() == '') {
+            msg += '&bull; Informe o Logradouro<br>';
+            ret = false;
+            logradouro.parent().addClass('has-error')
+        } else { logradouro.parent().removeClass('has-error') }
+        if (numero.val() == '') {
+            msg += '&bull; Informe o Número<br>';
+            ret = false;
+            numero.parent().addClass('has-error')
+        } else { numero.parent().removeClass('has-error') }
+        if (bairro.val() == '') {
+            msg += '&bull; Informe o Bairro<br>';
+            ret = false;
+            bairro.parent().addClass('has-error')
+        } else { bairro.parent().removeClass('has-error') }
+        if (cep.val() == '') {
+            msg += '&bull; Informe o CEP<br>';
+            ret = false;
+            cep.parent().addClass('has-error')
+        } else { cep.parent().removeClass('has-error') }
+        if (cidade.val() == '') {
+            msg += '&bull; Informe a Cidade<br>';
+            ret = false;
+            cidade.parent().addClass('has-error')
+        } else { cidade.parent().removeClass('has-error') }
+        if (uf.val() == '') {
+            msg += '&bull; Informe o Estado<br>';
+            ret = false;
+            uf.parent().addClass('has-error')
+        } else { uf.parent().removeClass('has-error') }
+
+        // VALIDAR CARTAO
+        if (window.pm_type == '' || window.pm_name == '') {
+            ret = false;
+            msg += '<span class="text-danger bold">&bull; Informe o Método de Pagamento</span><br>';
+        }
+        if (ret == false) {
+            swal_alert('<small>' + msg + '</small>')
+        } else {
+            dados['has'] = PagSeguroDirectPayment.getSenderHash();
+            dados['pm_type'] = window.pm_type;
+            dados['pm_name'] = window.pm_name;
+            // DADOS PESSOA
+            dados['ps_email'] = email.val();
+            dados['ps_nome'] = nome.val();
+            dados['ps_cpf'] = cpf.val();
+            dados['ps_ddd'] = ddd.val();
+            dados['ps_telefone'] = telefone.val();
+            // DADOS ENDERECO
+            dados['end_logradouro'] = logradouro.val();
+            dados['end_numero'] = numero.val();
+            dados['end_bairro'] = bairro.val();
+            dados['end_cep'] = cep.val();
+            dados['end_cidade'] = cidade.val();
+            dados['end_uf'] = uf.val();
+
+            if (window.pm_type == 'creditcard') {
+                if (cc_nome.val() == '') {
+                    msg += '&bull; Informe o Nome no Cartão<br>';
+                    ret = false;
+                    cc_nome.parent().addClass('has-error')
+                } else { cc_nome.parent().removeClass('has-error') }
+                if (cc_col1.val() == '') {
+                    msg += '&bull; Informe a 1a Coluna do Cartão<br>';
+                    ret = false;
+                    cc_col1.parent().addClass('has-error')
+                } else { cc_col1.parent().removeClass('has-error') }
+                if (cc_col2.val() == '') {
+                    msg += '&bull; Informe a 2a Coluna do Cartão<br>';
+                    ret = false;
+                    cc_col2.parent().addClass('has-error')
+                } else { cc_col2.parent().removeClass('has-error') }
+                if (cc_col3.val() == '') {
+                    msg += '&bull; Informe a 3a Coluna do Cartão<br>';
+                    ret = false;
+                    cc_col3.parent().addClass('has-error')
+                } else { cc_col3.parent().removeClass('has-error') }
+                if (cc_col4.val() == '') {
+                    msg += '&bull; Informe a 4a Coluna do Cartão<br>';
+                    ret = false;
+                    cc_col4.parent().addClass('has-error')
+                } else { cc_col4.parent().removeClass('has-error') }
+                if (cc_seg.val() == '') {
+                    msg += '&bull; Informe o Código de Segurança<br>';
+                    ret = false;
+                    cc_seg.parent().addClass('has-error')
+                } else { cc_seg.parent().removeClass('has-error') }
+                if (cc_mes.val() == '') {
+                    msg += '&bull; Informe o Mês de Vencimento<br>';
+                    ret = false;
+                    cc_mes.parent().addClass('has-error')
+                } else { cc_mes.parent().removeClass('has-error') }
+                if (cc_ano.val() == '') {
+                    msg += '&bull; Informe o Ano de Vencimento<br>';
+                    ret = false;
+                    cc_ano.parent().addClass('has-error')
+                } else { cc_ano.parent().removeClass('has-error') }
+                if (cc_parcelas.val() == '0') {
+                    msg += '&bull; Informe a Qtda. de Parcelas<br>';
+                    ret = false;
+                    cc_parcelas.parent().addClass('has-error')
+                } else { cc_parcelas.parent().removeClass('has-error') }
+
+                // MENSAGEM
+                if (ret == false) {
+                    swal_alert('<small>' + msg + '</small>')
+                } else {
+                    dados['cc_nome'] = cc_nome.val();
+                    dados['cc_col1'] = cc_col1.val();
+                    dados['cc_col2'] = cc_col2.val();
+                    dados['cc_col3'] = cc_col3.val();
+                    dados['cc_col4'] = cc_col4.val();
+                    dados['cc_seg'] = cc_seg.val();
+                    dados['cc_mes'] = cc_mes.val();
+                    dados['cc_ano'] = cc_ano.val();
+                    dados['cc_parcelas'] = cc_parcelas.val();
+                    dados['cc_valor'] = $('#cc_parcelas option:selected').data('value');
+                    var cc_number = cc_col1.val() + cc_col2.val() + cc_col3.val() + cc_col4.val();
+                    createCardToken(cc_number, window.pm_name, cc_seg.val(), cc_mes.val(), cc_ano.val(), dados);
+                }
+            } else {
+                checkout(dados);
+            }
+        }
+    }
+    $('#btn-cupom').on('click', function (e) {
+        e.preventDefault();
+        var $cupom = $('#cupom-desconto');
+        if (!$cupom.val()) {
+            alert('Para validar seu cupom, digite o código');
+            $cupom.focus();
+            return false;
+        } else {
+            if ($cupom.val() == $cupom.data('atu')) {
+                alert('Esse cupom já foi validado');
+                return false;
+            } else {
+                block('Aguarde...');
+                Dajaxice.apps.cupom.desconto_cupom(Dajax.process, {codigo: $cupom.val()});
+            }
+        }
+    });
+    console.log('USER ' + request.user.aluno.id)
+</script>
+{% endblock %}

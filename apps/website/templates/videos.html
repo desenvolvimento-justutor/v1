@@ -1,0 +1,115 @@
+{% extends '_base.html' %}
+{% block section %}
+<div class="container">
+    <div class="col-sm-12">
+        <div class="cabecalho-cursos">
+            <h1>{{ curso }}</h1>
+            <div class="linha-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Cursos</a>
+                    </li>
+                    <li>
+                        <a href="{{ curso.serie.get_absolute_url }}">{{ curso.serie }}</a>
+                    </li>
+                    <li class="active">{{ curso }}</li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" id="cvideo">
+    <div class="col-sm-7">
+        <div class="video" id="video">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/{{ video.code }}" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="clear"></div>
+        <section class="conteudo-curso mg-top20">
+            <h3>Vídeos JusTutor</h3><br>
+            <!-- PAGINADOR -->
+            <div class="col-sm-12 pagination text-center">
+                <span class="step-links">
+                    {% if videos.has_previous %}
+                        <a class="btn btn-default fa fa-arrow-left" href="?page={{ videos.previous_page_number }}"></a>
+                    {% else %}
+                        <a class="btn btn-default fa fa-arrow-left" href="javascript:void(0)" disabled=""></a>
+                    {% endif %}
+
+                    <span class="current">
+                        Página {{ videos.number }} de {{ videos.paginator.num_pages }}.
+                    </span>
+
+                    {% if videos.has_next %}
+                        <a class="btn btn-default fa fa-arrow-right"  href="?page={{ videos.next_page_number }}"></a>
+                    {% else %}
+                        <a class="btn btn-default fa fa-arrow-right"  href="javascript:void(0)" disabled=""></a>
+                    {% endif %}
+                </span>
+            </div>
+
+            {% for video in videos %}
+            <table class="table table-striped tabela-curso mg-bot20">
+                <thead>
+                    <tr>
+                        <td class="bg-success" style="width: 30px"><a href="#body" onclick="playVideo('{{ video.code }}', '{{ video.id }}')" class="page-scroll btn btn-danger fa fa-play"></a></td>
+                        <td class="bg-info"><span class="text-success" id="p-titulo-{{ video.id }}">{{ video }}</span>
+                            <p><small id="p-descricao-{{ video.id }}" style="font-weight: 100; color: darkgreen">{% if video.descricao %}{{ video.descricao }}{% endif %}</small></p>
+                            {% if video.data_ini %}<small class="pull-right text-warning"><i class="fa fa-clock-o"></i> {{ video.data_ini }}</small>{% endif %}<br>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            {% endfor %}
+        </section>
+    </div>
+    <div class="col-sm-5">
+        <h4 class="mg-top10"><span id="video-titulo">{{ video }}</span></h4>
+        <hr class="no-pd mg-top10">
+        <div class="conteudo-vantagens">
+            <span id="video-descricao">{{ video.descricao }}</span>
+        </div>
+        <div class="clear"></div>
+        <div class="clear"></div>
+        <div class="clear"></div>
+        <div class="mg-top20">
+            {% include '_widget-anuncio.html' %}
+        </div>
+
+    </div>
+    <div class="col-sm-7 text-center">
+        <span class="step-links">
+            {% if videos.has_previous %}
+                <a class="btn btn-default fa fa-arrow-left" href="?page={{ videos.previous_page_number }}"></a>
+            {% else %}
+                <a class="btn btn-default fa fa-arrow-left" href="javascript:void(0)" disabled=""></a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ videos.number }} de {{ videos.paginator.num_pages }}.
+            </span>
+
+            {% if videos.has_next %}
+                <a class="btn btn-default fa fa-arrow-right"  href="?page={{ videos.next_page_number }}"></a>
+            {% else %}
+                <a class="btn btn-default fa fa-arrow-right"  href="javascript:void(0)" disabled=""></a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        function playVideo(videoId, id) {
+            var elm = $('#video');
+            var titulo = $('#p-titulo-' + id).html();
+            var descricao = $('#p-descricao-' + id).html();
+            $('#video-titulo').html(titulo);
+            $('#video-descricao').html(descricao);
+            elm.html('<iframe width="100%" height="315" src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" frameborder="0" allowfullscreen></iframe>');
+        }
+    </script>
+{% endblock %}

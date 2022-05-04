@@ -1,0 +1,83 @@
+{% extends 'corretor/_base.html' %}
+{% load thumbnail corretor_tags %}
+{% block panel_content %}
+    <header class="main-box-header clearfix">
+        <h2 class="pull-left">Solicitação de correções em aberto</h2>
+        <div class="icon-box pull-right">
+            {% if filtro == 'corretor' %}
+                <a href="{% url 'corretor:pregao' %}" class="btn pull-left">
+                    <i class="fa fa-table"></i> Exibir tudo
+                </a>
+            {% else %}
+                <a href="{% url 'corretor:pregao' %}?filtro=corretor" class="btn pull-left">
+                    <i class="fa fa-star" style="color: #FFC107"></i> Minhas solicitações
+                </a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="main-box-body clearfix">
+        <div class="table-responsive clearfix map-stats">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th class="text-center">Data</th>
+                    <th class="text-center">Resposta</th>
+                    <th>Enunciado</th>
+                    <th>Disciplina</th>
+                    <th>Concurso</th>
+                    <th style="width: 90px" class="text-right">Valor (R$)</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for solicitacao in solicitacoes %}
+                    {% with solicitacao.resposta as resposta %}
+                    <tr>
+                        <td style="width: 200px">
+                            {% with resposta.aluno as aluno %}
+                            <ul class="widget-users row">
+                                <li style="border-bottom: 0px">
+                                    <div class="img">
+                                        <a href="{{ aluno.get_absolute_url }}">
+                                        {% thumbnail aluno.foto "50x50" crop="center" as im %}
+                                            <img src="{{ im.url }}" alt="{{ aluno }}">
+                                        {% empty %}
+                                            <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                        {% endthumbnail %}
+                                        </a>
+                                    </div>
+                                    <div class="details">
+                                        <div class="name">
+                                            <a href="{{ aluno.get_absolute_url }}">{{ aluno }}</a>
+                                        </div>
+                                        <div class="time online" data-toggle="tooltip" title="Visto pela última vez em:" >
+                                            <i class="fa fa-eye"></i> {{ aluno.usuario.last_login|date:"SHORT_DATETIME_FORMAT" }}
+                                        </div>
+                                        <div class="type">
+                                            <small>{{ aluno.email }}</small>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            {% endwith %}
+                        </td>
+                        <td class="text-center">{{ solicitacao.data_hora|date:"SHORT_DATE_FORMAT" }}</td>
+                        <td class="text-center"><a href="{{ resposta.get_absolute_url }}">{{ resposta }}</a></td>
+                        <td><a href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a></td>
+                        <td>{{ resposta.enunciado.disciplina }}</td>
+                        <td>{{ resposta.enunciado.concurso }}</td>
+                        <td class="text-right status green">{{ forloop.counter }},00</td>
+                        <td class="text-center">{{ solicitacao|initial_letter_filter:request.user }}</td>
+                        <td class="text-center" style="width: 15%;">
+                            <a href="#" class="btn btn-success btn-xs"><i class="fa fa-pencil"></i> Responder</a>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

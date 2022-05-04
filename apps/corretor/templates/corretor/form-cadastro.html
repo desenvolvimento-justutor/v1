@@ -1,0 +1,193 @@
+{% extends "_base.html" %}
+{% load widget_tweaks  %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/login-form-elements.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/login-form-style.css">
+    <style>
+        #id_disciplinas > li {
+            display: inline-block;
+            width: 33%;
+        }
+        #id_disciplinas {
+            width: 100%;
+        }
+    </style>
+{% endblock %}
+{% block section %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-1 form-box">
+                <div class="form-top">
+                    <div class="text-center social-login-buttons">
+                        <p>Olá!</p>
+                        <p>O JusTutor possui um sistema online para correções de respostas de questões discursivas,
+                            peças práticas e sentenças. Você escolhe o que vai corrigir, se vai corrigir, quando vai
+                            corrigir e onde vai corrigir. Enfim, liberdade total. Aumente a sua renda de forma simples e
+                            rápida, cadastrando-se como corretor em nossa Bolsa de Correções.</p>
+                    </div>
+                </div>
+                <div class="form-bottom">
+                    <div>
+                        <h3>Preencha seus dados básicos, para que possamos entrar em contato com você:</h3>
+                    </div>
+                    <form role="form" action="{% url 'corretor:cadastro' %}" method="post" class="login-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="form-group col-sm-12"> <!-- NOME -->
+                                {% with form.nome as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="form-group col-sm-12"> <!-- EMAIL -->
+                                {% with form.email as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-3"> <!-- DDD -->
+                                {% with form.ddd_telefone as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="form-group col-sm-3"> <!-- TELEFONE -->
+                                {% with form.telefone as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="form-group col-sm-3"> <!-- DDD -->
+                                {% with form.ddd_celular as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="form-group col-sm-3"> <!-- CELULAR -->
+                                {% with form.celular as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12"> <!-- OCUPAÇÃO -->
+                                {% with form.ocupacao as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="form-group col-sm-12"> <!-- CURRICULO -->
+                                {% with form.curriculo as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Respostas de quais tipos de enunciados você gostaria de corrigir (você pode mudar sua escolha depois):</h4>
+                            <br>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-4"> <!-- QUESTÃO -->
+                                {% with form.peca as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="form-group col-sm-4"> <!-- PEÇA -->
+                                {% with form.questao as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="form-group col-sm-4"> <!-- SENTENÇA -->
+                                {% with form.sentenca as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field|add_class:"form-control form-input" }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Quais disciplinas você quer corrigir (marque quantas quiser - você pode mudar sua escolha depois):</h4>
+                            <br>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12"> <!-- QUESTÃO -->
+                                {% with form.disciplinas as field %}
+                                    <label for="{{ field.id_for_label }}" class="control-label form-label">{{ field.label_tag }}</label>
+                                    {% for err in field.errors %}
+                                        <label class="control-label form-label text-danger"> {{ err }}</label>
+                                    {% endfor %}
+                                    {{ field }}
+                                    <small class="help-block">{{ field.help_text }}</small>
+                                {% endwith %}
+                            </div>
+                        </div>
+
+
+                        {#                        <div class="form-group">#}
+{#                            <label class="sr-only" for="form-password">Password</label>#}
+{#                            <input type="password" name="password" placeholder="Password..."#}
+{#                                   class="form-password form-control" id="form-password">#}
+{#                        </div>#}
+                        <div class="mg-top20">
+                            <a class="btn btn-info" href="#">Termos de uso</a>
+                            <button type="submit" class="btn btn-success pull-right" style="width: auto">Enviar cadastro prévio</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block busca %}{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
+    <style>
+        .blockMsg {
+            font-size: 14px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main" class="inner-two-columns">
+        <form action="" method="post" id="artigoindice_form" class="form-horizontal" onsubmit="return validateForm()">
+            <div class="inner-right-column">
+                <div class="box save-box">
+                    <div class="submit-row clearfix">
+                        <button type="submit" class="btn btn-high btn-info" name="_save">Gerar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="inner-center-column">
+                {% csrf_token %}
+
+                <div class="tab-content tab-content-main">
+                    <fieldset class="module aligned first ">
+                        <div class="control-group form-row field-curso_anterior ">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required" for="id_curso_anterior[]">Curso anterior:</label>
+                                </div>
+                                <div class="controls">
+                                    <select class="js-select input-xxlarge" name="curso_anterior"
+                                            id="id_curso_anterior" multiple>
+                                        {% for curso in cursos_inativos %}
+                                            <option value="{{ curso.id }}">{{ curso }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span style="display: block; padding-top: 6px">
+                                        <button type="button" class="btn btn-success"
+                                                onclick="selectAll()" id="btn_select_all">Selecionar Todos</button>
+                                        <button type="button" class="btn btn-warning"
+                                                onclick="$('#id_curso_anterior').val(null).trigger('change');"
+                                                id="btn_select_all">Limpar</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group form-row field-curso_anterior ">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required" for="id_curso_novo">Novo Curso:</label>
+                                </div>
+                                <div class="controls">
+                                    <select class="js-select input-xxlarge" name="curso_novo" required
+                                            id="id_curso_novo">
+                                        {% for curso in cursos_novos %}
+                                            <option value="{{ curso.id }}">{{ curso }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-group form-row field-tipo ">
+                            <div>
+                                <div class="control-label"><label class="required" for="id_tipo">Tipo de Cupom:</label>
+                                </div>
+                                <div class="controls"><select id="id_tipo" name="tipo">
+                                    <option value="Nominal (Valor)">Nominal (Valor)</option>
+                                    <option value="Nominal (Percentual)">Nominal (Percentual)</option>
+                                </select>
+                                    <span class="help-inline">Escolha o tipo de cupom.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-group form-row field-tipo ">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required" for="id_prefixo">Prefixo:</label>
+                                </div>
+                                <div class="controls">
+                                    <input id="id_prefixo" name="prefixo" maxlength="3" minlength="3" required
+                                           class="vTextField" type="text"/>
+                                    <span class="help-inline">Coloque um prefixo para identificar o cupom.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-group form-row field-valor_desconto ">
+                            <div>
+                                <div class="control-label">
+                                    <label for="id_valor_desconto">Valor/Porcentagem:</label>
+                                </div>
+                                <div class="controls">
+                                    <input id="id_valor_desconto" min="1" name="valor_desconto" step="0.1" type="number"
+                                           value="" required>
+                                    <span class="help-inline">Valor que será descontado nas compras com esse cupom</span>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="control-group form-row field-validade ">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required" for="id_validade">Validade:</label>
+                                </div>
+                                <div class="controls">
+                                    <input type="date" name="validade" id="id_validade" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group form-row field-alunos">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required" for="id_alunos">Alunos:</label>
+                                </div>
+                                <div class="controls">
+                                    <select multiple="multiple" class="input-xxlarge" style="height: 300px;"
+                                            name="alunos" id="id_alunos">
+                                    </select>
+                                    <span class="help-inline">Mantenha pressionado o "Control", ou "Command" no Mac, para selecionar mais de uma opção.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block extrajs %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#id_curso_anterior").select2({
+                placeholder: "Selecione um ou mais cursos",
+                allowClear: true
+            });
+
+            $('#id_curso_novo').select2({
+                placeholder: "Curso que será gerado os cupons",
+                allowClear: true
+            });
+
+            var $eventSelect = $("#id_curso_anterior");
+
+            $eventSelect.on("change.select2", function (e) {
+                $('#id_alunos').empty();
+                var cursoId = $("#id_curso_anterior").val();
+                $.blockUI({
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    },
+                    message: 'Selecionando Alunos. Aguarde!'
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'curso:get-alunos-curso-json' %}",
+                    data: {'curso_id': cursoId},
+                    success: function (data) {
+                        // Parse the returned json data
+                        var c = 1;
+                        // Use jQuery's each to iterate over the opts value
+                        $.each(data, function (i, d) {
+                            // You will need to alter the below to get the right values from your json object.  Guessing that d.id / d.modelName are columns in your carModels data
+                            $('#id_alunos').append('<option selected value="' + d.value + '">' + d.name + '</option>');
+                            c += 1;
+                        });
+                        alert(c + ' Aluno(s) Selecionado(s)')
+                    }
+                });
+            });
+
+        });
+        $(document).ajaxStop($.unblockUI);
+
+        function validateForm() {
+            return confirm('Confirmar a geração dos cupons?')
+        }
+
+        function selectAll() {
+            $('#id_curso_anterior > option').prop("selected", "selected");
+            $('#id_curso_anterior').trigger("change");
+        }
+
+
+    </script>
+{% endblock %}

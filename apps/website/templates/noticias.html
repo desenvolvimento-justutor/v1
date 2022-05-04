@@ -1,0 +1,311 @@
+{% extends '_base.html' %}
+{% load humanize %}
+{% block extra_css %}
+    <style>
+        .comment-section {
+            list-style: none;
+            max-width: 800px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .comment {
+            display: flex;
+            border-radius: 3px;
+            flex-wrap: wrap;
+        }
+
+        .comment.user-comment {
+            color: #808080;
+            padding-bottom: 6px;
+        }
+
+        /* User and time info */
+
+        .comment .info {
+            width: 17%;
+        }
+
+        .comment.user-comment .info {
+            text-align: right;
+        }
+
+        .comment.author-comment .info {
+            order: 3;
+        }
+
+
+        .comment .info div { /* User name */
+            display: block;
+            text-decoration: none;
+            color: #656c71;
+            font-weight: bold;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: smaller;
+            padding: 10px 0 3px 0;
+        }
+
+        .comment .info span { /* Time */
+            font-size: 11px;
+            color: #9ca7af;
+        }
+
+
+        /* The user avatar */
+
+        .comment .space {
+            width: 2%;
+        }
+
+
+        .comment.author-comment .space {
+            order: 2;
+            padding: 10px 3px 0 18px;
+        }
+
+        .comment .space img {
+            display: block;
+            border-radius: 50%;
+        }
+
+        .comment.user-comment .space img {
+            float: right;
+        }
+
+
+        /* The comment text */
+
+        .comment p {
+            font-size: medium;
+            line-height: 1.5;
+            padding: 18px 22px;
+            width: 81%;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .comment.user-comment p {
+            background-color: #f3f3f3;
+            font-weight: 600;
+            color: #607d8b;
+        }
+
+        .comment.author-comment p {
+            background-color: #e2f8ff;
+            order: 1;
+        }
+
+        .user-comment p:after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #43A047;
+            border: 2px solid #ffffff;
+            left: -8px;
+            top: 18px;
+        }
+
+        .author-comment p:after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 2px solid #e2f8ff;
+            right: -8px;
+            top: 18px;
+        }
+
+
+        /* Comment form */
+
+        .write-new {
+            margin: 80px auto 0;
+            width: 50%;
+        }
+
+        .write-new textarea {
+            color: #444;
+            font: inherit;
+
+            outline: 0;
+            border-radius: 3px;
+            border: 1px solid #cecece;
+            background-color: #fefefe;
+            box-shadow: 1px 2px 1px 0 rgba(0, 0, 0, 0.06);
+            overflow: auto;
+
+            width: 100%;
+            min-height: 80px;
+            padding: 15px 20px;
+        }
+
+        .write-new img {
+            border-radius: 50%;
+            margin-top: 15px;
+        }
+
+        .write-new button {
+            float: right;
+            background-color: #87bae1;
+            box-shadow: 1px 2px 1px 0 rgba(0, 0, 0, 0.12);
+            border-radius: 2px;
+            border: 0;
+            color: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+
+            padding: 10px 25px;
+            margin-top: 18px;
+        }
+
+
+        /* Responsive styles */
+
+        @media (max-width: 800px) {
+            /* Make the paragraph in the comments take up the whole width,
+            forcing the space and user info to wrap to the next line*/
+            .comment p {
+                width: 100%;
+            }
+
+            .comment.user-comment {
+                padding-bottom: 16px;
+            }
+
+            /* Reverse the order of elements in the user comments,
+            so that the space and info appear after the text. */
+            .comment.user-comment .info {
+                order: 3;
+                text-align: left;
+            }
+
+            .comment.user-comment .space {
+                order: 2;
+            }
+
+            .comment.user-comment p {
+                order: 1;
+            }
+
+
+            /* Align toward the beginning of the container (to the left)
+            all the elements inside the author comments. */
+            .comment.author-comment {
+                justify-content: flex-start;
+            }
+
+
+            .comment-section {
+                margin-top: 10px;
+            }
+
+            .comment .info {
+                width: auto;
+            }
+
+            .comment .info div {
+                padding-top: 0px;
+            }
+
+            .comment.user-comment .space,
+            .comment.author-comment .space {
+                padding: 15px 10px 0 18px;
+                width: auto;
+            }
+
+            .comment.user-comment p:after,
+            .comment.author-comment p:after {
+                width: 12px;
+                height: 12px;
+                top: initial;
+                left: 28px;
+                bottom: -6px;
+            }
+
+            .write-new {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+{% block section %}
+    <section id="questoes-destaque" class="col-sm-8">
+        <div class="titulo-home">
+            <h4 class="pd-home titulo-home bold">Notícias JusTutor</h4>
+            <div class="linha-aba"></div>
+        </div>
+
+        <ul class="comment-section">
+            {% for noticia in noticias %}
+                <a href="{% url 'website:noticia' noticia.slug %}">
+                    <li class="comment user-comment">
+                        <div class="info">
+                            <div>{{ noticia.ativo_inicio|date:"SHORT_DATETIME_FORMAT" }}</div>
+                            {% with noticia.noticialida_set.all.count as count %}
+                                <span><strong>{{ count }}</strong> visualizaç{{ count|pluralize:'ão,ões' }}</span>
+                            {% endwith %}
+                        </div>
+                        <div class="space"></div>
+                        <p>{{ noticia }}</p>
+                    </li>
+                </a>
+            {% endfor %}
+        </ul>
+
+        <div class="col-sm-12 pagination text-center">
+            <span class="step-links">
+                {% if noticias.has_previous %}
+                    <a class="btn btn-default fa fa-arrow-left" href="?page={{ noticias.previous_page_number }}"></a>
+                {% else %}
+                    <a class="btn btn-default fa fa-arrow-left" href="javascript:void(0)" disabled=""></a>
+                {% endif %}
+
+                <span class="current">
+                    Página {{ noticias.number }} de {{ noticias.paginator.num_pages }}.
+                </span>
+
+                {% if noticias.has_next %}
+                    <a class="btn btn-default fa fa-arrow-right" href="?page={{ noticias.next_page_number }}"></a>
+                {% else %}
+                    <a class="btn btn-default fa fa-arrow-right" href="javascript:void(0)" disabled=""></a>
+                {% endif %}
+            </span>
+        </div>
+    </section>
+    <section class="col-sm-4">
+        <section id="noticias">
+            <div class="titulo-home">
+                <h4 class="pd-home titulo-home bold">As 10 mais</h4>
+                <div class="linha-aba mg-bot10"></div>
+            </div>
+            <div class="clear"></div>
+            {% for noticia in mais_lidas %}
+                <div>
+                    <h5 class="mg-top10 bold"><a href="{{ noticia.get_absolute_url }}">{{ noticia.nome }}</a></h5>
+                    <div class="mg-top10"></div>
+                    <small class="text-info"><i
+                            class="fa fa-clock-o pull-left"> {{ noticia.ativo_inicio|date:"d/m/Y - H\hi" }}</i><i
+                            class="fa fa-eye pull-right"> {{ noticia.noticialida_set.all.count }}</i></small>
+                    <br>
+                    <hr class="no-pd">
+
+                </div>
+            {% endfor %}
+        </section>
+
+        <div class="titulo-home mg-bot20">
+            <h4 class="pd-home titulo-home bold">Publicidade</h4>
+            <div class="linha-aba"></div>
+            <div class="mg-top20">
+                {% include '_widget-anuncio.html' %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

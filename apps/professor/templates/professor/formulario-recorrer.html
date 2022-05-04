@@ -1,0 +1,165 @@
+ <div class="row">
+    <input type="hidden" id="formulario_pk" value="">
+    <input type="hidden" id="formulario_status" value="{{ tabela_correcao.status }}">
+    {% with tabela_correcao.status as status %}
+        <div class="col-lg-12">
+            {% if status == 'corrigido' %}
+                <div class="alert alert-danger">
+                    <i class="fa fa-times-circle fa-fw fa-lg"></i>
+                    <strong>Atenção!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    <ul>
+                        <li>
+                            Utilize esta ferramenta apenas para recorrer da nota que você recebeu nesta atividade.
+                            Caso tenha apenas dúvidas ou queira simples esclarecimentos, use o <strong>"Fale com o professor".</strong>
+                        </li>
+                        <li>
+                            O recurso somente será analisado se for <strong>devidamente fundamentado</strong>, apontando especificamente
+                            qual foi a eventual falha da correção, além dos fundamentos legais ou jurisprudenciais para acolhimento do recurso.
+                        </li>
+                        <li>
+                            O recurso deve ser feito por itens especifícos. Se você elaborar seu recurso em um item, mas se referir
+                            à nota de outro item, ele não será analisado.
+                        </li>
+                        <li>
+                            Após preencher suas razões e todos os itens dos quais você quer recorrer, lembre de de clicar em
+                            <strong>Finalizar e enviar recurso</strong>, sob pena do professor não recebê-lo.
+                        </li>
+                        <li>
+                            Quando seu recurso for analisado, você receberá uma notificação por email e sua correção revisada
+                            estará disponível no mesmo local da correção original, no painel do aluno, na aba "Atividades".
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <strong><span class="badge badge-{{ tabela_correcao.status_color }}">{{ tabela_correcao.get_status_display }}</span></strong>
+                    <h5><strong>{{ tabela_correcao.status_texto }}</strong></h5>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-sm-12">
+            <div class="main-box clearfix">
+                <div class="main-box-body clearfix">
+                    <div class="table-responsive">
+                        <table class="table user-list table-hover">
+                            <thead>
+                            <tr>
+                                <th><span>Item</span></th>
+                                <th><span class="text-center">Valor</span></th>
+                                <th><span class="text-center">Nota recebida</span></th>
+                                <th><span class="text-center">Recurso</span></th>
+                                <th><span class="text-center">Recorrido?</span></th>
+                                {% ifequal status 'corrigido' %}
+                                <th></th>
+                                {% endifequal %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <form method="post" id="formTabelaCorrecao">
+                                {% csrf_token %}
+                                {% for tabela in tabela_correcao.get_tabelas_recorridas %}
+                                <input type="hidden" name="tabela-{{ tabela.pk }}" value="{{ tabela.pk }}">
+                                <tr id="block{{ tabela.pk }}">
+                                    <td  style="width: 40%">
+                                        <small>{{ tabela.tabela }}</small>
+                                    </td>
+                                    <td class="text-center"  style="width: 5%">
+                                        <label class="label label-info" style="font-size: 16px">{{ tabela.tabela.valor }}</label>
+                                    </td>
+                                    <td class="text-center status green" name="notas"  style="width: 5%">
+                                        <label class="label label-info" style="font-size: 16px">{{ tabela.nota }}</label>
+                                    </td>
+                                    <td class="text-center" style="width: 40%">
+                                        <textarea class="form-control" rows="2" id="texto_recorrer_{{ tabela.pk }}" {% if not status == 'corrigido' %}readonly="readonly"{% endif %}
+                                        placeholder="Clique aqui para redigir o seu recurso em relação a este item da correção.">{% if tabela.texto_recurso %}{{ tabela.texto_recurso }}{% endif %}</textarea>
+                                    </td>
+                                    <td  style="width: 5%" class="text-center">
+                                        <span class="badge badge-{% if tabela.recorrido == 'Sim'%}success{% else %}danger{% endif %}"
+                                              id="recorrido_{{ tabela.pk }}">{{ tabela.recorrido }}</span>
+                                    </td>
+                                    {% ifequal status 'corrigido' %}
+                                    <td style="width: 5%">
+                                        <button type="button" class="btn btn-success btn-sm"  title="Editar texto"
+                                                data-action="save_item" data-pk="{{ tabela.pk }}">
+                                            <span class="fa fa-save"></span>
+                                        </button>
+                                    </td>
+                                    {% endifequal %}
+                                </tr>
+                                {% if tabela_correcao.status == 'analisado' and tabela.texto_justificativa %}
+                                    <tr >
+                                        <td colspan="6" style="padding: unset;">
+                                            <div class="panel-group accordion" id="accordion_{{ tabela.pk }}"
+                                                 style="margin: 0px">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <h4 class="panel-title">
+                                                            <a class="accordion-toggle" data-toggle="collapse"
+                                                               data-parent="#accordion_{{ tabela.pk }}" href="#collapse_{{ tabela.pk }}">
+                                                                Observação do Professor
+                                                            </a>
+                                                        </h4>
+                                                    </div>
+                                                    <div id="collapse_{{ tabela.pk }}" class="panel-collapse collapse">
+                                                        <div class="panel-body">
+                                                            {{ tabela.texto_justificativa|linebreaksbr }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+
+                                {% endfor %}
+                                <td></td>
+                                <td class="text-center"><strong class="label label-primary" style="font-size: 16px">{{ tabela_correcao.total.valor }}</strong></td>
+                                <td class="text-center"><span id="totalID" class="label label-success" style="font-size: 16px">{{ tabela_correcao.total.nota }}</span></td>
+                                <td></td>
+                                <td></td>
+                            </form>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+</div>
+<script>
+    $('[data-action="save_item"]').on('click', function () {
+        pk = $(this).data('pk');
+        texto = $('#texto_recorrer_' + pk).val();
+        salvar_item_recorrer(pk, texto)
+    });
+    function salvar_item_recorrer(pk, texto) {
+        // Send the data using post
+        var send = {
+            action: 'salvar_comentario',
+            pk: pk,
+            texto: texto,
+        };
+        var posting = $.post('{% url 'professor:post-salvar-item' %}', send );
+        {#$.blockUI({ message: 'aguarde' });#}
+        posting.done(function( data ) {
+            //$.unblockUI();
+            if (data.erro) {
+                toastr.error(data.message, 'Erro');
+            } else {
+                $.notify(data.message, 'info');
+                span_recorrido = $('#recorrido_' + pk);
+                span_recorrido.html(data.recorrido);
+                if (data.recorrido == 'Sim') {
+                    span_recorrido.removeClass('badge-danger');
+                    span_recorrido.addClass('badge-success')
+                } else {
+                    span_recorrido.removeClass('badge-success');
+                    span_recorrido.addClass('badge-danger')
+                }
+            }
+        });
+    }
+</script>

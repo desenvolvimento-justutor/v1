@@ -1,0 +1,34 @@
+<div class="map-stats">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="text-center">
+                    <span>Quantidade</span>
+                </th>
+                <th class="text-center">
+                    <span>Data do resgate</span>
+                </th>
+                <th class="text-center">
+                    <span>Formulario</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for resgate in credito.creditoresgate_set.all %}
+                <tr>
+                    <td class="text-center status red">
+                        <i class="fa fa-level-down"></i> {{ resgate.quantidade }}
+                    </td>
+                    <td class="text-center text-danger">
+                        {{ resgate.data|date:"SHORT_DATE_FORMAT" }}
+                    </td>
+                    <td class="text-center">
+                        {{ resgate.formulario|default_if_none:"-" }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

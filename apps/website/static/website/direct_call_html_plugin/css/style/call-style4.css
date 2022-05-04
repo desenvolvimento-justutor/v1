@@ -1,0 +1,194 @@
+/*=====================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 8, Sep 2019
+@version: 1.0
+
+=======================================================*/
+
+/* Click To Call Main Panel */
+.cc-style4{
+	position: fixed;
+  	bottom: 20px;
+  	right: 20px;
+  	letter-spacing: 0.1px;
+  	font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  	z-index: 9999;
+}
+
+/* Click To Call Floating Button */
+.cc-style4 .cc-button{
+	display: inline-block;
+  	width: 50px;
+  	height: 50px;
+	font-size: 25px;  	
+  	line-height: 48px;
+  	text-align: center;
+  	border: 1px solid #fff;
+	border-radius: 100%;
+	box-shadow: 0 0 10px rgba(12, 12, 12, 0.3);
+  	cursor: pointer;
+}
+.cc-style4 .cc-button:hover{
+	box-shadow: 0px 0px 10px rgba(12, 12, 12, 0.5);
+}
+
+/*  Click To Call Modal Window */
+.cc-style4 .cc-modal{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+	height: auto;
+	max-width: 630px;
+	min-width: 320px;
+	border-radius: 5px;
+	visibility: hidden;
+    box-shadow: 0 0 10px rgba(43, 43, 43, 0.41);
+	z-index: 2000;
+
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	-o-backface-visibility: hidden;
+	backface-visibility: hidden;
+	
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	-moz-transform: translateX(-50%) translateY(-50%);
+	-ms-transform: translateX(-50%) translateY(-50%);
+	-o-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+}
+.cc-style4 .cc-show{
+	visibility: visible;
+}
+.cc-style4 .cc-overlay{
+	visibility: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	z-index: 1000;
+}
+.cc-style4 .cc-show ~ .cc-overlay{
+	opacity: 1;
+	visibility: visible;
+	background-color: #0000007a;
+} 
+.cc-style4 .cc-modal .cc-content{
+	position: relative;
+	margin: 0 auto;
+	border-radius: 10px;
+}
+
+/* Modal Header */
+.cc-style4 .cc-panel .cc-header{
+	padding: 15px 10px;
+	border-radius: 8px 8px 0 0;
+	text-align: center;
+}
+.cc-style4 .cc-header img{
+	padding: 5px;
+	width: 30%;
+	border: 2px solid #fff;
+	border-radius: 100%;
+}
+.cc-style4 .cc-header h2{
+	padding-top: 5px;
+	margin-bottom: 0;
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 30px;
+}
+.cc-style4 .cc-header p{
+	margin-bottom: 0;
+	font-size: 13px;
+}
+
+/* Modal Body */
+.cc-style4 .cc-panel .cc-body{
+	padding: 20px 10px 0;
+	text-align: center;
+}
+.cc-style4 .cc-body p{
+	margin-bottom: 0;
+	font-size: 14px;
+}
+
+/* Modal Footer */
+.cc-style4 .cc-panel .cc-footer{
+	padding: 35px 10px 45px;
+	text-align: center;
+}
+.cc-style4 .cc-footer a{
+	text-decoration: none;
+	color: inherit;
+}
+.cc-style4 .cc-footer .cc-call-button{
+  	position: relative;
+  	margin: auto;
+  	padding: 20px 14px;
+	border-radius: 100%;
+  	font-size: 13px;
+  	font-weight: 700;
+}
+.cc-style4 .cc-footer .cc-call-button:hover{
+	box-shadow: 0px 0px 10px #999;
+}
+
+/* Common CSS */
+.cc-style4 .cc-footer .cc-call-button,
+.cc-style4 .cc-footer .cc-call-button:hover{
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+}
+
+/* 3D Flip Vertical with Animations */
+.cc-flip-y.cc-modal{
+	width: 200px;
+	-webkit-perspective: 1300px;
+	-moz-perspective: 1300px;
+	-ms-perspective: 1300px;
+	-o-perspective: 1300px;
+	perspective: 1300px;
+}
+.cc-flip-y .cc-content{
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	-ms-transform-style: preserve-3d;
+	-o-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	
+	-webkit-transform: rotateX(-70deg);
+	-moz-transform: rotateX(-70deg);
+	-ms-transform: rotateX(-70deg);
+	-o-transform: rotateX(-70deg);
+	transform: rotateX(-70deg);
+
+	opacity: 0;
+}
+.cc-show.cc-flip-y .cc-content{
+	-webkit-transform: rotateX(0deg);
+	-moz-transform: rotateX(0deg);
+	-ms-transform: rotateX(0deg);
+	-o-transform: rotateX(0deg);
+	transform: rotateX(0deg);
+	opacity: 1;
+}
+
+/* Common CSS */
+.cc-style4,
+.cc-style4 .cc-button:hover,
+.cc-flip-y .cc-content{
+    -webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+}

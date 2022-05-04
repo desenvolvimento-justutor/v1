@@ -1,0 +1,265 @@
+{% extends '_base-painel-aluno.html' %}
+{% block css %}
+
+{% endblock %}
+{% block panel_content %}
+    <div class="row">
+        <!-- RESPOSTAS -->
+        <div class="col-lg-3 col-sm-6 col-xs-12">
+            <div class="main-box infographic-box colored green-bg">
+                <i class="fa fa-edit"></i>
+                <span class="headline">Respostas</span>
+                <span class="value">{{ aluno.get_pontos_respondidos }}<smal style="font-size: 16px; font-weight: normal"> pts.</smal></span>
+                <span class="subinfo">Suas respostas a Enunciados</span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-xs-12">
+            <div class="main-box infographic-box colored emerald-bg">
+                <i class="fa fa-check"></i>
+                <span class="headline">avaliações</span>
+                <span class="value">{{ aluno.get_pontos_avaliar }}<smal style="font-size: 16px; font-weight: normal"> pts.</smal></span>
+                <span class="subinfo">Avaliações feitas por você</span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-xs-12">
+            <div class="main-box infographic-box colored red-bg">
+                <i class="fa fa-user"></i>
+                <span class="headline">Corrigiram</span>
+                <span class="value">{{ aluno.get_pontos_corrigirem }}<smal style="font-size: 16px; font-weight: normal"> pts.</smal></span>
+                <span class="subinfo">Correções que alunos fizeram</span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-xs-12">
+            <div class="main-box infographic-box colored yellow-bg">
+                <i class="fa fa-thumb-o"></i>
+                <span class="headline">Correções Úteis</span>
+                <span class="value">{{ aluno.get_pontos_avaliacao }}<smal style="font-size: 16px; font-weight: normal"> pts.</smal></span>
+                <span class="subinfo">Avaliações úteis a sua correção</span>
+            </div>
+        </div>
+    </div>
+    <!-- GRÁFICOS -->
+    <div class="row">
+        <!-- GRÁFICO QUESTÃO -->
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="main-box clearfix project-box emerald-box">
+                <div class="main-box-body clearfix">
+                    <div class="project-box-header emerald-bg">
+                        <div class="name">
+                            <a href="#"> QUESTÃO <i class="fa icon-questao icon-size-16 pull-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-box-content">
+                        <span class="chart" data-percent="{{ grafico.total_QD.porcento }}">
+                            <span class="percent">{{ grafico.total_QD.porcento }}</span>%<br>
+                            <span class="lbl">Total: {{ grafico.total_QD.pontos }}</span>
+                            <canvas height="130" width="130"></canvas></span>
+                    </div>
+                    <div class="project-box-footer clearfix">
+                        <a href="#">
+                            <span class="value">{{ grafico.resposta.QD }}</span>
+                            <span class="label">Resposta</span>
+                        </a>
+                        <a href="#">
+                            <span class="value">{{ grafico.correcao.QD }}</span>
+                            <span class="label">Correção</span>
+                        </a>
+                        <a href="#">
+                            <span class="value">{{ grafico.corrigiram.QD }}</span>
+                            <span class="label">Corrigiram</span>
+                        </a>
+                    </div>
+                    <div class="project-box-ultrafooter clearfix">
+                        <a href="#" class="link pull-right">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- GRAFICO PEÇAS -->
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="main-box clearfix project-box green-box">
+                <div class="main-box-body clearfix">
+                    <div class="project-box-header green-bg">
+                        <div class="name">
+                            <a href="#"> PEÇA <i class="fa icon-peca icon-size-16 pull-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-box-content">
+                        <span class="chart" data-percent="{{ grafico.total_PP.porcento }}" data-bar-color="#2ecc71">
+                            <span class="percent">{{ grafico.total_PP.porcento }}</span>%<br>
+                            <span class="lbl">Total: {{ grafico.total_PP.pontos }}</span>
+                            <canvas height="130" width="130"></canvas></span>
+                    </div>
+                    <div class="project-box-footer clearfix">
+                        <a href="#">
+                            <span class="value">{{ grafico.resposta.PP }}</span>
+                            <span class="label">Resposta</span>
+                        </a>
+                        <a href="#">
+                            <span class="value">{{ grafico.correcao.PP }}</span>
+                            <span class="label">Correção</span>
+                        </a>
+                        <a href="#">
+                            <span class="value">{{ grafico.corrigiram.PP }}</span>
+                            <span class="label">Corrigiram</span>
+                        </a>
+                    </div>
+                    <div class="project-box-ultrafooter clearfix">
+                        <a href="#" class="link pull-right">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- GRAFICO SENTENÇA -->
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="main-box clearfix project-box yellow-box">
+                <div class="main-box-body clearfix">
+                    <div class="project-box-header yellow-bg">
+                        <div class="name">
+                            <a href="#"> SENTENÇA <i class="fa icon-sentenca icon-size-16 pull-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-box-content">
+                        <span class="chart" data-percent="{{ grafico.total_ST.porcento }}" data-bar-color="#f1c40f">
+                            <span class="percent">{{ grafico.total_ST.porcento }}</span>%<br>
+                            <span class="lbl">Total: {{ grafico.total_ST.pontos }}</span>
+                            <canvas height="130" width="130"></canvas></span>
+                    </div>
+                    <div class="project-box-footer clearfix">
+                        <a href="#">
+                            <span class="value">{{ grafico.resposta.ST }}</span>
+                            <span class="label">Resposta</span>
+                        </a>
+                        <a href="#">
+                            <span class="value">{{ grafico.correcao.ST }}</span>
+                            <span class="label">Correção</span>
+                        </a>
+                        <a href="#">
+                            <span class="value">{{ grafico.corrigiram.ST }}</span>
+                            <span class="label">Corrigiram</span>
+                        </a>
+                    </div>
+                    <div class="project-box-ultrafooter clearfix">
+                        <a href="#" class="link pull-right">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FEEDS -->
+    <div class="row">
+        <!-- RESPOSTAS -->
+        <div class="col-lg-6">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>Últimas Respostas a Enunciados
+                        <a href="{% url 'aluno:perfil' %}" class="link pull-right" data-toggle="tooltip" title="Ver todas as minhas Respostas">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </h2>
+                </header>
+                <div class="theme-whbl main-box-body clearfix">
+                    <div class="table-responsive">
+                        <table class="table">
+                                <thead>
+                                <td></td>
+                                <td></td>
+                                <td>Situação</td>
+                                <td>Data</td>
+                                </thead>
+                                <tbody>
+                                {% for resposta in aluno.resposta_set.all %}
+                                <tr>
+                                    <td>
+                                        <i class="fa icon-{{ resposta.enunciado.get_tipo_url }} icon-size-16 {{ resposta.enunciado.get_tipo_url }}-black"></i>
+                                    </td>
+                                    <td>
+                                        {% if resposta.ativo %}
+                                            <a href="{{ resposta.get_absolute_url }}">Resposta {{ resposta.numero }}</a>
+                                            ao Enunciado <a href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a>
+                                        {% else %}
+                                            <span class="text-danger"><i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="Este Resposta foi desativado."></i></span>
+                                            <span class="bg-danger"><a target="_blank" href="{{ resposta.get_absolute_url }}">Resposta {{ resposta.numero }}</a>
+                                            ao Enunciado <a target="_blank" href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a></span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if resposta.concluido %}
+                                            <span class="text-success"><i class="fa fa-check fa-lg" data-toggle="tooltip" title="Concluído"></i></span>
+                                        {% else %}
+                                            <span class="text-primary"><i class="fa fa-clock-o fa-lg" data-toggle="tooltip" title="Você não terminou de responder"></i></span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ resposta.data_termino|date:"d\/m\/y H:i" }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CORREÇÕES -->
+        <div class="col-lg-6">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>Últimas Correções a Respostas
+                        <a href="{% url 'aluno:perfil' %}" class="link pull-right" data-toggle="tooltip" title="Ver todas as minhas Correções">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </h2>
+                </header>
+                <div class="theme-whbl main-box-body clearfix">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                            {% for correcao in correcoes %}
+                            <tr>
+                                <td class="text-center">
+                                    <i class="fa icon-{{ correcao.resposta.enunciado.get_tipo_url }} icon-size-16 {{ correcao.resposta.enunciado.get_tipo_url }}-black"></i>
+                                </td>
+                                <td>
+                                    <a href="{{ correcao.get_absolute_url }}">Correção {{ correcao }}</a>
+                                    a <a href="{{ correcao.resposta.get_absolute_url }}">Resposta {{ correcao.resposta.numero }}</a>
+                                    do Enunciado <a href="{{ correcao.resposta.enunciado.get_absolute_url }}">{{ correcao.resposta.enunciado }}</a>
+                                </td>
+                                <td>
+                                    {{ correcao.data|date:"d\/m\/y H:i" }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{{ STATIC_URL }}perfil/js/jquery.easypiechart.min.js"></script>
+    <script>
+        $(function() {
+            $('.chart').easyPieChart({
+                easing: 'easeOutBounce',
+                onStep: function(from, to, percent) {
+                    $(this.el).find('.percent').text(Math.round(percent));
+                },
+                barColor: '#3498db',
+                trackColor: '#f2f2f2',
+                scaleColor: false,
+                lineWidth: 8,
+                size: 130,
+                animate: 1500
+            });
+        });
+    </script>
+{% endblock %}

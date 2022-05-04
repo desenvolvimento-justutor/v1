@@ -1,0 +1,324 @@
+{% load socialaccount %}
+
+<style>
+    .well {
+        min-height: 264px;
+    }
+
+    .log-frm ul {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .log-frm ul li {
+        color: #666;
+        display: block;
+        font-size: 14px;
+        line-height: 25px;
+    }
+
+    .log-frm ul li a {
+        color: #f47521;
+        cursor: pointer;
+        display: block;
+        padding: 10px 0;
+    }
+
+    .log-frm ul li p {
+        border: 1px solid #ccc;
+        color: #666;
+        font-size: 12px;
+        line-height: 18px;
+        margin: 10px 0;
+        padding: 2px 5px;
+    }
+
+    .log-frm ul li input[type="text"] {
+        border: 1px solid #ccc;
+        border-radius: 0;
+        color: #000;
+        display: block;
+        font-size: 13px;
+        line-height: 19px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .model-l {
+        padding-right: 0px;
+    }
+
+    .model-r .o-r {
+        background: #fff none repeat scroll 0 0;
+        border: medium none;
+        border-radius: 100%;
+        bottom: 0;
+        height: 40px;
+        margin: auto;
+        overflow: hidden;
+        position: absolute;
+        left: -19px;
+        top: 0;
+        width: 40px;
+        z-index: 99999;
+    }
+
+    .model-r .o-r span {
+        background: #fff none repeat scroll 0 0;
+        border: 2px solid #ccc;
+        color: #666;
+        display: block;
+        height: 100%;
+        padding: 8px 0 0;
+        text-align: center;
+        width: 100%;
+        border-radius: 100%;
+        display: block;
+        position: relative;
+    }
+
+    .model-r {
+        padding-left: 30px;
+        position: relative;
+        border-left: 1px dotted #cccccc;
+    }
+
+    .forgot {
+        display: none;
+    }
+</style>
+<!-- Modal -->
+<div id="modalLogin" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Acesso ao JusTutor</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-danger text-center" role="alert" id="errMsg"></div>
+                <!-- LOGIN -->
+                <div class="col-md-4 col-sm-4 no-padng">
+                    <div class="model-l">
+                        <form method="post" id="logFrm" class="well" name="logFrm" data-toggle="validator"
+                              role="form">
+                            {% csrf_token %}
+                            <h4>Acesso</h4>
+                            <hr>
+                            <div class="form-group">
+                                <label for="id_username">Usuário</label>
+                                <input class="form-control" id="id_username" name="username"
+                                       placeholder="Informe seu email">
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_password">Senha</label>
+                                <input type="password" class="form-control" id="id_password" name="password"
+                                       placeholder="Informe sua senha" data-minlength="3"
+                                       data-error="Informe no mínimo 03 caracteres" required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <button type="submit" class="btn btn-info pull-right">Login</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- CADASTRO -->
+                <div class="col-md-8 col-sm-8 no-padng">
+                    <div class="model-r">
+                        <div class="o-r">
+                            <span>OU</span>
+                        </div>
+                        <form method="post" id="userRegisterFrm" class="log-frm well" name="userRegisterFrm"
+                              data-toggle="validator" role="form">
+                            {% csrf_token %}
+                            <h4>Cadastre-se</h4>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="id_name">Nome</label>
+                                        <input type="text" class="form-control" id="id_cname" name="nome" required
+                                               placeholder="Nome Completo" max="150">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="id_cusername">Email</label>
+                                        <input type="email" class="form-control" id="id_cusername" name="email" max="100"
+                                               placeholder="Informe seu email" autocomplete="off" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="id_cpassword">Senha</label>
+                                        <input type="password" data-minlength="6" class="form-control" name="password"
+                                               id="id_cpassword" placeholder="Informe a Senha" autocomplete="off"
+                                               data-error="Informe no mínimo 06 caracteres" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="cpassword2">Confirmar Senha</label>
+                                        <input type="password" class="form-control" id="cpassword2" name="password2"
+                                               data-match="#id_cpassword" placeholder="Repita a Senha"
+                                               data-match-error="As senhas não correspodem." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 form-group">
+                                    <hr/>
+                                </div>
+                                <div class="col-sm-12 form-group">
+                                    <label class="termos" for="id_termo" style="font-size: small; font-weight: 600">Li e
+                                        concordo com os
+                                        <a href="#modal_termos" data-toggle="modal">Termos de Uso</a> e
+                                        <a href="#modal_politica" data-toggle="modal">Política de Privacidade</a>.
+                                    </label>
+                                    <input class="form-control" id="id_termo" name="termo" type="checkbox" required>
+                                </div>
+                                <div class="col-sm-12 form-group">
+                                    <label class="newsletter" for="id_newsletter"
+                                           style="font-size: small; font-weight: 600">
+                                        Receber no e-mail novidades, notícias e promoções especiais.
+                                    </label>
+                                    <input class="form-control" id="id_newsletter" name="newsletter" type="checkbox">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success pull-right">Cadastrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{% provider_login_url "facebook" method="oauth2" next=request.get_full_path %}"
+                   class="btn btn-social btn-facebook pull-left">
+                    <i class="fa fa-facebook"></i> Acesse pelo Facebook
+                </a>
+                <a href="{% url 'auth_password_reset' %}" class="btn btn-social btn-warning"><i class="fa fa-lock"></i>Recuperar
+                    senha </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_termos" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Termos de Uso</h4>
+            </div>
+            <div class="modal-body">
+                <div class="div-scroll">
+                    {{ website.config.termos.conteudo|safe }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_politica" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"> Política de Privacidade</h4>
+            </div>
+            <div class="modal-body">
+                <div class="div-scroll">
+                    {{ website.config.politica.conteudo|safe }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ STATIC_URL }}bootstrap/js/validator.js"></script>
+<script>
+    $('#errMsg').hide()
+    $('#logFrm').validator().on('submit', function (e) {
+        if (e.isDefaultPrevented()) {
+            console.log('handle the invalid form...')
+        } else {
+            console.log('everything looks good!')
+        }
+    })
+
+    jQuery('#logFrm').submit(function () {
+        var dados = jQuery(this).serialize();
+        jQuery.ajax({
+            type: "POST",
+            url: "{% url 'website:ajax-login' %}",
+            data: dados,
+            success: function (data) {
+                if (data.success == true) {
+                    location.reload();
+                } else {
+                    $('#errMsg').html(data.msg);
+                    $('#errMsg').show();
+                }
+
+            }
+        });
+        return false;
+    });
+
+    jQuery('#userRegisterFrm').submit(function () {
+        var dados = jQuery(this).serialize();
+        jQuery.ajax({
+            type: "POST",
+            url: "{% url 'website:ajax-cadastro' %}",
+            data: dados,
+            success: function (data) {
+                if (data.success == true) {
+                    location.reload();
+                } else {
+                    $('#errMsg').html(data.msg);
+                    $('#errMsg').show();
+                }
+
+            }
+        });
+        return false;
+    });
+
+    function ayantoggle() {
+        $(".forgot").slideToggle('slow');
+    }
+
+    // CHECK LOGIN
+    function checkLogin() {
+        var ret = false;
+        $.ajax({
+            url: "{% url 'website:check-login' %}",
+            dataType: 'json',
+            async: false,
+            data: false,
+            success: function (data) {
+                ret = data.aluno;
+            }
+        });
+        return ret
+    }
+
+    function login(data) {
+        if (checkLogin() == true) {
+            swal_alert('', 'Usuário já logado.', 'info');
+        } else {
+            $('#modalLogin').modal('show')
+        }
+    }
+</script>

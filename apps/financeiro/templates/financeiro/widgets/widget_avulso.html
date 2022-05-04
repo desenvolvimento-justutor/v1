@@ -1,0 +1,118 @@
+{% load humanize curso %}
+<style>
+    #panel-avulso .panel-body .row a {
+        text-decoration: none;
+    }
+
+    #inputCredito {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bolder;
+    }
+
+    label {
+        font-weight: 600;
+    }
+</style>
+
+<div class="panel panel-primary" id="panel-avulso">
+    <div class="panel-heading">
+        <div class="panel-title">Adquira créditos aqui:</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12 text-center mrg-b-lg">
+                <a href="javascript:void(0)" data-toggle="modal" data-target="#credit_modal">
+                    <i class="fa fa-info-circle fa-lg fa-fw"></i>
+                    <strong>Quantos créditos eu preciso?</strong>
+                </a>
+            </div>
+            <div class="col-sm-offset-2 col-sm-8">
+                <div class="form-group">
+                    <label for="inputCredito" class="text-primary">Informe a quantidade de créditos que deseja
+                        comprar.</label>
+                    <input id="inputCredito"
+                           type="text"
+                           value="55"
+                           name="demo0"
+                           data-bts-min="0"
+                           data-bts-max="100"
+                           data-bts-init-val=""
+                           data-bts-step="1"
+                           data-bts-decimal="0"
+                           data-bts-step-interval="100"
+                           data-bts-force-step-divisibility="round"
+                           data-bts-step-interval-delay="500"
+                           data-bts-prefix=""
+                           data-bts-postfix=""
+                           data-bts-prefix-extra-class=""
+                           data-bts-postfix-extra-class=""
+                           data-bts-booster="true"
+                           data-bts-boostat="10"
+                           data-bts-max-boosted-step="false"
+                           data-bts-mousewheel="true"
+                           data-bts-button-down-class="btn btn-danger"
+                           data-bts-button-up-class="btn btn-success"
+                    />
+                    <div class="clearfix">
+                        <div class="pull-left">
+                            <small class="text-muted" id="minValue">Min. 0</small>
+                        </div>
+                        <div class="pull-right">
+                            <small class="text-muted" id="maxValue">Máx. 0</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 text-center">
+                <span class="badge badge-primary" id="desconto"></span>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="button" class="btn btn-primary btn-block" id="btnComprarAvulso">
+            <strong></strong>
+        </button>
+    </div>
+</div>
+<div class="modal fade" id="credit_modal" role="dialog">
+    <div class="modal-dialog" style="width: 320px">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Quantos créditos eu preciso?</h4>
+            </div>
+            <div class="modal-body">
+                <form class="credits">
+                    <ul class="list-unstyled" id="pacotes">
+                        {% for desconto in config.descontos.all %}
+                            <li>
+                                <label class="row">
+                                    <span class="col-xs-6 col-lg-6">
+                                        Entre <strong class="orange">{{ desconto.de }}</strong> e
+                                        <strong class="orange">{{ desconto.ate }}</strong>
+                                    </span>
+                                    <span class="col-xs-6 col-lg-6 savings">
+                                        Econômia de <strong
+                                            class="green">{{ desconto.desconto|floatformat:2 }}%</strong>
+                                    </span>
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </form>
+                <div class="text-center">
+                    <span class="help-block red"
+                          style="font-weight: 600">1 crédito = R$ {{ config.valor_unitario }}</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>

@@ -1,0 +1,66 @@
+{% load thumbnail curso %}
+<div class="col-sm-3">
+    <a href="{{ curso.get_absolute_url }}" class="curso-x">
+        <div class="img-curso">
+            {% if not curso.is_doc and curso.categoria.tipo != 'B' %}
+            <div class="alerta-curso" style="background-color: forestgreen">
+                100% VÍDEO
+            </div>
+            {% endif %}
+            {% thumbnail curso.imagem "270x170" crop="center" as im %}
+                <img src="{{ im.url }}">
+            {% empty %}
+                <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+            {% endthumbnail %}
+        </div>
+        <div class="descricao-curso">
+            <h2>{{ curso }}</h2>
+            <div style="padding-top: 6px">
+                {{ curso.descricao|truncatechars:"120" }}
+            </div>
+        </div>
+        {% if user.is_superuser %}
+            {{ curso.timeout }}
+        {% endif %}
+        {% if curso.ativo == False %}
+            {% get_codigo_liberacao request.user.aluno curso as codigo %}
+            <div class="categoria-curso" style="background-color: {% if codigo %}orange{% else %}red{% endif %}">
+                {% if codigo %}
+                    Inscrição disponível até <strong>{{ codigo.data|date:"SHORT_DATE_FORMAT" }}</strong>
+                {% else %}
+                    Inscrições encerradas
+                {% endif %}
+        </div>
+        {% else %}
+        <div class="categoria-curso">
+            {% if curso.categoria.tipo == 'B' %}
+                Adquirir este pacote
+            {% else %}
+                Inscrições abertas
+            {% endif %}
+        </div>
+        {% endif %}
+        <div class="preco-curso">
+            {% if curso.categoria.tipo == 'B' %}
+                <div class="preco-geral">
+                    <div class="preco-maior-x">{{ curso.valor|moeda }}</div>
+                    <div class="clear"></div>
+                </div>
+                {% if curso.economia %}
+                <div>
+                    Economia de <strong class="text-danger">{{ curso.economia|moeda }}</strong>
+                </div>
+                {% endif %}
+            {% else %}
+                <div>
+                    Curso Avançado
+                </div>
+                <div class="preco-geral">
+                    <div class="preco-maior-x">{{ curso.valor|moeda }}</div>
+                    <div class="clear"></div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="clear"></div>
+    </a>
+</div>

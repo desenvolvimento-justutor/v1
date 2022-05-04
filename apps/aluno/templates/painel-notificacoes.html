@@ -1,0 +1,103 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail %}
+
+{% block panel_content %}
+    <div class="row" id="user-profile" xmlns="http://www.w3.org/1999/html">
+        {% include '_widget-user-profile.html' %}
+        <div class="col-lg-9 col-md-8 col-sm-8">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left">Notificações</h2>
+                    <div class="pull-right">
+                        <div class="pull-right">
+                            <form id="form-filtro" method="get">
+                                <div class="btn-group" data-toggle="buttons">
+                                    {% if filtro != 'on' %}
+                                        <label class="btn btn-danger fa fa-trash-o" data-toggle="tooltip" title="Remover Filtros">
+                                            <input type="radio" name="filtro">
+                                        </label>
+                                    {% endif %}
+                                    <label onclick="marcarLida()" class="btn btn-primary fa fa-check-circle-o" data-toggle="tooltip" title="Marcar como lidas todas as notificações">
+                                        <input type="radio">
+                                    </label>
+                                    <label class="btn btn-info fa fa-edit{% if filtro == 'C' %} active{% endif %}" data-toggle="tooltip" title="Exibir somente Correções">
+                                        <input type="radio" name="filtro" value="C">
+                                    </label>
+                                    <label class="btn btn-info fa fa-comments-o{% if filtro == 'M' %} active{% endif %}" data-toggle="tooltip" title="Exibir somente Comentários">
+                                        <input type="radio" name="filtro" value="M">
+                                    </label>
+                                    <label class="btn btn-info fa fa-thumbs-o-up{% if filtro == 'L' %} active{% endif %}" data-toggle="tooltip" title="Exibir somente Curtidas">
+                                        <input type="radio" name="filtro" value="L">
+                                    </label>
+                                    <label class="btn btn-info fa fa-eye{% if filtro == 'V' %} active{% endif %}" data-placement="bottom" data-toggle="tooltip" title="Exibir somente não Visualizadas">
+                                        <input type="radio" name="filtro" value="V">
+                                    </label>
+                                    {% if filtro == 'id' %}
+                                    <label class="btn btn-info fa active" data-placement="bottom" data-toggle="tooltip" title="Por numero de identificação">
+                                        <input type="radio" name="filtro" value="id:{{ filtro_value }}">{{ filtro_value }}
+                                    </label>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </header>
+                <div class="main-box-body clearfix">
+                    <div class="conversation-wrapper">
+                        <div class="conversation-content">
+                            <div class="conversation-inner" style="overflow: hidden; width: auto; height: 352px;">
+                                {% for notificacao in notificacoes %}
+                                    <div class="conversation-item {% if notificacao.para == aluno %}item-left{% else %}item-right{% endif %} clearfix">
+                                        <!-- FOTO ALUNO -->
+                                        <div class="conversation-user">
+                                            {% if notificacao.aluno.foto %}
+                                                <img src="{{ notificacao.aluno.foto.url }}" alt="{{ aluno }}" class="profile-img img-responsive center-block">
+                                            {% else %}
+                                                <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}" class="profile-img img-responsive center-block"/>
+                                            {% endif %}
+{#                                            {% thumbnail notificacao.aluno.foto.url "50X50" crop="center" as im %}#}
+{#                                                <img src="{{ im.url }}" alt="{{ aluno }}" class="profile-img img-responsive center-block">#}
+{#                                            {% empty %}#}
+{#                                                <img src="{{ STATIC_URL }}images/no-image.jpg" alt="{{ aluno }}" class="profile-img img-responsive center-block"/>#}
+{#                                            {% endthumbnail %}#}
+                                        </div>
+                                        <div class="conversation-body">
+                                            <div class="name">
+                                                {{ notificacao.icone.lg|safe }}<a href="{{ notificacao.aluno.get_absolute_url }}"> {{ notificacao.aluno }}</a>
+                                            </div>
+                                            <div class="time hidden-xs">
+                                                <span data-placement="bottom"  data-toggle="tooltip" title="{{ notificacao.data }}">{{ notificacao.str_data }}</span>
+                                            </div>
+                                            <div id="icone-lido-{{ notificacao.id }}">
+                                                {% if notificacao.lido %}
+                                                    <span class="text-success"><i data-placement="left" data-toggle="tooltip" title="Marcada como visualizada" class="fa fa-check fa-lg pull-right"></i></span>
+                                                {% else %}
+                                                    <a href="javascript:void(0)" onclick="Dajaxice.apps.aluno.set_lido(Dajax.process, {'nid': {{ notificacao.id }} });"><i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i></a>
+                                                {% endif %}
+                                            </div>
+                                            <div class="text">
+                                                {{ notificacao.get_mensagem.html|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    $( "[name='filtro']" ).bind( "change", function(e) {
+        $('#form-filtro').submit();
+    });
+    function marcarLida() {
+        Dajaxice.apps.aluno.marcar_lida(Dajax.process);
+    }
+</script>
+{% endblock %}

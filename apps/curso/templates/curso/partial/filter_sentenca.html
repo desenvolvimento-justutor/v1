@@ -1,0 +1,56 @@
+<div class="col-sm-12">
+        <form method="get">
+            <div class="row">
+                <div class="form-group col-sm-2">
+                    <label class="" for="orderBy">Tipo sentença</label>
+                    <select class="form-control" name="categoria_id">
+                        <option value="">---</option>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}" {% ifequal filtro.categoria_id categoria.id|slugify %}selected{% endifequal %}>{{ categoria.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="" for="orderBy">Esfera Específica</label>
+                    <select class="form-control" name="sentenca_avulsa__esfera_especifica_id">
+                        <option value="">---</option>
+                        {% for esfera in esferas_especificas %}
+                        <option value="{{ esfera.id }}" {% ifequal filtro.sentenca_avulsa__esfera_especifica_id esfera.id|slugify %}selected{% endifequal %}>{{ esfera.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="" for="orderBy">Tipo de Procedimento</label>
+                    <select class="form-control" name="sentenca_avulsa__tipo_procedimento_id">
+                        <option value="">---</option>
+                        {% for row in tipos_procedimento %}
+                        <option value="{{ row.id }}" {% ifequal filtro.sentenca_avulsa__tipo_procedimento_id row.id|slugify %}selected{% endifequal %}>{{ row.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="" for="orderBy">Disciplina</label>
+                    <select class="form-control" name="sentenca_avulsa__disciplina_id">
+                        <option value="">---</option>
+                        {% for row in disciplinas %}
+                        <option value="{{ row.id }}" {% ifequal filtro.sentenca_avulsa__disciplina_id row.id|slugify %}selected{% endifequal %}>{{ row.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="" for="orderBy">Nível</label>
+                    <select class="form-control" name="sentenca_avulsa__nivel">
+                        <option value="">---</option>
+                        <option value="F" {% ifequal filtro.sentenca_avulsa__nivel 'F' %}selected{% endifequal %}>Fácil</option>
+                        <option value="M" {% ifequal filtro.sentenca_avulsa__nivel 'M' %}selected{% endifequal %}>Médio</option>
+                        <option value="D" {% ifequal filtro.sentenca_avulsa__nivel 'D' %}selected{% endifequal %}>Difícil</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-sm-2">
+                    <br>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> Filtar</button>
+                </div>
+            </div>
+        </form>
+</div>

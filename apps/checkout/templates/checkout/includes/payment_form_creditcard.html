@@ -1,0 +1,214 @@
+<form id="formCreditCard">
+    {% csrf_token %}
+    <input type="hidden" name="senderHash">
+    <input type="hidden" name="brand">
+    <input type="hidden" name="token">
+    <input type="hidden" name="paymentmethod" value="creditcard">
+    <div class="row" id="creditcard-containner">
+        <div class="col-md-12 col-sm-12">
+            <div class="section-subtitle">Dados do cartão</div>
+        </div>
+        <div class="col-md-5 col-sm-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label>Número do cartão<span class="required"></span></label>
+                        <input data-toggle="check" type="text" name="card_number" id="cardNumber"
+                               class="form-control cc bg" required
+                               placeholder="&bull; &bull; &bull; &bull;   &bull; &bull; &bull; &bull;   &bull; &bull; &bull; &bull;   &bull; &bull; &bull; &bull;">
+                        <div class="help-block with-errors"></div>
+                    </div> <!-- /.form-group -->
+                </div> <!-- /.col-md-8 -->
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label>Nome no cartão<span class="required"></span></label>
+                        <input data-toggle="check" type="text" name="name_on_card" id="name_on_card"
+                               class="form-control" required style="text-transform: uppercase">
+                        <div class="help-block with-errors"></div>
+                    </div> <!-- /.form-group -->
+                </div> <!-- /.col-md-8 -->
+                <!-- /.col-md-4 -->
+            </div> <!-- /.row -->
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                        <label>Validade<span class="required"></span></label>
+                        <input data-toggle="check" type="text" name="expiry_date" id="expiry_date"
+                               class="form-control cc-date-min" required
+                               placeholder="&bull;&bull;/&bull;&bull;&bull;&bull;">
+                        <div class="help-block with-errors"></div>
+                    </div> <!-- /.form-group -->
+                </div> <!-- /.col-md-4 -->
+                <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                        <label>Cód. de Segurança<span class="required"></span></label>
+                        <input data-toggle="check" type="text" name="code" id="code" minlength="3" maxlength="4"
+                               class="form-control" required
+                               placeholder="&bull; &bull; &bull;">
+                        <div class="help-block with-errors"></div>
+                    </div> <!-- /.form-group -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7 col-sm-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <div class="card-wrapper"></div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- /.row -->
+    </div> <!-- /.row -->
+    <div class="section-subtitle">Dados do portador</div>
+    <div class="row" id="row-nome">
+        <div class="col-md-8 col-sm-12">
+            <div class="form-group">
+                <label>Nome completo<span class="required"></span></label>
+                <input type="text" name="nome" class="form-control" value="{{ request.user.aluno|default_if_none:'' }}">
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div> <!-- /.col-md-6 -->
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>CPF<span class="required"></span></label>
+                <input type="text" name="cpf" class="form-control cc-cpf" required
+                       placeholder="&bull;&bull;&bull; &bull;&bull;&bull; &bull;&bull;&bull; &bull;&bull;">
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div> <!-- /.col-md-6 -->
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>Nascimento <span class="required"></span></label>
+                <input type="text" name="nascimento" class="form-control cc-date" required
+                       placeholder="&bull;&bull; &bull;&bull; &bull;&bull;&bull;&bull;">
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div> <!-- /.col-md-6 -->
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>Celular <span class="required"></span></label>
+                <input type="tel" name="celular" class="form-control cc-phone" required
+                       placeholder="&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;">
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div> <!-- /.col-md-6 -->
+    </div> <!-- /.row -->
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <div class="form-group">
+                <label>E-mail <span class="required"></span></label>
+                <input type="email" name="email" class="form-control" required>
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div>
+    </div> <!-- /.row -->
+    <div class="section-subtitle">Dados da cobrança</div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="coupon" style="padding: unset">
+                <div class="coupon-inner">
+                    <div class="coupon-form">
+                        <div class="form-group">
+                            <input class="form-control cc-cep" id="id_cep" maxlength="10" minlength="10" name="cep"
+                                   placeholder="CEP" required="required" type="text" required>
+                            <a href="http://www.buscacep.correios.com.br/sistemas/buscacep/"
+                               target="_blank" class="btn btn-default">Não sabe o CEP?</a>
+                            <div class="help-block with-errors"></div>
+                        </div> <!-- /.form-group -->
+                    </div> <!-- /.coupon-form -->
+                </div> <!-- /.coupon-inner -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 col-sm-12">
+            <div class="form-group">
+                <label>Logradouro <span class="required"></span></label>
+                <input type="text" name="logradouro" class="form-control" disabled required>
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>Bairro <span class="required"></span></label>
+                <input type="text" name="bairro" class="form-control" disabled required>
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div>
+        <div class="col-md-3 col-sm-12">
+            <div class="form-group">
+                <label>Número <span class="required"></span></label>
+                <input type="text" name="numero" class="form-control" disabled required>
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div>
+        <div class="col-md-5 col-sm-12">
+            <div class="form-group">
+                <label>Cidade <span class="required"></span></label>
+                <input type="text" name="cidade" class="form-control" disabled required>
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>Estado <span class="required"></span></label>
+                <select name="uf" class="form-control" disabled required>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                </select>
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div>
+        <div class="col-md-3 col-sm-12">
+            <div class="form-group">
+                <label>Complemento</label>
+                <input type="text" name="complemento" class="form-control" disabled>
+                <div class="help-block with-errors"></div>
+            </div> <!-- /.form-group -->
+        </div>
+    </div>
+    <div class="row" id="containner-parcelas">
+        <div class="col-md-12 col-sm-12">
+            <div class="section-subtitle">Quer pagar em quantas parcelas?</div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+                <select class="form-control" name="cc_parcelas" id="cc_parcelas" disabled
+                        style="font-family: Monospace">
+                </select>
+                <small class="form-text text-muted">Parcelas marcadas com <span
+                        class="text-primary">*</span> possuem juros.</small>
+            </div> <!-- /.form-group -->
+        </div> <!-- /.col-md-8 -->
+    </div>
+</form>

@@ -1,0 +1,103 @@
+{% load humanize curso %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Adquira créditos aqui:</div>
+    </div>
+    <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row text-center">
+                <div id="how_many_credits" data-toggle="modal" data-target="#credit_modal">
+                    <i class="fa fa-info-circle fa-lg fa-fw"></i>
+                    <span>Quantos créditos eu preciso?</span>
+                </div>
+            </div>
+            <div class="row">
+                <span class="col-xs-6 col-lg-4">&nbsp;</span>
+                <span class="col-lg-4 visible-lg">&nbsp;</span>
+            </div>
+        </div>
+        <div class="text-center mrg-b-md">
+            <strong class="orange">Informe a quantidade de créditos que deseja comprar.</strong>
+        </div>
+        <div style="padding-left: 15%; padding-right: 15%; margin-bottom: 20px">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger btn-number"
+                            data-type="minus" data-field="quant[2]">
+                        <i class="glyphicon glyphicon-minus"></i>
+                    </button>
+                </span>
+                <input type="text" name="quant[2]" class="form-control input-number status-green"
+                       id="qtdaCreditos"
+                       value="{{ config.qtda_min }}" min="{{ config.qtda_min }}" max="{{ config.qtda_max }}"
+                       style="text-align: center; font-size: large; font-weight: bolder"
+                />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-success btn-number"
+                            data-type="plus" data-field="quant[2]">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </span>
+            </div>
+            <div class="clearfix">
+                <div class="pull-left">
+                    <small class="emerald">Min. {{ config.qtda_min|intcomma }}</small>
+                </div>
+                <div class="pull-right">
+                    <small class="emerald">Máx. {{ config.qtda_max|intcomma }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="text-center" style="margin-bottom: 10px">
+            <span class="badge badge-primary" id="desconto"></span>
+        </div>
+        <div class="text-center">
+            <button type="button" class="btn btn-primary btn-block" id="btnComprarAvulso"
+                    data-valor="{{ config.valor_unitario|stringformat:'.02f' }}">
+                <strong>Comprar
+                    <ins id="creditoUnico">{{ config.qtda_min }}</ins>&nbsp;&nbsp;créditos por <strong
+                            id="valorAvulso">R$ </strong>
+                </strong>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="credit_modal" role="dialog">
+    <div class="modal-dialog" style="width: 320px">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Quantos créditos eu preciso?</h4>
+            </div>
+            <div class="modal-body">
+                <form class="credits">
+                    <ul class="list-unstyled" id="pacotes">
+                        {% for desconto in config.descontos.all %}
+                            <li>
+                                <label class="row">
+                                    <span class="col-xs-6 col-lg-6">
+                                        Entre <strong class="orange">{{ desconto.de }}</strong> e
+                                        <strong class="orange">{{ desconto.ate }}</strong>
+                                    </span>
+                                    <span class="col-xs-6 col-lg-6 savings">
+                                        Econômia de <strong
+                                            class="green">{{ desconto.desconto|floatformat:2 }}%</strong>
+                                    </span>
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </form>
+                <div class="text-center">
+                    <span class="help-block red"
+                          style="font-weight: 600">1 crédito = R$ {{ config.valor_unitario }}</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

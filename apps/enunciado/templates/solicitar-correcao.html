@@ -1,0 +1,229 @@
+{% extends '_base-enunciado.html' %}
+{% block extra_css %}
+<style>
+    /***
+User Profile Sidebar by @keenthemes
+A component of Metronic Theme - #1 Selling Bootstrap 3 Admin Theme in Themeforest: http://j.mp/metronictheme
+Licensed under MIT
+***/
+
+body {
+  background: #F1F3FA;
+}
+
+/* Profile container */
+.profile {
+  margin: 20px 0;
+}
+
+/* Profile sidebar */
+.profile-sidebar {
+  padding: 20px 0 10px 0;
+  background: #fff;
+}
+
+.profile-userpic img {
+  float: none;
+  margin: 0 auto;
+  width: 50%;
+  height: 50%;
+  -webkit-border-radius: 50% !important;
+  -moz-border-radius: 50% !important;
+  border-radius: 50% !important;
+}
+
+.profile-usertitle {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.profile-usertitle-name {
+  color: #5a7391;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.profile-usertitle-job {
+  text-transform: uppercase;
+  color: #5b9bd1;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.profile-userbuttons {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.profile-userbuttons .btn {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 15px;
+  margin-right: 5px;
+}
+
+.profile-userbuttons .btn:last-child {
+  margin-right: 0px;
+}
+
+.profile-usermenu {
+  margin-top: 30px;
+}
+
+.profile-usermenu ul li {
+  border-bottom: 1px solid #f0f4f7;
+}
+
+.profile-usermenu ul li:last-child {
+  border-bottom: none;
+}
+
+.profile-usermenu ul li a {
+  color: #93a3b5;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.profile-usermenu ul li a i {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.profile-usermenu ul li a:hover {
+  background-color: #fafcfd;
+  color: #5b9bd1;
+}
+
+.profile-usermenu ul li.active {
+  border-bottom: none;
+}
+
+.profile-usermenu ul li.active a {
+  color: #5b9bd1;
+  background-color: #f6f9fb;
+  border-left: 2px solid #5b9bd1;
+  margin-left: -2px;
+}
+
+/* Profile Content */
+.profile-content {
+  padding: 20px;
+  background: #fff;
+  min-height: 460px;
+}
+</style>
+{% endblock %}
+{% block bloco_dir_lg %}4{% endblock %}
+{% block cabecalho %}
+    <div class="titulo-home mg-bot20">
+        <h4 class="pd-home titulo-home bold">Solicitar correção da resposta ao enunciado <a href="{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a></h4>
+        <div class="linha-aba mg-bot20"></div>
+    </div>
+{% endblock %}
+
+{% block bloco_esq %}
+    <section id="questoes-destaque" class="col-sm-8">
+        <!-- Últimas Respostas -->
+        <div class="containner">
+        {% if solicitacao %}
+            <div class="alert alert-success" role="alert">
+                Solicitação em: <strong>{{ solicitacao.get_status_display }}</strong>
+            </div>
+        {% else %}
+            <form method="post">
+                {% if corretores %}
+                    <div class="alert alert-danger" role="alert">
+                        <p>Você pode selecionar até 3 corretores de sua preferência para efetuar a correção.</p>
+                        <p>Caso não selecione a solicitação será enviada para o Pregão.</p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        <p>Não a corretores com perfil para responder essa solicitação.</p>
+                        <strong>Ela será enviada para o pregão.</strong>
+                    </div>
+                {% endif %}
+                <div class="row profile">
+                    {% csrf_token %}
+                    {% for corretor in corretores %}
+                    <div class="col-md-4">
+                        <div class="profile-sidebar">
+                            <!-- SIDEBAR USERPIC -->
+                            <div class="profile-userpic">
+                                <img src="{{ corretor.foto.url }}" style="width: 60px; height: 60px" class="img-responsive" alt="">
+                            </div>
+                            <!-- END SIDEBAR USERPIC -->
+                            <!-- SIDEBAR USER TITLE -->
+                            <div class="profile-usertitle">
+                                <div class="profile-usertitle-name">
+                                    {{ corretor }}
+                                </div>
+                                <div class="profile-usertitle-job">
+                                    {{ corretor.ocupacao }}
+                                </div>
+                            </div>
+                            <div class="profile-userbuttons">
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-info">
+                                        <input type="checkbox" value="{{ corretor.id }}" name="ckhprof" data-pk="{{ corretor.pk }}"><span>Selecionar</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary"><strong>SOLICITAR CORREÇÃO</strong></button>
+                </div>
+            </form>
+        {% endif %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block centro %}
+{% endblock %}
+
+{% block bloco_dir %}
+    <div class="enunciado-destaque">
+        <a href="{{ resposta.get_absolute_url }}" class="faixa-verde">
+            Resposta
+        </a>
+    </div>
+    <div style="text-align: justify" class="div-scroll">
+        {{ resposta.texto|safe }}
+    </div>
+{% endblock %}
+
+{% block busca %}
+    {% include 'busca.html' %}
+{% endblock %}
+{% block extra_js %}
+<script>
+    window.checks = 0;
+    $('[name=ckhprof]').on('change', function (e) {
+        var check = e.target.checked;
+        var elm = $(e.target);
+        if (check) {
+            window.checks += 1;
+            elm.closest('label').removeClass('btn-info');
+            elm.closest('label').addClass('btn-success');
+            elm.next('span').html('Remover');
+        } else {
+            window.checks -= 1;
+            elm.closest('label').removeClass('btn-success');
+            elm.closest('label').addClass('btn-info');
+            elm.next('span').html('Selecionar');
+        }
+        if (window.checks > 3) {
+            title = "Selecione no máximo 3 Corretores";
+            msg = "Você selecionou " + window.checks + " Corretores";
+            swal_alert(msg, title, "error");
+        }
+        console.log('click', elm)
+    })
+</script>
+{% endblock %}

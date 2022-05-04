@@ -1,0 +1,283 @@
+{% load staticfiles curso %}
+<header id="topNav">
+    <div class="container">
+
+        <!-- Mobile Menu Button -->
+        <button class="btn btn-mobile" data-toggle="collapse" data-target=".nav-main-collapse">
+            <i class="fa fa-bars"></i>
+        </button>
+
+        <!-- BUTTONS -->
+        <ul class="float-right nav nav-pills nav-second-main">
+
+            <!-- SEARCH -->
+            <li class="search">
+                <a href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                <div class="search-box">
+                    <form action="#" method="get" class="fancy-form">
+                        <div class="input-group">
+                            <input type="text" name="src" placeholder="" class="form-control">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">Buscar</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </li>
+            <!-- /SEARCH -->
+            <!-- QUICK SHOP CART -->
+            <li class="quick-cart">
+                <a href="#">
+                    <span class="badge badge-aqua badge-corner">{{ proc_curso.cart.count }}</span>
+                    <i class="fa fa-shopping-cart"></i>
+                </a>
+                <div class="quick-cart-box">
+                    <h4>Carrinho de Compras</h4>
+
+                    <div class="quick-cart-wrapper">
+                        <!-- cart item -->
+                        <!--a href="#">
+                            <img src="demo_files/images/people/300x300/4-min.jpg" width="45" height="45" alt="" />
+                            <h6><span>2x</span> RED BAG WITH HUGE POCKETS</h6>
+                            <small>$37.21</small>
+                        </a--><!-- /cart item -->
+                        <!-- cart no items example -->
+                        <a class="text-center" href="#">
+                            <h6>CARRINHO VAZIO</h6>
+                        </a>
+
+                    </div>
+
+                    <!-- quick cart footer -->
+                    <div class="quick-cart-footer clearfix">
+                        <a href="#" class="btn btn-primary btn-sm float-right">Checkout</a>
+                        <span class="float-left"><strong>TOTAL:</strong> R$ 0,00</span>
+                    </div>
+                    <!-- /quick cart footer -->
+
+                </div>
+            </li>
+            <!-- /QUICK SHOP CART -->
+
+        </ul>
+        <!-- /BUTTONS -->
+
+
+        <!-- Logo -->
+        <a class="logo float-left" href="index.html">
+            <img src="{% static 'v2/website/images/logos/logotype-jus-negativo.svg' %}" alt="" >
+        </a>
+
+        <!--
+            Top Nav
+
+            AVAILABLE CLASSES:
+            submenu-dark = dark sub menu
+        -->
+        <div class="navbar-collapse collapse float-right nav-main-collapse">
+            <nav class="nav-main">
+
+                <!--
+                    NOTE
+
+                    For a regular link, remove "dropdown" class from LI tag and "dropdown-toggle" class from the href.
+                    Direct Link Example:
+
+                    <li>
+                        <a href="#">HOME</a>
+                    </li>
+                -->
+                <!--
+                    MENU ANIMATIONS
+                        .nav-animate-fadeIn
+                        .nav-animate-fadeInUp
+                        .nav-animate-bounceIn
+                        .nav-animate-bounceInUp
+                        .nav-animate-flipInX
+                        .nav-animate-flipInY
+                        .nav-animate-zoomIn
+                        .nav-animate-slideInUp
+
+                        .nav-hover-animate 		= animate text on hover
+
+                        .hover-animate-bounceIn = bounceIn effect on mouse over of main menu
+                -->
+                <ul id="topMain" class="nav nav-pills nav-main">
+                    <li class="dropdown mega-menu nav-animate-fadeIn nav-hover-animate hover-animate-bounceIn"><!-- SHOPPING -->
+                        <a class="dropdown-toggle" href="#">
+                            <span class="topMain-icon">
+                                <i class="et-basket"></i>
+                                SHOPPING
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-5th">
+                                        <ul class="list-unstyled">
+                                            <li><span>CURSOS</span></li>
+                                            {% get_categorias 'C' as cursos%}
+                                            {% if cursos %}
+                                                {% for curso in cursos %}
+                                                <li>
+                                                    <a href="{{ curso.get_absolute_url }}">{{ curso.titulo_menu }}</a>
+                                                </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-5th">
+                                        <ul class="list-unstyled">
+                                            <li><span>Atividade Avulsa</span></li>
+                                            {% get_categorias 'S' as cursos%}
+                                            {% if cursos %}
+                                                {% for curso in cursos %}
+                                                <li>
+                                                    <a href="{{ curso.get_absolute_url }}">{{ curso.titulo_menu }}</a>
+                                                </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-5th">
+                                        <ul class="list-unstyled">
+                                            <li><span>OAB 2ª FASE</span></li>
+                                            {% get_categorias 'O' as cursos%}
+                                            {% if cursos %}
+                                                {% for curso in cursos %}
+                                                <li>
+                                                    <a href="{{ curso.get_absolute_url }}">{{ curso.titulo_menu }}</a>
+                                                </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-5th">
+                                        <ul class="list-unstyled">
+                                            <li><span><i class="fa fa-star text-info"></i> PACOTES PROMOCIONAIS</span></li>
+                                            {% get_categorias 'B' as cursos%}
+                                            {% if cursos %}
+                                                {% for curso in cursos %}
+                                                <li>
+                                                    <a href="{{ curso.get_absolute_url }}">{{ curso.titulo_menu }}</a>
+                                                </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    {% get_series as series %}
+                    {% if series %}
+                    <li class="dropdown nav-animate-fadeIn nav-hover-animate hover-animate-bounceIn"><!-- GRATIS -->
+                        <a class="dropdown-toggle" href="#">
+                            <span class="topMain-icon">
+                                <i class="et-happy"></i>
+                                CURSOS GRÁTIS
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for serie in series %}
+                            <li>
+                                <a href="{{ serie.get_absolute_url }}">{{ serie }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endif %}
+                    <li class="dropdown mega-menu nav-animate-fadeIn nav-hover-animate hover-animate-bounceIn"><!-- THEMATIC -->
+                        <a class="dropdown-toggle" href="#">
+                            <span class="topMain-icon">
+                                <i class="et-book-open"></i>
+                                LIVRARIA
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-clean">
+                            <li>
+                                <div class="row">
+                                    {% get_categorias 'L' as livros %}
+                                    {% for livro in livros %}
+                                    <div class="col-md-5th">
+                                        <ul class="list-unstyled">
+                                            <li><span>{{ livro.titulo_menu }}</span></li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <span class="fs-11 mt-0 pb-15 pt-15 text-info">
+                                                    <a href="{{ livro.get_absolute_url }}">Ver no Shopping</a>
+                                                </span>
+                                            </li>
+                                            <li class="divider"></li>
+                                            {% for livro in livro.get_cursos %}
+                                            <li>
+                                                <a target="_blank" href="{{ livro.get_absolute_url }}">{{ livro }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endfor %}
+
+                                    <div class="col-md-6 hidden-sm text-center">
+                                        {% get_last_livro as last_livro %}
+                                        <a href="{{ last_livro.get_absolute_url }}">
+                                        <div class="p-15 block">
+                                            <img class="img-fluid" src="{{ last_livro.imagem.url }}" alt="" style="width: 30%">
+                                        </div>
+                                        <p class="menu-caption hidden-xs-down text-muted text-center">
+                                            {{ last_livro }}
+                                        </p>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- RANKING -->
+                    <li class="dropdown nav-animate-fadeIn nav-hover-animate hover-animate-bounceIn"><!-- GRATIS -->
+                        <a class="dropdown-toggle" href="#">
+                            <span class="topMain-icon">
+                                <i class="et-trophy"></i>
+                                RANKING
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'enunciado:ranking-premiado' %}?q=I">Premiado </a>
+                            <li><a href="{% url 'enunciado:ranking' %}">Permanentes </a>
+                        </ul>
+                    </li>
+                    <!-- RANKING -->
+                    <li class="dropdown nav-animate-fadeIn nav-hover-animate hover-animate-bounceIn"><!-- GRATIS -->
+                        <a class="dropdown-toggle" href="#">
+                            <span class="topMain-icon">
+                                <i class="et-tools"></i>
+                                ESTUDE AQUI
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-question-circle-o"></i> Questão Discursiva</a></li>
+                            <li><a href="#"><i class="fa fa-file-text-o"></i> Peça Prática</a></li>
+                            <li><a href="#"><i class="fa fa-gavel"></i> Sentença</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'enunciado:atividade' %}">Últimas Atividades</a>
+                            <li><a href="{% url 'enunciado:mais-populares' %}">Enunciados mais populares</a>
+                            <li><a href="{% url 'enunciado:recentes' %}">Enunciados mais recentes</a>
+                            <li><a href="{% url 'enunciado:temas-abordados' %}">Temas mais abordados</a>
+                            <li><a href="{% url 'enunciado:roteiros' %}">Roteiros de Estudo</a>
+                            <li><a href="{% url 'website:artigo-indice' %}">Artigos e outros textos</a>
+                        </ul>
+                    </li>
+
+                </ul>
+
+            </nav>
+        </div>
+
+    </div>
+</header>

@@ -1,0 +1,257 @@
+
+.swal2-container {
+    z-index: 99999999991;
+}
+
+.modal {
+    z-index: 9999999999;
+}
+
+.edge_builder {
+    position: absolute !important;
+    z-index: 2147483646 !important;
+    background-color: rgb(0, 97, 255) !important;
+}
+
+div.panel div.panel-body {
+    background-color: #f0f0f0;
+}
+
+form.credits div.expand-credits {
+    margin-bottom: 20px;
+    color: #ff6600;
+    cursor: pointer;
+    font-weight: bolder;
+}
+
+div.panel div.panel-body #how_many_credits {
+    font-weight: bold;
+    color: #06F;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.visible-lg {
+    display: none !important;
+}
+
+@media (min-width: 1200px) {
+    .visible-lg {
+        display: block !important;
+    }
+}
+
+form.credits li {
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(221, 221, 221);
+}
+
+form.credits li.active {
+    -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 0.6);
+    -moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.6);
+    box-shadow: 0 0 8px rgba(82, 168, 236, 0.6);
+    background-color: #fff;
+    border: 1px solid rgb(41, 163, 232);
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+}
+
+.hide {
+    display: none !important;
+}
+
+.cspicon {
+    display: inline-block;
+}
+
+[class^="cspicon"]:before, [class*=" icon-"]:before {
+    font-family: "cspicon";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-decoration-line: inherit;
+    text-decoration-style: inherit;
+    text-decoration-color: inherit;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+}
+
+.icon-chevron-down:before {
+    content: '\e827';
+}
+
+.btn-primary {
+    color: #fff !important;
+    background-color: #ff6600 !important;;
+    border-color: #e65c00 !important;;
+    border-top-color: rgb(230, 92, 0) !important;;
+    border-right-color: rgb(230, 92, 0) !important;;
+    border-bottom-color: rgb(230, 92, 0) !important;;
+    border-left-color: rgb(230, 92, 0) !important;;
+}
+
+.cspicon-lg {
+    font-size: 1.33333em;
+    line-height: 0.75em;
+    vertical-align: -15%;
+}
+
+.icon-question-circle:before {
+    content: '\e816';
+}
+
+form.credits li label.row {
+    font-weight: normal;
+    padding: 10px 0;
+    cursor: pointer;
+    display: block;
+    margin: 0;
+    padding-top: 10px;
+    padding-right: 0px;
+    padding-bottom: 10px;
+    padding-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+
+form.credits li.active label.row {
+    font-weight: bold;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    box-sizing: border-box;
+    padding: 0;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin: 4px 0 0;
+    margin-top: 1px \9;
+    line-height: normal;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+
+form.credits li label.row input {
+    display: none;
+}
+
+form.credits li label.row span {
+    display: block;
+}
+
+form.credits li label.row span.savings {
+    color: #666;
+}
+
+form.credits li label.row span.text-center {
+    padding: 0px;
+}
+
+div.plans div.panel {
+    text-align: center;
+    font-size: 14px;
+}
+
+div.panel-body {
+    background-color: #f0f0f0;
+}
+
+div.panel-heading {
+    border-color: unset !important;
+}
+
+div.panel-heading div.panel-title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+div.panel-body #how_many_credits {
+    font-weight: bold;
+    color: #06F;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.selected {
+    background-color: #d9edf7;
+}
+
+.orange2 {
+    color: #ff6600;;
+}
+
+.orange {
+    color: #ff6600;;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: smaller;
+    text-align: center;
+}
+
+.map-stats .table tbody > tr > td:first-child > i {
+    color: white !important;
+}
+
+hr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-width: 0;
+    background-color: #0F3E68;
+    height: 1px;
+}
+
+.title span {
+    float: left !important;
+}
+
+tr {
+    cursor: pointer;
+}
+
+th {
+    font-size: 0.8em !important;
+    text-align: center !important;
+}
+
+.map-stats .table tbody > tr > td {
+    font-weight: bolder;
+}
+
+.map-stats .table tbody > tr > td.status {
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.project-box .project-box-header .name span {
+    color: #fff;
+    display: block;
+    font-size: 1em;
+    font-weight: 600;
+    padding: 10px 10px;
+    border-radius: 3px 3px 0 0;
+    background-clip: padding-box;
+    transition: background-color 0.1s ease-in-out 0s;
+}

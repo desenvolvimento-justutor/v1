@@ -1,0 +1,56 @@
+<div class="email-nav-nano-content">
+    <a target="_blank" href="{% url 'autocorrecao:baixar_correcao' formulario.pk %}"
+       class="btn btn-success email-compose-btn">
+        <i class="fa fa-download"></i> Download da correção
+    </a>
+    <ul id="email-nav-items" class="clearfix">
+        <li class="active">
+            <a href="email-inbox.html">
+                <i class="fa fa-inbox"></i>
+                Formulário
+            </a>
+        </li>
+        <li>
+            <a target="_blank" href="{{ formulario.enunciado.get_absolute_url }}">
+                <i class="fa fa-star"></i>
+                Acessar Enunciado
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-star"></i>
+                Acessar resposta
+            </a>
+        </li>
+    </ul>
+    <div id="email-nav-labels-wrapper">
+        <div class="email-nav-headline">
+            Nota final
+        </div>
+        <ul id="email-nav-labels" class="clearfix">
+            <li>
+                <a href="#">
+                    <i class="fa fa-chart-line emerald"></i>
+                    <strong class="text-primary" id="total">{{ total }}</strong>
+                </a>
+            </li>
+        </ul>
+        <div class="email-nav-headline">
+            Navegação
+        </div>
+        <ul class="clearfix" id="email-nav-labels">
+            <li>
+                <a href="#id_formulario"><i class="fa fa-circle emerald"></i>Enunciado</a>
+            </li>
+            <li>
+                <a href="#id_instrucoes"><i class="fa fa-circle red"></i>Instruções</a>
+            </li>
+            <li>
+                <a href="#id_consideracoes"><i class="fa fa-circle green"></i>Considerações iniciais</a>
+            </li>
+            <li>
+                <a href="#id_correcao"><i class="fa fa-circle yellow"></i>Correção</a>
+            </li>
+        </ul>
+    </div>
+</div>

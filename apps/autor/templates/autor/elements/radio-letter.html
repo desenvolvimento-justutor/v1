@@ -1,0 +1,58 @@
+<style>
+    input[type="radio"] {
+        {#margin-right: 30px;#}
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        border: 2px solid #14734A;
+        background-color: white;
+        -webkit-appearance: none; /*to disable the default appearance of radio button*/
+        -moz-appearance: none;
+        cursor: pointer;
+    }
+    input[type="radio"]:before {
+        padding-top: 5px;
+        content: '1';
+        display: block;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    input[type="radio"]:focus { /*no need, if you don't disable default appearance*/
+        outline-color: transparent; /*to remove the square border on focus*/
+    }
+
+    input[type="radio"]:hover { /*no need, if you don't disable default appearance*/
+        background-color: #41c372; /*to remove the square border on focus*/
+    }
+
+    input[type="radio"]:checked { /*no need, if you don't disable default appearance*/
+        background-color: #14734A;
+    }
+
+    input[type="radio"]:checked ~ span:first-of-type {
+        color: white;
+    }
+
+    label span:first-of-type {
+        position: relative;
+        left: -24px;
+        font-size: 15px;
+        font-weight: bold;
+
+        color: #14734A;
+    }
+
+    label span {
+        position: relative;
+        top: -10px;
+    }
+</style>
+{% for escolha in questao.get_escolhas %}
+    <div class="form-group">
+        <label>
+            <input type="radio" name="options"/>
+            <label>{{ escolha|removetags:"p"|safe }}</label>
+        </label>
+    </div>
+{% endfor %}

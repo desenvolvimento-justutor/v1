@@ -1,0 +1,170 @@
+/* Body */
+.form-control:focus {
+  border-color: #41C372;
+}
+
+.text-primary {
+  color: #41C372 !important;
+}
+
+.btn-primary {
+  background-color: #41C372;
+  border-color: #41C372;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:hover:focus, .btn-primary:hover:visited, .btn-primary:focus:active {
+  background-color: #41C372;
+  border-color: #41C372;
+}
+
+/* General */
+.btn-outline {
+  background-color: transparent !important;
+  color: #41C372;
+}
+.btn-outline:hover {
+  background-color: #41C372 !important;
+}
+
+a {
+  color: #41C372;
+}
+
+/* Header */
+.navbar.navbar-primary {
+  background-color: #41C372;
+}
+.navbar.navbar-secondary li.active a {
+  border-bottom: 2px solid #41C372;
+  color: #41C372;
+}
+
+.steps .step-item.done .step-count {
+  background-color: #41c372bd;
+}
+.steps .step-item.active .step-count {
+  background-color: #41c372bd;
+}
+.steps .step-item.active .step-label {
+  color: #14734a;
+}
+
+/* Section */
+section.section .section-inner .section-nav {
+  color: #14734a;
+}
+section.section .section-inner .section-nav:hover {
+  background-color: #41C372;
+  border-color: #41C372;
+}
+section.section .section-inner .section-subtitle:before {
+  background-color: #41C372;
+}
+section.section .section-inner .section-cta .price {
+  color: #41C372;
+}
+
+/* Items */
+.items .item .item-details .item-variants ul li .variant-value {
+  color: #41C372;
+}
+.items .item .item-price .value {
+  color: #41C372;
+}
+.items .item .item-price .quantity .control.min:hover, .items .item .item-price .quantity .control.plus:hover {
+  color: #41C372;
+}
+
+/* Counpon */
+.coupon .coupon-form .btn {
+  background-color: #41C372;
+}
+
+.coupon .coupon-form .btn-danger {
+  background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+.coupon .coupon-form .form-control:focus {
+  border-color: #41C372;
+  color: #41C372;
+}
+
+/* Total Info */
+.total-info .total-item.total .total-value {
+  color: #41C372;
+}
+
+/* Shipping List */
+.shipping-list .shipping-item .shipping-item-label span {
+  color: #14734a;
+}
+.shipping-list .shipping-item .shipping-item-price {
+  color: #41C372;
+}
+.shipping-list .shipping-item:hover, .shipping-list .shipping-item.active {
+  border-color: #41C372;
+}
+
+/* Shipping To */
+.shipping-to .shipping-inner .contact span, .shipping-to .shipping-inner .etd span {
+  color: #41C372;
+}
+
+/* Grand Total */
+.grand-total .grand-total-inner .grand-total-label span {
+  color: #14734a;
+}
+.grand-total .grand-total-inner .grand-total-price {
+  color: #41C372;
+}
+.grand-total .grand-total-inner:hover, .grand-total .grand-total-inner.active {
+  border-color: #41C372;
+}
+
+/* Payment Method List */
+.payment-method-list .payment-method-item:hover, .payment-method-list .payment-method-item.active {
+  border-color: #41C372;
+}
+
+/* Payment Method Form */
+.payment-method-form .payment-method-form-inner .payment-method-form-item .count {
+  color: #14734a;
+}
+.payment-method-form .payment-method-form-inner .payment-method-form-item .title {
+  color: #14734a;
+}
+
+/* Thankyou */
+.thankyou .thankyou-inner .thankyou-steps .step .count {
+  color: #14734a;
+}
+
+/*helpme*/
+.helpme .helpme-inner {
+  background-color: #41C372;
+}
+
+/*faq*/
+/* Mobile with maximal width 425px */
+@media screen and (max-width: 425px) {
+  .navbar.navbar-primary .navbar-nav.navbar-right > li.active a {
+    color: #41C372;
+  }
+
+  .items .item .close {
+    background-color: #c30002;
+  }
+}
+.selectric-focus .selectric {
+  border-color: #41C372;
+}
+
+.selectric-open .selectric {
+  border-color: #41C372;
+}
+
+.selectric-items li.highlighted {
+  background: #41C372;
+}
+
+/*# sourceMappingURL=blue.css.map */

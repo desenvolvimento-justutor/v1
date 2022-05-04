@@ -1,0 +1,280 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail aluno_tags %}
+
+{% block panel_content %}
+    <div class="row">
+        {% if tem_sentencas %}
+        <div class="main-box-body clearfix">
+            <div class="tabs-wrapper">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab-atividades" data-toggle="tab">Peças</a></li>
+                    <li class=""><a href="#tab-mensagens" data-toggle="tab">Mensagens</a></li>
+                </ul>
+                <div class="tab-content">
+                    <!-- TAB ATIVIDADES -->
+                    <div class="tab-pane fade active in" id="tab-atividades">
+                        <div class="col-lg-12">
+                            <div class="main-box clearfix" style="height: 100%">
+                                <div class="main-box-body clearfix">
+                                    <div class="table clearfix">
+                                        <table class="table user-list table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th><span>Curso</span></th>
+                                                <th><span>Nível</span></th>
+                                                <th><span>Data</span></th>
+                                                <th><span>Professor</span></th>
+                                                <th class="text-center"><span>Status</span></th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for checkout in checkouts %}
+                                                {% with checkout.get_sentencas_oab as cursos %}
+                                                {% for curso in cursos %}
+                                                    {% with curso.curso.sentenca_oab as sentenca %}
+                                                    {% get_sentenca_oab sentenca as st %}
+                                                    <tr>
+                                                        <td>{{ curso }}</td>
+                                                        <td>{{ sentenca.span_nivel|safe }}</td>
+                                                        <td>{{ checkout.date|date:"SHORT_DATE_FORMAT" }}</td>
+                                                        <td>
+                                                            {% thumbnail sentenca.professor.foto "50x50" crop="center" as im %}
+                                                                <img src="{{ im.url }}" alt="{{ aluno }}">
+                                                            {% empty %}
+                                                                <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}"/>
+                                                            {% endthumbnail %}
+                                                            <a href="javascript:void(0)" class="user-link">{{ sentenca.professor }}</a>
+                                                            <span class="user-subhead">{{ sentenca.professor.graduacao }}</span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {% if checkout.transaction %}
+                                                                {% with  checkout.transaction.status as status %}
+                                                                    {% if status in 'pago,disponivel' %}
+                                                                        {% if st %}
+                                                                            {% if st.correcao %}
+                                                                                <a target="_blank" href="{{ st.correcao.url }}" class="table-link success"  data-toggle="tooltip" data-original-title="Baixar Correção"><i class="fa fa-download"></i> Correção</a>
+                                                                            {% else %}
+                                                                                {{ st.span_status|safe }}
+                                                                            {% endif %}
+                                                                            {% if st.status in 'A,C' and sentenca.gabarito %}
+                                                                                <a target="_blank" href="{{ sentenca.gabarito.url }}" class="table-link success" data-toggle="tooltip" data-original-title="Baixar Gabarito">
+                                                                                    <i class="fa fa-pencil-square-o"></i> Gabarito
+                                                                                </a>
+                                                                            {% endif %}
+                                                                        {% else %}
+                                                                            <form method="post">
+                                                                                {% csrf_token %}
+                                                                                <input type="hidden" name="sentenca_id" value="{{ sentenca.id }}">
+                                                                                <button data-toggle="tooltip" data-original-title="Clique aqui para começar a redigir a sua peça." type="submit" class="btn btn-success btn-sm"><i class="fa fa-play"></i> Iniciar</button>
+                                                                            </form>
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                        <a class="btn btn-success btn-sm" disabled=""><i class="fa fa-play"></i> Iniciar</a>
+                                                                    {% endif %}
+                                                                {% endwith %}
+                                                            {% else %}
+                                                                <a class="btn btn-success btn-sm" disabled=""><i class="fa fa-play"></i> Iniciar</a>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="text-center" style="width: 20%;">
+                                                            {% if checkout.transaction %}
+                                                                {% with  checkout.transaction.status as status %}
+                                                                    {% if status in 'pago,disponivel' %}
+                                                                        <div class="actions">
+                                                                            <a href="#" class="table-link" data-toggle="modal" data-target="#modalTarefa" data-titulo="{{ sentenca }}" data-pk="{{ sentenca.curso.pk }}" data-tipo="oab" data-stpk="{% if st %}{{ st.pk }}{% else %}0{% endif %}">
+                                                                                <i class="fa fa-eye" data-toggle="tooltip" data-original-title="Visualizar peça"></i>
+                                                                            </a>
+                                                                            <a target="_blank" href="{% url 'curso:sentenca-imprimir' sentenca.curso.pk %}?tipo=oab" class="table-link success" data-toggle="tooltip" data-original-title="Imprimir peça">
+                                                                                <i class="fa fa-print"></i>
+                                                                            </a>
+                                                                            {% if st %}
+                                                                                <a href="{% url 'curso:sentenca-oab-responder' st.pk %}" class="table-link success" data-toggle="tooltip" data-original-title="Responder">
+                                                                                    <i class="fa fa-pencil"></i>
+                                                                                </a>
+                                                                            {% endif %}
+                                                                            <!-- MODELOS -->
+                                                                            {% with sentenca.sentencamodelooab_set.all as modelos %}
+                                                                                {% if modelos and st.status == 'C' %}
+                                                                                <div class="btn-group" data-toggle="tooltip" data-original-title="Peças de outros alunos">
+                                                                                    <button data-toggle="dropdown" class="btn btn-success btn-xs dropdown-toggle has-tooltip" type="button">
+                                                                                    + Peças<span class="caret"></span>
+                                                                                    </button>
+                                                                                    <ul class="dropdown-menu dropdown-menu-right">
+                                                                                        {% for modelo in modelos %}
+                                                                                        <li><a target="_blank" href="{{ modelo.arquivo.url }}">Peça {{ modelo.pk|stringformat:"03d" }}</a></li>
+                                                                                        {% endfor %}
+                                                                                    </ul>
+                                                                                </div>
+                                                                                {% endif %}
+                                                                            {% endwith %}
+                                                                        </div>
+                                                                    {% elif status in 'aguardando,em_analise' %}
+                                                                        <span class="label label-warning">{{ checkout.transaction.get_status_display }}</span>
+                                                                    {% else %}
+                                                                        <span class="label label-danger">{{ checkout.transaction.get_status_display }}</span>
+                                                                    {% endif %}
+                                                                {% endwith %}
+                                                            {% else %}
+                                                                <span class="label label-warning">Aguardando transação do PagSeguro</span>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% endwith %}
+                                                {% endfor %}
+                                                {% endwith %}
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- TAB VIDEOS -->
+                    <div class="tab-pane fade" id="tab-mensagens">
+                        {% include '_msg-professor.html' with professores=professores msg_tipo='st' %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-danger">
+            <i class="fa fa-times-circle fa-fw fa-lg"></i>
+            <strong>Ops!</strong> Você não possui nenhuma Peça.
+        </div>
+        {% endif %}
+        <!-- MODAL -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="modalTarefa">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" style="font-weight: bold">Modal title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalBody"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+                        <a href="" target="_blank" id="btn-imprimir" class="btn btn-primary"><i class="fa fa-print"></i> Imprimir</a>
+                        <a href="" id="btn-tarefa" class="btn btn-success"><i class="fa fa-edit"></i> Responder</a>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    function verTarefa(atividadeID) {
+        $('#modalTarefa').modal('show');
+
+    }
+    $('#modalTarefa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var titulo = button.data('titulo');
+        var pk = button.data('pk');
+        var stpk = button.data('stpk');
+        var tipo = button.data('tipo');
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this);
+        modal.find('.modal-title').text(titulo);
+
+        if (stpk == 0){
+            $('#btn-tarefa').attr('disabled', 'true');
+        } else {
+            $('#btn-tarefa').removeAttr("disabled");
+            $('#btn-tarefa').prop('href', '/curso/sentenca-oab/responder/' + stpk);
+        }
+        $('#btn-imprimir').prop('href', '/curso/sentenca/imprimir/' + pk + '?tipo=' + tipo);
+        $.getJSON( "{% url 'curso:get-amostra-json' %}?pk=" + pk, function( json ) {
+            modal.find('#modalBody').html($.parseHTML( json.conteudo ));
+            $('#modalBody').slimScroll({
+                start: 'top',
+                height: '400px'
+            });
+        });
+    });
+
+    $( "[data-name='ver']" ).click(function(e) {
+        var elm = $(e.target);
+        var aluno_id = {{ aluno.id }};
+
+        $.getJSON("{% url 'professor:get-message' %}?pid=" + elm.data('pid') + '&cid=oab', function (data) {
+            var items = [];
+            $.each(data, function (key, val) {
+                /*items.push("<li id='" + key + "'>" + val + "</li>");*/
+                var css = 'left';
+                if (val.is_professor == true) {
+                    var css = 'right';
+                }
+                items.push('<div class="conversation-item item-' + css + ' clearfix">');
+                items.push('    <div class="conversation-user">');
+                if (val.is_professor == false) {
+                    items.push('        <img src="' + val.img_url + '"/>');
+                } else {
+                    items.push('        <img src="' + val.img_prof_url + '"/>');
+                }
+                items.push('    </div>');
+                items.push('    <div class="conversation-body">');
+                items.push('        <div class="name">');
+                if (val.is_professor == false) {
+                    items.push('            <a href="' + val.aluno_url + '">' + val.aluno + '</a>');
+                } else {
+                    items.push('            <a href="#">' + val.professor + '</a>');
+                }
+                items.push('        </div>');
+                items.push('        <div class="time hidden-xs">');
+                items.push(val.data);
+                items.push('        </div>');
+                items.push('        <div id="icone-lido-' + val.mensagem_id + '">');
+
+                if (val.is_professor == false) {
+                    if (val.lido == true) {
+                        items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor leu sua mensagem." class="fa fa-eye fa-lg pull-right text-success"></i></a>')
+                    } else {
+                        items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor não leu sua mensagem." class="fa fa-eye-slash fa-lg pull-right text-danger"></i></a>')
+                    }
+                } else {
+                    if (val.lido == true) {
+                        items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Marcada como lidar" class="fa fa-check fa-lg pull-right text-success"></i></a>')
+                    } else {
+                        items.push('            <a href="javascript:void(0)" onclick="startLoad();Dajaxice.apps.professor.msg_set_lido(Dajax.process, {mid:' + val.mensagem_id + '});"><i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i></a>')
+
+                    }
+                }
+
+                items.push('        </div>');
+                items.push('        <div class="text">');
+                items.push(val.texto);
+                items.push('        </div>');
+                items.push('    </div>');
+                items.push('</div>');
+            });
+            var html = items.join( "" );
+
+            $('#msg-inner').html(html);
+        });
+    });
+    // ENVIAR MENSAGEM
+    function enviarMensagem2() {
+        var texto = $('#text-msg').val();
+        var pid = $('#pid').val();
+        if (texto == "") {
+            notif('Informe o texto da mensagem', 'error');
+            $('#modal-msg').blur();
+        } else {
+            $("#modal-msg").modal("hide");
+            $("#text-msg").val("");
+            startLoad();
+            Dajaxice.apps.professor.enviar_mensagem(Dajax.process, {'cid': 'oab', 'pid': pid, 'mensagem': texto });
+        }
+    }
+</script>
+{% endblock %}

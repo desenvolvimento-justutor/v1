@@ -1,0 +1,118 @@
+{% extends '_base-painel-aluno.html' %}
+{% load  thumbnail %}
+
+{% block panel_content %}
+    <div class="row">
+        {% if pagina == 'cursos' %}
+            <!-- CURSOS -->
+            {% include '_cursos-aluno.html' %}
+        {% else %}
+            {% include '_videos-curso.html' %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    function acompanharRemover(eid) {
+        Dajaxice.apps.enunciado.acompanhar_remover(Dajax.process, {'eid': eid});
+    };
+
+    $('#table-respostas').slimScroll({
+        height: '400px',
+    });
+    $('#table-correcoes').slimScroll({
+        height: '400px',
+    });
+</script>
+<script>
+$('#table-respostas').slimScroll({
+    height: '400px',
+});
+$('#table-correcoes').slimScroll({
+    height: '400px',
+});
+$('#msg-inner').slimScroll({
+    height: '450px',
+});
+$( "[data-name='ver']" ).click(function(e) {
+    var elm = $(e.target);
+    var aluno_id = {{ aluno.id }};
+
+    $.getJSON("{% url 'professor:get-message' %}?pid=" + elm.data('pid') + '&cid=' + elm.data('curso'), function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            /*items.push("<li id='" + key + "'>" + val + "</li>");*/
+            var css = 'left';
+            if (val.is_professor == true) {
+                var css = 'right';
+            }
+            items.push('<div class="conversation-item item-' + css + ' clearfix">');
+            items.push('    <div class="conversation-user">');
+            if (val.is_professor == false) {
+                items.push('        <img src="' + val.img_url + '"/>');
+            } else {
+                items.push('        <img src="' + val.img_prof_url + '"/>');
+            }
+            items.push('    </div>');
+            items.push('    <div class="conversation-body">');
+            items.push('        <div class="name">');
+            if (val.is_professor == false) {
+                items.push('            <a href="' + val.aluno_url + '">' + val.aluno + '</a>');
+            } else {
+                items.push('            <a href="#">' + val.professor + '</a>');
+            }
+            items.push('        </div>');
+            items.push('        <div class="time hidden-xs">');
+            items.push(val.data);
+            items.push('        </div>');
+            items.push('        <div id="icone-lido-' + val.mensagem_id + '">');
+
+            if (val.is_professor == false) {
+                if (val.lido == true) {
+                    items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor leu sua mensagem." class="fa fa-eye fa-lg pull-right text-success"></i></a>')
+                } else {
+                    items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Professor não leu sua mensagem." class="fa fa-eye-slash fa-lg pull-right text-danger"></i></a>')
+                }
+            } else {
+                if (val.lido == true) {
+                    items.push('            <a href="javascript:void(0)"><i data-placement="left" data-toggle="tooltip" title="Marcada como lidar" class="fa fa-check fa-lg pull-right text-success"></i></a>')
+                } else {
+                    items.push('            <a href="javascript:void(0)" onclick="startLoad();Dajaxice.apps.professor.msg_set_lido(Dajax.process, {mid:' + val.mensagem_id + '});"><i data-placement="left" data-toggle="tooltip" title="Clique para marcar como visualizada." class="fa fa-eye fa-lg pull-right"></i></a>')
+
+                }
+            }
+
+            items.push('        </div>');
+            items.push('        <div class="text">');
+            items.push(val.texto);
+            items.push('        </div>');
+            items.push('    </div>');
+            items.push('</div>');
+        });
+        var html = items.join( "" );
+
+        $('#msg-inner').html(html);
+        /*$("<ul/>", {
+            "class": "my-new-list",
+            html: items.join("")
+        }).appendTo("body");*/
+    });
+});
+// ENVIAR MENSAGEM
+function enviarMensagem2() {
+    var texto = $('#text-msg').val();
+    var pid = $('#pid').val();
+    if (texto == "") {
+        notif('Informe o texto da mensagem', 'error');
+        $('#modal-msg').blur();
+    } else {
+        $("#modal-msg").modal("hide");
+        $("#text-msg").val("");
+        startLoad();
+        Dajaxice.apps.professor.enviar_mensagem(Dajax.process, {'cid': {{ submenu.id }}, 'pid': pid, 'mensagem': texto, tp: 'A' });
+    }
+}
+
+</script>
+{% endblock %}

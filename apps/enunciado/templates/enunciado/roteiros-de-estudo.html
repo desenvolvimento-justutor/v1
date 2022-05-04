@@ -1,0 +1,27 @@
+{% extends '_base.html' %}
+{% block section %}
+    <section id="questoes-destaque" class="col-sm-8">
+        <div class="titulo-home  mg-bot20">
+            <h4 class="pd-home titulo-home bold">Roteiros de Estudo</h4>
+            <div class="linha-aba"></div>
+            {% for roteiro in roteiros %}
+            <a href="{{ roteiro.get_absolute_url }}" class="curso-x">
+                <div class="descricao-noticia" style="height: auto">
+                    <h2>{{ roteiro.nome }}</h2>
+                </div>
+            </a>
+            <div class="linha-aba"></div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="col-sm-4">
+        <div class="titulo-home mg-bot20">
+            <h4 class="pd-home titulo-home bold">Publicidade</h4>
+            <div class="linha-aba"></div>
+            <div class="mg-top20">
+                {% include '_widget-anuncio.html' %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

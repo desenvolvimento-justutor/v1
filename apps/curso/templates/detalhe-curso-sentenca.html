@@ -1,0 +1,264 @@
+{% extends '_base.html' %}
+{% load curso %}
+{% block section %}
+<div class="container">
+    <div class="col-sm-12">
+        <div class="cabecalho-cursos">
+            <h1>{{ curso }}</h1>
+            <div class="linha-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Cursos</a>
+                    </li>
+                    <li>
+                        <a href="{{ curso.categoria.get_absolute_url }}">{{ curso.categoria }}</a>
+                    </li>
+                    <li class="active">{{ curso }}</li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    {% if categoria.tipo == 'S' %}
+        <div class="linha-breadcrumb">
+            {% include '_filter-sentencas.html' %}
+        </div>
+    {% endif %}
+    <div class="col-sm-7">
+        <!-- {{categoria.tipo}} -->
+        {% if categoria.tipo == 'S' %}
+            {% if curso.sentenca_avulsa.cod_youtube != '0' %}
+                <div class="video">
+                    <iframe width="100%" height="380" src="https://www.youtube.com/embed/{{ curso.sentenca_avulsa.cod_youtube }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+            {% endif %}
+        {% elif categoria.tipo == 'D' %}
+            <div class="video">
+                <img src="{{ curso.imagem.url }}"/>
+            </div>
+        {% else %}
+            {% if curso.sentenca_oab.cod_youtube != '0' %}
+                <div class="video">
+                    <iframe width="100%" height="380" src="https://www.youtube.com/embed/{{ curso.sentenca_oab.cod_youtube }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <div class="clear"></div>
+        <section class="conteudo-curso mg-top20">
+            <h3>
+                {% if categoria.tipo == 'D' %}Detalhes deste simulado{% else %}Detalhamento da proposta{% endif %}
+                {% if categoria.tipo == 'S' %}
+                    <div class="pull-right">{{ curso.sentenca_avulsa.span_nivel|safe }} </div>
+                {% elif categoria.tipo == 'D' %}
+                    <div class="pull-right"><span class="badge badge-danger">{{ curso.simulado.get_tipo_display }}</span> </div>
+                {% else %}
+                    <div class="pull-right">{{ curso.sentenca_oab.span_nivel|safe }} </div>
+                {% endif %}
+            </h3><br>
+            {% if categoria.tipo == 'S' %}
+                {{ curso.sentenca_avulsa.amostra|safe }}
+            {% elif categoria.tipo == 'D' %}
+                {{ curso.saiba_mais|safe }}
+            {% else %}
+                {{ curso.sentenca_oab.amostra|safe }}
+            {% endif %}
+        </section>
+    </div>
+    <div class="col-sm-5">
+        <hr class="no-pd mg-top10">
+        <div class="clear"></div>
+        {% if curso.inicio_gratis %}
+        <div class="categoria-curso">
+            Início Grátis
+        </div>
+        {% endif %}
+        <div class="preco-curso">
+            <div>Investimento:</div>
+            <div class="preco-geral">
+                {% if curso.valor %}
+                    <div class="preco-maior-x">{{ curso.valor }}</div>
+                    <div class="preco-menor-x text-danger bold">&nbsp;À VISTA OU PARCELE NO CARTÃO DE CRÉDITO</div>
+                {% else %}
+                    <div class="preco-maior-x text-success bold">GRÁTIS</div>
+                {% endif %}
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        {% if curso.ativo == False %}
+            <a href="javascript:void(0);" class="comprar" style="background-color: red">
+                Inscrições encerradas
+            </a><br>
+        {% endif %}
+        {% if request.user.aluno %}
+            {% if checkout.transaction_status == 3 or checkout.transaction_status == 4 %}
+                {% if categoria.tipo == 'S' %}
+                    <a href="{% url 'aluno:sentencas-avulsas' %}" class="comprar" style="background-color: orangered">
+                        Ver sentenças
+                    </a>
+                {% elif categoria.tipo == 'D' %}
+                    <a href="{% url 'aluno:simuladoinfo' curso.simulado_id %}" class="comprar" style="background-color: orangered">
+                        Acessar simulado
+                    </a>
+                {% else %}
+                    <a href="{% url 'aluno:sentencas-oab' %}" class="comprar" style="background-color: orangered">
+                        Ver peças
+                    </a>
+                {% endif %}
+            {% else %}
+                {% if curso.ativo %}
+                    {% check_curso_in_pct curso as in_pct %}
+                    {% if in_pct %}
+                        <a href="{% url 'curso:carrinho' %}" class="btn btn-warning" style="width: 100%">
+                            <i class="fa fa-cart-plus"></i> Finalizar Compra
+                        </a>
+                    {% else %}
+                        {% get_combo_aluno as combo_aluno %}
+                        {% if combo_aluno or action == 'combo_redirect' %}
+                            <form method="post" action="{% url 'curso:montar-pacote' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="curso_pk" value="{{ curso.pk }}">
+                                <input type="hidden" name="action" value="add">
+                                <button type="submit" class="comprar"
+                                        style="background-color: #0a568c; border-bottom: 3px solid #142d73; margin-bottom: 4px">
+                                    <i class="fa fa-plus"></i> Adicionar ao pacote
+                                </button>
+                            </form>
+                        {% else %}
+                            {% if curso.valor %}
+                                <a onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ curso.id }}});block()" href="javascript:void(0);" class="comprar">
+                                    {% if curso.categoria.tipo == 'D' %}
+                                        COMPRAR ESTE SIMULADO
+                                    {% else %}
+                                        COMPRAR ESTA PROPOSTA
+                                    {% endif %}
+                                </a>
+                                {% else %}
+                                    <form method="post" id="frm-{{ curso.pk }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="curso_id" value="{{ curso.id }}">
+                                    </form>
+                                    <a href="javascript:void(0);" onclick="$('#frm-{{ curso.pk }}').submit()" class="comprar">
+                                        Acessar
+                                    </a>
+                                {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    {% get_codigo_liberacao request.user.aluno curso as codigo %}
+                    {% if codigo %}
+                        {% include '_liberar_curso.html' with codigo=codigo %}
+                    {% endif %}
+                {% endif %}
+                <br/>
+                <button data-toogle="cortesia" data-curso="{{ curso.pk }}" class="btn btn-sm btn-warning btn-block" style="border-radius: unset">
+                    <i class="fa fa-tag fa-fw"></i>
+                     Possui um código de cortesia? Clique aqui
+                </button>
+            {% endif %}
+        {% else %}
+            <a onclick="login()" href="javascript:void(0);" class="comprar">
+                Efetue Login ou seu Cadastramento para poder comprar esta proposta
+            </a>
+        {% endif %}
+
+        <div class="clear"></div>
+        <div class="mg-top20">
+            {% include '_widget-anuncio.html' %}
+        </div>
+
+    </div>
+</div>
+<!-- MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalSaiba">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Saiba+</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalBody">
+                    {{ curso.saiba_mais|safe }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+{% block extra_js %}
+<script>
+    $('#modalBody').slimScroll({
+        start: 'top',
+        height: '200px'
+    });
+</script>
+<script>
+$('[data-toogle=cortesia]').on('click', function (e) {
+    eml = $(e.target)
+    var curso_pk = eml.data('curso');
+    Swal.fire({
+        icon: 'info',
+        title: 'Informe o código',
+        input: 'text',
+        showCancelButton: true,
+        inputAttributes: {
+            maxlength: 5,
+            minlength: 5,
+            autocapitalize: 'word'
+          },
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Informe o código'
+            }
+            if (value.length != 5) {
+                return 'O código possui 5 caracteres.'
+            }
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: (code) => {
+            return fetch(`{% url 'curso:ajax-validar-cortesia' %}?pk=${curso_pk}&code=${code}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(response.statusText)
+                    }
+                    return response.json()
+                })
+                .catch(error => {
+                    Swal.showValidationMessage(
+                        `${error}`
+                    )
+                })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.value) {
+            console.log('res', result);
+            Swal.fire({
+                icon: 'success',
+                title: `${result.value.message}`,
+                onAfterClose: () => {
+                    window.location.href = `/aluno/simuladoinfo/${result.value.simulado}/`
+                }
+            })
+        }
+    })
+})
+</script>
+
+{% endblock %}

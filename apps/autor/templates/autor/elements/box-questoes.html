@@ -1,0 +1,91 @@
+<div class="main-box clearfix project-box emerald-box">
+    <div class="main-box-body clearfix">
+        <div class="project-box-content" style="text-align: left; min-height: 300px; padding-top: 20px">
+            <div class="form-group">
+                {{ questao.enunciado|safe }}
+                <hr>
+            </div>
+
+            <div id="tour-perguntas" style="font-size: 14px; padding-left: 20px">
+                {% include 'autor/elements/radio-button-default.html' %}
+
+                {% if resposta_questionario_aluno.questionario_aluno.data_conclusao or simulado.encerrado %}
+                    {% if not resposta_questionario_aluno.respondida %}
+                        <span class="label label-warning">Em branco</span>
+                    {% elif resposta_questionario_aluno.anulada %}
+                        <span class="label label-danger">Anulada</span>
+                    {% elif resposta_questionario_aluno.correta %}
+                        <span class="label label-success">Acertou</span>
+                    {% elif resposta_questionario_aluno.correta == False %}
+                        <span class="label label-danger">Errou</span>
+                    {% elif resposta_questionario_aluno.correta == None %}
+                        <span class="label label-warning">Em branco</span>
+                    {% endif %}
+                {% elif resposta_questionario_aluno.viu_comentario %}
+                    <i class="fa fa-lock red"></i> <span class="red"> Você acessou os comentários e não poderá mais
+                    {% if resposta_questionario_aluno.questao_escolha %}
+                        mais alterar sua resposta
+                    {% else %}
+                        respondê-la.
+                    {% endif %}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 8px; padding-left: 20px; padding-right: 20px">
+            <div class="col-sm-3">
+                <div class="pull-left">
+                    <ul class="pagination">
+                        {% if resposta_questionario_aluno.prev %}
+                            <li>
+                                <a href="javascript:render_box({{ resposta_questionario_aluno.prev.pk }})"
+                                   data-toggle="tooltip" data-placement="top"
+                                   data-original-title="{{ resposta_questionario_aluno.prev.questao }}">
+                                    <i class="fa fa-chevron-left"></i> Anterior
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="text-center">
+                    <button id="verComentario"
+                            class="btn btn-info mrg-t-sm vrf"
+                            data-pk="{{ resposta_questionario_aluno.pk }}"
+                            data-finalizado="{{ resposta_questionario_aluno.questionario_aluno.finalizado|lower }}"
+                            data-respondido="{% if resposta_questionario_aluno.questao_escolha %}true{% else %}false{% endif %}"
+                            data-showdialog="{{ resposta_questionario_aluno.questionario_aluno.confirmar_visualizar_comentario|yesno:'true,false' }}"
+                            data-visualizado="{{ resposta_questionario_aluno.viu_comentario|lower }}">
+                        <i class="fa fa-comments-o"></i> Ver comentários do JusTutor
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="pull-right">
+                    <ul class="pagination">
+                        {% if resposta_questionario_aluno.next %}
+                            <li>
+                                <a href="javascript:render_box({{ resposta_questionario_aluno.next.pk }})"
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   data-original-title="{{ resposta_questionario_aluno.next.questao }}">
+                                    <i class="fa fa-chevron-right"></i> Próxima
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="project-box-ultrafooter clearfix" style="border-radius: unset; padding: unset">
+            {% if not resposta_questionario_aluno.questionario_aluno.data_conclusao and simulado.ativo %}
+                <button class="btn btn-primary btn-lg btn-block" id="btnEncerrar"
+                        onclick="javascript:encerrarSimulado()"
+                        style="border-radius: unset;">
+                    <i class="fa fa-check fa-fw fa-lg"></i> Finalizar simulado
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>

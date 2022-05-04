@@ -1,0 +1,120 @@
+{% load thumbnail %}
+<div class="col-lg-3 col-md-4 col-sm-4">
+    <div class="main-box clearfix profile-box-menu">
+        <div class="main-box-body clearfix">
+            <div class="profile-box-header green-bg clearfix"
+                 style="background-image: url({{ STATIC_URL }}perfil/img/samples/nature2.jpg);">
+                {% thumbnail aluno_view.foto "160x160" crop="center" as im %}
+                    <img src="{{ im.url }}" alt="{{ aluno_view }}" class="profile-img img-responsive">
+                {% empty %}
+                    <img src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno_view }}" class="profile-img img-responsive"/>
+                {% endthumbnail %}
+
+                <h2>{{ aluno_view }}</h2>
+                {% if aluno_view.cargo %}<h5 style="margin-bottom: 0px">{{ aluno_view.cargo }}</h5>{% endif %}
+                {% if aluno_view.email_publico %}<small class="margi"><a href="mailto:{{ aluno_view.email }}">{{ aluno_view.email }}</a></small>{% endif %}
+                <div class="text-center" style="margin-top: 10px">
+                    {% if aluno_view.url_facebook %}<a href="{{ aluno_view.url_facebook }}" target="_blank" class="btn btn-social-icon btn-facebook"><span class="fa fa-twitter" style="color: white"></span></a>{% endif %}
+                    {% if aluno_view.url_twitter %}<a href="{{ aluno_view.url_twitter }}" target="_blank" class="btn btn-social-icon btn-twitter"><span class="fa fa-twitter" style="color: white"></span></a>{% endif %}
+                    {% if aluno_view.url_flicker %}<a href="{{ aluno_view.url_flicker }}" target="_blank" class="btn btn-social-icon btn-flickr"><span class="fa fa-flickr" style="color: white"></span></a>{% endif %}
+                    {% if aluno_view.url_instagram %}<a href="{{ aluno_view.url_instagram }}" target="_blank" class="btn btn-social-icon btn-instagram"><span class="fa fa-instagram" style="color: white"></span></a>{% endif %}
+                </div>
+                <!--div class="job-position">
+                    Actress
+                </div-->
+            </div>
+            <!-- STAR RATING -->
+                {% if aluno_view.frase %}<blockquote style="border-left: none"> <small>{{ aluno_view.frase }}</small></blockquote>{% endif %}
+            <div class="profile-stars">
+                <div class="profile-since" style="padding-bottom: 6px; padding-top: 4px">
+                    <span class="label label-warning" data-toggle="tooltip" title="Média de notas das suas Respostas">{{ aluno_view.get_media_respostas|stringformat:".2f" }}</span>
+                    <span id="span-pontos" class="label label-success" data-toggle="tooltip" title="Total de Pontos">?</span>
+                </div>
+                {% for i in 'xxxxxxxxxx' %}
+                    {% if forloop.counter|stringformat:"2d" <=  aluno_view.get_media_respostas|stringformat:"2d" %}
+                        <i class="fa fa-star" data-toggle="tooltip" title="{{ forloop.counter }}"></i>
+                    {% else %}
+                        <i class="fa fa-star-o" data-toggle="tooltip" title="{{ forloop.counter }}"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="profile-box-content clearfix">
+                <ul class="menu-items">
+                    <li>
+                        <a href="javascript:void(0)" class="clearfix">
+                            <i class="fa fa-edit fa-lg"></i> Respostas
+                            <span class="label label-success pull-right">{{ aluno_view.minhas_respostas.count }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" class="clearfix">
+                            <i class="fa fa-check fa-lg"></i> Correções Feitas
+                            <span class="label label-warning pull-right">{{ aluno_view.minhas_correcoes.count }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" class="clearfix">
+                            <i class="fa fa-check fa-lg"></i> Correções Recebidas
+                            <span class="label label-warning pull-right">{{ aluno_view.correcoes_recebidas.count }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" class="clearfix">
+                            <i class="fa fa-thumbs-up fa-lg"></i> Likes
+                            <span class="label label-info pull-right">{{ aluno_view.get_pontos_avaliacao }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% if aluno != aluno_view and request.user.aluno %}
+            <div class="profile-box-content clearfix">
+                <div>
+                    <div class="col-sm-6">
+                        <a data-toggle="modal" href="#modal-msg" class="btn btn-primary fa fa-send-o"> Mensagem</a>
+{#                            <button class="md-trigger btn btn-primary fa fa-envelope" data-modal="modal-msg">#}
+{#                            Mensagem#}
+{#                        </button>#}
+                    </div>
+                    <div class="col-sm-6" id="div-seguir">
+                        {% if seguindo %}
+                        <button id="btn-seguir" data-toggle="tooltip" title="Deixar de Seguir" data-seguir="False" data-loading-text="Aguarde..." class="btn btn-danger fa fa-user-times pull-right">
+                        </button>
+                        {% else %}
+                        <button id="btn-seguir" data-toggle="tooltip" title="Seguir" data-seguir="True" data-loading-text="Aguarde..." class="btn btn-success fa fa-user-plus pull-right">
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <br>
+          {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-msg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Enviar Mensagem</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="form-msg">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Para</label>
+                        <input disabled class="form-control" id="exampleInputEmail1" value="{{ aluno_view }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="text-msg">Mensagem</label>
+                        <textarea class="form-control" id="text-msg" rows="3" placeholder="Texto da mensagem"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger fa fa-remove" data-dismiss="modal"> Cancelar</button>
+                <button type="submit" onclick="enviarMensagem()" class="btn btn-primary fa fa-send"> Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>

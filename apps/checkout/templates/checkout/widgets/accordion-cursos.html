@@ -1,0 +1,110 @@
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <h2 class="section-title">Shipping To</h2>
+        <div class="line sm"></div>
+        <div class="shipping-to">
+            <div class="shipping-inner">
+                <div class="name">John Doe</div>
+                <div class="address">32 Syarifudin Street, West Bogor, West Java, Indonesia 112233</div>
+                <div class="contact"><span>Phone</span> 012 34 567 89</div>
+                <div class="etd"><span>ETD</span> 1-2 Days</div>
+                <div class="action">Is this wrong? <a href="step2.html#shipping-address">Change here</a></div>
+            </div> <!-- /.shipping-inner -->
+        </div> <!-- /.shipping-to -->
+    </div> <!-- /.col-md-6 -->
+    <div class="col-md-6 col-sm-6">
+        <h2 class="section-title">Estimation</h2>
+        <div class="line sm"></div>
+        <div class="total-info" data-calculate-me="">
+            <div class="total-item">
+                <div class="total-name">Order</div>
+                <div class="total-value" id="total-order" data-price="">$137.19</div>
+            </div> <!-- /.total-item -->
+            <div class="total-item">
+                <div class="total-name">Shipping</div>
+                <div class="total-value" id="total-shipping" data-price="">$0.00</div>
+            </div> <!-- /.total-item -->
+            <div class="total-item" data-calculate-min="true">
+                <div class="total-name">Discount</div>
+                <div class="total-value" id="total-discount" data-price="">$0.00</div>
+            </div> <!-- /.total-item -->
+            <div class="total-item">
+                <div class="total-name">Tax</div>
+                <div class="total-value" id="total-tax" data-price="">$10.00</div>
+            </div> <!-- /.total-item -->
+            <div class="total-item total">
+                <div class="total-name">Total</div>
+                <div class="total-value" id="total-all" data-price="">$147.19</div>
+            </div> <!-- /.total-item -->
+        </div> <!-- /.total-info -->
+    </div> <!-- /.col-md-6 -->
+</div>
+<div class="panel-group" id="panels">
+    <div class="faq panel">
+        <div class="faq-heading panel-heading">
+            <a role="button" data-toggle="collapse" data-parent="#panels" href="#panel1">
+                How to Order?
+            </a>
+        </div>
+        <div id="panel1" class="panel-collapse collapse">
+            <div class="faq-body panel-body">
+                <div class="shipping-list">
+                    {% for categoria in proc_curso.categorias %}
+                        <label class="shipping-item " data-href="{{ categoria.get_absolute_url }}">
+                            <div class="shipping-item-checkbox">
+                                <i class="ion-ios-compose-outline" style="font-size: 1.5em"></i>
+                            </div> <!-- /.shipping-item-checkbox -->
+                            <div class="shipping-item-label">
+                                {{ categoria.nome }}
+                            </div> <!-- /.shipping-item-label -->
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="faq panel">
+        <div class="faq-heading panel-heading">
+            <a role="button" data-toggle="collapse" data-parent="#panels" href="#panel2">How to Confirm Payment?
+            </a>
+        </div>
+        <div id="panel2" class="panel-collapse collapse">
+            <div class="faq-body panel-body">
+                <div class="shipping-list">
+                    {% for categoria in proc_curso.sentencas_avulsas %}
+                        <label class="shipping-item active" data-href="{{ categoria.get_absolute_url }}">
+                            <div class="shipping-item-checkbox">
+                                <i class="ion-ios-paper-outline" style="font-size: 1.5em"></i>
+                            </div> <!-- /.shipping-item-checkbox -->
+                            <div class="shipping-item-label">
+                                {{ categoria.nome }}
+                            </div> <!-- /.shipping-item-label -->
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="faq panel">
+        <div class="faq-heading panel-heading">
+            <a role="button" data-toggle="collapse" data-parent="#panels" href="#panel3">How to Cancel My Order?
+            </a>
+        </div>
+        <div id="panel3" class="panel-collapse collapse">
+            <div class="faq-body panel-body">
+                <div class="shipping-list">
+                    {% for categoria in proc_curso.simulados %}
+                        <label class="shipping-item">
+                            <div class="shipping-item-checkbox">
+                                <i class="ion-android-checkmark-circle" style="font-size: 1.5em"></i>
+                            </div> <!-- /.shipping-item-checkbox -->
+                            <div class="shipping-item-label">
+                                {{ categoria.nome }}
+                            </div> <!-- /.shipping-item-label -->
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

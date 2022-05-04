@@ -1,0 +1,11 @@
+{% extends 'email/base.html' %}
+
+{% block texto %}
+    <h4>Contato feito pelo site.</h4>
+    <p><strong>Aluno:</strong> {{ nome }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+{% endblock %}
+{% block nota %}
+    <p>Mensagem:</p>
+    {{ mensagem }}
+{% endblock %}

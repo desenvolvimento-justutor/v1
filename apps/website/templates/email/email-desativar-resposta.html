@@ -1,0 +1,17 @@
+{% extends 'email/_base.html' %}
+{% block titulo1 %}Sua resposta foi excluída!{% endblock %}
+
+{% block texto1 %}
+    <p>Informamos que, por incompatibilidade com a política de uso do JusTutor,
+    sua resposta <a href="{{ dominio }}{{ resposta.get_absolute_url }}">{{ resposta }}</a> relativa ao enunciado
+        <a href="{{ dominio }}{{ resposta.enunciado.get_absolute_url }}">{{ resposta.enunciado }}</a> foi excluída
+        do site.
+    </p>
+{% endblock %}
+
+{% block titulo2 %}Justificativa da equipe JusTutor{% endblock %}
+
+{% block texto2 %}
+    <blockquote><p>{{ resposta.ativo_motivo|safe }}</p></blockquote>
+    <p><small>Para maiores informações sobre o uso do site, confira nossa <a href="{{ dominio }}/institucional/politica-de-uso/">POLÍTICA DE USO</a>.</small></p>
+{% endblock %}

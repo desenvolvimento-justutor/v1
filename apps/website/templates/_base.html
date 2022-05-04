@@ -1,0 +1,858 @@
+{% load static %}
+<html class="no-js" lang="pt-br" xmlns="http://www.w3.org/1999/html">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PVVW6TF');</script>
+    <!-- End Google Tag Manager -->
+    <meta name="theme-color" content="#449D44">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{{ website.config.titulo }}{% if titulo %} | {{ titulo }}{% endif %}</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="{{ STATIC_URL }}images/logos/favicon.png" type="image/x-icon"/>
+    <!-- Facebook Metadata /-->
+    {% block fb_metadata %}
+    <meta property="fb:page_id" content=""/>
+    <meta property="og:image" content="https://justutor.com.br/static/images/logos/just-tuto-vertical-300.png"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:title" content=""/>
+    {% endblock %}
+    <!-- Google+ Metadata /-->
+    <meta itemprop="name" content="">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/static/images/logos/icone24-borda.svg">
+    <meta itemprop="image" content="/static/images/logos/icone24-borda.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <script src="https://browser.sentry-cdn.com/5.10.2/bundle.min.js"
+            integrity="sha384-ssBfXiBvlVC7bdA/VX03S88B5MwXQWdnpJRbUYFPgswlOBwETwTp6F3SMUNpo9M9"
+            crossorigin="anonymous"></script>
+    <script>
+        Sentry.init({ dsn: 'https://1eaff0bd4b3d4bfda7353ca2ee8cfbb3@sentry.io/1873328' });
+    </script>
+
+    {% block css %}
+        {% include '_stylesheet.html' %}
+        <script type="text/javascript" src="{{ STATIC_URL }}banner-mobile/js/jquery-1.9.1.min.js"></script>
+    {% endblock %}
+
+    {% block extra_css %} {% endblock %}
+<link rel="stylesheet" type="text/css" href="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.css"/><script src="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.js" defer></script><script>window.addEventListener("load", function(){window.wpcc.init({"border":"thin","corners":"small","colors":{"popup":{"background":"#222222","text":"#ffffff","border":"#b5e1a0"},"button":{"background":"#b5e1a0","text":"#000000"}},"position":"top","content":{"href":"https://justutor.com.br/institucional/cookie-consent-12/","message":"Esse site utiliza cookies para melhorar a experiência de navegação do usuário. Nenhum dado pessoal será utilizado para te identificar ou te contatar, tampouco será compartilhado pelo JusTutor, fique tranquilo.\nAo clicar em “Permitir cookies”, você dará permissão ao site para armazenar pequenos blocos de bits de dados em seu navegador, facilitando, assim, a navegação e aumentando a funcionalidade.","link":"Saiba mais","button":"Aceitar"}})});</script>
+</head>
+<body id="body">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVVW6TF"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+{% block body %}
+
+    <header>
+
+        {% include '_topo-linha.html' %}
+        {#    {% include '_topo.html' %}#}
+    </header>
+    <div class="clear"></div>
+    <div id="cookie_directive_container" class="container" style="display: none">
+        <nav class="navbar navbar-default navbar-fixed-bottom"
+             style="background-color: black; color: white; font-weight: 600">
+            <div class="container">
+                <div class="navbar-inner navbar-content-center" id="cookie_accept" style="margin-top: 10px">
+                    <a href="#" class="btn btn-primary btn-sm pull-right">Não exibir mais essa mensagem</a>
+                    <p class="credit">
+                        O JusTutor acaba de lançar uma nova opção de treinamento em sentenças cíveis e criminais:
+                        pacotes personalizados de peças avulsas.<br/>
+                     <a href="{% url 'curso:montar-pacote' %}">Clique aqui para conhecer nosso novo sistema de pacotes personalizados de atividades</a>
+                 </p>
+             </div>
+         </div>
+     </nav>
+ </div>
+{% block banner %}
+<section >
+{#    {% include '_carrinho.html' %}#}
+    <!-- BANNER -->
+    {% with website.config.get_banner as  banners %}
+        {% if banners and home %}
+            {% include 'website/includes/caroussel.html' with banners=banners %}
+        {% endif %}
+    {% endwith %}
+    <!--/ BANNER -->
+    {% if home %}
+    <div class="container">
+        <div class="col-sm-6">
+            <div class="relative">
+                <div class="linha-cinza">
+                    <form id="formBusca" class="relative" action="{% url 'website:busca' %}" method="get">
+                        {% csrf_token %}
+                        <input id="buscaHome" type="text" placeholder="Busque um enunciado" name="q" style="background: #C5FAC4">
+                        <button type="submit">
+                            <img src="{{ STATIC_URL }}assets/images/search.svg" width="30px" height="30px">
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="relative">
+                <div class="linha-cinza">
+                    <form id="formBusca" class="relative" action="{% url 'website:busca-aluno' %}" method="post">
+                        {% csrf_token %}
+                        <input id="buscaHome" type="text" placeholder="Busque um aluno" name="q" style="background: #C5FAC4">
+                        <button type="submit">
+                            <img src="{{ STATIC_URL }}assets/images/search.svg" width="30px" height="30px">
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+<section {% block section_attrs %}class="conteudo-home container"{% endblock %}>
+{% block  section %}{% endblock section %}
+{% block enunciado_footer %}{% endblock %}
+</section>
+
+
+<!--  BUSCA  -->
+{% include '_javascripts.html' %}
+{% block busca %}
+{% include 'busca.html' %}
+{% endblock %}
+<!--/ BUSCA /-->
+
+
+<!-- FOOTER -->
+{% include '_footer.html' %}
+<!--/ FOOTER /-->
+<!-- modal chart -->
+<div class="modal fade" id="modalChart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">JusTutor</h4>
+            </div>
+            <div class="modal-body text-center">
+                <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+                    <span class="text-primary mg-top20"><i class="fa fa-refresh fa-spin fa-5x"></i></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-3">
+                    <span class="pull-left bold">QT = Questões</span>
+                </div>
+                <div class="col-sm-3">
+                    <span class="pull-left bold">PÇ = Peças</span>
+                </div>
+                <div class="col-sm-3">
+                    <span class="pull-left bold">ST = Atividade</span>
+                </div>
+                <div class="col-sm-3">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fb-page"
+         data-href="https://www.facebook.com/XZY/"
+         data-tabs="messages"
+         data-width="400"
+         data-height="300"
+         data-small-header="true">
+      <div class="fb-xfbml-parse-ignore">
+        <blockquote></blockquote>
+      </div>
+    </div>
+</div>
+
+<script src="{{ STATIC_URL }}perfil/js/jquery.slimscroll.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/js/jquery.blockUI.js"></script>
+{#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></script>#}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/toastr/toastr.css">
+{#https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js#}
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-91877437-1', 'auto');
+    ga('send', 'pageview');
+    /* BLOCK UI */
+    function block(msg){
+        if (msg == undefined) {
+            msg = 'Aguarde...'
+        }
+        $.blockUI({
+            message: '<div><span class="text-left"><img src="{{ STATIC_URL }}images/loading-spinner-blue.gif" width="22" height="22"/></span><span class="text-right">    ' + msg + '</span></div>',
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#EEEEEE',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                color: '#A3081E',
+                'font-size': '20px'
+            }
+        });
+    }
+
+    $(document).on('ready', function () {
+        block();
+        $(window).load(function () {
+            $('[data-scroll="slimscroll"]').slimScroll({
+                height: '600px',
+            });
+            unBlockFunction();
+            /* SCROLL */
+            $('.div-scroll').slimScroll({
+                height: '350px',
+                alwaysVisible: false
+            });
+            $('[data-toggle="tooltip"]').tooltip()
+            /* TOASTR NOTIFICATIONS */
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "8000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            $('.div-scroll').slimScroll({
+                height: '300px',
+                alwaysVisible: true
+            });
+            {% if messages %}
+    {% for message in messages %}
+
+        {% with message.tags as tag %}
+            {% if tag == 'info' %}
+                toastr.info('{{ message }}', 'Informação');
+            {% elif tag == 'success' %}
+                swal_alert('JusTutor', "{{ message|safe }}", 'success');
+            {% elif tag == 'warning' %}
+                toastr.warning("{{ message|safe }}", 'Observação');
+            {% elif tag == 'error' %}
+                swal_alert('Oops', '{{ message|safe }}', 'error');
+            {% else %}
+                toastr.info('{{ message }}');
+            {% endif %}
+        {% endwith %}
+    {% endfor %}
+{% endif %}
+
+        });
+
+    });
+    function unBlockFunction(){
+        $.unblockUI();
+    }
+    // MENSAGEM COM FORMATAÇÃO HTML
+    function swal_alert(title, message, tipo) {
+        Swal.fire({title: title, html: message, type: tipo});
+    }
+
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    });
+    /* DIALOGS */
+    function ShowMessage(type, message, title) {
+        BootstrapDialog.show({
+            type: type,
+            title: title,
+            message: message,
+            buttons: [{
+                cssClass: 'btn-success',
+                label: 'OK',
+                action: function (dialogItself) {
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+
+    function msg_info(message) {
+        ShowMessage(BootstrapDialog.TYPE_INFO, message, 'Informação')
+    }
+
+    function msg_success(message) {
+        ShowMessage(BootstrapDialog.TYPE_SUCCESS, message, 'Sucesso')
+    }
+
+    function msg_warning(message) {
+        ShowMessage(BootstrapDialog.TYPE_WARNING, message, 'Aviso')
+    }
+
+    function msg_erro(message) {
+        ShowMessage(BootstrapDialog.TYPE_DANGER, message, 'Erro')
+    }
+
+    $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {
+        // Avoid following the href location when clicking
+        event.preventDefault();
+        // Avoid having the menu to close when clicking
+        event.stopPropagation();
+        // If a menu is already open we close it
+        //$('ul.dropdown-menu [data-toggle=dropdown]').parent().removeClass('open');
+        // opening the one you clicked on
+        $(this).parent().addClass('open');
+
+        var menu = $(this).parent().find("ul");
+        var menupos = menu.offset();
+
+        if ((menupos.left + menu.width()) + 30 > $(window).width()) {
+            var newpos = - menu.width();
+        } else {
+            var newpos = $(this).parent().width();
+        }
+        menu.css({ left:newpos });
+
+    });
+    $( "#formBusca" ).submit(function( event ) {
+        console.log('busca', $('#buscaHome'));
+        if ( $( "#buscaHome" ).val() != "" ) {
+            return;
+        }
+        swal_alert('Oops', 'Informe um texto para efetuar a busca.', 'error');
+        event.preventDefault();
+    });
+    // FORM CONTATO
+    $("#form-contato").submit(function(e) {
+        console.log('enviar form contato');
+        $('#btn-enviar-contato').button('loading');
+        Dajaxice.apps.website.enviar_email(
+                Dajax.process, {
+                    'nome': $('#id-contato-nome').val(),
+                    'email': $('#id-contato-email').val(),
+                    'mensagem': $('#id-contato-mensagem').val()
+                }
+        );
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    {% block extra_script %}{% endblock %}
+</script>
+
+<script>
+    var id_classificacao = $('#id_classificacao');
+    var id_respondidas = $('#id_respondidas');
+    var id_corrigidas  = $('#id_corrigidas');
+    var id_avaliadas = $('#id_avaliadas');
+    var id_desatualizado = $('#id_desatualizado');
+    var id_area_profissional = $('#id_area_profissional');
+    var id_texto = $('#id_texto');
+    var id_esfera_geral = $('#id_esfera_geral');
+    var id_esfera_especifica = $('#id_esfera_especifica');
+    var id_cargo = $('#id_cargo');
+    var id_orgao_entidade = $('#id_orgao_entidade');
+    var id_concurso = $('#id_concurso');
+    var id_data_prova = $('#id_data_prova');
+    var id_disciplina = $('#id_disciplina');
+    var id_organizador = $('#id_organizador');
+    var id_localidade = $('#id_localidade');
+    var id_tipo_procedimento = $('#id_tipo_procedimento');
+    var id_num_questao_caderno = $('#id_num_questao_caderno');
+    var id_tipo_sentenca = $('#id_tipo_sentenca');
+    var id_tipo_peca_pratica = $('#id_tipo_peca_pratica');
+    /* RESETA OS CAMPOS */
+    function resetar_valores() {
+        id_classificacao.val("QD");
+        id_respondidas.prop('checked', false);
+        id_corrigidas.prop('checked', false);
+        id_avaliadas.prop('checked', false);
+        id_desatualizado.prop('checked', false);
+        id_area_profissional.val("0");
+        id_texto.val("");
+        id_esfera_geral.val("0");
+        id_esfera_especifica.val("0");
+        id_cargo.val("0");
+        id_orgao_entidade.val("0");
+        id_concurso.val("0");
+        id_data_prova.val("0");
+        id_disciplina.val("0");
+        id_organizador.val("0");
+        id_localidade.val("0");
+        id_tipo_procedimento.val("0");
+        id_num_questao_caderno.val("");
+        id_tipo_sentenca.val("0");
+        id_tipo_peca_pratica.val("0");
+        $('#tags').tagsinput('removeAll');
+        id_esfera_geral.change()
+    }
+
+    /* APLICA O FILTRO SELECIONADO EM 'MEUS FILTROS' */
+    function aplicar_filtro(filtro_id) {
+        var url = '/enunciado/get/?tipo=aplicar_filtro&filtro_id=' + filtro_id
+        $.getJSON(url, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                var obj = data[i];
+                var element = $("#" + obj.id_element);
+                var valor = obj.valor;
+                var check = obj.check;
+                if (check == true) {
+                    element.prop('checked', valor);
+                } else {
+                    element.val(valor);
+                }
+                console.log('aplicar', element);
+                sel_click(document.getElementById(obj.id_element))
+                if (obj.id_element == 'id_classificacao') {
+                    console.log(valor);
+                    change_tipo(valor);
+                }
+
+            }
+        });
+    }
+
+
+    function change_tipo(tipo) {
+        console.log(tipo);
+        var inner = '';
+        //var element = document.getElementById("categoria-aba");
+        var element = document.getElementById("badge_tipo");
+        /* LIMPAR OS CAMPOS */
+        id_num_questao_caderno.val('');
+        id_tipo_procedimento.val(0);
+        id_tipo_sentenca.val(0);
+        id_tipo_peca_pratica.val(0);
+        $('#id_classificacao').val(tipo);
+        if (tipo == 'ST') {
+            id_num_questao_caderno.prop('disabled', true);
+            id_tipo_procedimento.prop('disabled', false);
+            id_tipo_procedimento.pulsate({color: "#DE7A43", repeat: false});
+            id_tipo_sentenca.prop('disabled', false);
+            id_tipo_sentenca.pulsate({color: "#DE7A43", repeat: false});
+            id_tipo_peca_pratica.prop('disabled', true);
+            id_area_profissional.prop('disabled', true);
+            $(element).pulsate({color: "#DE7A43", repeat: false});
+            /*inner = '<div class="quadrado-ligado">' +
+                    '<div class="quadrado-sozinho quad02"></div>' +
+                    '<div class="pull-left">Sentenças</div>' +
+                    '</div>' +
+                    '<a class="quad03 quadrado-junto" href="#busca-home" onclick="change_tipo(&apos;QD&apos;)">Questões</a>' +
+                    '<a class="quad01 quadrado-junto" href="#busca-home" onclick="change_tipo(&apos;PP&apos;)">Peças</a>' +
+                    '<div class="clear"></div>' +
+                    '<div class="quad02 linha-aba"></div>';*/
+            inner = '<span class="badge bg-sentenca">SENTENÇA</span>'
+        } else if (tipo == 'QD') {
+            id_num_questao_caderno.prop('disabled', false);
+            id_num_questao_caderno.pulsate({color: "#4A91D3", repeat: false});
+            id_tipo_procedimento.prop('disabled', true);
+            id_tipo_sentenca.prop('disabled', true);
+            id_tipo_peca_pratica.prop('disabled', true);
+            id_area_profissional.pulsate({color: "#4A91D3", repeat: false});
+            id_area_profissional.prop('disabled', false);
+            $(element).pulsate({color: "#4A91D3", repeat: false});
+            /*inner = '<div class="quadrado-ligado">' +
+                    '<div class="quadrado-sozinho quad03"></div>' +
+                    '<div class="pull-left">Questões</div>' +
+                    '</div>' +
+                    '<a class="quad01 quadrado-junto" href="#busca-home" onclick="change_tipo(&apos;PP&apos;)">Peças</a>' +
+                    '<a class="quad02 quadrado-junto" href="#busca-home" onclick="change_tipo(&apos;ST&apos;)">Sentenças</a>' +
+                    '<div class="clear"></div>' +
+                    '<div class="quad03 linha-aba"></div>';*/
+            inner = '<span class="badge bg-questao">QUESTÃO</span>'
+        } else {
+            id_num_questao_caderno.prop('disabled', true);
+            id_tipo_procedimento.prop('disabled', true);
+            id_tipo_sentenca.prop('disabled', true);
+            id_tipo_peca_pratica.pulsate({color: "#41C372", repeat: false});
+            id_tipo_peca_pratica.prop('disabled', false);
+            id_area_profissional.pulsate({color: "#41C372", repeat: false});
+            id_area_profissional.prop('disabled', false);
+            $(element).pulsate({color: "#41C372", repeat: false});
+            /*inner = '<div class="quadrado-ligado">' +
+                    '<div class="quadrado-sozinho quad01"></div>' +
+                    '<div class="pull-left">Peças</div>' +
+                    '</div>' +
+                    '<a class="quad03 quadrado-junto" href="#busca-home" onclick="change_tipo(&apos;QD&apos;)">Questões</a>' +
+                    '<a class="quad02 quadrado-junto" href="#busca-home" onclick="change_tipo(&apos;ST&apos;)">Sentenças</a>' +
+                    '<div class="clear"></div>' +
+                    '<div class="quad01 linha-aba"></div>';*/
+            inner = '<span class="badge bg-peca">PEÇA</span>'
+        }
+
+        //$("#categoria-aba").fadeTo(200, 0.5);
+        element.innerHTML = inner;
+
+        //$("#categoria-aba").fadeTo(300, 1);
+    }
+    {% if not premiado %}
+    function show_chart_geral(tipo, aluno_id) {
+        $('#modalChart').on('shown.bs.modal', function (event) {
+            $.getJSON("{% url 'enunciado:get-chart' %}", {'aluno_id': aluno_id, 'tipo': tipo})
+                    .done(function (json) {
+                        var pieData = json.pieData;
+                        // graph
+                        $('#container').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: true,
+                                type: 'pie'
+                            },
+                            title: {
+                                text: 'Gráfico Ranking Geral (' + json.aluno + ')'
+                            },
+                            /*tooltip: {
+                             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                             },*/
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>',
+                                        style: {
+                                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                        }
+                                    },
+                                    showInLegend: false
+                                }
+                            },
+                            series: [{
+                                name: 'Pontos',
+                                colorByPoint: true,
+                                data: pieData
+                            }]
+                        });
+
+                    })
+                .fail(function (jqxhr, textStatus, error) {
+                    Swal.fire(jqxhr.statusText, 'Desculpe, ocorreu um erro ao tentar enviar sua avaliação.', 'error');
+                });
+        });
+        $('#modalChart').modal('show');
+
+    }
+
+        $('#modalChart').on('hidden.bs.modal', function (event) {
+            $('#container').html('<span class="text-primary mg-top20"><i class="fa fa-refresh fa-spin fa-5x"></i></span>')
+        });
+    {% endif %}
+    function responderDepois(eid) {
+        Dajaxice.apps.enunciado.responder_depois(Dajax.process, {'eid': eid});
+    }
+
+    function adicionarColetania(eid) {
+        $('#btnColetania').button('loading');
+        Dajaxice.apps.enunciado.adicionar_coletania(Dajax.process, {'eid': eid});
+    }
+
+    function curtirComentario(cid) {
+        block();
+        Dajaxice.apps.enunciado.curtir_comentario(Dajax.process, {'cid': cid});
+    }
+
+    function acompanharResposta(eid) {
+        Dajaxice.apps.enunciado.acompanhar_resposta(Dajax.process, {'eid': eid});
+    }
+
+    function seguirResposta(rid) {
+        $('#btnSeguir').button('loading');
+        Dajaxice.apps.enunciado.seguir_resposta(Dajax.process, {'rid': rid});
+    }
+
+    function reportarBug(tipo) {
+        BootstrapDialog.show({
+            type: BootstrapDialog.TYPE_DANGER,
+            title: 'Reportar problema (' + tipo + ')',
+            message: $('<textarea id="idTextErro" class="form-control" placeholder="Descreva o erro..."></textarea>'),
+            buttons: [{
+                icon: 'glyphicon glyphicon-send',
+                label: '  Reportar',
+                cssClass: 'btn-success',
+                action: function (dialogItself) {
+                    var texto = $('#idTextErro')
+                    if (texto.val() == "") {
+                        swal_alert('ops', 'Descreva o problema!', 'error');
+                    } else {
+                        Dajaxice.apps.enunciado.relatar_bug(
+                                Dajax.process, {'tipo': tipo, 'url': window.location.pathname, 'msg': texto.val()}
+                        );
+                        dialogItself.close();
+                    }
+
+                }
+            }]
+        });
+    }
+</script>
+<script>
+    /* ELEMENTO TAGS */
+    window['pulse'] = false;
+    var elt_tags = $('#tags');
+    elt_tags.readOnly = true;
+    elt_tags.tagsinput({
+        itemValue: 'value',
+        itemText: 'text',
+        tagClass: 'label label-danger'
+    });
+    /* MEUS FILTROS */
+    $('#id_meus_filtros').editable({
+        sender: 'always',
+        display: false,
+        title: 'Selecione o Filtro',
+        type: 'select',
+        source: '/enunciado/get/?tipo=filtro',
+        success: function (response, newValue) {
+            resetar_valores();
+            aplicar_filtro(newValue)
+        }
+    });
+    /* SALVAR FILTRO */
+    $('#id_salvar_filtro').editable({
+        display: false,
+        title: 'Informe um nome para o Filtro',
+        value: '',
+        pk: 1,
+        name: 'teste',
+        tpl: '<input id="id_salvar_filtro_txt" type="text">'
+    });
+    /* NÃO DEIXAR O USUARIO DIGITAR NO INPUT TAG */
+    $("#tgs").keydown(function (event) {
+        return false;
+    });
+    /* FUNCÃO PARA OBTER O TEXTO NO SELECT BOX */
+    function getSelectedText(elementId) {
+        var elt = document.getElementById(elementId);
+        console.log('get select', elt)
+        if (elt.selectedIndex == 0)
+            return null;
+
+        return elt.options[elt.selectedIndex].text;
+    }
+    /* FUNÇÃO PARA OBTER AS ESFERAS E CARGO */
+    function getEsferas(tipo, parent_id) {
+        $.ajax({
+            url: '/enunciado/get/',
+            type: 'GET',
+            data: '?tipo=' + tipo + '?parent_id=' + parent_id,
+            dataType: 'json',
+            success: function (json) {
+                console.log('suvvess', json);
+                return json;
+
+            }
+        });
+    }
+    /* FUNCÃO PARA ADICIONAR AS TAGS */
+    function addTag(index, text) {
+        window['pulse'] = false;
+        elt_tags.tagsinput('remove', index);
+        if (text == null)
+            return null;
+
+        elt_tags.tagsinput('add', {"value": index, "text": text});
+        window['pulse'] = true;
+            }
+    /* AO CLICAR NO SELECT ADICIONA AS TAGS */
+    function sel_click(element) {
+        var el = $(element);
+        var tipo = el.prop('type');
+        console.log('tipo', tipo, el)
+        if (tipo == 'radio') {
+            var text = el.val();
+            if (el.prop('checked') == false) var text = null;
+        } else if (tipo == 'text') {
+            var text = el.val();
+            if (text == "") var text = null;
+        }
+        else {
+            var text = getSelectedText(element.id)
+        }
+        addTag(element.dataset.index, text)
+    }
+    $('#tags').on('itemRemoved', function (event) {
+        // event.item: contains the item
+        var i = event.item;
+        if (i) {
+            var select = $(document.querySelectorAll("[data-index='" + i.value + "']"));
+
+            if (window['pulse'] == true) {
+                select.val(0);
+                select.pulsate({color: "#D9534F", repeat: false});
+            }
+        }
+    });
+
+    function on_change_esferas(element) {
+        var tipo = null;
+        var select_id = element.id;
+        console.log('iten cancel', select_id)
+        if (select_id == 'id_esfera_geral') {
+            /* Popular esfera especifica */
+            $('#id_esfera_especifica').children().remove().end().append('<option selected value="0">Esfera Específica</option>');
+            $('#id_esfera_especifica').pulsate({color: "#D9534F", repeat: false});
+            $('#id_cargo').children().remove().end().append('<option selected value="0">Cargo</option>');
+            $('#id_cargo').pulsate({color: "#D9534F", repeat: false});
+            $('#id_concurso').children().remove().end().append('<option selected value="0">Cargo</option>');
+            $('#id_concurso').pulsate({color: "#D9534F", repeat: false});
+            if ($(element).val() == '0') {
+                {% for esfera in proc_enunciado.esfera_especifica %}
+                    $('#id_esfera_especifica').children().end().append('<option selected value="{{ esfera.id }}">{{ esfera.nome }}</option>');
+                {% endfor %}
+                {% for cargo in proc_enunciado.cargo %}
+                    $('#id_cargo').children().end().append('<option selected value="{{ cargo.id }}">{{ cargo.nome }}</option>');
+                {% endfor %}
+            } else {
+
+                var url = '/enunciado/get/?tipo=E&parent_id=' + $(element).val()
+                $.getJSON(url, function (data) {
+                    $.each(data, function (i, value) {
+                        $('#id_esfera_especifica').append($('<option>').text(value.text).attr('value', value.id));
+                        console.log(data)
+                    });
+                });
+            }
+            $('#id_esfera_especifica').val('0')
+            $('#id_cargo').val('0')
+        } else if (select_id == 'id_esfera_especifica') {
+            $('#id_cargo').children().remove().end().append('<option selected value="0">Cargo</option>');
+            $('#id_cargo').pulsate({color: "#D9534F", repeat: false});
+            if ($(element).val() == '0') {
+                {% for cargo in proc_enunciado.cargo %}
+                    $('#id_cargo').children().end().append('<option selected value="{{ cargo.id }}">{{ cargo.nome }}</option>');
+                {% endfor %}
+            } else {
+                var url = '/enunciado/get/?tipo=C&parent_id=' + $(element).val()
+                $.getJSON(url, function (data) {
+                    $.each(data, function (i, value) {
+                        $('#id_cargo').append($('<option>').text(value.text).attr('value', value.id));
+                        console.log(data)
+                    });
+                });
+            }
+            $('#id_cargo').val('0')
+        } else if (select_id == 'id_cargo') {
+            $('#id_concurso').children().remove().end().append('<option selected value="0">Concurso</option>');
+            $('#id_concurso').pulsate({color: "#D9534F", repeat: false});
+            if ($(element).val() == '0') {
+                {% for concurso in proc_enunciado.concurso %}
+                    $('#id_concurso').children().end().append('<option selected value="{{ concurso.id }}">{{ concurso.nome }}</option>');
+                {% endfor %}
+            } else {
+                var url = '/enunciado/get/?tipo=concurso&parent_id=' + $(element).val()
+                $.getJSON(url, function (data) {
+                    $.each(data, function (i, value) {
+                        $('#id_concurso').append($('<option>').text(value.text).attr('value', value.id));
+                        console.log(data)
+                    });
+                });
+            }
+            $('#id_concurso').val('0')
+        }
+    }
+    $('#id_salvar_filtro').on('save', function (e, params) {
+        /* PASSAR O NOME DO FILTRO*/
+        var input = $("<input>").attr("type", "hidden").attr("name", "nome_filtro").val(params.submitValue);
+        $('#id_form_busca').append(input)
+        $.ajax({
+            method: "POST",
+            url: "{% url 'enunciado:obter' %}",
+            data: JSON.stringify($('#id_form_busca').serialize())
+        }).done(function (msg) {
+            console.log('FILTRO', params, msg);
+            var m = msg
+            if (m.erro == true) {
+                BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_DANGER,
+                    title: 'Erro',
+                    message: '<strong>' + m.mensagem + '</strong>',
+                    buttons: [{
+                        label: 'Fechar',
+                        cssClass: 'btn-success',
+                        action: function(dialogItself){
+                            dialogItself.close();
+                        }
+                    }]
+                });
+            } else {
+                swal_alert('Filtro Salvo!');
+                $('#id_salvar_filtro_txt').val("")
+            }
+        });
+        input.remove()
+    });
+
+</script>
+{% block extra_js %}{% endblock %}
+{% include 'login-modal.html' %}
+<script>
+    jQuery(function($) {
+
+    checkCookie_eu();
+
+    function checkCookie_eu()
+    {
+
+        var consent = getCookie_eu("cookies_consent");
+
+        if (consent == null || consent == "" || consent == undefined)
+        {
+            // show notification bar
+            $('#cookie_directive_container').show();
+        }
+
+    }
+
+    function setCookie_eu(c_name,value,exdays)
+    {
+
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var c_value = escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+        document.cookie = c_name + "=" + c_value+"; path=/";
+
+        $('#cookie_directive_container').hide('slow');
+    }
+
+
+    function getCookie_eu(c_name)
+    {
+        var i,x,y,ARRcookies=document.cookie.split(";");
+        for (i=0;i<ARRcookies.length;i++)
+        {
+            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==c_name)
+            {
+                return unescape(y);
+            }
+        }
+    }
+
+    $("#cookie_accept a").click(function(){
+        setCookie_eu("cookies_consent", 1, 30);
+    });
+
+});
+</script>
+<!-- Go to www.addthis.com/dashboard to customize your tools -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5deaa01b4dba84b9"></script>
+{% endblock %}
+</body>
+</html>

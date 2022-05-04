@@ -1,0 +1,206 @@
+{% extends '_base.html' %}
+{% block section %}
+    <section class="col-sm-12">
+    <h5><i class="fa fa-filter"></i><strong> Filtrar ranking</strong></h5><br>
+    <div class="btn-group" role="group" aria-label="...">
+      <a href="{% url 'enunciado:ranking-premiado' %}?q=I" class="btn btn-success{% if filter == 'I' %} active{% endif %}">Iniciados</a>
+      <a href="{% url 'enunciado:ranking-premiado' %}?q=F" class="btn btn-success{% if filter == 'F' %} active{% endif %}">Finalizados</a>
+      <a href="{% url 'enunciado:ranking-premiado' %}?q=T" class="btn btn-success{% if filter == 'T' %} active{% endif %}">Todos</a>
+    </div>
+    </section>
+    {% for ranking in rankings %}
+    <section id="questoes-destaque" class="col-sm-6">
+        <div class="titulo-home  mg-bot20">
+            <h3 class="pd-home titulo-home bold">
+                <small>
+                    {{ ranking }} {{ ranking.get_status.display|safe }}
+                </small>
+            </h3>
+            <div class="linha-aba"></div>
+        </div>
+        <a href="#" onclick="$('#minha-posicao-{{ forloop.counter }}').pulsate({color: '#4A91D3'})" class="mg-bot20 meu-rank">Encontrar minha posição neste ranking</a>
+        <div class="div-scroll">
+        {% if ranking.encerrado %}
+            {% for r in ranking.rankingpremiadoranking_set.all  %}
+            <div {% if r.aluno == request.user.aluno %}id="minha-posicao-{{ forloop.parentloop.counter }}"{% endif %} class="pontuar">
+                <div class="pontuar01 {% if r.aluno == request.user.aluno %}bg-azul{% else %}bg-laranja{% endif %}"></div>
+                <div class="pontuar02" >
+                    <span class="bold">{{ forloop.counter|stringformat:'02d' }}º</span>&nbsp<a href="{{ r.aluno.get_absolute_url }}">{{ r.aluno }}</a>
+                    <div class="pull-right"class="pull-right mg-r10"><span style="font-size:100%" class="label label-info">{{ r.pontos }}</span> pts</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for r in ranking.ranking  %}
+            <div {% if r.aluno == request.user.aluno %}id="minha-posicao-{{ forloop.parentloop.counter }}"{% endif %} class="pontuar">
+                <div class="pontuar01 {% if r.aluno == request.user.aluno %}bg-azul{% else %}bg-laranja{% endif %}"></div>
+                <div class="pontuar02" >
+                    <span class="bold">{{ forloop.counter|stringformat:'02d' }}º</span>&nbsp<a href="{{ r.aluno.get_absolute_url }}">{{ r.aluno }}</a>
+                    <a onclick="show_chart_geral('{{ r.aluno }}', {{ r.pieData }})" href="javascript:void(0)" class="pull-right emoticon02">
+                        <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <g> <defs> <rect id="SVGID_1_" x="3.642" y="3.621" width="16.715" height="16.758"></rect> </defs> <clipPath id="SVGID_2_"> <use xlink:href="#SVGID_1_" overflow="visible"></use> </clipPath> <path clip-path="url(#SVGID_2_)" d="M4.272,8.849l3.817,1.574c0.07,0.029,0.143,0.042,0.214,0.042c0.194,0,0.381-0.1,0.486-0.275 l1.718-2.895l3.14-1.545l0.098,1.427c0.002,0.042,0.031,0.079,0.072,0.09c0.039,0.013,0.084-0.002,0.109-0.036l2.631-3.429 c0.025-0.034,0.031-0.081,0.012-0.119c-0.02-0.039-0.059-0.063-0.102-0.063l-4.322-0.008c-0.043,0-0.08,0.026-0.096,0.065 c-0.015,0.04-0.004,0.084,0.027,0.113l1.072,0.948l-3.29,1.619c-0.099,0.048-0.18,0.124-0.236,0.218L8.069,9.195L4.703,7.807 c-0.289-0.12-0.618,0.019-0.736,0.306C3.847,8.4,3.985,8.73,4.272,8.849L4.272,8.849z M4.272,8.849"></path> <path clip-path="url(#SVGID_2_)" d="M19.52,18.686H4.488c-0.467,0-0.846,0.379-0.846,0.846s0.378,0.846,0.846,0.846H19.52 c0.469,0,0.846-0.379,0.846-0.846S19.988,18.686,19.52,18.686L19.52,18.686z M19.52,18.686"></path> </g> <path d="M5.323,11.804c-0.188,0-0.341,0.153-0.341,0.342v5.07c0,0.189,0.153,0.342,0.341,0.342h1.995 c0.188,0,0.342-0.152,0.342-0.342v-5.07c0-0.189-0.153-0.342-0.342-0.342H5.323z M5.323,11.804"></path> <path d="M16.35,6.391v10.826c0,0.189,0.152,0.342,0.342,0.342h1.994c0.188,0,0.342-0.152,0.342-0.342V6.391 c0-0.188-0.154-0.341-0.342-0.341h-1.994C16.502,6.049,16.35,6.202,16.35,6.391L16.35,6.391z M16.35,6.391"></path> <path d="M12.9,9.067c-0.188,0-0.34,0.153-0.34,0.342v7.808c0,0.189,0.152,0.342,0.34,0.342h1.996c0.188,0,0.34-0.152,0.34-0.342 V9.409c0-0.188-0.152-0.342-0.34-0.342H12.9z M12.9,9.067"></path> <path d="M9.112,13.313c-0.188,0-0.342,0.154-0.342,0.342v3.563c0,0.189,0.153,0.342,0.342,0.342h1.994 c0.189,0,0.342-0.152,0.342-0.342v-3.563c0-0.188-0.153-0.342-0.342-0.342H9.112z M9.112,13.313"></path> </g> </svg>
+                    </a>
+                    <div class="pull-right"class="pull-right mg-r10"><span style="font-size:100%" class="label label-info">{{ r.total }}</span> pts</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        </div>
+        <div class="clear"></div>
+
+    </section>
+    <section class="col-sm-6">
+        <div class="panel panel-success">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th colspan="3" class="bg-info">PREMIAÇÃO</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="2" width="60%"><span class="label label-success">1º Prêmio</span> {{ ranking.premio }}</td>
+                    <td class="text-center"><img src="{{ ranking.imagem.url }}" alt="..." class="img-thumbnail"></td>
+                </tr>
+                {% if ranking.get_premios %}
+                <tr>
+                    <td colspan="3">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            {% for premio in ranking.get_premios %}
+                                <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading-{{ premio.pos }}-{{ premio.premio.pk }}">
+                                  <h4 class="panel-title">
+                                    <small><a role="button" data-toggle="collapse" data-parent="#accordion-{{ premio.pos }}-{{ premio.premio.pk }}" href="#collapse-{{ premio.pos }}-{{ premio.premio.pk }}" aria-expanded="true" aria-controls="collapse-{{ premio.pos }}-{{ premio.premio.pk }}">
+                                      <span class="label label-info">{{ premio.pos }}º Prêmio</span> {{ premio.premio }}
+                                    </a></small>
+                                  </h4>
+                                </div>
+                                <div data-parent="#accordion" id="collapse-{{ premio.pos }}-{{ premio.premio.pk }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{ premio.pos }}-{{ premio.premio.pk }}">
+                                  <div class="panel-body text-center">
+                                    <img src="{{ premio.premio.imagem.url }}" alt="..." class="img-thumbnail" style="max-width: 30%">
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                </tbody>
+
+                <tr>
+                    <th colspan="3" class="bg-succes">DETALHAMENTO</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th class="bold"><small>Tipo de Ranking Premiado</small></th>
+                    <th>{{ ranking.get_tipo }}</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th class="bold"><small>Período de Atividade Computado</small></th>
+                    <th><small>{{ ranking.data_ini|date:'d/m/Y' }} a {{ ranking.data_fim|date:'d/m/Y' }}</small></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="bold text-center"><button class="btn btn-info" onclick="Swal.fire({   title: '{{ ranking }}',   html: '{{ ranking.texto }}',   type: 'info' });">Saiba como participar</button> </th>
+                </tr>
+
+            </table>
+        </div>
+    </section>
+    <hr class="bordona"><div class="mg-bot10"></div>
+    </div>
+    {% endfor %}
+        <!-- modal chart -->
+        <div class="modal fade" id="modalChart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">JusTutor</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+                            <span class="text-primary mg-top20"><i class="fa fa-refresh fa-spin fa-5x"></i></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-sm-3">
+                            <span class="pull-left bold">QT = Questões</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="pull-left bold">PÇ = Peças</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="pull-left bold">ST = Sentenças</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+{% endblock %}
+
+{% block busca %}
+    {% include 'busca.html' %}
+{% endblock %}
+<!--*BLOCO ABAIXO*------------------------------------------------------------------------------------>
+{% block extra_js %}
+     <script>
+        function show_chart_geral(nome, data) {
+            $('#modalChart').on('shown.bs.modal', function (event) {
+                var pieData = data;
+                // graph
+                $('#container').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: true,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Gráfico Ranking Geral (' + nome + ')'
+                    },
+                    /*tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },*/
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            },
+                            showInLegend: false
+                        }
+                    },
+                    series: [{
+                        name: 'Pontos',
+                        colorByPoint: true,
+                        data: pieData
+                    }]
+                });
+            });
+            $('#modalChart').modal('show');
+
+        };
+        $('#modalChart').on('hidden.bs.modal', function (event) {
+            $('#container').html('<span class="text-primary mg-top20"><i class="fa fa-refresh fa-spin fa-5x"></i></span>')
+        });
+        $('.div-scroll').slimScroll({
+            height: '310px',
+            alwaysVisible: false
+        });
+
+    </script>
+{% endblock %}

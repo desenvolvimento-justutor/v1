@@ -1,0 +1,112 @@
+/*======================================================
+
+Project: Click To Call - Direct Call From Website HTML Plugin
+Author: Black Theme
+Released On: 8, Sep 2019
+@version: 1.0
+
+========================================================*/
+
+/* Click To Call Main Panel */
+.cc-style9{
+	  position: fixed;
+  	bottom: 1em;
+  	right: 1em; 
+    font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.cc-style9:after{
+    display: block;
+    content: ' ';
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -2;
+}
+.cc-style9.active:after{
+    transform: scale3d(5.5, 5.5, 1);
+    transition-timing-function: cubic-bezier(.68, 1.55, .265, 1);
+}
+
+/* Right Bottom Floating Button */
+.cc-style9 .cc-button{
+    display: block;
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 50%;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(12, 12, 12, 0.3); 
+    cursor: pointer;
+}
+.cc-style9 .cc-button:hover{
+    box-shadow: 0px 0px 10px rgba(12, 12, 12, 0.5);
+}
+.cc-style9 .cc-button i{
+  	margin-top: 14px;
+    font-size: 25px;
+}
+.cc-style9.active .cc-button i{
+  	transform: rotate(-45deg);
+}
+
+/* User Contact List */
+.cc-style9 .items-wrapper{
+  	padding: 0;
+  	margin: 0;
+}
+.cc-style9 .cc-list{
+    position: absolute;
+    padding: 3px;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 50px;
+    height: 50px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+  	cursor: pointer;
+    z-index: -1;	
+  	transition: transform .3s ease, background .2s ease;
+}
+.cc-style9 .cc-list:hover{
+    border: 2px solid #fff;
+}
+.cc-style9.active .cc-list{
+  	transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.cc-style9 .cc-list .cc-user-img{
+	  width: 40px;
+	  border-radius: 50%;
+}
+.cc-style9 .cc-list:hover .cc-user-img{
+  	box-shadow: 0px 0px 5px #222;
+}
+
+/* Chat Contact Postion */
+.cc-style9.active .cc-list:nth-child(1){
+  	transform: translate3d(6px,-101px,0);
+}
+.cc-style9.active .cc-list:nth-child(2){
+  	transform: translate3d(-49px,-88px,0);
+}
+.cc-style9.active .cc-list:nth-child(3){
+  	transform: translate3d(-88px,-45px,0);
+}
+.cc-style9.active .cc-list:nth-child(4){
+  	transform: translate3d(-100px,9px,0);
+}
+
+/* Common CSS */
+.cc-style9:after,
+.cc-style9 .cc-button i,
+.cc-style9 .cc-list:hover{
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+}

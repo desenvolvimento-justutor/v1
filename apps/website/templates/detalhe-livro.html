@@ -1,0 +1,494 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link href="{{ STATIC_URL }}video-js/video-js.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block javascripts %}
+    <link href="{{ STATIC_URL }}video-js/video.js" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block section %}
+<style>
+    .card {
+        padding-top: 20px;
+        margin: 10px 0 20px 0;
+        background-color: rgba(214, 224, 226, 0.2);
+        border-top-width: 0;
+        border-bottom-width: 2px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .card .card-heading {
+        padding: 0 20px;
+        margin: 0;
+    }
+
+    .card .card-heading.simple {
+        font-size: 20px;
+        font-weight: 300;
+        color: #777;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .card .card-heading.image img {
+        display: inline-block;
+        width: 46px;
+        height: 46px;
+        margin-right: 15px;
+        vertical-align: top;
+        border: 0;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        border-radius: 50%;
+    }
+
+    .card .card-heading.image .card-heading-header {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .card .card-heading.image .card-heading-header h3 {
+        margin: 0;
+        font-size: 14px;
+        line-height: 16px;
+        color: #262626;
+    }
+
+    .card .card-heading.image .card-heading-header span {
+        font-size: 12px;
+        color: #999999;
+    }
+
+    .card .card-body {
+        padding: 0 20px;
+        margin-top: 20px;
+    }
+
+    .card .card-media {
+        padding: 0 20px;
+        margin: 0 -14px;
+    }
+
+    .card .card-media img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .card .card-actions {
+        min-height: 30px;
+        padding: 0 20px 20px 20px;
+        margin: 20px 0 0 0;
+    }
+
+    .card .card-comments {
+        padding: 20px;
+        margin: 0;
+        background-color: #f8f8f8;
+    }
+
+    .card .card-comments .comments-collapse-toggle {
+        padding: 0;
+        margin: 0 20px 12px 20px;
+    }
+
+    .card .card-comments .comments-collapse-toggle a,
+    .card .card-comments .comments-collapse-toggle span {
+        padding-right: 5px;
+        overflow: hidden;
+        font-size: 12px;
+        color: #999;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .card-comments .media-heading {
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .card.people {
+        position: relative;
+        display: inline-block;
+        width: 170px;
+        height: 300px;
+        padding-top: 0;
+        margin-left: 20px;
+        overflow: hidden;
+        vertical-align: top;
+    }
+
+    .card.people:first-child {
+        margin-left: 0;
+    }
+
+    .card.people .card-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: inline-block;
+        width: 170px;
+        height: 150px;
+        background-color: #ffffff;
+    }
+
+    .card.people .card-top.green {
+        background-color: #53a93f;
+    }
+
+    .card.people .card-top.blue {
+        background-color: #427fed;
+    }
+
+    .card.people .card-info {
+        position: absolute;
+        top: 150px;
+        display: inline-block;
+        width: 100%;
+        height: 101px;
+        overflow: hidden;
+        background: #ffffff;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .card.people .card-info .title {
+        display: block;
+        margin: 8px 14px 0 14px;
+        overflow: hidden;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 18px;
+        color: #404040;
+    }
+
+    .card.people .card-info .desc {
+        display: block;
+        margin: 8px 14px 0 14px;
+        overflow: hidden;
+        font-size: 12px;
+        line-height: 16px;
+        color: #737373;
+        text-overflow: ellipsis;
+    }
+
+    .card.people .card-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        display: inline-block;
+        width: 100%;
+        padding: 10px 20px;
+        line-height: 29px;
+        text-align: center;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .card.hovercard {
+        position: relative;
+        padding-top: 0;
+        overflow: hidden;
+        text-align: center;
+        background-color: rgba(214, 224, 226, 0.2);
+    }
+
+    .card.hovercard .cardheader {
+        color: white;
+        background-color: #41C372;
+        background-size: cover;
+        height: 100px;
+    }
+
+    .card.hovercard .avatar {
+        position: relative;
+        top: -50px;
+        margin-bottom: -50px;
+    }
+
+    .card.hovercard .avatar img {
+        width: 100px;
+        height: 100px;
+        max-width: 100px;
+        max-height: 100px;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .card.hovercard .info {
+        padding: 4px 8px 10px;
+    }
+
+    .card.hovercard .info .title {
+        margin-bottom: 4px;
+        font-size: 24px;
+        line-height: 1;
+        color: #262626;
+        vertical-align: middle;
+    }
+
+    .card.hovercard .info .desc {
+        overflow: hidden;
+        font-size: 14px;
+        line-height: 20px;
+
+        text-overflow: ellipsis;
+    }
+
+    .card.hovercard .bottom {
+        padding: 0 20px;
+        margin-bottom: 17px;
+    }
+
+    .btn-sq-lg {
+        width: 150px !important;
+        height: 150px !important;
+    }
+
+    .btn-sq {
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 10px;
+    }
+
+    .btn-sq-sm {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 10px;
+    }
+
+    .btn-sq-xs {
+        width: 25px !important;
+        height: 25px !important;
+        padding: 2px;
+    }
+
+</style>
+<div class="container">
+    <div class="col-sm-12">
+        <div class="cabecalho-cursos">
+            <div class="linha-breadcrumb">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="{% url 'website:index' %}">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Livraria</a>
+                    </li>
+                    <li>
+                        <a href="{{ livro.categoria.get_absolute_url }}">{{ livro.categoria }}</a>
+                    </li>
+                    <li class="active">{{ livro }}</li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="col-sm-3 mg-top10">
+        <img src="{{ livro.imagem.url }}" class="img-thumbnail" style="width: 100%">
+        <div class="clear"></div>
+
+        <div class="preco-curso">
+            <div class="preco-geral">
+                <div class="preco-maior-x">R$ {{ livro.valor }}</div>
+                <div class="preco-menor-x text-danger bold">&nbsp;À VISTA OU PARCELE NO CARTÃO DE CRÉDITO</div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        {% if request.user.aluno %}
+            {% if checkout %}
+            <a href="{% url 'aluno:livros' %}" class="comprar" style="background-color: orangered">
+                VER LIVRO
+            </a>
+            {% else %}
+                {% if livro.ativo %}
+                <a onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ livro.id }}});block()" href="javascript:void(0);" class="comprar">
+                    COMPRAR ESTE LIVRO
+                </a>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <a onclick="login()" href="javascript:void(0);" class="comprar">
+                Efetue Login ou seu Cadastramento para poder comprar este livro
+            </a>
+        {% endif %}
+
+        <div class="clear"></div>
+        <div class="mg-top20">
+            {% include '_widget-anuncio.html' %}
+        </div>
+
+    </div>
+
+    <div class="col-sm-9 mg-top10">
+
+        <div class="avalie-video">
+            <div class="avalie-x">
+                Avalie:
+            </div>
+            <a href="javascript:void(0)" onclick="Dajaxice.apps.curso.avaliar(Dajax.process, {'curso_id': {{ livro.id }}, 'avaliacao': 'O'});" class="avalia01 icone-verde">
+                <div id="id_otimo" class="valor-avalie">{{ avaliacao.otimo }}</div>
+                <div class="icone-avalie01 ">
+                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <path d="M12,4c-4.398,0-8,3.602-8,8c0,4.398,3.602,8,8,8c4.398,0,8-3.602,8-8C20,7.602,16.398,4,12,4L12,4z M14.801,8.801 C15.441,8.801,16,9.359,16,10s-0.559,1.199-1.199,1.199S13.602,10.641,13.602,10S14.16,8.801,14.801,8.801L14.801,8.801z M9.199,8.801c0.641,0,1.199,0.558,1.199,1.199s-0.558,1.199-1.199,1.199C8.559,11.199,8,10.641,8,10S8.559,8.801,9.199,8.801 L9.199,8.801z M12,16.801c-2.078,0-3.84-1.359-4.48-3.199h8.96C15.84,15.441,14.078,16.801,12,16.801L12,16.801z M12,16.801"></path> </g><!---emoticon-otimo--> </svg>
+                </div>
+                <div class="texto-avalie01">Ótimo</div>
+                <div class="clear"></div>
+            </a>
+            <a href="javascript:void(0)" onclick="Dajaxice.apps.curso.avaliar(Dajax.process, {'curso_id': {{ livro.id }}, 'avaliacao': 'B'});" class="avalia01 icone-laranja">
+                <div id="id_bom" class="valor-avalie">{{ avaliacao.bom }}</div>
+                <div class="icone-avalie01">
+                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <path d="M12,4.025c-4.404,0-7.975,3.571-7.975,7.975c0,4.404,3.57,7.975,7.975,7.975s7.975-3.57,7.975-7.975 C19.975,7.596,16.404,4.025,12,4.025L12,4.025z M13.993,15.986h-3.987v-0.995h3.987V15.986z M14.991,8.013 c0.549,0,0.995,0.446,0.995,0.996c0,0.551-0.446,0.998-0.995,0.998c-0.552,0-0.998-0.447-0.998-0.998 C13.993,8.459,14.439,8.013,14.991,8.013L14.991,8.013z M9.009,8.013c0.551,0,0.997,0.446,0.997,0.996 c0,0.551-0.446,0.998-0.997,0.998c-0.55,0-0.996-0.447-0.996-0.998C8.013,8.459,8.459,8.013,9.009,8.013L9.009,8.013z M9.009,8.013 "></path> </g> </svg>
+                </div>
+                <div class="texto-avalie01">Bom</div>
+                <div class="clear"></div>
+            </a>
+            <a href="javascript:void(0)" onclick="Dajaxice.apps.curso.avaliar(Dajax.process, {'curso_id': {{ livro.id }}, 'avaliacao': 'R'});" class="avalia01 icone-vermelho">
+                <div id="id_ruim" class="valor-avalie">{{ avaliacao.ruim }}</div>
+                <div class="icone-avalie01">
+                    <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g> <path d="M12,3.988c-4.425,0-8.012,3.588-8.012,8.012c0,4.422,3.587,8.012,8.012,8.012c4.426,0,8.012-3.59,8.012-8.012 C20.012,7.576,16.426,3.988,12,3.988L12,3.988z M14.149,8.958c0.505,0,0.916,0.412,0.916,0.918s-0.41,0.917-0.916,0.917 c-0.507,0-0.918-0.411-0.918-0.917S13.643,8.958,14.149,8.958L14.149,8.958z M9.991,8.958c0.506,0,0.916,0.412,0.916,0.918 s-0.41,0.917-0.916,0.917s-0.917-0.411-0.917-0.917S9.484,8.958,9.991,8.958L9.991,8.958z M15.316,15.684 c-0.225,0.098-0.485-0.006-0.583-0.23c-0.428-0.988-1.439-1.629-2.576-1.629c-1.164,0-2.181,0.641-2.591,1.629 c-0.071,0.168-0.236,0.271-0.41,0.271c-0.057,0-0.114-0.01-0.17-0.033c-0.227-0.096-0.333-0.355-0.24-0.58 c0.549-1.322,1.888-2.174,3.411-2.174c1.491,0,2.821,0.85,3.391,2.164C15.646,15.324,15.542,15.586,15.316,15.684L15.316,15.684z M15.316,15.684"></path> </g> </svg>
+                </div>
+                <div class="texto-avalie01">Ruim</div>
+                <div class="clear"></div>
+            </a>
+
+                <div class="pull-right"><span id="aval-total" class="badge bg-azul">{{ avaliacao.total }}</span> Avaliaç{{ avaliacao.total|pluralize:"ão,ções" }}</div>
+
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+
+        <section class="conteudo-curso">
+            <h3 class="mg-top10">{{ livro }}</h3>
+            <hr class="no-pd mg-top10">
+            <p style="font-size: medium"><strong>Auto{{ livro.autores.all.count|pluralize:"e,es" }}: </strong>
+            <span class="text-danger">{% for autor in livro.autores.all %}
+                     {{ autor }}
+                    {% if not forloop.last %}
+                        &nbsp|&nbsp;
+                    {% endif %}
+            {% endfor %}</span></p>
+            <table class="table table-striped tabela-curso">
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                            <span class="laranja">Coleção</span>
+                            {{ livro.colecao }}
+                        </td>
+                        <td colspan="2">
+                            <span class="laranja">Formato</span>
+                            {{ livro.get_formato_display }} {% if website.config.sobre_drm %}<a title="Saiba mais..." style="padding-left: 10px" class="text-warning" href="javascript:void(0)" data-toggle="modal" data-target="#modalSaiba"><i style="color: #E45149" class="fa fa-question-circle fa2x"></i></a>{% endif %}
+                        </td>
+                        <td colspan="2">
+                            <span class="laranja">Páginas</span>
+                            {{ livro.paginas }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="laranja">Edição</span>
+                            {{ livro.edicao }}a
+                        </td>
+                        <td colspan="2">
+                            <span class="laranja">Ano</span>
+                            {{ livro.ano }}
+                        </td>
+                        <td colspan="2">
+                            <span class="laranja">ISBN</span>
+                            {{ livro.isbn }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {% if livro.amostra or livro.sumario %}
+            <div class="row">
+                <div class="col-lg-12">
+                    <p class="text-center">
+                        {% if livro.sumario %}
+                        <a target="_blank" href="{{ livro.sumario.url }}" class="btn btn-xs btn-primary" style="margin-right: 20">
+                            <i class="fa fa-file-text-o fa-3x"></i><br/>
+                            <span style="font-size: 14px">Sumário</span>
+                        </a>
+                        {% endif %}
+                        {% if livro.amostra %}
+                        <a target="_blank" href="{{ livro.amostra.url }}" class="btn btn-xs btn-success">
+                            <i class="fa fa-book fa-3x"></i><br/>
+                            <span style="font-size: 14px">Amostra</span>
+                        </a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+            <blockquote>{{ livro.descricao|linebreaks }}</blockquote>
+        </section>
+        <div class="container ">
+            <div class="row">
+                {% with livro.autores.all as autores %}
+                    {% for autor in autores %}
+                    <div class="col-sm-{% if autores.count > 1 %}4{% else %}9{% endif %}">
+                        <div class="card hovercard">
+                            <div class="cardheader">
+                                <h3 style="padding-top: 14px; font-weight: bold">Sobre o Autor</h3>
+                            </div>
+                            <div class="avatar">
+                                <img alt="" src="{{ autor.foto_url }}">
+                            </div>
+                            <div class="info">
+                                <div class="title">
+                                    {{ autor }}
+                                </div>
+                                <div class="desc">{{ autor.sobre|linebreaks }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endwith %}
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalSaiba">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Formato Digital</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalBody">
+                    {{ website.config.sobre_drm|linebreaks }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+{% block extra_js %}
+<script>
+    $('#modalBody').slimScroll({
+        start: 'top',
+        height: '200px'
+    });
+</script>
+{% endblock %}

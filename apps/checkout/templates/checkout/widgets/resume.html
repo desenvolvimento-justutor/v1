@@ -1,0 +1,41 @@
+{% load curso %}
+<div class="section-subtitle">Resumo</div>
+<div class="grand-total">
+    <div class="grand-total-inner" data-slide=".grand-total-details," data-active=".grand-total-inner">
+        <div class="grand-total-toggle">
+            <div class="grand-total-icon">
+                <i class="ion-bag"></i>
+            </div> <!-- /.grand-total-icon -->
+            <div class="grand-total-label">
+                Total <span>{{ cart.count }} Ite{{ cart.count|pluralize:"m,ns" }}</span>
+            </div> <!-- /.grand-total-label -->
+            <div class="grand-total-price">
+                {{ cart.total_payment|moeda }}
+            </div> <!-- /.grand-total-price -->
+        </div>
+        <div class="grand-total-details">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="total-info">
+                        <div class="total-item">
+                            <div class="total-name">Total</div>
+                            <div class="total-value" id="total-order" data-price>{{ cart.total|moeda }}</div>
+                        </div> <!-- /.total-item -->
+                        <div class="total-item" data-calculate-min="true">
+                            <div class="total-name">Desconto</div>
+                            <div class="total-value" id="total-discount" data-price>{{ cart.discount|moeda }}</div>
+                        </div> <!-- /.total-item
+                        <div class="total-item">
+                            <div class="total-name">Taxas</div>
+                            <div class="total-value" id="total-tax" data-price>{{ cart.tax|moeda }}</div>
+                        </div>  /.total-item -->
+                        <div class="total-item total">
+                            <div class="total-name">Total</div>
+                            <div class="total-value" data-price>{{ cart.total_payment|moeda }}</div>
+                        </div> <!-- /.total-item -->
+                    </div> <!-- /.total-info -->
+                </div> <!-- /.col-md-12 -->
+            </div> <!-- /.row -->
+        </div> <!-- /.grand-total-details -->
+    </div> <!-- /.grand-total-inner -->
+</div> <!-- /.grand-total -->
