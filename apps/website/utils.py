@@ -11,8 +11,8 @@ from justutorial.settings import SITEADD, EMAIL_HOST_USER
 from libs.util.mail import send_mail, send_mail_ead
 from django.core import mail
 
-AWS_ACCESS_KEY_ID = 'AKIAJSR3ICBF5K56LSAQ'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
 SES_REGION_NAME = 'us-west-2'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
