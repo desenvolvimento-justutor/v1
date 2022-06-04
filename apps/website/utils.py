@@ -4,15 +4,15 @@ import os
 import random
 import re
 
-from boto.ses import connect_to_region
+from boto.ec2 import connect_to_region
 from django.template import loader, Context
 
 from justutorial.settings import SITEADD, EMAIL_HOST_USER
 from libs.util.mail import send_mail, send_mail_ead
 from django.core import mail
 
-AWS_ACCESS_KEY_ID = ''
-AWS_SECRET_ACCESS_KEY = ''
+AWS_ACCESS_KEY_ID = 'AKIAWYJNKRXAPMX47YH7'
+AWS_SECRET_ACCESS_KEY = 'BEEyNaAO5QLMx/LEFL5zEOoTbXQcYfPfp9rIriCQt5MX'
 SES_REGION_NAME = 'us-west-2'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -53,7 +53,7 @@ def enviar_email_old(template, titulo, email, context=None, ead=None):
     rendered = t.render(c)
     if DEBUG_EMAIL:
         print("DEBUG E-MAIL")
-        email = ['leticia@smartweb.com.br', 'max@smartweb.com.br']
+        email = ['christian.douglas.alcantara@gmail.com']
     if ead:
         send_mail_ead(titulo, '', EMAIL_HOST_USER, email, html=rendered)
     else:
@@ -75,7 +75,7 @@ def enviar_email_ses_(connect, template, titulo, emails, context=None, ead=False
     }
     if context:
         ctx.update(context)
-    email_sender = 'JusTutor - Ensino <ead@justutor.com.br>' if ead else 'naoresponder@justutor.com.br'
+    email_sender = 'JusTutor - Ensino <contato@justutor.com.br>' if ead else 'naoresponder@justutor.com.br'
     t = loader.get_template(template)
     c = Context(ctx)
     rendered = t.render(c)
@@ -163,3 +163,5 @@ class CPF(object):
             c.append((0, 11 - t)[t >= 2])
             p.insert(0, 11)
         return bool(c == self.cpf)
+
+

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 # Autor: christian
 import os
-from justutorial.settings import BASE_DIR
+from datetime import timedelta, datetime, time
+
 from django.core.management.base import BaseCommand
+from django_comments.models import Comment
 from django_extensions.management.color import color_style
 
 from apps.curso.models import Curso
-from datetime import timedelta, datetime, time
-from apps.website.utils import enviar_email_ses, sess_connect, render_email_template
-from django_comments.models import Comment
 from apps.curso.models import Discussao, DocCurso, Atividade, CheckoutItens
-from boto.ses.exceptions import SESAddressNotVerifiedError
-
+from apps.website.utils import enviar_email
+from justutorial.settings import BASE_DIR
+from libs.util.mail import send_mail
 
 class Command(BaseCommand):
 
@@ -112,35 +112,17 @@ class Command(BaseCommand):
                         connection = mail.get_connection()
                         connection.open()
 
-
                         for email_aluno in emails_alunos:
                             try:
                                 curso_title = 'simulado' if curso.categoria.tipo == 'D' else 'curso'
-                                # enviar_email_ses(
-                                #     None,
-                                #     'curso/email/notificar-aluno.html',
-                                #     u'[{0:02d}/{1:02d}] Relatório de atividades do seu {2} "{3}"'.format(
-                                #         today.day, today.month, curso_title, curso.nome
-                                #     ), [email_aluno], ctx_email, ead=True
-                                # )
-                                _mail = mail.EmailMessage(
+                                enviar_email(
+                                    'curso/email/notificar-aluno.html',
                                     u'[{0:02d}/{1:02d}] Relatório de atividades do seu {2} "{3}"'.format(
                                         today.day, today.month, curso_title, curso.nome
-                                    ),
-                                    render_email_template(
-                                        'curso/email/notificar-aluno.html',
-                                        ctx_email
-                                    ),
-                                    'JusTutor - Ensino <ead@justutor.com.br>',
-                                    [email_aluno],
-                                    connection=connection,
+                                    ), [email_aluno], ctx_email, ead=True
                                 )
-                                _mail.content_subtype = "html"
-                                _mail.send()
-                                self.stdout.write(self.style.INFO(u"Comentário enviado para '{}'".format(email_aluno)))
-                            except SESAddressNotVerifiedError:
-                                self.stdout.write(self.style.URL_NAME(u'Email: {}. Não verificado'.format(email_aluno)))
-                        connection.close()
+                            except Exception as e:
+                                self.stdout.write(self.style.URL_NAME(u'Erro: {}'.format(e)))
 
                 if atividades_vencer:
                     self.stdout.write(
@@ -152,37 +134,11 @@ class Command(BaseCommand):
                             'curso': curso, 'tomorrow': tomorrow, 'checkout': checkout_item,
                             'atividades': atividades_vencer
                         }
-
-                        from django.core import mail
-                        connection = mail.get_connection()
-                        connection.open()
-
                         for email_aluno in emails_alunos:
-                            try:
-
-                                _mail = mail.EmailMessage(
-                                    u'[{0:02d}/{1:02d}] Aviso de prazo vencendo no seu curso "{2}"'.format(
-                                        today.day, today.month, curso
-                                    ),
-                                    render_email_template(
-                                        'curso/email/notificar-aluno-atividades.html',
-                                        ctx_email
-                                    ),
-                                    'JusTutor - Ensino <ead@justutor.com.br>',
-                                    [email_aluno],
-                                    connection=connection,
-                                )
-                                _mail.content_subtype = "html"
-                                _mail.send()
-                                # enviar_email_ses(
-                                #     None,
-                                #     'curso/email/notificar-aluno-atividades.html',
-                                #     u'[{0:02d}/{1:02d}] Aviso de prazo vencendo no seu curso "{2}"'.format(
-                                #         today.day, today.month, curso
-                                #     ), [email_aluno], ctx_email, ead=True
-                                # )
-                                self.stdout.write(self.style.INFO(u"Atividade enviada para '{}'".format(email_aluno)))
-                            except SESAddressNotVerifiedError:
-                                self.stdout.write(self.style.URL_NAME(u'Email: {}. Não verificado'.format(email_aluno)))
-
-                        connection.close()
+                            enviar_email(
+                                'curso/email/notificar-aluno-atividades.html',
+                                u'[{0:02d}/{1:02d}] Aviso de prazo vencendo no seu curso "{2}"'.format(
+                                    today.day, today.month, curso
+                                ), [email_aluno], ctx_email, ead=True
+                            )
+                            self.stdout.write(self.style.INFO(u"Atividade enviada para '{}'".format(email_aluno)))

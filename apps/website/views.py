@@ -35,6 +35,8 @@ from libs.util.mail import send_mail
 from libs.util.paginar import listing
 from models import Institucional, Noticia, VideoJusTutor, NoticiaLida, ArtigoIndice, Artigo, _get_config_ativa
 from .utils import get_client_ip
+import logging
+logger = logging.getLogger('django')
 
 
 def handler500(request):
@@ -422,6 +424,7 @@ def busca_aluno(request):
 
 
 def send_email_contato(nome, email, mensagem):
+    logger.info("enviar email contato")
     t = loader.get_template('email/email_contato.html')
     c = Context({
         'dominio': SITEADD,

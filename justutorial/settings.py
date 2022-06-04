@@ -1,22 +1,21 @@
-
 # -*- coding: utf-8 -*-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
 import pusher
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
+# import sentry_sdk
+# from sentry_sdk.integrations.django import DjangoIntegration
 
 from justutorial.conf.suit import *
 
 # import rollbar
-sentry_sdk.init(
-    dsn="https://8959ed956672451c99041dc7c611a8df@sentry.io/1873270",
-    integrations=[DjangoIntegration()],
-    environment="staging",
-    send_default_pii=True
-)
+# sentry_sdk.init(
+#     dsn="https://8959ed956672451c99041dc7c611a8df@sentry.io/1873270",
+#     integrations=[DjangoIntegration()],
+#     environment="staging",
+#     send_default_pii=True
+# )
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,8 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '83^b0t#e+*+a-^cw(x99-ewj2q)@x$nmzen(@xd&&pm2=1cpu$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.path.exists(os.path.join(BASE_DIR, 'venv'))
-#DEBUG = True
+DEBUG = False
 # ROLLBAR = {
 #     'access_token': 'be5b7a3cf8c144f496ab017daf5fe625',
 #     'environment': 'development' if DEBUG else 'production',
@@ -48,9 +46,8 @@ if DEBUG:
 
 SITE_ID = 1
 ADMINS = [
-    ('Max', 'max@smartweb.com.br'),
-#    ('Christian', 'christian.douglas.alcantara@gmail.com'),
-#    ('Justutor', 'justutorbackup@gmail.com')
+       ('Christian', 'christian.douglas.alcantara@gmail.com'),
+    #    ('Justutor', 'justutorbackup@gmail.com')
 ]
 # ----------------------------------------------------------------------------------------------------------------------
 # APPLICATION DEFINITION
@@ -523,32 +520,29 @@ DOMINIO = 'justutor.com.br'
 SITEADD = '{0}//{1}'.format(PROTOCOL, DOMINIO)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_BACKEND = 'django_ses.SESBackend'
-#EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+# EMAIL_BACKEND = 'django_ses.SESBackend'
+# EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 
-#AWS_ACCESS_KEY_ID='AKIAJSR3ICBF5K56LSAQ'
-#AWS_SECRET_ACCESS_KEY='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'
-#SES_REGION_NAME='us-west-2'
+# AWS_ACCESS_KEY_ID='AKIAJSR3ICBF5K56LSAQ'
+# AWS_SECRET_ACCESS_KEY='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'
+# SES_REGION_NAME='us-west-2'
 
-AWS_ACCESS_KEY_ID='AKIAWYJNKRXAKFKBNQVO'
-AWS_SECRET_ACCESS_KEY='BF0xp2UQdEKSCPQz8DubO7MrV0iXngJTK4iijf5rcIi6'
-SES_REGION_NAME='us-east-1'
+AWS_ACCESS_KEY_ID = 'AKIAWYJNKRXAPMX47YH7'
+AWS_SECRET_ACCESS_KEY = 'BEEyNaAO5QLMx/LEFL5zEOoTbXQcYfPfp9rIriCQt5MX'
+SES_REGION_NAME = 'us-east-1'
 
 DEFAULT_FROM_EMAIL = u'{0} <naoresponder@{1}>'.format(NOME_SITE, DOMINIO)
 # EMAIL_HOST = 'smtp.zoho.com'
 # EMAIL_HOST_USER = 'naoresponder@justutor.com.br'
 # EMAIL_HOST_PASSWORD = 'NAT100nvoisaoc!'
-#EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
-EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
-#EMAIL_HOST_USER = 'justutor-smtp-site'
-EMAIL_HOST_USER = 'AKIAIAW7XQVSJ23BD7XA'
-#EMAIL_HOST_PASSWORD = 'QkYweHAyVVFkRUtTQ1BRejhEdWJPN01yVjBpWG5nSlRLNGlpamY1cmNJaTY='
-#EMAIL_HOST_PASSWORD = 'BK1xIAYFWy1KQv7Vss9IoAYFct0/beN58tRogxigfyfN'
-EMAIL_HOST_PASSWORD = 'AkAI6jFFAAoif/dDdagJHtdIUoZwqA4caSMcyiagrxBU'
+# EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
+EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
+EMAIL_HOST_USER = 'AKIAWYJNKRXAMVJ6K3Z7'
+EMAIL_HOST_PASSWORD = 'BMKuOIgkk29tXoWa4daATNo7K6W7VVk7V/ICVF6yAQn8'
 EMAIL_SUBJECT_PREFIX = NOME_SITE
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-#EMAIL_USE_SSL = True
+# EMAIL_USE_SSL = True
 
 
 # EMAIL_HOST = 'smtp.gmail.com'
@@ -578,7 +572,7 @@ SMARTWEB_MMKT_LIST_ID = "oPeEzyP03txLXAlKIzoLFQ"
 SMARTWEB_MMKT_URL = 'http://justutorial.com.br/'
 SENDY_API_KEY = 'Stv8mmGM9xFhU7x62cGI'
 
-#CACHES = {
+# CACHES = {
 #     "default": {
 #         "BACKEND": "django_redis.cache.RedisCache",
 #         "LOCATION": "redis://127.0.0.1:6379/1",
@@ -587,7 +581,7 @@ SENDY_API_KEY = 'Stv8mmGM9xFhU7x62cGI'
 #         },
 #         "KEY_PREFIX": "example"
 #     }
-#}
+# }
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',

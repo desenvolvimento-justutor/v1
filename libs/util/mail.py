@@ -29,9 +29,9 @@ class EmailThread(threading.Thread):
 
 
 def send_mail(subject, body, from_email, recipient_list, fail_silently=False, html=None, *args, **kwargs):
-    settings.DEFAULT_FROM_EMAIL = 'Justutor <naoresponder@justutor.com.br>'
+    settings.DEFAULT_FROM_EMAIL = 'Justutor <contato@justutor.com.br>'
     # settings.EMAIL_HOST_USER = 'naoresponder@justutor.com.br'
-    from_email = 'Justutor <naoresponder@justutor.com.br>'
+    from_email = 'Justutor <contato@justutor.com.br>'
     EmailThread(subject, body, from_email, recipient_list, fail_silently, html).start()
 
 
@@ -41,5 +41,5 @@ def send_mail_ead(subject, body, from_email, recipient_list, fail_silently=False
     # settings.EMAIL_HOST_USER = 'ead@justutor.com.br'
     # settings.EMAIL_HOST_PASSWORD = 'TZ#@M?d2656r!C3'
     # settings.EMAIL_HOST_USER = 'ead@justutor.com.br'
-    from_email = 'Justutor <ead@justutor.com.br>'
+    from_email = 'Justutor <contato@justutor.com.br>'
     EmailThread(subject, body, from_email, recipient_list, fail_silently, html).start()
