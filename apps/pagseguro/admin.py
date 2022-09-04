@@ -11,6 +11,7 @@ class CheckoutItensinLine(admin.TabularInline):
 
 
 class CheckoutAdmin(admin.ModelAdmin):
+    readonly_fields = ["omie_id"]
     raw_id_fields = ['aluno']
     list_display = (
         'id',
@@ -32,6 +33,7 @@ class CheckoutAdmin(admin.ModelAdmin):
     inlines = [
         CheckoutItensinLine
     ]
+
 
 class TransactionHistoryInline(admin.TabularInline):
 

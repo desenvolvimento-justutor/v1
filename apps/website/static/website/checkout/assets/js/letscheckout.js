@@ -95,6 +95,8 @@ $(function(){
 			$('#creditcard-containner').show();
 			$('#row-nome').hide();
 			$('#payment_method_title').html('Cartão de Credito');
+		} else if (payment_method === 'pix') {
+			$('#payment_method_title').html('pix');
 		} else {
 			$('#containner-parcelas').hide();
 			$('#creditcard-containner').hide();

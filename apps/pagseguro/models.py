@@ -16,6 +16,8 @@ from justutorial import settings
 from xmltodict import parse
 from django.utils import timezone
 import json
+from omie.api import OmieAPI
+from decimal import Decimal
 
 TRANSACTION_STATUS_CHOICES = (
     ('aguardando', 'Aguardando'),
@@ -165,6 +167,80 @@ class Checkout(models.Model):
     transaction_sender_phone_number = models.CharField(
         verbose_name="Número de telefone do comprador", max_length=50, blank=True, null=True
     )
+    omie_id = models.BigIntegerField(
+        verbose_name="Omie ID", blank=True, null=True
+    )
+
+    def get_sender(self):
+        data = None
+        transaction = self.code
+        # (u'sender', OrderedDict([(u'name', u'tiziana m viana'),
+        # (u'email', u'tiziadv@yahoo.com.br'),
+        # (u'phone', OrderedDict([(u'areaCode', u'27'), (u'number', u'998442866')]))])
+        if transaction:
+            if settings.PAGSEGURO_SANDBOX:
+                url = 'https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/%s'
+            else:
+                url = 'https://ws.pagseguro.uol.com.br/v3/transactions/%s'
+            req = requests.get(url % transaction, params=settings.PAGSEGURO_DATA)
+            if req.status_code == 200:
+                data = parse(req.text)
+                return data['transaction']['shipping']['address']
+
+        print("*" * 100)
+    def incluir_os(self):
+        if self.cpf:
+            self.aluno.cpf = self.cpf
+            self.aluno.save()
+        api = OmieAPI()
+        sender = self.get_sender()
+
+        total = Decimal(self.total)
+        gross_amount = Decimal(self.transaction_gross_amount)
+        desconto = total - gross_amount
+
+        kwargs = {
+            "endereco": sender["street"],
+            "endereco_numero": sender["number"],
+            "bairro": sender["district"],
+            "complemento": sender["complement"] or "N/A",
+            "estado": sender["state"],
+            "cidade": sender["city"],
+            "cep": sender["postalCode"]
+        }
+        self.aluno.omie_incluir(**kwargs)
+        items = self.checkoutitens_set.all()
+        servicos_prestados = []
+        for item in items:
+            item.curso.incluir_cadastro_servico()
+            servico_prestado = {
+                "impostos": {
+                    "cRetemIRRF": "S",
+                    "cRetemPIS": "S",
+                    "nAliqIRRF": 15,
+                    "nAliqISS": 3,
+                    "nAliqPIS": 4.5
+                },
+                "nCodServico": item.curso.omie_id,
+                "nQtde": item.qtda,
+                "nValUnit": item.valor,
+                "cTpDesconto": "P",
+                "nValorDesconto": "%.2f" % (item.valor * 100 % total)
+            }
+            percent = item.valor * 100 % total
+            if percent < 100:
+                vlr =  (desconto * percent) / 100
+                servico_prestado["cTpDesconto"] = "V"
+                servico_prestado["nValorDesconto"] = '%.2f' % vlr
+            servicos_prestados.append(servico_prestado)
+        result_os = api.incluir_os(
+            cod_interno=self.pk,
+            cod_cliente=self.aluno.codigo_cliente_omie,
+            descricao="OS %06d" % self.pk,
+            servicos_prestados=servicos_prestados
+        )
+        self.omie_id = result_os["nCodOS"]
+        self.save()
 
     def get_transaction_status(self):
         transaction = self.code

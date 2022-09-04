@@ -8,12 +8,12 @@ import six
 
 from .api import PagSeguroApi
 from logging import getLogger
-_log = getLogger('django')
+_log = getLogger('apps')
 
 @csrf_exempt
 @require_http_methods(['POST'])
 def receive_notification(request):
-    _log.debug(str(request.POST))
+    _log.debug(">>> %s" % str(request.POST))
     notification_code = request.POST.get('notificationCode', None)
     notification_type = request.POST.get('notificationType', None)
     if notification_code and notification_type == 'transaction':

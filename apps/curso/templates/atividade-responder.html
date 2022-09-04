@@ -65,6 +65,7 @@
                         </div>
                         {% endif %}
                     {% endif %}
+                    {% if not tarefa.concluido%}
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label class="control-label">Enviar arquivo com resposta manuscrita:</label>
@@ -75,6 +76,7 @@
                             <strong>Atenção!</strong> Após selecionar o arquivo em seu computador, clique em "Enviar". Por fim, após enviar o arquivo, clicar em "Finalizar" no canto superior direito.
                         </div>
                     </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -84,7 +86,7 @@
 {% block js %}
     <script src="{{ STATIC_URL }}assets/ckeditor/ckeditor.js"></script>
     <script src="{{ STATIC_URL }}assets/ckeditor/config.js"></script>
-    <script src="{{ STATIC_URL }}assets/js/timer.jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timer.jquery/0.7.0/timer.jquery.js"></script>
     <script>
         window.timer = false;
         $(document).on('ready', function() {
@@ -129,6 +131,7 @@
                 window.safe = false;
                 $('#btn-salvar').attr('disabled', false);
                 if (window.timer == false) {
+                    console.log(">>>", {{ tarefa.tempo }})
                     $('#timer').timer({
                         seconds: {{ tarefa.tempo }},
                         format: '%H:%M:%S'
@@ -162,6 +165,25 @@
         });
         function saveResposta(finalizar) {
             $('#timer').timer('pause');
+            finalizarResposta(false, false)
+            if (finalizar) {
+                Swal.fire({
+                    title: "Deseja Finalizar sua tarefa?",
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: 'Não. Vou continuar editando.',
+                    confirmButtonText: "Finalizar!",
+                    closeOnConfirm: false,
+                }).then(function (result) {
+                    if (result.value) {
+                        finalizarResposta(finalizar);
+                    }
+                });
+            } else {
+                _toastr("Resposta salva com sucesso!!!", "top-center", 'success', false);
+            }
+        }
+        function finalizarResposta(finalizar, show_msg=true) {
             $.ajax({
               method: "POST",
               url: "{% url 'curso:post-resposta' tarefa.id %}",
@@ -174,13 +196,14 @@
               .done(function( msg ) {
                   window.safe = true;
                   $('#btn-salvar').attr('disabled', true);
-                  _toastr(msg.msg, "top-center", msg.flag, false);
-                  if (finalizar == true) {
+                  if (show_msg) {
+                      _toastr(msg.msg, "top-center", msg.flag, false);
+                  }
+                  if (msg.finalizar) {
                       CKEDITOR.instances.content.setReadOnly();
                       Swal.fire('Sucesso', 'Tarefa finalizada.', 'success');
                       $('#btn-finalizar').attr('disabled', true);
                   }
-                  console.log( "Data Saved: ", msg );
               });
 
         };

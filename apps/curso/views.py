@@ -640,47 +640,58 @@ def post_resposta(request, pk):
     flag = 'success'
     msg = 'Resposta salva com sucesso!!!'
     data = request.POST
+    finalizar = True if data.get('concluido') == 'true' else False
     try:
         tarefa = TarefaAtividade.objects.get(id=pk)
         tarefa.resposta = data.get('content')
         if data.get('tempo'):
-            tarefa.tempo = data.get('tempo')
-            tarefa.save()
-        if data.get('concluido') == 'true':
-            tarefa.concluido = True
-            tarefa.data_conclusao = timezone.now()
-            tarefa.save()
-            o_curso = tarefa.atividade.curso
-            limitar_correcao = o_curso.limitar_correcao
-            aluno = tarefa.aluno
-            tarefas_concluidas = TarefaAtividade.objects.filter(
-                atividade__tipo_retorno='C',
-                atividade__curso=o_curso,
-                aluno_id=aluno,
-                corrigido=True,
-                # limitada=False
-            )
-            if limitar_correcao and tarefas_concluidas.count() == limitar_correcao:
-                tarefa.limitada = True
+            try:
+                tarefa.tempo = data.get('tempo')
                 tarefa.save()
-                # tarefas_pendentes = TarefaAtividade.objects.filter(
-                #     atividade__tipo_retorno='C',
-                #     atividade__curso=o_curso,
-                #     aluno_id=aluno,
-                #     concluido=False,
-                #     limitada=False
-                # )
-                # tarefas_pendentes.update(limitada=True)
-                msg = 'Você já respondeu ao número máximo de atividades com direito à correção individual, sendo ' \
-                      'disponibilizado, para esta atividade, apenas o gabarito criado pelo professor.'
-                flag = 'error'
+            except:
+                pass
+        if not any([tarefa.arquivo, len(tarefa.resposta)]):
+            msg = "Atividade em branco! Você não escreveu nada no editor de textos e nem anexou arquivo com sua" \
+                  " resposta. Sem uma dessas duas opções, não é possível finalizar a atividade."
+            flag = 'error'
+            finalizar = False
+        else:
+            if data.get('concluido') == 'true':
+                tarefa.concluido = True
+                tarefa.data_conclusao = timezone.now()
+                tarefa.save()
+                o_curso = tarefa.atividade.curso
+                limitar_correcao = o_curso.limitar_correcao
+                aluno = tarefa.aluno
+                tarefas_concluidas = TarefaAtividade.objects.filter(
+                    atividade__tipo_retorno='C',
+                    atividade__curso=o_curso,
+                    aluno_id=aluno,
+                    corrigido=True,
+                    # limitada=False
+                )
+                if limitar_correcao and tarefas_concluidas.count() == limitar_correcao:
+                    tarefa.limitada = True
+                    tarefa.save()
+                    # tarefas_pendentes = TarefaAtividade.objects.filter(
+                    #     atividade__tipo_retorno='C',
+                    #     atividade__curso=o_curso,
+                    #     aluno_id=aluno,
+                    #     concluido=False,
+                    #     limitada=False
+                    # )
+                    # tarefas_pendentes.update(limitada=True)
+                    msg = 'Você já respondeu ao número máximo de atividades com direito à correção individual, sendo ' \
+                          'disponibilizado, para esta atividade, apenas o gabarito criado pelo professor.'
+                    flag = 'error'
     except Exception as e:
         msg = str(e)
         flag = 'error'
 
     return JsonResponse({
         'msg': msg,
-        'flag': flag
+        'flag': flag,
+        'finalizar': finalizar
     })
 
 
@@ -808,6 +819,8 @@ def atividade_responder(request, pk):
         tarefa.data_upload = timezone.now()
         tarefa.save()
         if ofile:
+            # tarefa.concluido = True
+            # tarefa.save()
             messages.info(request, 'Arquivo enviado com sucesso!')
     ctx = {
         'titulo': 'Responder atividade',

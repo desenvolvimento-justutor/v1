@@ -4,10 +4,13 @@ from django.dispatch import Signal
 
 from dateutil.parser import parse
 import json
+from apps.website.utils import enviar_email
 
 from .settings import TRANSACTION_STATUS
 from apps.aluno.models import Aluno
+import logging
 
+logger = logging.getLogger("apps")
 
 checkout_realizado = Signal(providing_args=['data'])
 checkout_realizado_com_sucesso = Signal(providing_args=['data'])
@@ -36,8 +39,6 @@ NOTIFICATION_STATUS = {
 def save_checkout(sender, data, **kwargs):
     from .models import Checkout
     transaction = data.get('transaction', '')
-    print '*', data
-    print '--', transaction
     reference = transaction.get('reference', '')
     checkout = Checkout(
         date=data.get('date'),
@@ -128,6 +129,26 @@ def update_checkout(data, transaction):
         transaction.save()
     checkout.get_transaction_status()
     update_items(items, checkout)
+    try:
+        checkout.incluir_os()
+        enviar_email(
+            'curso/email/nfs.html',
+            'Nfs %s gerada' % checkout.omie_id,
+            ['christian.douglas.alcantara@gmail.com', 'administrativo@justutor.ccm.br'],
+            context={'checkout': checkout, "mensagem": 'Código Interno: %s' % checkout.pk},
+            ead=False
+        )
+    except Exception as e:
+        import traceback
+        tb = traceback.format_exc()
+        logger.error(tb)
+        enviar_email(
+            'curso/email/nfs.html',
+            'Erro ao gerar NFs!',
+            ['christian.douglas.alcantara@gmail.com', 'administrativo@justutor.ccm.br'],
+            context={'checkout': checkout, "mensagem": tb},
+            ead=False
+        )
     return checkout
 
 

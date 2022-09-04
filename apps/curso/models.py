@@ -28,6 +28,10 @@ from justutorial.settings import MEDIA_ROOT
 from libs.signals import create_slug
 from libs.util import shortuuid
 from libs.util.format import currency_format, pretty_date
+from omie.api import OmieAPI
+import logging
+
+logger = logging.getLogger("apps")
 
 
 def get_id():
@@ -268,9 +272,22 @@ class Curso(models.Model):
             ('F', 'Finalizado')
         ], default='A'
     )
+    omie_id = models.BigIntegerField(
+        verbose_name=u"Código Omie", blank=True, null=True
+    )
 
     def __str__(self):
         return u'{}'.format(self.nome)
+
+    def incluir_cadastro_servico(self):
+        api = OmieAPI()
+        if not self.omie_id:
+            try:
+                result = api.incluir_cadastro_servico(descricao=self.nome, codigo=self.pk, preco_unit=self.valor)
+                self.omie_id = result["nCodServ"]
+                self.save()
+            except Exception as err:
+                logger.error(str(err))
 
     def matriculas(self):
         chk = self.checkoutitens_set.filter(

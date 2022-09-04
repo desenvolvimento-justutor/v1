@@ -193,7 +193,8 @@ def get_last_livro():
 @register.assignment_tag
 def get_cursos_lancamento():
     now = timezone.now()
-    qs = Curso.objects.all().order_by('data_fim')[:3]
+    qs = Curso.objects.filter(Q(data_ini__lte=now), Q(data_fim__gte=now) | Q(data_fim=None)).order_by('-data_ini')[:5]
+    # qs = Curso.objects.all().order_by('data_fim')[:4]
     return qs
 
 

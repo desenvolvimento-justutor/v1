@@ -36,5 +36,5 @@ class ASCIIFileSystemStorage(FileSystemStorage):
 
     def _save(self, name, content):
         ret = super(ASCIIFileSystemStorage, self)._save(name, content)
-        compress_pdf(name)
+        # compress_pdf(name)
         return ret

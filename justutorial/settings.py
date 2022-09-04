@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '83^b0t#e+*+a-^cw(x99-ewj2q)@x$nmzen(@xd&&pm2=1cpu$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # ROLLBAR = {
 #     'access_token': 'be5b7a3cf8c144f496ab017daf5fe625',
 #     'environment': 'development' if DEBUG else 'production',

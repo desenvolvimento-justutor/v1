@@ -1,10 +1,12 @@
 {% load dajaxice_templatetags compress static %}
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
+{#<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>#}
 
 {% compress js %}
 <script type="text/javascript" src="{{ STATIC_URL }}banner-mobile/js/jssor.js" defer></script>
 <script type="text/javascript" src="{{ STATIC_URL }}banner-mobile/js/jssor.slider.js" defer></script>
 <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}slick/slick.js"></script>
 <script src="{{ STATIC_URL }}assets/js/select2.full.js" defer></script>
 <script src="{{ STATIC_URL }}assets/js/jquery.pulsate.min.js" defer></script>
 <script src="{{ STATIC_URL }}assets/js/bootstrap-dialog.min.js" defer></script>

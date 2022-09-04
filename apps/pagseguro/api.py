@@ -12,7 +12,7 @@ from .forms import PagSeguroItemForm
 from .settings import (PAGSEGURO_EMAIL, PAGSEGURO_TOKEN, CHECKOUT_URL, PAYMENT_URL, NOTIFICATION_URL, TRANSACTION_URL,
                        SESSION_URL)
 
-logger = logging.getLogger('django')
+logger = logging.getLogger('apps')
 
 class PagSeguroItem(object):
 
