@@ -943,14 +943,21 @@ class VideoModulo(models.Model):
 
     modulo = models.ForeignKey(Modulo, verbose_name=u'Módulo', blank=True, null=True)
     titulo = models.CharField(verbose_name=u'Título', max_length=50)
-    descricao = models.CharField(verbose_name=u'Descrição', max_length=250, blank=True, null=True)
+    descricao = models.CharField(
+        verbose_name=u'ID', max_length=250, blank=True, null=True,
+        help_text=u"ID do vídeo (VDOCipher/Youtube)")
     video = FileBrowseField(
         verbose_name=u"Vídeo", max_length=200, extensions=['.mp4'], blank=True, null=True,
         help_text=u'Selecione um vídeo no fotmat .MP4', directory='videos/'
     )
     thumbnail = ImageField(
-        verbose_name='Capa', upload_to='videos_thumb/', blank=True, null=True, editable=False,
+        verbose_name='Capa', upload_to='videos_thumb/', blank=True, null=True,
         help_text=u'Miniatura que será exibido, se não escolher será gerado automaticamente'
+    )
+    tipo = models.CharField(
+        verbose_name="Tipo", max_length=1, default="p", choices=[
+            ("p", u"Padrão"), ("v", "VdoCipher"), ("y", "Youtube")
+        ]
     )
 
     def __unicode__(self):
@@ -965,10 +972,10 @@ class VideoModulo(models.Model):
             subprocess.call(shlex.split(command))
         self.thumbnail = os.path.join('videos_thumb', png_filename)
 
-    def save(self):
-        if self.video:
-            self.create_screenshot()
-        super(VideoModulo, self).save()
+    # def save(self):
+    #     if self.video:
+    #         self.create_screenshot()
+    #     super(VideoModulo, self).save()
 
 
 class Destaque(models.Model):

@@ -33,6 +33,8 @@
                                         <a href="{{ sentenca.aluno.get_absolute_url }}">{{ sentenca.aluno.nome_resumido }}</a>
                                         <small style="color: #1ABC9C; font-size: 0.75em">({{ sentenca }})</small>
                                     </div>
+
+
                                     <div class="time">
                                         {{ sentenca.span_status|safe }}
                                         {% if sentenca.data_conclusao %}
@@ -88,6 +90,9 @@
                                             <i class="fa fa-lg fa-fw fa-eye text-primary" data-toggle="tooltip"
                                                data-original-title="Visualizar sentença"></i>
                                         </a>
+                                    </div>
+                                    <div class="name">
+                                        <small style="font-size: 0.75em">({{ sentenca.sentenca_avulsa.professor }})</small>
                                     </div>
                                 </div>
                             </li>

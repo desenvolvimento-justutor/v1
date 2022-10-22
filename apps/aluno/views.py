@@ -41,7 +41,8 @@ from apps.professor.models import Mensagem as PMensagem
 from carton.cart import Cart
 from .forms import CadastroAlunoForm, AlunoForm
 from .models import Aluno, Mensagem, aluno_from_user_request, Seguir
-
+import requests
+import json
 
 def split_name(name, last=False):
     name_split = name.split()
@@ -697,7 +698,25 @@ def video(request, vid):
     else:
         raise PermissionDenied(u'Sem permissão para assistir o vídeo')
     context = {'video': vmodulo}
-    return render(request, 'painel-video.html', context)
+    if vmodulo.tipo == 'v':
+        template = "painel-video-vdo.html"
+        url = "https://dev.vdocipher.com/api/videos/33f6be48ad4263da35734b1050f3095a/otp"
+
+        payloadStr = json.dumps({'ttl': 300})
+        headers = {
+            'Authorization': "Apisecret ZO71azDFg0clQD1VKiXJJQc2Wdima7BouT201XkvczrTR5IUZzE6NpbaFFXl2RJV",
+            'Content-Type': "application/json",
+            'Accept': "application/json"
+        }
+
+        response = requests.post(url, data=payloadStr, headers=headers)
+        context.update(response.json())
+        print(">>>>", context)
+    elif vmodulo.tipo == 'y':
+        template = "painel-video-ytb.html"
+    else:
+        template = "painel-video.html"
+    return render(request, template, context)
 
 
 def perfil_aluno(request, aid):

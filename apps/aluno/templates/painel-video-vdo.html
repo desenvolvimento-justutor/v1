@@ -1,13 +1,20 @@
-<!DOCTYPE html>
-<html>
-<body>
-<h1>* {{ otp }} *</h1>
-<div id="embedBox" style="width:1280px;max-width:100%;height:auto;"></div>
+{% extends 'professor/_base.html' %}
+{% load thumbnail %}
 
-
-</body>
-<script>
-    (function (v, i, d, e, o) {
+{% block panel_content %}
+    <div class="main-box clearfix">
+        <header class="main-box-header clearfix">
+            <h2>{{ video }} - VDO</h2>
+        </header>
+        <div class="main-box-body clearfix">
+            <div class="video-js-responsive-container vjs-hd">
+                <div id="embedBox"> <!--style="width:1280px;max-width:100%;height:auto;"--></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block on_ready %}
+        (function (v, i, d, e, o) {
             v[o] = v[o] || {};
             v[o].add = v[o].add || function V(a) {
                 (v[o].d = v[o].d || []).push(a);
@@ -28,5 +35,4 @@
             theme: "9ae8bbe8dd964ddc9bdb932cca1cb59a",
             container: document.querySelector("#embedBox"),
         });
-</script>
-</html>
+{% endblock %}

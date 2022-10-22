@@ -9,7 +9,7 @@ from suit.admin import SortableModelAdmin
 from suit.admin import SortableStackedInline
 from suit.widgets import SuitSplitDateTimeWidget, EnclosedInput, AutosizedTextarea, HTML5Input, TextInput, Textarea
 
-from .models import (Institucional, Banner, Configuracao, Endereco, Imagem, Noticia, VideoJusTutor, Anuncio,
+from .models import (Institucional, Banner, BannerFooter,Configuracao, Endereco, Imagem, Noticia, VideoJusTutor, Anuncio,
                      ArtigoIndice, Artigo, PacoteDesconto)
 
 toolbar_Full = [
@@ -155,6 +155,18 @@ class BannerFormAdmin(ModelForm):
             'ativo_inicio': SuitSplitDateTimeWidget,
             'ativo_fim': SuitSplitDateTimeWidget,
         }
+
+@admin.register(BannerFooter)
+class BannerFooterAdmin(AdminImageMixin, SortableModelAdmin):
+    sortable = 'order'
+    list_display = (
+        'banner',
+        'imagem',
+        # 'titulo',
+        # 'texto',
+        'link',
+        'order'
+    )
 
 
 class BannerAdmin(AdminImageMixin, SortableModelAdmin):

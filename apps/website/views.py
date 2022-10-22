@@ -27,7 +27,7 @@ from apps.curso.models import Certificado, CheckoutItens
 from apps.enunciado.models import EnunciadoProposta, Resposta
 from apps.pagseguro.models import Checkout, Transaction
 from apps.professor.models import Professor
-from apps.website.models import Anuncio
+from apps.website.models import Anuncio, BannerFooter
 from carton.cart import Cart
 from justutorial import settings
 from justutorial.settings import SITEADD, EMAIL_HOST_USER, SMARTWEB_MMKT_LIST_ID, SMARTWEB_MMKT_URL, SENDY_API_KEY
@@ -83,7 +83,8 @@ def index(request):
         'ranking_geral': [],
         'sleep_cookie': sleep_cookie,
         'ultimas_respostas': Resposta.objects.filter(concluido=True, ativo=True).order_by('-data_termino')[:9],
-        'slide': request.GET.get('slide')
+        'slide': request.GET.get('slide'),
+        'bannerfooter': BannerFooter.objects.all()
     }
     config = _get_config_ativa()
     if config:
@@ -92,9 +93,21 @@ def index(request):
 
 
 def email(request):
-    context = {
-        'absolute_static_url': '{0}/static/'.format(SITEADD),
+    import requests
+    import json
+
+    url = "https://dev.vdocipher.com/api/videos/33f6be48ad4263da35734b1050f3095a/otp"
+
+    payloadStr = json.dumps({'ttl': 300})
+    headers = {
+        'Authorization': "Apisecret ZO71azDFg0clQD1VKiXJJQc2Wdima7BouT201XkvczrTR5IUZzE6NpbaFFXl2RJV",
+        'Content-Type': "application/json",
+        'Accept': "application/json"
     }
+
+    response = requests.post(url, data=payloadStr, headers=headers)
+    data = response.json()
+    context = data
     return render(request, 'website/face.html', context)
 
 

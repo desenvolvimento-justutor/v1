@@ -301,6 +301,7 @@
     ga('send', 'pageview');
 
     $(document).ready(function () {
+        {% block on_ready %}{% endblock %}
         $('.conversation-inner').slimScroll({
             height: '600px'
         });

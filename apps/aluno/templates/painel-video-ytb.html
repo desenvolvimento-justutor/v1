@@ -1,0 +1,22 @@
+{% extends 'professor/_base.html' %}
+{% load thumbnail %}
+
+{% block panel_content %}
+    <div class="main-box clearfix">
+        <header class="main-box-header clearfix">
+            <h2>{{ video }}</h2>
+        </header>
+        <div class="main-box-body clearfix">
+            <div class="video-js-responsive-container vjs-hd">
+                <iframe width="100%" height="480" src="https://www.youtube.com/embed/{{ video.descricao }}"
+                        title="{{ video }}" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

@@ -674,6 +674,7 @@ class VideoAdminInline(admin.TabularInline):
     model = VideoModulo
     extra = 0
     suit_classes = 'suit-tab suit-tab-videos'
+    fields = ['titulo', 'thumbnail', 'descricao', 'tipo']
 
 
 class PdfAdminInline(admin.TabularInline):
@@ -717,7 +718,7 @@ class DestaqueAdmin(SortableModelAdmin):
 
 @admin.register(VideoModulo)
 class VideoModuloAdmin(admin.ModelAdmin):
-    list_display = ('modulo', 'titulo', 'descricao', 'video')
+    list_display = ('modulo', 'thumbnail', 'titulo', 'descricao')
 
 
 @admin.register(Serie)

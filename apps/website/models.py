@@ -406,6 +406,25 @@ def _get_urls():
     return noticias + institucionais
 
 
+class BannerFooter(models.Model):
+    class Meta:
+        verbose_name = u"Banner Footer"
+        verbose_name_plural = u"Banners Footer"
+
+    imagem = ImageField(verbose_name=u'Imagem', upload_to='banner-img',
+                        help_text=u'Escolha uma imagem com tamanho de 400x300 pixels.')
+    # titulo = models.CharField(verbose_name=u'Título do banner', max_length=150)
+    # texto = models.TextField(verbose_name=u'Texto')
+    link = models.URLField(verbose_name=u'Link', help_text=u'Insira o link do banner')
+    order = models.PositiveIntegerField(verbose_name=u'Ordem')
+
+    def __unicode__(self):
+        return u"Banner No. %03d" % self.pk
+
+    @property
+    def banner(self):
+        return u"Banner No. %03d" % self.pk
+
 class Banner(models.Model):
     class Meta:
         verbose_name = u"Banner"

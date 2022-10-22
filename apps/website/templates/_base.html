@@ -83,184 +83,41 @@
     {% with website.config.get_banner as  banners %}
         {% if banners and home %}
             {% include 'website/includes/caroussel.html' with banners=banners %}
-        {% else %}
-{#            <div class="slider multiple-items">#}
-{#				<div>#}
-{#					<h3>1</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>2</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>3</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>4</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>5</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>6</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>7</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>8</h3>#}
-{#				</div>#}
-{#				<div>#}
-{#					<h3>9</h3>#}
-{#				</div>#}
-{#			</div>#}
         {% endif %}
     {% endwith %}
-    {% if home %}
-    <section>
-        <div class="row">
-            <div class="col-md-12">
-                {% get_cursos_lancamento as lancamentos %}
-                <div class="slider multiple-items">
-                        {% for curso in lancamentos %}
-                        <div>
-                            <a href="{{ curso.get_absolute_url }}">
-                                <div class="curso-x" style="margin: 1px !important;">
-                                    <div class="descricao-curso">
-                                        <h2 class="text-success">{{ curso }}</h2>
-                                        <div>
-                                            {{ curso.descricao|truncatechars:300 }}
-                                        </div>
-                                    </div>
-                                    {% if curso.ativo == False %}
-                                        <div class="categoria-curso" style="background-color: red">
-                                            Indisponível
-                                        </div>
-                                    {% else %}
-                                        <div class="categoria-curso">
-                                            Disponível até {{ curso.timeout|date }}
-                                        </div>
-                                    {% endif %}
-
-                                    <div class="preco-curso">
-                                        {% if categoria.tipo == 'S' %}
-                                            <div class="pull-right">
-                                                <small>Nível:</small> {{ curso.sentenca_avulsa.span_nivel|safe }}
-                                            </div>
-                                        {% elif categoria.tipo == 'D' %}
-                                            <div class="pull-right">
-                                                <small>Tipo:</small> {{ curso.simulado.get_tipo_display }}
-                                            </div>
-                                        {% else %}
-                                            <div class="pull-right">
-                                                <small>Nível:</small> {{ curso.sentenca_oab.span_nivel|safe }}
-                                            </div>
-                                        {% endif %}
-                                        <div class="preco-geral">
-                                            {% if curso.valor == 0 %}
-                                                <div class="preco-maior-x text-success">GRÁTIS</div>
-                                            {% else %}
-                                                <div class="preco-menor-x">R$</div>
-                                                <div class="preco-maior-x text-primary">{{ curso.valor }}</div>
-                                            {% endif %}
-                                            <div class="clear"></div>
-                                        </div>
-                                    </div>
-                                    {% if curso.ativo == False %}
-                                        <div class="categoria-curso" style="background-color: red">
-                                            Inscrições encerradas
-                                        </div>
-                                    {% else %}
-                                        <div class="btn-group btn-group-justified">
-                                            <a href="{{ curso.get_absolute_url }}" class="btn btn-primary"
-                                               style="width: {% if request.user.aluno %}50{% else %}100{% endif %}%; border-radius: unset">
-                                                Saiba mais
-                                            </a>
-                                            {% if request.user.aluno %}
-                                                {% check_curso_in_checkout curso as chk %}
-                                                {% if chk %}
-                                                    {% if categoria.tipo == 'S' %}
-                                                        <a href="{% url 'aluno:sentencas-avulsas' %}"
-                                                           class="btn btn-success btn-block"
-                                                           style="width: 50%; border-radius: unset">
-                                                            Ver sentenças
-                                                        </a>
-                                                    {% elif categoria.tipo == 'D' %}
-                                                        <a href="{% url 'aluno:simuladoinfo' curso.simulado_id %}"
-                                                           class="btn btn-success btn-block"
-                                                           style="width: 50%; border-radius: unset">
-                                                            Acessar simulado
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{% url 'aluno:sentencas-oab' %}"
-                                                           class="btn btn-success btn-block"
-                                                           style="width: 50%; border-radius: unset">
-                                                            Ver peças
-                                                        </a>
-                                                    {% endif %}
-                                                {% else %}
-                                                    {% if curso.valor %}
-                                                        <a class="btn btn-primary btn-block"
-                                                           style="width: 50%; border-radius: unset"
-                                                           onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ curso.id }}});block()"
-                                                           href="javascript:void(0);">
-                                                            Comprar
-                                                        </a>
-                                                    {% else %}
-                                                        <form method="post" id="frm-{{ curso.pk }}">
-                                                            {% csrf_token %}
-                                                            <input type="hidden" name="curso_id"
-                                                                   value="{{ curso.id }}">
-                                                        </form>
-                                                        <a onclick="$('#frm-{{ curso.pk }}').submit()"
-                                                           class="btn btn-success btn-block"
-                                                           style="width: 50%; border-radius: unset">
-                                                            Acessar
-                                                        </a>
-                                                    {% endif %}
-                                                {% endif %}
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                    <div class="clear"></div>
-                                </div>
-                            </a>
-                        </div>
-                        {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section>
-    {% endif %}
     <!--/ BANNER -->
     {% if home %}
-    <div class="container">
-        <div class="col-sm-6">
-            <div class="relative">
-                <div class="linha-cinza">
-                    <form id="formBusca" class="relative" action="{% url 'website:busca' %}" method="get">
-                        {% csrf_token %}
-                        <input id="buscaHome" type="text" placeholder="Busque um enunciado" name="q" style="background: #C5FAC4">
-                        <button type="submit">
-                            <img src="{{ STATIC_URL }}assets/images/search.svg" width="30px" height="30px">
-                        </button>
-                    </form>
+        {% if bannerfooter %}
+            {% include 'banner_footer.html' with banners=bannerfooter %}
+        {% endif %}
+        <div class="container">
+            <div class="col-sm-6">
+                <div class="relative">
+                    <div class="linha-cinza">
+                        <form id="formBusca" class="relative" action="{% url 'website:busca' %}" method="get">
+                            {% csrf_token %}
+                            <input id="buscaHome" type="text" placeholder="Busque um enunciado" name="q" style="background: #C5FAC4">
+                            <button type="submit">
+                                <img src="{{ STATIC_URL }}assets/images/search.svg" width="30px" height="30px">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="relative">
+                    <div class="linha-cinza">
+                        <form id="formBusca" class="relative" action="{% url 'website:busca-aluno' %}" method="post">
+                            {% csrf_token %}
+                            <input id="buscaHome" type="text" placeholder="Busque um aluno" name="q" style="background: #C5FAC4">
+                            <button type="submit">
+                                <img src="{{ STATIC_URL }}assets/images/search.svg" width="30px" height="30px">
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="relative">
-                <div class="linha-cinza">
-                    <form id="formBusca" class="relative" action="{% url 'website:busca-aluno' %}" method="post">
-                        {% csrf_token %}
-                        <input id="buscaHome" type="text" placeholder="Busque um aluno" name="q" style="background: #C5FAC4">
-                        <button type="submit">
-                            <img src="{{ STATIC_URL }}assets/images/search.svg" width="30px" height="30px">
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
     {% endif %}
 </section>
 {% endblock %}
@@ -361,42 +218,6 @@
     $(document).on('ready', function () {
         block();
         $(window).load(function () {
-            $('.multiple-items').slick({
-              autoplay: true,
-              autoplaySpeed: 2000,
-              infinite: true,
-              speed: 300,
-              slidesToShow: 5,
-              slidesToScroll: 1,
-              responsive: [
-                {
-                  breakpoint: 1024,
-                  settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    infinite: true,
-                    dots: true
-                  }
-                },
-                {
-                  breakpoint: 600,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2
-                  }
-                },
-                {
-                  breakpoint: 480,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                  }
-                }
-                // You can unslick at a given breakpoint now by adding:
-                // settings: "unslick"
-                // instead of a settings object
-              ]
-            });
             $('#Carousel').carousel({
                 interval: 5000
             })

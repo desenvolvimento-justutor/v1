@@ -295,6 +295,7 @@ SUIT_CONFIG = {
                 'website.configuracao',
                 'website.institucional',
                 'website.banner',
+                'website.bannerfooter',
                 'website.videojustutor',
                 'website.noticia',
                 'website.anuncio'
@@ -537,8 +538,8 @@ DEFAULT_FROM_EMAIL = u'{0} <naoresponder@{1}>'.format(NOME_SITE, DOMINIO)
 # EMAIL_HOST_PASSWORD = 'NAT100nvoisaoc!'
 # EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
 EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
-EMAIL_HOST_USER = 'AKIAWYJNKRXAMVJ6K3Z7'
-EMAIL_HOST_PASSWORD = 'BMKuOIgkk29tXoWa4daATNo7K6W7VVk7V/ICVF6yAQn8'
+EMAIL_HOST_USER = 'AKIAWYJNKRXADZOZYVYS'
+EMAIL_HOST_PASSWORD = 'BLsQs/0Rn7Sdq0SP8IoAT03+BI9lqsa1FlWg3azWnPhg'
 EMAIL_SUBJECT_PREFIX = NOME_SITE
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

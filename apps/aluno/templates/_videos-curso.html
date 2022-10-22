@@ -71,7 +71,7 @@
                             <div class="main-box-body clearfix">
                                 <div class="embed-responsive embed-responsive-16by9">
                                     <a href="{% url 'aluno:curso-video' video.id %}">
-                                        {% thumbnail video.modulo.curso.imagem "310x170" crop="center" as im %}
+                                        {% thumbnail video.thumbnail "310x170" crop="center" as im %}
                                             <img src="{{ im.url }}">
                                         {% empty %}
                                             <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">

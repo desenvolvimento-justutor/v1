@@ -1,0 +1,31 @@
+{% load static %}
+<section>
+    <div class="container">
+        <div class="row">
+            {% for banner in banners %}
+            <div class="col-xs-12 col-sm-2">
+                <div class="card">
+                    <a class="img-card" href="{{ banner.link }}">
+                        <img src="{{ banner.imagem.url }}"/>
+                    </a>
+                    <!--
+                    <div class="card-content">
+                        <h4 class="card-title">
+                            <a href="{{ banner.link }}">{{ banner.titulo }}</a>
+                        </h4>
+                        <p class="">{{ banner.texto }}</p>
+                    </div>
+                    -->
+                    <div class="card-read-more">
+                        <a href="{{ banner.link }}"
+                           class="btn btn-success btn-block" style="border-radius: 0px !important;">
+                            Saiba mais
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+

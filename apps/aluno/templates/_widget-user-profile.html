@@ -8,7 +8,8 @@
             <!-- FOTO ----------->
             {% thumbnail aluno.foto "160x160" crop="center" as im %}
                 <img id="foto-aluno" src="{{ im.url }}" alt="{{ aluno }}" class="profile-img img-responsive center-block">
-            {% empty %}
+            {% empty %}                    <input id="avatar" type="file" class="file" value="{{ aluno.foto }}">
+
                 <img id="foto-aluno" src="{{ STATIC_URL }}images/logos/icone24-borda.svg" alt="{{ aluno }}" class="profile-img img-responsive center-block"/>
             {% endthumbnail %}
             <div class="profile-label">
