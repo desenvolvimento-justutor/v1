@@ -357,7 +357,7 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     form = CursoFormAdmin
     inlines = (ModuloAdminInline, DocCursoInline, DiscurssaoInline, AtividadeInline)
     list_display = ('nome', 'categoria', 'valor', 'data_ini', 'data_fim', 'disponivel', 'matriculas', 'matriculados',
-                    'order')
+                    'is_video_curso', 'order')
     list_editable = ('order',)
     list_filter = ('categoria', 'disponivel')
     search_fields = ['nome']
@@ -365,7 +365,7 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-geral'),
-            'fields': ['categoria', 'sentenca_avulsa', 'sentenca_oab', 'nome', 'descricao', 'valor', 'video',
+            'fields': ['is_video_curso', 'categoria', 'sentenca_avulsa', 'sentenca_oab', 'nome', 'descricao', 'valor', 'video',
                        'disponivel', 'inicio_gratis', 'imagem', 'thumbnail', 'data_ini', 'data_fim', 'blocos', 'slug',
                        'status']
         }),

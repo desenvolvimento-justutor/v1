@@ -275,6 +275,10 @@ class Curso(models.Model):
     omie_id = models.BigIntegerField(
         verbose_name=u"Código Omie", blank=True, null=True
     )
+    is_video_curso = models.BooleanField(
+        verbose_name=u"Curso em Vídeo", default=False,
+        help_text=u"Informe se o curso é em primordialmente em vídeo"
+    )
 
     def __str__(self):
         return u'{}'.format(self.nome)
