@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '83^b0t#e+*+a-^cw(x99-ewj2q)@x$nmzen(@xd&&pm2=1cpu$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # ROLLBAR = {
 #     'access_token': 'be5b7a3cf8c144f496ab017daf5fe625',
 #     'environment': 'development' if DEBUG else 'production',
@@ -524,12 +524,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_BACKEND = 'django_ses.SESBackend'
 # EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 
-# AWS_ACCESS_KEY_ID='AKIAJSR3ICBF5K56LSAQ'
-# AWS_SECRET_ACCESS_KEY='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'
-# SES_REGION_NAME='us-west-2'
-
-AWS_ACCESS_KEY_ID = 'AKIAWYJNKRXAPBGWJVXH'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = '*'
+AWS_SECRET_ACCESS_KEY = '*'
 SES_REGION_NAME = 'us-east-1'
 
 DEFAULT_FROM_EMAIL = u'{0} <naoresponder@{1}>'.format(NOME_SITE, DOMINIO)
@@ -538,8 +534,8 @@ DEFAULT_FROM_EMAIL = u'{0} <naoresponder@{1}>'.format(NOME_SITE, DOMINIO)
 # EMAIL_HOST_PASSWORD = 'NAT100nvoisaoc!'
 # EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
 EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
-EMAIL_HOST_USER = 'AKIAWYJNKRXAA5XIXI52'
-EMAIL_HOST_PASSWORD = 'BOu2iYbwyBPWe0s+3teiIXW3TCkG+FbydPChb1uekZtK'
+EMAIL_HOST_USER = '*'
+EMAIL_HOST_PASSWORD = '*'
 EMAIL_SUBJECT_PREFIX = NOME_SITE
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
