@@ -1,0 +1,53 @@
+{% load  formulario_correcao_tags %}
+<div class="panel-group accordion" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseThree">
+                        Clique aqui para ver o comentário sobre este item da correção
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+                {{ tabela.comentarios|safe }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<form class="form-group" id="formCorrigir" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="tabela_id" value="{{ tabela.pk }}">
+    {% for nota in tabela.nota.all %}
+        <div class="form-check">
+            {% get_nota_selecionada nota tabela as checked%}
+            <input class="form-check-input"
+                   type="checkbox"
+                   id="option-{{ nota.pk }}"
+                   data-tipo="{{ nota.tipo }}"
+                   data-element="input"
+                   onclick="handleClick(this)"
+                   value="{{ nota.pk }}"
+                   name="checkNota"
+                   {% if checked %}
+                   checked="checked"
+                   {% endif %}>
+            <label class="form-check-label" for="option-{{ nota.pk }}" style="font-weight: 500">
+                {% if not nota.unica %}
+                    <span class="label label-info">M</span>{% else %}
+                    <span class="label label-success">U</span>
+                {% endif %}&nbsp;&nbsp;&nbsp;[{{ nota.valor }}]{{ nota.titulo }}
+            </label><i class="fa fa-info-circle text-info"
+                       style="padding-left: 4px; cursor: pointer"
+                       data-container="body"
+                       data-toggle="popover"
+                       data-placement="top"
+                       data-content="{{ nota.texto|striptags }}"
+                       data-trigger="click"></i>
+        </div>
+    {% endfor %}
+</form>
+
+

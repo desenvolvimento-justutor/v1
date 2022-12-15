@@ -390,6 +390,17 @@ class Checkout(models.Model):
             curso__categoria__tipo__in=['C', 'S', 'O']
         )
 
+
+    @property
+    def get_curso_ativo(self):
+        ativo = False
+        for item in self.get_cursos:
+            if item.curso.disponivel:
+                ativo = True
+                break
+        return ativo
+
+
     @property
     def get_livros(self):
         ret = self.checkoutitens_set.filter(
@@ -409,15 +420,6 @@ class Checkout(models.Model):
     @property
     def get_sentencas_oab(self):
         return self.checkoutitens_set.filter(curso__sentenca_oab__isnull=False)
-
-    @property
-    def get_curso_ativo(self):
-        ativo = False
-        for item in self.get_cursos:
-            if item.curso.disponivel:
-                ativo = True
-                break
-        return ativo
 
     class Meta:
         ordering = ['-date']

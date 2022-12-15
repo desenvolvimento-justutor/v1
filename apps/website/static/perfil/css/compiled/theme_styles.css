@@ -2437,7 +2437,7 @@ input[type="radio"] {
 
 .radio label:before {
     background: none repeat scroll 0 0 #ffffff;
-    border: 2px solid #e7ebee;
+    border: 2px solid #c9d1d7;
     border-radius: 50%;
     background-clip: padding-box;
     content: "";
@@ -2741,7 +2741,7 @@ input[type="radio"] {
     top: 1px;
     background: #ffffff;
     content: "";
-    border: 2px solid #e7ebee;
+    border: 2px solid #c9d1d7;
     border-radius: 3px;
     background-clip: padding-box;
 }
@@ -2769,6 +2769,10 @@ input[type="radio"] {
 
 .checkbox-nice input[type=checkbox]:checked + label:after {
     opacity: 1;
+}
+
+.checkbox-nice input[type=checkbox]:disabled + label:after {
+    color: #0a568c;
 }
 
 .onoffswitch {

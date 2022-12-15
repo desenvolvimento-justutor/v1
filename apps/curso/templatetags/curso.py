@@ -119,7 +119,8 @@ def get_tabela_correcao_aluno_st(sentenca, aluno, corrigido=True):
 
 @register.assignment_tag
 def get_atividades(curso, professor=None):
-    f = []
+    if not curso:
+        return None
     if professor:
         return curso.atividade_set.filter(professores=professor)
     return curso.atividade_set.all()

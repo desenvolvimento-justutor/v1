@@ -1,0 +1,73 @@
+{% load thumbnail comments curso static %}
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#tab-home" data-toggle="tab">Tutoriais</a></li>
+    <li><a href="#tab-autocorrecao" data-toggle="tab">Minhas Atividades</a></li>
+    <li><a href="#tab-mural" data-toggle="tab">Mural</a></li>
+    <li><a href="#tab-help" data-toggle="tab">Biblioteca</a></li>
+    <li>
+        <a href="#tab-mensagens" data-toggle="tab">
+            Fale com o professor <i class="fa fa-envelope-o"></i>{% if msg_naolidas %}
+            <span class="bgi">{{ msg_naolidas }}</span>{% endif %}
+        </a>
+    </li>
+</ul>
+<div class="tab-content">
+    <!-- TAB VIDEOS -->
+    <div class="tab-pane fade active in" id="tab-home">
+        {% for video in videos %}
+            <div class="col-md-4 col-lg-4">
+                <div class="main-box clearfix">
+                    <header class="main-box-header clearfix" style="min-height: 80px;">
+                        <h2>{{ video }}</h2>
+                    </header>
+                    <div class="main-box-body clearfix">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <a href="{% url 'aluno:curso-video' video.id %}">
+                                {% thumbnail video.thumbnail "310x170" crop="center" as im %}
+                                    <img src="{{ im.url }}">
+                                    {% empty %}
+                                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                                {% endthumbnail %}
+                            </a>
+                        </div>
+                        <a href="{% url 'aluno:curso-video' video.id %}"
+                           class="btn btn-success fa fa-play pull-right"> Play</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- TAB VIDEOS -->
+    <div class="tab-pane fade" id="tab-help">
+        <div class="row">
+            {% for material in submenu.materials %}
+                <div class="col-lg-4 col-sm-6 col-xs-12">
+                    <div class="main-box infographic-box colored emerald-bg">
+                        <i class="fa fa-file-archive-o"></i>
+                        <span class="headline">{{ material }}</span>
+                        <span class="value"><a target="_blank" href="{{ material.file.url }}"
+                                               style="color: white"><small>Abrir</small></a></span>
+                        <p style="padding-top: 10px">{{ material.data_ativo }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- TAB AUTOCORRECAO -->
+    <div class="tab-pane fade" id="tab-autocorrecao">
+        {% include 'tabs/autocorrecao.html' %}
+    </div>
+    <!-- TAB CRONOGRAMA -->
+    <div class="tab-pane fade" id="tab-mural">
+        <div class="main-box no-header clearfix">
+            <div class="main-box-body clearfix">
+                {{ submenu.mural|safe }}
+            </div>
+        </div>
+    </div>
+    <!-- TAB FALE COM O PROFESSOR -->
+    <div class="tab-pane fade" id="tab-mensagens">
+        {% include '_msg-professor.html' with professores=submenu.professores.all %}
+    </div>
+</div>

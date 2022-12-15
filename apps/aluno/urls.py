@@ -8,7 +8,11 @@ urlpatterns = patterns(
     url(r'^relatorio/$', 'relatorio', name='relatorio'),
     url(r'^lista/$', 'lista', name='lista'),
     url(r'^producao/$', 'perfil', name='perfil'),
-    url(r'^cursos/$', 'cursos', name='cursos'),
+    url(r'^cursos/$', 'cursos', kwargs={"is_tutorial": False}, name='cursos'),
+    url(r'^tutorial/$', view='cursos', kwargs={"is_tutorial": True}, name='tutorial'),
+    url(r'^auto-correcao/(?P<pk>[0-9]+)/$', 'auto_correcao', name='auto_correcao'),
+    url(r'^get-corrigir-json/$', "get_corrigir_json", name='get-corrigir-json'),
+
     url(r'^simulados/$', 'simulados', name='simulados'),
     url(r'^simuladoinfo/(?P<pk>[-\w]+)/$', 'simuladoinfo', name='simuladoinfo'),
     url(r'^simulado/', include('apps.autor.urls', namespace='simulado')),

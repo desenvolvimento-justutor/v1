@@ -17,6 +17,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for curso in cursos %}
                 <tr>
                     <td>
                         {% thumbnail curso.imagem "50x50" crop="center" as im %}
@@ -226,6 +227,7 @@
                     </td>
                 </tr>
                 {% endif %}
+                {% endfor %}
                 </tbody>
             </table>
         </div>

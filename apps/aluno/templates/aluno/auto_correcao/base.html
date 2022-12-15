@@ -1,0 +1,191 @@
+{% extends '_base-painel-aluno.html' %}
+{% load formulario_correcao_tags %}
+{% block css %}
+{% endblock %}
+{% block panel_content %}
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="main-box clearfix project-box">
+                <div class="main-box-body clearfix">
+                    <div class="project-box-header gray-bg">
+                        <div class="name">
+                            <a href="javascript:void(0)">
+                                {{ atividade.formulario }}
+                            </a>
+                        </div>
+                        <div class="icon-box pull-left">
+                            <a href="{{ url }}" class="btn btn-info">
+                                <i class="fa fa-chevron-left"></i> Voltar
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-box-content">
+                        {{ atividade.formulario.texto|safe }}
+
+                        <h3><span>Faça a correção da sua atividade:</span></h3>
+                        <div class="map-stats">
+
+                            <div class="table-responsive clearfix">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="">
+                                            <span></span>
+                                        </th>
+                                        <th class="text-right">
+                                            <span>Valor</span>
+                                        </th>
+                                        <th class="text-right">
+                                            <span>Nota</span>
+                                        </th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for tabela in atividade.formulario.tabelas.all %}
+                                        <tr>
+                                            <td class="text-left status">
+                                                {{ tabela }}
+                                            </td>
+                                            <td class="text-right status green">
+                                                {{ tabela.valor }}
+                                            </td>
+                                            <td class="text-right status emerald">
+                                                {% get_soma_correcao tabela as soma_correcao %}
+                                                {{ soma_correcao }}
+                                            </td>
+                                            <td class="pull-right">
+                                                <button class="btn btn-sm btn-info"
+                                                        title="Responder" data-toggle="modal"
+                                                        data-target="#modalCorrigir"
+                                                        data-titulo="{{ tabela }}" data-pk="{{ tabela.pk }}">
+                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td class="text-right status green">{{ soma }}</td>
+                                        <td class="text-right status emerald">{{ soma_notas }}</td>
+                                        <td class="text-right status emerald"></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="project-box-ultrafooter clearfix center">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- MODAL -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalCorrigir">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" style="font-weight: bold"></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="modalBody"></div>
+                </div>
+                <div class="modal-footer">
+
+                    <label class="pull-left">
+                        <span class="label label-info">M</span> Mútipla escolha.&nbsp;&nbsp;
+                    </label>
+                    <label class="pull-left">
+                        <span class="label label-success">U</span> Escolha única.
+                    </label>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <icd
+                                class="fa fa-close"></icd>
+                        Fechar
+                    </button>
+                    <button onclick="$('#formCorrigir').submit()" id="btn-tarefa" class="btn btn-success"><i
+                            class="fa fa-edit"></i> Confirmar
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script>
+        function inputDisabed(tipo) {
+            const tipoM = $('[data-tipo="M"]')
+            const tipoU = $('[data-tipo="U"]')
+            if (tipo == "M") {
+                //tipoM.prop("disabled", false)
+                //tipoU.prop("disabled", true)
+                //if (tipo.is("checked", false))
+                tipoU.prop("checked", false)
+            } else {
+                //tipoM.prop("disabled", true)
+                //tipoU.prop("disabled", false)
+                tipoM.prop("checked", false)
+            }
+            if ($('[data-element="input"]').is(":checked")) {
+                $('[data-element="input"]').prop("disabled", false)
+            }
+        }
+
+        function handleClick(cb) {
+            const inputs = $('[data-element="input"]')
+            const elmInput = $(cb)
+            const tipo = $(cb).data("tipo")
+            inputDisabed(tipo)
+            if (elmInput.is(":checked") && tipo === "U") {
+                $('[data-element="input"]').prop("checked", false)
+                elmInput.prop("checked", true)
+            }
+            $('[data-element="input"]').each(function (index) {
+                // console.log($( this ) );
+            });
+
+        }
+
+        $('#modalCorrigir').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var titulo = button.data('titulo');
+            var pk = button.data('pk');
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this);
+            modal.find('.modal-title').text(titulo);
+            $('#btn-tarefa').prop('href', '/curso/atividade/responder/' + pk);
+            $('#btn-imprimir').prop('href', '/curso/atividade/imprimir/' + pk);
+            $.getJSON("{% url 'aluno:get-corrigir-json' %}?pk=" + pk, function (json) {
+                modal.find('#modalBody').html($.parseHTML(json.tarefa));
+                $('#modalBody').slimScroll({
+                    start: 'top',
+                    height: '400px'
+                });
+            });
+            $('[data-toggle="popover"]').popover()
+            $('body').on('click', function (e) {
+                //did not click a popover toggle, or icon in popover toggle, or popover
+                if ($(e.target).data('toggle') !== 'popover'
+                    && $(e.target).parents('[data-toggle="popover"]').length === 0
+                    && $(e.target).parents('.popover.in').length === 0) {
+                    $('[data-toggle="popover"]').popover('hide');
+                }
+            });
+        });
+
+        $('#modalCorrigir').on('shown.bs.modal', function (event) {
+            $('[data-toggle="popover"]').popover()
+        });
+    </script>
+{% endblock %}

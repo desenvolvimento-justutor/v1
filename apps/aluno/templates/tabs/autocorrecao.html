@@ -1,0 +1,63 @@
+{% load curso formulario_correcao_tags %}
+<div class="row">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box clearfix">
+                <div class="main-box-body clearfix">
+                    <div class="table-responsive clearfix">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th><span>ID</span></th>
+                                <th><span>Descrição</span></th>
+                                <th class="text-center"><span>Acessar enunciado</span></th>
+                                <th class="text-center"><span>Fazer autocorreção</span></th>
+                                <th class="text-center">Nota obtida</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for atividade in atividades %}
+                                {% get_tarefa atividade aluno as tar %}
+                                {% get_correcao_tarefa atividade aluno as cor %}
+                                {% get_tabela_correcao_aluno atividade aluno as tabela_correcao_aluno %}
+
+                                <tr class="{{ atividade.get_status.label }}">
+                                    <td data-original-title="{{ atividade.get_status.status }}"
+                                        data-toggle="tooltip" data-container="body" style="cursor: pointer">
+                                        <span class="badge badge-{{ atividade.get_status.label }}">&nbsp;</span>
+                                        {{ atividade.pk|stringformat:"06d" }}
+                                    </td>
+                                    <td {% if atividade.descricao %}data-toggle="tooltip"
+                                        data-original-title="{{ atividade.descricao|safe }}" data-container="body"
+                                        style="cursor: pointer" {% endif %}>{{ atividade }} {% if atividade.descricao %}
+                                        <i class="fa fa-info-circle"></i>{% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a target="_blank" href="{% url 'curso:atividade-imprimir' atividade.id %}"
+                                           class="btn btn-sm btn-primary">
+                                        Acessar enunciado
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'aluno:auto_correcao' atividade.pk %}?url={{ request.get_full_path }}"
+                                           data-pk="{{ tabela_correcao_aluno.pk }}"
+                                           class="btn btn-sm btn-primary"
+                                           title="Corrigir {{ atividade.pk }}">
+                                            Clique aqui para corrigir sua atividade
+                                        </a>
+                                    </td>
+                                {% get_soma_notas atividade as soma %}
+                                    <td class="text-center" data-original-title="Nota obtida"
+                                        data-toggle="tooltip" data-container="body" style="cursor: pointer">
+                                        <span class="label label-default">{{ soma }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

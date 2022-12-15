@@ -193,6 +193,9 @@ class Curso(models.Model):
     cronograma = models.TextField(
         verbose_name='Cronograma', null=True, blank=True
     )
+    mural = models.TextField(
+        verbose_name='Mural', null=True, blank=True
+    )
     certificado_formato = models.CharField(
         verbose_name="Orientação da Página", max_length=20, choices=[
             ('portrait', 'Retrato'),
@@ -278,6 +281,9 @@ class Curso(models.Model):
     is_video_curso = models.BooleanField(
         verbose_name=u"Curso em Vídeo", default=False,
         help_text=u"Informe se o curso é em primordialmente em vídeo"
+    )
+    is_tutorial = models.BooleanField(
+        verbose_name=u"Tutorial", default=False
     )
 
     def __str__(self):
@@ -643,7 +649,7 @@ class Atividade(models.Model):
         verbose_name=u'Curso', to=Curso
     )
     professores = models.ManyToManyField(
-        'professor.Professor', blank=True
+        'professor.Professor', blank=False
     )
     nome = models.CharField(
         verbose_name='Título', max_length=150
@@ -692,6 +698,14 @@ class Atividade(models.Model):
     def __unicode__(self):
         return self.nome
 
+
+    @property
+    def is_formulario(self):
+        try:
+            self.formulario
+            return True
+        except:
+            return False
 
     def get_resposta_padrao(self):
         ret = False

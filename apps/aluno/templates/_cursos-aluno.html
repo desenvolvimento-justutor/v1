@@ -1,4 +1,5 @@
 {% load thumbnail %}
+{% load aluno_tags %}
 <div class="col-lg-12">
     <div class="main-box">
         <header class="main-box-header clearfix">
@@ -8,9 +9,10 @@
             <form class="form-inline" role="form" method="post">
                 {% csrf_token %}
                 <div class="checkbox checkbox-nice">
-                    <input type="checkbox" id="todos_cursos" {% if filtro %}checked="checked"{% endif %} name="todos_cursos">
+                    <input type="checkbox" id="todos_cursos" {% if filtro %}checked="checked"{% endif %}
+                           name="todos_cursos">
                     <label for="todos_cursos">
-                        Exibir apenas cursos em andamento
+                        Exibir apenas {{ menu }} em andamento
                     </label>
                 </div>
                 <button style="margin-left: 10px;" type="submit" class="btn btn-success">Filtar</button>
@@ -20,16 +22,14 @@
 
 </div>
 {% for checkout in checkouts %}
-    {% with checkout.get_cursos as cursos %}
-        {% if cursos %}
-            {% if filtro %}
-                {% if checkout.get_curso_ativo %}
-                    {% include 'widget_curso.html' %}
-                {% endif %}
-            {% else %}
+    {% get_checkout_cursos checkout is_tutorial as cursos %}
+    {% if cursos %}
+        {% if filtro %}
+            {% if checkout.get_curso_ativo %}
                 {% include 'widget_curso.html' %}
             {% endif %}
-
+        {% else %}
+            {% include 'widget_curso.html' %}
         {% endif %}
-    {% endwith %}
+    {% endif %}
 {% endfor %}

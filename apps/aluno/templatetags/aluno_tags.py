@@ -83,3 +83,21 @@ def get_checkoutitem(context, curso):
         checkout__transaction__status__in=['pago', 'disponivel']
     ).distinct().first()
     return checkoutiten
+
+
+@register.assignment_tag(takes_context=True)
+def get_checkout_cursos(context, checkout, is_tutorial=False):
+    return checkout.checkoutitens_set.filter(
+        curso__sentenca_avulsa__isnull=True, curso__sentenca_oab__isnull=True,
+        curso__categoria__tipo__in=['C', 'S', 'O'], curso__is_tutorial=is_tutorial
+    )
+
+
+@register.assignment_tag(takes_context=True)
+def get_checkout_curso_ativo(context, checkout):
+    ativo = False
+    for item in checkout.get_cursos:
+        if item.curso.disponivel:
+            ativo = True
+            break
+    return ativo

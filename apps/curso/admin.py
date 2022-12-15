@@ -99,6 +99,7 @@ class AtividadeInline(admin.StackedInline):
         models.DateField: {'widget': SuitDateWidget},
         models.TextField: {'widget': RedactorEditor()},
     }
+    filter_horizontal = ['professores']
     model = Atividade
     extra = 0
     suit_classes = 'suit-tab suit-tab-atividade'
@@ -117,6 +118,7 @@ class CursoFormAdmin(ModelForm):
             'tipo_duracao': Select(attrs={'class': 'input-small'}),
             'saiba_mais': RedactorEditor(),
             'cronograma': RedactorEditor(),
+            'mural': RedactorEditor(),
             'certificado': CKEditorWidget(editor_options={'startupFocus': True})
         }
 
@@ -357,7 +359,7 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     form = CursoFormAdmin
     inlines = (ModuloAdminInline, DocCursoInline, DiscurssaoInline, AtividadeInline)
     list_display = ('nome', 'categoria', 'valor', 'data_ini', 'data_fim', 'disponivel', 'matriculas', 'matriculados',
-                    'is_video_curso', 'order')
+                    'is_video_curso', 'is_tutorial', 'order')
     list_editable = ('order',)
     list_filter = ('categoria', 'disponivel')
     search_fields = ['nome']
@@ -365,7 +367,7 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-geral'),
-            'fields': ['is_video_curso', 'categoria', 'sentenca_avulsa', 'sentenca_oab', 'nome', 'descricao', 'valor', 'video',
+            'fields': ['is_video_curso', 'is_tutorial', 'categoria', 'sentenca_avulsa', 'sentenca_oab', 'nome', 'descricao', 'valor', 'video',
                        'disponivel', 'inicio_gratis', 'imagem', 'thumbnail', 'data_ini', 'data_fim', 'blocos', 'slug',
                        'status']
         }),
@@ -384,6 +386,10 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-cronograma'),
             'fields': ['cronograma']
+        }),
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-mural'),
+            'fields': ['mural']
         }),
         (None, {
             'classes': ('suit-tab', 'suit-tab-atividade'),
@@ -407,6 +413,7 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
         ('material', 'Material'),
         ('discussao', 'Discussão'),
         ('cronograma', 'Cronograma'),
+        ('mural', 'Mural'),
         ('atividade', 'Atividade'),
         ('professores', 'Professores'),
         ('certificado', 'Certificado')

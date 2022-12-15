@@ -10,6 +10,7 @@ from datetime import timedelta
 
 @python_2_unicode_compatible
 class Nota(models.Model):
+    unica = models.BooleanField(verbose_name="Única", default=False)
     titulo = models.CharField(
         verbose_name='Título', max_length=200,
         help_text='Texto da opção.'
@@ -32,6 +33,10 @@ class Nota(models.Model):
 
     def get_dot_valor(self):
         return str(self.valor).replace(',', '.')
+
+    @property
+    def tipo(self):
+        return "U" if self.unica else "M"
 
 
 @python_2_unicode_compatible
@@ -71,6 +76,14 @@ class Formulario(models.Model):
         else:
             return '?'
 
+@python_2_unicode_compatible
+class NotaTabela(models.Model):
+    nota = models.ManyToManyField(
+        verbose_name='Nota', to=Nota
+    )
+    def __str__(self):
+        return str(self.pk)
+
 
 @python_2_unicode_compatible
 class Tabela(models.Model):
@@ -84,6 +97,9 @@ class Tabela(models.Model):
     valor = models.DecimalField(
         verbose_name='Valor', decimal_places=2, max_digits=4
     )
+    proibir_negativa = models.BooleanField(
+        verbose_name="Proibir nota negativa?", default=False
+    )
     nota = models.ManyToManyField(
         verbose_name='Nota', to=Nota
     )
@@ -93,6 +109,7 @@ class Tabela(models.Model):
     order = models.PositiveIntegerField(
         verbose_name=u'Ordem'
     )
+    nota_tabela = models.OneToOneField(verbose_name="Notas", to=NotaTabela, null=True, blank=True)
 
     class Meta:
         verbose_name = u'Tabela de correção'
@@ -254,3 +271,18 @@ class TabelaAluno(models.Model):
     class Meta:
         ordering = ['tabela']
 
+
+@python_2_unicode_compatible
+class NotaCorrecao(models.Model):
+    tabela = models.ForeignKey(
+        verbose_name="Tabela", to=Tabela, on_delete=models.PROTECT
+    )
+    nota = models.ForeignKey(
+        verbose_name=u"Nota", to=Nota, on_delete=models.PROTECT, related_name="nota_correcao"
+    )
+    aluno = models.ForeignKey(
+        verbose_name=u"Aluno", to=Aluno, on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return str(self.nota.valor)

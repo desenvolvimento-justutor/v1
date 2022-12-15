@@ -3,13 +3,15 @@
 import StringIO
 import cStringIO as StringIO
 import csv
+import json
 import re
 import tempfile
 from cgi import escape
 from datetime import timedelta
 from decimal import Decimal
 
-from PyPDF2 import PdfFileWriter, PdfFileReader
+import requests
+from PyPDF2 import PdfFileReader, PdfFileWriter
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -17,10 +19,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
-from django.db.models import Q, Count
+from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, JsonResponse, StreamingHttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import Context
 from django.template.loader import get_template
 from django.utils import timezone
@@ -31,18 +33,20 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from xhtml2pdf import pisa
 
-from apps.autor.models import Simulado, QuestionarioAluno
-from apps.curso.models import (VideoModulo, TarefaAtividade, CheckoutItens, Discussao, SentencaAvulsaAluno,
-                               SentencaOABAvulsaAluno, Curso, Certificado, Cortesia, Categoria)
-from apps.enunciado.models import Resposta, Correcao, ComentarioCorrecao, NotificacoesAluno, NotaResposta, Coletania
-from apps.financeiro.models import Credito, ConfiguracaoPacote
+from apps.autor.models import QuestionarioAluno, Simulado
+from apps.curso.models import (Atividade, Categoria, Certificado, CheckoutItens, Cortesia, Curso, Discussao,
+                               SentencaAvulsaAluno, SentencaOABAvulsaAluno, TarefaAtividade, VideoModulo)
+from apps.enunciado.models import Coletania, ComentarioCorrecao, Correcao, NotaResposta, NotificacoesAluno, Resposta
+from apps.financeiro.models import ConfiguracaoPacote, Credito
 from apps.formulario_auto_correcao.models import Formulario, RespostaAluno
+from apps.formulario_correcao.models import Tabela, NotaCorrecao
+from apps.formulario_correcao.templatetags.formulario_correcao_tags import soma_notas
 from apps.professor.models import Mensagem as PMensagem
 from carton.cart import Cart
-from .forms import CadastroAlunoForm, AlunoForm
-from .models import Aluno, Mensagem, aluno_from_user_request, Seguir
-import requests
-import json
+from .forms import AlunoForm, CadastroAlunoForm
+from .models import Aluno, Mensagem, Seguir, aluno_from_user_request
+from django.template.loader import render_to_string
+
 
 def split_name(name, last=False):
     name_split = name.split()
@@ -280,7 +284,71 @@ def lista(request):
 
 
 @login_required
-def cursos(request):
+def cursos(request, **kwargs):
+    is_tutorial = kwargs.get("is_tutorial")
+    aluno = request.user.aluno
+    pagina = request.GET.get('videos', 'cursos')
+    print("PAGINA:", pagina)
+    context = {
+        'menu': 'tutoriais' if is_tutorial else 'cursos',
+        'aluno': aluno,
+        'pagina': pagina,
+        'is_tutorial': is_tutorial
+    }
+
+    if request.method == 'POST':
+        if request.POST.get('todos_cursos') == 'on':
+            context['filtro'] = True
+    else:
+        request.session['videos'] = request.GET.get('videos')
+        if request.user.is_superuser:
+            context['filtro'] = True
+
+    if pagina == 'cursos':
+        checkouts = aluno.checkout_set.filter(transaction__status__in=['pago', 'disponivel'])
+        context.update(dict(checkouts=checkouts))
+    else:
+        checkout_item = get_object_or_404(CheckoutItens, id=pagina)
+        trans = checkout_item.checkout.transaction
+        if trans:
+            if trans.status not in ['pago', 'disponivel']:
+                messages.error(request, 'Transação pendente')
+                raise PermissionDenied
+            else:
+                curso_id = request.GET.get('curso_id')
+                if curso_id:
+                    curso = Curso.objects.get(id=curso_id)
+                else:
+                    curso = checkout_item.curso
+                request.session['curso_id'] = curso.pk
+
+                alunos = checkout_item.curso.get_alunos
+                modulos = curso.modulo_set.all()
+                videos = VideoModulo.objects.filter(modulo__in=modulos)
+
+                if aluno not in alunos:
+                    messages.error(request, 'Você não participa deste curso')
+                    raise PermissionDenied
+
+                context.update(dict(
+                    todas_msg=PMensagem.objects.filter(curso=curso, aluno=aluno),
+                    msg_naolidas=PMensagem.objects.filter(curso=curso, aluno=aluno, lido=False, resposta=True).count(),
+                    videos=videos,
+                    submenu=curso,
+                    is_tutorial=curso.is_tutorial,
+                    menu='tutoriais' if curso.is_tutorial else 'cursos',
+                    atividades=curso.atividade_set.filter().order_by('data_ini'),
+                    tarefas=TarefaAtividade.objects.filter(aluno=aluno).exclude(correcao__exact="").exclude(
+                        correcao__isnull=True)
+                ))
+        else:
+            messages.error(request, 'Transação não disponível')
+            raise PermissionDenied
+    return render(request, 'painel-cursos.html', context)
+
+
+@login_required
+def tutorial(request):
     aluno = request.user.aluno
     pagina = request.GET.get('videos', 'cursos')
     context = {
@@ -337,6 +405,57 @@ def cursos(request):
             raise PermissionDenied
     return render(request, 'painel-cursos.html', context)
 
+
+
+@login_required
+def auto_correcao(request, pk):
+    if request.method == "POST":
+        url = request.POST.get("url")
+    else:
+        url = request.GET.get("url")
+
+    aluno = request.user.aluno
+    atividade = Atividade.objects.get(pk=pk)
+    try:
+        tabelas = map(lambda x: x.valor, atividade.formulario.tabelas.all())
+    except:
+        tabelas = []
+    sum_notas = soma_notas(aluno, atividade)
+    context = {
+        'menu': 'cursos',
+        'submenu': atividade.nome,
+        'atividade': atividade,
+        'soma': sum(tabelas),
+        'soma_notas': sum_notas,
+        'url': url
+    }
+    if request.method == "POST":
+        data = request.POST
+        nota_ids = data.getlist("checkNota")
+        tabela_id = data["tabela_id"]
+
+        notas = NotaCorrecao.objects.filter(tabela_id=tabela_id, aluno=aluno)
+        if notas:
+            notas.delete()
+
+        for nota_id in nota_ids:
+            print(">", nota_id)
+            NotaCorrecao.objects.create(
+                nota_id=nota_id, tabela_id=tabela_id, aluno=aluno
+            )
+    return render(request, 'aluno/auto_correcao/base.html', context)
+
+
+def get_corrigir_json(request):
+    from django.template import RequestContext
+    req = RequestContext(request)
+    try:
+        tabela = Tabela.objects.get(id=request.GET.get('pk'))
+        c = RequestContext(request, {"tabela": tabela})
+        tarefa = render_to_string("aluno/auto_correcao/modal_corrigir.html", context=c)
+    except Exception as e:
+        tarefa = 'Erro: {0}'.format(e)
+    return JsonResponse({'tarefa': tarefa})
 
 @login_required
 def simulados(request):
@@ -700,11 +819,11 @@ def video(request, vid):
     context = {'video': vmodulo}
     if vmodulo.tipo == 'v':
         template = "painel-video-vdo.html"
-        url = "https://dev.vdocipher.com/api/videos/33f6be48ad4263da35734b1050f3095a/otp"
-
+        url = "https://dev.vdocipher.com/api/videos/%s/otp" % vmodulo.descricao
+        context.update({"videoID": vmodulo.descricao})
         payloadStr = json.dumps({'ttl': 300})
         headers = {
-            'Authorization': "Apisecret ZO71azDFg0clQD1VKiXJJQc2Wdima7BouT201XkvczrTR5IUZzE6NpbaFFXl2RJV",
+            'Authorization': "Apisecret cai5IzVclB2RBuM1IJ3NvIq48IiL1Ei3MfvjqGSFaMIUb2M53mcImRB6CiwIkCfz",
             'Content-Type': "application/json",
             'Accept': "application/json"
         }

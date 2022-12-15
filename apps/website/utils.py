@@ -54,10 +54,10 @@ def enviar_email_old(template, titulo, email, context=None, ead=None):
     if DEBUG_EMAIL:
         print("DEBUG E-MAIL")
         email = ['christian.douglas.alcantara@gmail.com']
-    if ead:
-        send_mail_ead(titulo, '', EMAIL_HOST_USER, email, html=rendered)
-    else:
-        send_mail(titulo, '', EMAIL_HOST_USER, email, html=rendered)
+    # if ead:
+    #     send_mail_ead(titulo, '', EMAIL_HOST_USER, email, html=rendered)
+    # else:
+    send_mail(titulo, '', EMAIL_HOST_USER, email, html=rendered)
     return True
 
 
