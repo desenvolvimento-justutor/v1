@@ -25,6 +25,11 @@ from apps.financeiro.models import Credito
 from justutorial.settings import SMARTWEB_MMKT_URL, SMARTWEB_MMKT_LIST_ID, SENDY_API_KEY
 from libs.db import raw_sql
 from libs.util.format import pretty_date
+from omie.api import OmieAPI
+import logging
+
+logger = logging.getLogger("apps")
+omie_api = OmieAPI()
 
 
 class AlunoManager(models.Manager):
@@ -144,7 +149,9 @@ class Aluno(models.Model):
         verbose_name=u'Notificar ao aluno responder', default=True,
         help_text=u'Receber e-mail toda vez que outro(a) aluno(a) que eu sigo responder uma questão?'
     )
-
+    codigo_cliente_omie = models.BigIntegerField(
+        verbose_name=u"Código Omie", blank=True, null=True
+    )
 
     def __str__(self):
         if not self.usuario.is_active:
@@ -174,13 +181,23 @@ class Aluno(models.Model):
     def get_absolute_url(self):
         return 'aluno:perfil-aluno', ([self.id])
 
-    # @property
-    # def get_seguidores(self):
-    #     return self.seguindo.through.objects.filter(~Q(from_aluno=self), to_aluno=self)
-    #
-    # @property
-    # def get_seguindo(self):
-    #     return self.seguindo.through.objects.filter(from_aluno=self)
+    def omie_incluir(self, **kwargs):
+        result = None
+        try:
+            result = omie_api.incluir_cliente(
+                codigo_interno=self.pk,
+                email=self.email,
+                nome_completo=self.nome_completo or self.nome,
+                cpf_cnpj=self.cpf,
+                **kwargs
+            )
+            codigo_omie = result.get("codigo_cliente_omie")
+            if codigo_omie:
+                self.codigo_cliente_omie = codigo_omie
+                self.save()
+        except Exception as err:
+            logger.error('%s' % err)
+        return result
 
     @property
     def get_cupons_ativos(self):
