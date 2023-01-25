@@ -1,0 +1,9 @@
+{% extends 'email/base.html' %}
+
+{% block texto %}
+    <p><strong>Checkout:</strong> {{ checkout }}</p>
+{% endblock %}
+{% block nota %}
+    <p>Mensagem:</p>
+    {{ mensagem }}
+{% endblock %}

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from apps.curso.models import CheckoutItens
 from .models import Checkout, Transaction, TransactionHistory
+from django.contrib import messages
 
 
 class CheckoutItensinLine(admin.TabularInline):
@@ -10,9 +11,20 @@ class CheckoutItensinLine(admin.TabularInline):
     extra = 0
 
 
+def gerar_nfse(modeladmin, request, queryset):
+    for checkout in queryset:
+        ts = checkout.transaction_status
+        if ts in [3, 4]:
+            checkout.incluir_os()
+            messages.info(request, "NFSe: [{}] gerada para o Checkout: [{}]".format(checkout.nsfe, checkout))
+gerar_nfse.short_description = "Gerar NFSe"
+
+
 class CheckoutAdmin(admin.ModelAdmin):
     readonly_fields = ["omie_id"]
     raw_id_fields = ['aluno']
+    actions = [gerar_nfse]
+    list_per_page = 20
     list_display = (
         'id',
         'aluno',

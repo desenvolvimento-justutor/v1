@@ -1,0 +1,114 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_static admin_modify %}
+{% block extrahead %}
+    {{ block.super }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.css" id="theme-swall">
+{% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+
+    <script>
+        function gerarCortesias() {
+            Swal.fire({
+                title: 'Informe a quantidade',
+                input: 'range',
+                inputAttributes: {
+                    min: 1,
+                    max: 500,
+                    step: 1
+                },
+                inputValue: 25,
+                showCancelButton: true,
+                confirmButtonText: 'Gerar cortesias',
+                cancelButtonText: 'Cancelar',
+                showLoaderOnConfirm: true,
+                preConfirm: (qtda) => {
+                    return fetch(`{% url 'curso:ajax-gerar-cortesia' %}?q=${qtda}&pk={{ original.pk }}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(response.statusText)
+                            }
+                            return response.json()
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(
+                                `${error}`
+                            )
+                        })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.value) {
+                    console.log('res', result);
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${result.value.message}`,
+                        onAfterClose: () => {
+                            window.location.reload()
+                        }
+                    })
+                }
+            })
+        }
+        function gerarCortesiasEmail() {
+            Swal.fire({
+                icon: 'info',
+                title: 'Informe os emails',
+                input: 'textarea',
+                inputPlaceholder: 'Informe os emails separado por vírgula',
+                inputAttributes: {
+                    'aria-label': 'Type your message here'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Gerar cortesias',
+                cancelButtonText: 'Cancelar',
+                showLoaderOnConfirm: true,
+                preConfirm: (qtda) => {
+                    return fetch(`{% url 'curso:ajax-gerar-cortesia' %}?emails=${qtda}&pk={{ original.pk }}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(response.statusText)
+                            }
+                            return response.json()
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(
+                                `${error}`
+                            )
+                        })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.value) {
+                    console.log('res', result);
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${result.value.message}`,
+                        onAfterClose: () => {
+                            window.location.reload()
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+    <script>
+        var clipboard = new ClipboardJS('.btn');
+
+        clipboard.on('success', function (e) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: true,
+                timer: 5000,
+                allowOutsideClick: true,
+                timerProgressBar: true,
+                icon: 'success',
+                html: `&nbsp;&nbsp;Código <strong>${e.text}</strong> copiado para a área de transferência.`
+            });
+        });
+    </script>
+{% endblock %}

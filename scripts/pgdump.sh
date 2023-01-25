@@ -1,0 +1,1 @@
+pg_dump -v -U justutor -W -F t justutor -h localhost > backup_db.tar

@@ -130,14 +130,8 @@ def update_checkout(data, transaction):
     checkout.get_transaction_status()
     update_items(items, checkout)
     try:
+        logger.debug('[INCLUIR_OS] status code: {}'.format(checkout))
         checkout.incluir_os()
-        enviar_email(
-            'curso/email/nfs.html',
-            'Nfs %s gerada' % checkout.omie_id,
-            ['christian.douglas.alcantara@gmail.com', 'administrativo@justutor.ccm.br'],
-            context={'checkout': checkout, "mensagem": 'Código Interno: %s' % checkout.pk},
-            ead=False
-        )
     except Exception as e:
         import traceback
         tb = traceback.format_exc()
@@ -145,7 +139,7 @@ def update_checkout(data, transaction):
         enviar_email(
             'curso/email/nfs.html',
             'Erro ao gerar NFs!',
-            ['christian.douglas.alcantara@gmail.com', 'administrativo@justutor.ccm.br'],
+            ['christian.dev.py@gmail.com'],
             context={'checkout': checkout, "mensagem": tb},
             ead=False
         )

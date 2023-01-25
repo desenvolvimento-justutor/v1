@@ -27,6 +27,39 @@ from models import (Categoria, Curso, Destaque, Modulo, VideoModulo, PdfModulo, 
                     Cortesia)
 
 
+class CortesiaForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CortesiaForm, self).__init__(*args, **kwargs)
+        append = self.fields['codigo'].widget.append
+        instance = kwargs.get('instance', False)
+        if instance:
+            self.fields['codigo'].widget.append = append.replace('datacopy', instance.codigo)
+
+    class Meta:
+        widgets = {
+            # By icons
+            'codigo': EnclosedInput(
+                prepend='icon-tag',
+                append='<button class="btn cpy" type="button" data-clipboard-text="datacopy" title="Copiar código">'
+                       'Copiar'
+                       '</button>',
+                attrs={'readonly': 'readonly', 'class': 'span5'}),
+        }
+
+
+class CortesiaInLine(admin.TabularInline):
+    model = Cortesia
+    form = CortesiaForm
+    extra = 0
+
+    raw_id_fields = ['aluno']
+    readonly_fields = ['utilizado']
+    fields = [
+        'codigo', 'aluno', 'email', 'utilizado'
+    ]
+
+
+
 @admin.register(CheckoutItens)
 class CheckoutItensAdmin(admin.ModelAdmin):
     raw_id_fields = [
@@ -349,6 +382,9 @@ class TarefaAtividadeAdmin(admin.ModelAdmin):
         'aluno__nome',
     ]
 
+@admin.register(Cortesia)
+class CortesiaAdmin(admin.ModelAdmin):
+    list_display = ["curso", "codigo", "aluno", "utilizado"]
 
 @admin.register(Curso)
 class CursoAdmin(AdminImageMixin, SortableModelAdmin):
@@ -357,7 +393,7 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     list_per_page = 10
 
     form = CursoFormAdmin
-    inlines = (ModuloAdminInline, DocCursoInline, DiscurssaoInline, AtividadeInline)
+    inlines = (ModuloAdminInline, DocCursoInline, DiscurssaoInline, AtividadeInline, CortesiaInLine)
     list_display = ('nome', 'categoria', 'valor', 'data_ini', 'data_fim', 'disponivel', 'matriculas', 'matriculados',
                     'is_video_curso', 'is_tutorial', 'order')
     list_editable = ('order',)
@@ -405,6 +441,10 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-certificado', 'full-width'),
             'fields': ['certificado_data_ini', 'certificado']}),
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-cortesia'),
+            'fields': []
+        }),
     ]
     suit_form_tabs = (
         ('geral', 'Geral'),
@@ -416,11 +456,13 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
         ('mural', 'Mural'),
         ('atividade', 'Atividade'),
         ('professores', 'Professores'),
-        ('certificado', 'Certificado')
+        ('certificado', 'Certificado'),
+        ('cortesia', 'Cortesias'),
     )
 
     suit_form_includes = (
         ('curso/admin/var-info.html', 'top', 'certificado'),
+        ('curso/admin/cortesia_info.html', 'top', 'cortesia'),
     )
 
     def subscribe_aluno(self, request, queryset):
@@ -544,38 +586,6 @@ class SimuladoFormAdmin(ModelForm):
             'saiba_mais': RedactorEditor(),
             'certificado': CKEditorWidget(editor_options={'startupFocus': True})
         }
-
-
-class CortesiaForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(CortesiaForm, self).__init__(*args, **kwargs)
-        append = self.fields['codigo'].widget.append
-        instance = kwargs.get('instance', False)
-        if instance:
-            self.fields['codigo'].widget.append = append.replace('datacopy', instance.codigo)
-
-    class Meta:
-        widgets = {
-            # By icons
-            'codigo': EnclosedInput(
-                prepend='icon-tag',
-                append='<button class="btn cpy" type="button" data-clipboard-text="datacopy" title="Copiar código">'
-                       'Copiar'
-                       '</button>',
-                attrs={'readonly': 'readonly', 'class': 'span5'}),
-        }
-
-
-class CortesiaInLine(admin.TabularInline):
-    model = Cortesia
-    form = CortesiaForm
-    extra = 0
-
-    raw_id_fields = ['aluno']
-    readonly_fields = ['utilizado']
-    fields = [
-        'codigo', 'aluno', 'email', 'utilizado'
-    ]
 
 
 @admin.register(Simulado)

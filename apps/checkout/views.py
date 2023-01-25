@@ -273,6 +273,10 @@ def ajax_checkout(request):
     ret = {}
     data = request.POST
     payment_method = data['paymentmethod']
+    print("*" * 100)
+    print(data)
+    print("*" * 100)
+    raise Exception("Pass")
     celular = somente_numeros(data.get('celular'))
     ddd = celular[:2] if celular else ''
     phone = celular[2:] if celular else ''

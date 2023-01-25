@@ -13,9 +13,14 @@ _log = getLogger('apps')
 @csrf_exempt
 @require_http_methods(['POST'])
 def receive_notification(request):
-    _log.debug(">>> %s" % str(request.POST))
+    _log.debug("PAGSEGURO: %s" % str(request.POST))
     notification_code = request.POST.get('notificationCode', None)
-    notification_type = request.POST.get('notificationType', None)
+    notification_type = request.POST.get(''
+                                         'notificationType', None)
+    print("*" * 100)
+    print("Code:", notification_code)
+    print("Type:", notification_type)
+    print("*" * 100)
     if notification_code and notification_type == 'transaction':
         pagseguro_api = PagSeguroApi()
         response = pagseguro_api.get_notification(notification_code)
@@ -23,6 +28,8 @@ def receive_notification(request):
             if six.PY2:
                 return HttpResponse(six.b('Notificação recebida com sucesso.'))
             return HttpResponse(six.u('Notificação recebida com sucesso.'))
+        else:
+            return HttpResponse(response.text, status=response.status_code)
 
     if six.PY2:
         return HttpResponse(six.b('Notificação inválida.'), status=400)

@@ -1,0 +1,2 @@
+apt-get install pkg-config libicu-dev
+sudo apt-get install python-dev build-essential libpq-dev postgresql postgresql-contrib nginx curl

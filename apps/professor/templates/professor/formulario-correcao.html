@@ -4,6 +4,20 @@
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}v2/website/assets/plugins/select2/css/select2.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.css"/>
+    <style>
+    .modal-dialog {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+
+        .modal-content {
+          height: auto;
+          min-height: 100%;
+          border-radius: 0;
+        }
+    </style>
 {% endblock %}
 {% block panel_content %}
     <div class="row">

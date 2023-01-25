@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^enunciado/', include('apps.enunciado.urls', namespace='enunciado')),
     url(r'^financeiro/', include('apps.financeiro.urls', namespace='financeiro')),
     # PAGSEGURO
+    url(r'^nfse/', include('apps.nfse.urls', namespace='nfse')),
     url(r'^pagseguro/', include('apps.pagseguro.urls', namespace='pagseguro')),
     url(r'^carrinho/$', 'apps.curso.views.carrinho', name='carrinho'),
     url(r'^checkout/', include('apps.checkout.urls', namespace='checkout')),

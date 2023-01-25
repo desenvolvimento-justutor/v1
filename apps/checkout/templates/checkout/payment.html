@@ -21,10 +21,22 @@
         {% include 'checkout/widgets/resume.html' %}
         <div class="section-subtitle">Como quer pagar?</div>
         <div class="payment-method-list">
-
-            <label class="payment-method-item active" data-target="creditcard" data-toggle="creditcard">
+            <!-- PIX -->
+            <label class="payment-method-item active" data-target="creditcard" data-toggle="pix">
                 <div class="payment-method-checkbox">
                     <input type="radio" name="payment_method" checked="checked">
+                </div> <!-- /.payment-method-checkbox -->
+                <div class="payment-method-details">
+                    <div class="title">PIX</div>
+                    <div class="description">
+                        <img width="64" src="{% static 'website/checkout/assets/img/pix.png' %}">
+                    </div> <!-- /.description -->
+                </div> <!-- /.payment-method-details -->
+            </label> <!-- /.payment-method -->
+            <!-- CREDITCARD -->
+            <label class="payment-method-item" data-target="creditcard" data-toggle="creditcard">
+                <div class="payment-method-checkbox">
+                    <input type="radio" name="payment_method">
                 </div> <!-- /.payment-method-checkbox -->
                 <div class="payment-method-details">
                     <div class="title">Cartão de Crédito</div>
@@ -33,19 +45,7 @@
                     </div>  <!-- /.description -->
                 </div>  <!-- /.payment-method-details -->
             </label> <!-- /.payment-method-item -->
-
-            <label class="payment-method-item" data-target="pix" data-toggle="creditcard">
-                <div class="payment-method-checkbox">
-                    <input type="radio" name="payment_method">
-                </div> <!-- /.payment-method-checkbox -->
-                <div class="payment-method-details">
-                    <div class="title">PIX</div>
-                    <div class="description">
-                        <img src="{% static 'website/checkout/assets/img/codigo-de-barras.png' %}">
-                    </div> <!-- /.description -->
-                </div> <!-- /.payment-method-details -->
-            </label> <!-- /.payment-method -->
-
+            <!-- BOLETO -->
             <label class="payment-method-item" data-target="creditcard" data-toggle="boleto">
                 <div class="payment-method-checkbox">
                     <input type="radio" name="payment_method">
@@ -58,26 +58,18 @@
                 </div> <!-- /.payment-method-details -->
             </label> <!-- /.payment-method -->
         </div> <!-- /.payment-method-list -->
-
+        <!-- PIX -->
+        <div class="payment-method-form show" id="pix">
+            <div class="payment-method-form-inner">
+            </div> <!-- /.payment-method-form-inner -->
+        </div> <!-- /.payment-method-form -->
         <!-- CARTAO -->
-
-        <div class="payment-method-form show" id="creditcard">
+        <div class="payment-method-form" id="creditcard">
             <div class="payment-method-form-inner">
                 {% include 'checkout/includes/payment_form_creditcard.html' %}
             </div> <!-- /.payment-method-form-inner -->
         </div> <!-- /.payment-method-form -->
-
-        <!-- CARTAO -->
-
-        <div class="payment-method-form" id="pix">
-            <div class="payment-method-form-inner">
-                                {% include 'checkout/includes/payment_form_creditcard.html' %}
-
-            </div> <!-- /.payment-method-form-inner -->
-        </div> <!-- /.payment-method-form -->
-
         <!-- BOLETO -->
-
         <div class="payment-method-form" id="boleto">
             <div class="payment-method-form-inner">
 {#                {% include 'checkout/includes/payment_form_boleto.html' %}#}

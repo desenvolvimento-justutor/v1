@@ -52,10 +52,13 @@ def professor_required(f):
 
 
 def test_login(user):
+    print("*" * 50)
+    print(user)
+    print(user.professor)
+    print("*" * 50)
     try:
         user.professor
     except:
-        print(user)
         raise PermissionDenied('Área restrita a professores')
     return user
 

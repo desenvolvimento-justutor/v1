@@ -79,13 +79,13 @@ parsedatetime==2.1
 Pillow==3.4.2
 prettytable==0.7.2
 psutil==5.0.1
-psycopg2-binary
+psycopg2-binary==2.8.6
 pusher==1.5
 pyasn1==0.1.9
 pycep-correios==2.3.1
 pycparser==2.19
 pycrypto==2.6.1
-PyICU
+PyICU==2.9
 pyOpenSSL==17.3.0
 pyparsing==2.0.1
 PyPDF2==1.26.0
@@ -103,7 +103,7 @@ PyYAML==3.10
 rcssmin==1.0.6
 redis==2.10.5
 reportlab==3.3.0
-requests==2.18.1
+requests==2.27.1
 requests-oauthlib==0.8.0
 rjsmin==1.0.12
 rollbar==0.14.7

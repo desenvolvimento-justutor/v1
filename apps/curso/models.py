@@ -286,6 +286,14 @@ class Curso(models.Model):
         verbose_name=u"Tutorial", default=False
     )
 
+    def cortesias_check(self):
+        cortesias = self.cortesias.all()
+        return {
+            'total': cortesias.count(),
+            'utilizadas': cortesias.filter(utilizado=True).count(),
+            'restantes': cortesias.filter(aluno__isnull=True).count()
+        }
+
     def __str__(self):
         return u'{}'.format(self.nome)
 
@@ -411,6 +419,40 @@ class Curso(models.Model):
         return discuss
 
 
+@python_2_unicode_compatible
+class Cortesia(models.Model):
+    class Meta:
+        verbose_name = "Cortesia"
+        verbose_name_plural = "Cortesias"
+        ordering = [
+            'id', 'utilizado', 'aluno'
+        ]
+        unique_together = [
+            'curso', 'aluno'
+        ]
+    curso = models.ForeignKey(
+        verbose_name="Curso", to=Curso, related_name='cortesias'
+    )
+    codigo = models.CharField(
+        "Código", max_length=150, default=uuid5
+    )
+    aluno = models.ForeignKey(
+        verbose_name="Aluno", to='aluno.Aluno', null=True, blank=True
+    )
+    email = models.EmailField(
+        verbose_name='Email', blank=True, null=True
+    )
+    utilizado = models.BooleanField(
+        verbose_name='Utilizado?', default=False
+    )
+
+    def __str__(self):
+        return self.codigo
+
+    @property
+    def codigo_copy(self):
+        return mark_safe('<strong>%s</strong>' % self.codigo)
+
 
 class Livro(Curso):
 
@@ -429,14 +471,6 @@ class Simulado(Curso):
         proxy = True
 
     object = SimuladoManager()
-
-    def cortesias_check(self):
-        cortesias = self.cortesias.all()
-        return {
-            'total': cortesias.count(),
-            'utilizadas': cortesias.filter(utilizado=True).count(),
-            'restantes': cortesias.filter(aluno__isnull=True).count()
-        }
 
 
 class Combo(Curso):
@@ -514,41 +548,6 @@ class CursoAvaliacao(models.Model):
 
     def __str__(self):
         return self.get_avaliacao_display()
-
-
-@python_2_unicode_compatible
-class Cortesia(models.Model):
-    class Meta:
-        verbose_name = "Cortesia"
-        verbose_name_plural = "Cortesias"
-        ordering = [
-            'id', 'utilizado', 'aluno'
-        ]
-        unique_together = [
-            'curso', 'aluno'
-        ]
-    curso = models.ForeignKey(
-        verbose_name="Curso", to=Simulado, related_name='cortesias'
-    )
-    codigo = models.CharField(
-        "Código", max_length=150, default=uuid5
-    )
-    aluno = models.ForeignKey(
-        verbose_name="Aluno", to='aluno.Aluno', null=True, blank=True
-    )
-    email = models.EmailField(
-        verbose_name='Email', blank=True, null=True
-    )
-    utilizado = models.BooleanField(
-        verbose_name='Utilizado?', default=False
-    )
-
-    def __str__(self):
-        return self.codigo
-
-    @property
-    def codigo_copy(self):
-        return mark_safe('<strong>%s</strong>' % self.codigo)
 
 
 @python_2_unicode_compatible

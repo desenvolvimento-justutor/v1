@@ -1,23 +1,30 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import json
+import logging
 import re
+from decimal import Decimal
+
+import requests
+import xmltodict
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.template import Context, loader
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
-from justutorial.settings import SITEADD, EMAIL_HOST_USER
+from xmltodict import parse
+
+from apps.nfse.consumer import emitir
+from apps.nfse.models import NSFe
+from justutorial import settings
+from justutorial.settings import EMAIL_HOST_USER, SITEADD
 from libs.util.mail import send_mail
 from .settings import PAGSEGURO_LOG_IN_MODEL
-from .signals import checkout_realizado, notificacao_recebida, save_checkout, update_transaction
-import xmltodict
-from django.template import Context, loader
-import requests
-from justutorial import settings
-from xmltodict import parse
-from django.utils import timezone
-import json
-from omie.api import OmieAPI
-from decimal import Decimal
+from .signals import notificacao_recebida, update_transaction
+
+log_nfse = logging.getLogger("nfse")
 
 TRANSACTION_STATUS_CHOICES = (
     ('aguardando', 'Aguardando'),
@@ -28,6 +35,13 @@ TRANSACTION_STATUS_CHOICES = (
     ('devolvido', 'Devolvido'),
     ('cancelado', 'Cancelado')
 )
+
+
+def ra(input_str):
+    import unicodedata as ud
+    nfkd_form = ud.normalize('NFKD', input_str)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore')
+    return only_ascii
 
 
 @python_2_unicode_compatible
@@ -187,60 +201,70 @@ class Checkout(models.Model):
                 data = parse(req.text)
                 return data['transaction']['shipping']['address']
 
-        print("*" * 100)
     def incluir_os(self):
-        if self.cpf:
-            self.aluno.cpf = self.cpf
-            self.aluno.save()
-        api = OmieAPI()
-        sender = self.get_sender()
+        log_nfse.debug("transaction_status [{}]: {}".format(self.pk, self.transaction_status))
+        if self.transaction_status in ["3", 3]:
+            if self.cpf:
+                self.aluno.cpf = self.cpf
+                self.aluno.save()
 
-        total = Decimal(self.total)
-        gross_amount = Decimal(self.transaction_gross_amount)
-        desconto = total - gross_amount
+            sender = self.get_sender()
 
-        kwargs = {
-            "endereco": sender["street"],
-            "endereco_numero": sender["number"],
-            "bairro": sender["district"],
-            "complemento": sender["complement"] or "N/A",
-            "estado": sender["state"],
-            "cidade": sender["city"],
-            "cep": sender["postalCode"]
-        }
-        self.aluno.omie_incluir(**kwargs)
-        items = self.checkoutitens_set.all()
-        servicos_prestados = []
-        for item in items:
-            item.curso.incluir_cadastro_servico()
-            servico_prestado = {
-                "impostos": {
-                    "cRetemIRRF": "S",
-                    "cRetemPIS": "S",
-                    "nAliqIRRF": 15,
-                    "nAliqISS": 3,
-                    "nAliqPIS": 4.5
-                },
-                "nCodServico": item.curso.omie_id,
-                "nQtde": item.qtda,
-                "nValUnit": item.valor,
-                "cTpDesconto": "P",
-                "nValorDesconto": "%.2f" % (item.valor * 100 % total)
+            # TOTAIS
+            total = Decimal(self.total)
+            s_total = "%.2f" % total
+            gross_amount = Decimal(self.transaction_gross_amount)
+            s_gross_amount = "%.2f" % gross_amount
+            desconto = total - gross_amount
+            s_desconto = "%.2f" % desconto
+            # DADOS NA NOTA
+            endereco = {
+                "logradouro": ra(sender["street"]),
+                "numero": sender["number"],
+                "complemento": ra(sender["complement"] or "N/A"),
+                "bairro": ra(sender["district"]),
+                "codigo_municipio": "4106902",
+                "uf": sender["state"],
+                "cep": sender["postalCode"]
             }
-            percent = item.valor * 100 % total
-            if percent < 100:
-                vlr =  (desconto * percent) / 100
-                servico_prestado["cTpDesconto"] = "V"
-                servico_prestado["nValorDesconto"] = '%.2f' % vlr
-            servicos_prestados.append(servico_prestado)
-        result_os = api.incluir_os(
-            cod_interno=self.pk,
-            cod_cliente=self.aluno.codigo_cliente_omie,
-            descricao="OS %06d" % self.pk,
-            servicos_prestados=servicos_prestados
-        )
-        self.omie_id = result_os["nCodOS"]
-        self.save()
+            tomador = {
+                "cpf": self.aluno.cpf,
+                "razao_social": ra(self.aluno.nome_completo or self.aluno.nome),
+                "email": self.aluno.email,
+                "endereco": endereco
+            }
+            # DESCRICAO
+            descriminacao = ""
+            itens = self.checkoutitens_set.all()
+            for item in itens:
+                valor = "%.2f" % item.valor
+                descriminacao += "{curso:<50}: R${valor:>9}\n".format(
+                    curso=item.curso, valor=valor
+                )
+            descriminacao += "\nValor bruto: R$ {:>10}".format(s_total)
+            descriminacao += "\nDesconto   : R$ {:>10}".format(s_desconto)
+            descriminacao += "\nTotal      : R$ {:>10}".format(s_gross_amount)
+            try:
+                nfse = NSFe.objects.get(checkout=self)
+                log_nfse.debug("nfse gerada: {}".format(nfse.pk))
+            except NSFe.DoesNotExist:
+                nfse = NSFe(aluno=self.aluno, checkout=self)
+                code, response = emitir(nfse.ref.hex, tomador, ra(descriminacao), float(gross_amount))
+                log_nfse.debug("nfse response: {}".format(response))
+                if code == 202:
+                    nfse.status = response.get("status")
+                    nfse.numero_rps = response.get("numero_rps")
+                    nfse.serie_rps = response.get("serie_rps")
+                    # 202
+                    # {u'cnpj_prestador': u'24181548000143',
+                    #  u'numero_rps': u'1',
+                    #  u'ref': u'4b2a17e14e4743e48078ac81deebbc11',
+                    #  u'serie_rps': u'NF',
+                    #  u'status': u'processando_autorizacao',
+                    #  u'tipo_rps': u'RPS'}
+                nfse.save()
+        else:
+            log_nfse.debug("nfse não gerada")
 
     def get_transaction_status(self):
         transaction = self.code
