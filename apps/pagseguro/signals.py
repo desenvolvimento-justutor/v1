@@ -131,7 +131,7 @@ def update_checkout(data, transaction):
     update_items(items, checkout)
     try:
         logger.debug('[INCLUIR_OS] status code: {}'.format(checkout))
-        checkout.incluir_os()
+        # checkout.incluir_os()
     except Exception as e:
         import traceback
         tb = traceback.format_exc()

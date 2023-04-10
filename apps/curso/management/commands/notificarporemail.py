@@ -11,7 +11,7 @@ from apps.curso.models import Curso
 from apps.curso.models import Discussao, DocCurso, Atividade, CheckoutItens
 from apps.website.utils import enviar_email
 from justutorial.settings import BASE_DIR
-from libs.util.mail import send_mail
+
 
 class Command(BaseCommand):
 

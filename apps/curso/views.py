@@ -2,7 +2,9 @@
 # Autor: christian
 from __future__ import unicode_literals
 
+import datetime
 import json
+import uuid
 from collections import OrderedDict
 from decimal import Decimal
 
@@ -11,12 +13,12 @@ from dateutil import parser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.core.validators import validate_email, ValidationError
-from django.db import transaction
-from django.db.models import Q, Count
+from django.core.validators import ValidationError, validate_email
+from django.db.models import Count, Q
+from django.db.transaction import atomic
 from django.http import HttpResponse
-from django.http.response import JsonResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.http.response import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -25,15 +27,8 @@ from django.views.generic import ListView
 
 from apps.aluno.models import Aluno
 from apps.curso.templatetags.curso import moeda_nosymbol
-from apps.enunciado.models import (
-    EsferaEspecifica,
-    Disciplina,
-    TipoProcedimento,
-    TipoPecaPratica,
-    Cargo,
-    Concurso,
-    Localidade
-)
+from apps.enunciado.models import (Cargo, Concurso, Disciplina, EsferaEspecifica, Localidade, TipoPecaPratica,
+                                   TipoProcedimento)
 from apps.pagseguro.api import PagSeguroApiTransparent, PagSeguroItem
 from apps.pagseguro.models import Checkout, Transaction
 from apps.pagseguro.settings import TRANSACTION_STATUS
@@ -41,26 +36,12 @@ from apps.professor.models import Professor
 from apps.website.models import Anuncio
 from apps.website.utils import enviar_email, enviar_email_old
 from carton.cart import Cart
-from justutorial import settings
 from libs.util.tipos import ESTADOS_BRASILEIROS_NOMES
-from .models import (
-    Categoria,
-    Curso,
-    CursoAvaliacao,
-    Serie,
-    CursoGratis,
-    Atividade,
-    TarefaAtividade,
-    SentencaAvulsaAluno,
-    SentencaOABAvulsaAluno,
-    CheckoutItens,
-    LiberarCompraCurso,
-    ComboAluno,
-    Simulado,
-    Cortesia,
-)
-import uuid
+from .models import (Atividade, Categoria, CheckoutItens, ComboAluno, Cortesia, Curso, CursoAvaliacao, CursoGratis,
+                     LiberarCompraCurso, SentencaAvulsaAluno, SentencaOABAvulsaAluno, Serie, Simulado, TarefaAtividade)
+import logging
 
+logger = logging.getLogger("django")
 
 def get_curso_url(curso):
     categoria_obj = curso.categoria
@@ -1143,7 +1124,8 @@ def ajax_gerar_cortesia(request):
         status = 200
         pk = data.get('pk')
         emails = data.get('emails')
-        c = Simulado.objects.get(pk=pk)
+        c = Curso.objects.get(pk=pk)
+
         if emails:
             message = 'Cortesia gerada'
             cadastrados = []
@@ -1158,11 +1140,31 @@ def ajax_gerar_cortesia(request):
                         cortesia.utilizado = True
                         cortesia.save()
                         cadastrados.append(email)
+                        checkout = Checkout.objects.create(
+                            code=cortesia.codigo,
+                            aluno=aluno,
+                            date=datetime.datetime.now(),
+                            transaction_status=3
+                        )
+                        checkout.save()
+                        transaction = Transaction.objects.create(
+                            code=cortesia.codigo,
+                            checkout=checkout,
+                            status="pago",
+                        )
+                        transaction.save()
+                        items = CheckoutItens.objects.create(
+                            checkout=checkout,
+                            curso=cortesia.curso,
+                            qtda=1,
+                            valor=Decimal(0)
+                        )
+                        items.save()
                     except Aluno.DoesNotExist:
                         cortesia = Cortesia(curso=c)
                         cortesia.email = email
                         cortesia.save()
-                        ctx = {'simulado': c, 'codigo': cortesia.codigo}
+                        ctx = {'curso': c, 'codigo': cortesia.codigo}
                         enviar_email_old(
                             'curso/email/cortesia.html', u'Seu código de cortesia já está disponível!',
                             [email], ctx
@@ -1173,7 +1175,7 @@ def ajax_gerar_cortesia(request):
             response = JsonResponse(data={'message': message}, status=status)
             response.reason_phrase = message
             ctx = {
-                'simulado': c
+                'curso': c
             }
             if cadastrados:
                 enviar_email(
@@ -1182,7 +1184,7 @@ def ajax_gerar_cortesia(request):
                 )
             return response
         else:
-            @transaction.atomic
+            @atomic
             def create():
                 for x in range(int(data['q'])):
                     Cortesia.objects.create(curso=c)

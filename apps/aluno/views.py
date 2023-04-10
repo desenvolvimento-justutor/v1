@@ -288,9 +288,8 @@ def cursos(request, **kwargs):
     is_tutorial = kwargs.get("is_tutorial")
     aluno = request.user.aluno
     pagina = request.GET.get('videos', 'cursos')
-    print("PAGINA:", pagina)
     context = {
-        'menu': 'tutoriais' if is_tutorial else 'cursos',
+        'menu': 'Prática Dinâmica' if is_tutorial else 'cursos',
         'aluno': aluno,
         'pagina': pagina,
         'is_tutorial': is_tutorial
@@ -305,9 +304,11 @@ def cursos(request, **kwargs):
             context['filtro'] = True
 
     if pagina == 'cursos':
+        request.session["url"] = "/aluno/cursos/?videos=%s" % pagina
         checkouts = aluno.checkout_set.filter(transaction__status__in=['pago', 'disponivel'])
         context.update(dict(checkouts=checkouts))
     else:
+        request.session["url"] = "/aluno/cursos/?videos=%s" % pagina
         checkout_item = get_object_or_404(CheckoutItens, id=pagina)
         trans = checkout_item.checkout.transaction
         if trans:
@@ -336,7 +337,7 @@ def cursos(request, **kwargs):
                     videos=videos,
                     submenu=curso,
                     is_tutorial=curso.is_tutorial,
-                    menu='tutoriais' if curso.is_tutorial else 'cursos',
+                    menu='Prática Dinâmica' if curso.is_tutorial else 'cursos',
                     atividades=curso.atividade_set.filter().order_by('data_ini'),
                     tarefas=TarefaAtividade.objects.filter(aluno=aluno).exclude(correcao__exact="").exclude(
                         correcao__isnull=True)
@@ -390,7 +391,6 @@ def tutorial(request):
                 if aluno not in alunos:
                     messages.error(request, 'Você não participa deste curso')
                     raise PermissionDenied
-
                 context.update(dict(
                     todas_msg=PMensagem.objects.filter(curso=curso, aluno=aluno),
                     msg_naolidas=PMensagem.objects.filter(curso=curso, aluno=aluno, lido=False, resposta=True).count(),
@@ -409,10 +409,7 @@ def tutorial(request):
 
 @login_required
 def auto_correcao(request, pk):
-    if request.method == "POST":
-        url = request.POST.get("url")
-    else:
-        url = request.GET.get("url")
+    url = request.session.get("url")
 
     aluno = request.user.aluno
     atividade = Atividade.objects.get(pk=pk)
@@ -439,10 +436,11 @@ def auto_correcao(request, pk):
             notas.delete()
 
         for nota_id in nota_ids:
-            print(">", nota_id)
             NotaCorrecao.objects.create(
                 nota_id=nota_id, tabela_id=tabela_id, aluno=aluno
             )
+        rev = reverse("aluno:auto_correcao", args=(pk,))
+        return HttpResponseRedirect(rev)
     return render(request, 'aluno/auto_correcao/base.html', context)
 
 
@@ -574,7 +572,6 @@ def gabarito_autocorrecao(request):
     filtro = {}
     if request.method == 'POST':
         context['filtro'] = request.POST
-        print(request.POST)
     formularios = Formulario.objects.filter(**filtro)
     context['formularios'] = formularios
     return render(request, 'aluno/formulario_auto_correcao/gabaritos_autocorrecao.html', context)
@@ -823,14 +820,13 @@ def video(request, vid):
         context.update({"videoID": vmodulo.descricao})
         payloadStr = json.dumps({'ttl': 300})
         headers = {
-            'Authorization': "Apisecret cai5IzVclB2RBuM1IJ3NvIq48IiL1Ei3MfvjqGSFaMIUb2M53mcImRB6CiwIkCfz",
+            'Authorization': "Apisecret QPu1yL7eJ4A6JRzJV3KQbmDo6g5sviTdkzFRlRrhffoN3VbxC94tPYl7qYh7Kzxm",
             'Content-Type': "application/json",
             'Accept': "application/json"
         }
 
         response = requests.post(url, data=payloadStr, headers=headers)
         context.update(response.json())
-        print(">>>>", context)
     elif vmodulo.tipo == 'y':
         template = "painel-video-ytb.html"
     else:

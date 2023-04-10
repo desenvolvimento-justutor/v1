@@ -4,8 +4,10 @@
      Seu acesso de cortesia já está liberado!
 {% endblock %}
 {% block texto1 %}
-    <p>Estamos felizes em comunicar que seu acesso de cortesia para <strong>{{ simulado }}</strong> já está disponível!</p>
+    <p>Estamos felizes em comunicar que seu acesso de cortesia para <strong>{{ curso }}</strong> já está disponível!</p>
 {% endblock %}
 
 {% block titulo2 %}{{ codigo }}{% endblock %}
-{% block texto2 %}<p><a href="{{ dominio }}/aluno/simuladoinfo/{{ simulado.simulado_id }}/">Clique aqui</a> para ir para a área do aluno no JusTutor e acessar o simulado.</p>{% endblock %}
+{% block texto2 %}<p>
+    <a href="{{ dominio }}/aluno/{% if curso.is_tutorial %}tutorial{% else %}cursos{% endif %}/">Clique aqui</a> para ir para a área do aluno no JusTutor e acessar o {{ curso.categoria.get_tipo_display }}: <b>{{ curso }}</b>.</p>
+{% endblock %}

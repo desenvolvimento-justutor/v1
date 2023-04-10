@@ -1,0 +1,170 @@
+{% extends 'checkout/base.html' %}
+{% load thumbnail %}
+{% load carton_tags %}
+{% load curso %}
+{% load static %}
+
+{% block section_title %}
+{% endblock %}
+{% block section_body_content %}
+    {% with cobranca.checkout as checkout %}
+        {% if checkout %}
+            <div class="section-body center">
+                <div class="thankyou">
+                    <div class="thankyou-icon" style="width: unset">
+                        <img src="{{ cobranca.qr_code }}" width="100%">
+                    </div> <!-- /.thankyou-icon -->
+                    <div class="section-title">
+                        <span class="text-success" id="status">Seu pedido foi reservado. Pague em até 30 minutos para processarmos seu pedido</span>
+                    </div>
+                    <p><small><strong class="text-primary">Em caso de erro copie o Código abaixo:</strong></small></p>
+                    <input id="copia_cola" style="width: 100%" id="copia_cola" readonly value="{{ cobranca.copia_cola }}">
+                    <hr>
+                    <button type="submit" class="btn btn-primary" name="confirmar" onclick="copyToClipboard()">Copiar</button>
+                    <div class="line sm"></div>
+                    <div class="thankyou-inner text-left">
+                        <div class="thankyou-description">
+                            {% if checkout.transaction_payment_method_type == 2 %}
+                                <p>
+                                    <span class="text-bold">Falta pouco!</span><br>
+                                    Pague o seu boleto para que o pagamento seja confirmado:
+                                </p>
+                                <a target="_blank" class="btn btn-sm btn-primary" href="{{ checkout.link }}">Clique aqui
+                                    para
+                                    visualizar o boleto.</a>
+                            {% endif %}
+                        </div> <!-- /.thankyou-description -->
+                        <div class="section-subtitle">Informações importantes sobre o pagamento</div>
+                        <div class="thankyou-description">
+                            <p>Você pode consultar o QR code e o Código em Seus Pedidos durante esse período.</p>
+                            <p>Após finalizar o pedido, realize o pagamento em até 30 minutos. Caso contrário, o pedido
+                                será cancelado e um novo deverá ser feito. Lembre-se que Ofertas podem ter expirado após
+                                esse período.</p>
+                            <p><strong>Como pagar com Pix</strong></p>
+                            <ul>
+                                <li>Entre no aplicativo da sua instituição financeira e acesse o ambiente Pix;</li>
+                                <li>Escolha a opção de Ler o QR Code;</li>
+                                <li>Escaneie o QR Code;</li>
+                                <li>Confirme as informações e confirme o pagamento.</li>
+                            </ul>
+                            <p><strong>A confirmação será enviada para o seu e-mail.</strong></p>
+                        </div> <!-- /.thankyou-description -->
+                        <div class="section-subtitle">Detalhes</div>
+                        <div class="items">
+                            {% for item in checkout.checkoutitens_set.all %}
+                                <div class="item">
+                                    <div class="item-inner">
+                                        <figure>
+                                            <a href="#">
+                                                {% thumbnail item.curso.imagem "100x100" crop="center" as im %}
+                                                    <img src="{{ im.url }}">
+                                                    {% empty %}
+                                                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                                                {% endthumbnail %}
+                                            </a>
+                                        </figure>
+                                        <div class="item-details">
+                                            <div class="item-title"><a href="#">{{ item.curso }}</a></div>
+                                            <div class="item-description">
+                                                {% if item.curso.aluno %}
+                                                    Pacote montado por você
+                                                {% else %}
+                                                    {{ item.curso.categoria.nome }}
+                                                {% endif %}
+                                            </div>
+                                        </div> <!-- /.item-details -->
+                                        <div class="item-price">
+                                            <div class="value">R${{ item.valor|moeda_nosymbol }}</div>
+                                            <div class="quantity">
+                                                <div class="control count"><span>1</span>x</div>
+                                            </div> <!-- /.quantity -->
+                                        </div> <!-- /.item-price -->
+                                    </div> <!-- /.item-inner -->
+                                </div> <!-- /.item -->
+                            {% endfor %}
+                        </div> <!-- /.items -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="section-subtitle">PIX</div>
+                                <div class="block-body">
+                                    <div class="section-p">
+                                            <img src="{% static 'website/checkout/assets/img/pix.png' %}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="section-subtitle">Valores</div>
+                                <div class="total-info">
+                                    <div class="total-item">
+                                        <div class="total-name">Valor total</div>
+                                        <div class="total-value" id="total-order"
+                                             data-price>{{ checkout.total|moeda }}</div>
+                                    </div> <!-- /.total-item -->
+                                    <div class="total-item" data-calculate-min="true">
+                                        <div class="total-name">Desconto</div>
+                                        <div class="total-value" id="total-discount"
+                                             data-price>{{ checkout.transaction_extra_amount|moeda }}</div>
+                                    </div> <!-- /.total-item -->
+                                    <div class="total-item total">
+                                        <div class="total-name">Subtotal</div>
+                                        <div class="total-value"
+                                             data-price>{{ checkout.transaction_gross_amount|moeda }}</div>
+                                    </div> <!-- /.total-item -->
+                                </div> <!-- /.total-info -->
+                            </div> <!-- /.col-md-6 -->
+                        </div> <!-- /.row -->
+                        <div class="thankyou-cta">
+                            <a data-href="{% url 'website:index' %}" class="btn btn-primary btn-outline"><i
+                                    class="ion-android-arrow-back"></i> Ir para a home</a>
+                        </div> <!-- /.thankyou-cta -->
+                    </div> <!-- /.thankyou-inner -->
+                </div> <!-- /.thankyou -->
+            </div>
+        {% endif %}
+    {% endwith %}
+{% endblock %}
+
+{% block section_footer %}{% endblock %}
+
+{% block section_cta %}
+{% endblock %}
+{% block js %}
+    <script>
+        let cron;
+        function start() {
+          cron = setInterval(() => { timer(); }, 10000);
+        }
+        function timer() {
+            $.ajax({
+            method: "POST",
+            url: "{% url 'checkout:ajax_get_cob' %}",
+            data: {"txid": "{{ cobranca.txid }}"}
+        })
+            .done(function (response) {
+                if (response.error) {
+                    response.error.forEach((v) => toastr.error(v));
+                } else {
+                    let status = response.data.status
+                    if (status=="CONCLUIDA") {
+                        clearInterval(cron);
+                        alert("Pagamento efetuado");
+                        window.location.href = "/";
+                    }
+                    console.log(response.data.status)
+                    toastr.info("Verificando pagamento!");
+                }
+            }).fail(function (err) {
+                toastr.error(err);
+                console.log('err', err)
+        });
+        }
+        function copyToClipboard() {
+            var copyText = document.getElementById("copia_cola");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(copyText.value);
+            toastr.info('Código copiado!', 'Informação');
+        }
+        start()
+    </script>
+{% endblock %}

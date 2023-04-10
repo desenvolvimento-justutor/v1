@@ -59,6 +59,15 @@ class MyThread(Thread):
         return
 
 
+def get_alunos_curso_json(cursos_id):
+    cursos = Curso.objects.filter(id__in=cursos_id)
+    alunos = []
+    for ocurso in cursos:
+        for aluno in ocurso.get_alunos:
+            if aluno not in alunos:
+                alunos.append(aluno)
+    return alunos
+
 @login_required
 def gerarcupons(request):
     """
@@ -77,8 +86,9 @@ def gerarcupons(request):
     if request.method == 'POST':
         data = request.POST
         try:
-            id_alunos = data.getlist('alunos')
-            alunos = Aluno.objects.filter(id__in=id_alunos)
+            cursos_id = data.getlist('curso_anterior')
+            # id_alunos = data.getlist('alunos')
+            alunos = get_alunos_curso_json(cursos_id)
             tipo = data.get('tipo')
             prefixo = data.get('prefixo')
             validade = datetime.strptime('{} 23:59'.format(data.get('validade')), '%Y-%m-%d %H:%M')
@@ -86,7 +96,7 @@ def gerarcupons(request):
             curso_novo = Curso.objects.get(id=data['curso_novo'])
             th = MyThread(tipo, valor_desconto, validade, curso_novo, alunos, prefixo)
             th.start()
-            messages.info(request, '[{}] Cupons gerados'.format(alunos.count()))
+            messages.info(request, '[{}] Cupons gerados'.format(len(alunos)))
         except Exception as e:
             messages.error(request, str(e))
     return render(request, 'admin/mass_coupon.html', context)

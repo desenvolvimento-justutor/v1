@@ -41,24 +41,14 @@
         </div>
         {% endif %}
         <div class="preco-curso">
-            {% if curso.categoria.tipo == 'B' %}
-                <div class="preco-geral">
-                    <div class="preco-maior-x">{{ curso.valor|moeda }}</div>
-                    <div class="clear"></div>
-                </div>
-                {% if curso.economia %}
-                <div>
-                    Economia de <strong class="text-danger">{{ curso.economia|moeda }}</strong>
-                </div>
-                {% endif %}
-            {% else %}
-                <div>
-                    Curso Avançado
-                </div>
-                <div class="preco-geral">
-                    <div class="preco-maior-x">{{ curso.valor|moeda }}</div>
-                    <div class="clear"></div>
-                </div>
+            <div class="preco-geral">
+                <div class="preco-maior-x">{{ curso.valor|moeda }}</div>
+                <div class="clear"></div>
+            </div>
+            {% if curso.economia %}
+            <div>
+                Economia de <strong class="text-danger">{{ curso.economia|moeda }}</strong>
+            </div>
             {% endif %}
         </div>
         <div class="clear"></div>

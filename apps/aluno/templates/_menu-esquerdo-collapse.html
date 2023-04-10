@@ -12,15 +12,13 @@
                 <span>Meus Cursos</span>
             </a>
         </li>
-        {% if request.user.is_superuser %}
         <!-- TUTORIAIS ----------------------->
-        <li{% if menu == 'tutoriais' %} class="active"{% endif %}>
-            <a href="{% url 'aluno:tutorial' %}">
+        <li{% if menu|slugify == 'pratica-dinamica' %} class="active"{% endif %}>
+            <a href="{% url 'aluno:tutorial' %}" title="{{ menu|slugify }}">
                 <i class="fa fa-book"></i>
-                <span>Meus Tutoriais</span>
+                <span>Prática Dinâmica</span>
             </a>
         </li>
-        {% endif %}
         <!-- SENTENÇAS ----------------------->
         <li{% if menu|slugify == 'atividades-avulsas' %} class="active"{% endif %}>
             <a href="{% url 'aluno:sentencas-avulsas' %}">

@@ -87,11 +87,12 @@ def get_checkoutitem(context, curso):
 
 @register.assignment_tag(takes_context=True)
 def get_checkout_cursos(context, checkout, is_tutorial=False):
-    return checkout.checkoutitens_set.filter(
+    items =  checkout.checkoutitens_set.filter(
         curso__sentenca_avulsa__isnull=True, curso__sentenca_oab__isnull=True,
         curso__categoria__tipo__in=['C', 'S', 'O'], curso__is_tutorial=is_tutorial
     )
-
+    print("ITEMS >>>>>", is_tutorial, items)
+    return items
 
 @register.assignment_tag(takes_context=True)
 def get_checkout_curso_ativo(context, checkout):

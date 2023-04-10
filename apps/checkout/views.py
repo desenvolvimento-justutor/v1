@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from collections import OrderedDict
 import re
 from collections import OrderedDict
 from decimal import Decimal
@@ -14,12 +14,15 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.views.generic import TemplateView, FormView
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import FormView, TemplateView
 
-from apps.curso.models import Curso
+from apps.curso.models import CheckoutItens, Curso
 from apps.financeiro.models import Credito
 from apps.pagseguro.api import PagSeguroApiTransparent, PagSeguroItem
-from apps.pagseguro.models import Checkout
+from apps.pagseguro.models import Checkout, Transaction
+from apps.pix.api.pix import ApiPIX
+from apps.pix.models import Cobranca
 from carton.cart import Cart
 from .forms import CartForm
 from .utils import adicionar_cupom
@@ -242,12 +245,43 @@ class StatusView(TemplateView):
         return super(StatusView, self).get(request, *args, **kwargs)
 
 
+class StatusPixView(TemplateView):
+    template_name = 'checkout/status-pix.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        code = context.get('code')
+        cobranca = get_object_or_404(Cobranca, txid=code)
+        context.update(cobranca=cobranca, title='Conclusão', code=code)
+        return super(StatusPixView, self).render_to_response(context, **response_kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return super(StatusPixView, self).get(request, *args, **kwargs)
+
+
 def ajax_cupom_actions(request):
     data = request.POST
     action = data.get('action')
     if action == 'add':
         adicionar_cupom()
     return JsonResponse({'data': 'data'})
+
+
+@csrf_exempt
+def ajax_get_cob(request):
+    data = request.POST
+    api = ApiPIX()
+    response = api.get_cob(data["txid"])
+    if response["status"] == "CONCLUIDA":
+        cob = Cobranca.objects.get(txid=data["txid"])
+        cob.status = "CONCLUIDA"
+        cob.save()
+        checkout = Checkout.objects.get(code=data["txid"])
+        checkout.transaction_status = "3"
+        checkout.save()
+        transaction = Transaction.objects.get(code=data["txid"])
+        transaction.status = "pago"
+        transaction.save()
+    return JsonResponse({'data': response})
 
 
 def ajax_busca_cep(request):
@@ -273,10 +307,7 @@ def ajax_checkout(request):
     ret = {}
     data = request.POST
     payment_method = data['paymentmethod']
-    print("*" * 100)
-    print(data)
-    print("*" * 100)
-    raise Exception("Pass")
+
     celular = somente_numeros(data.get('celular'))
     ddd = celular[:2] if celular else ''
     phone = celular[2:] if celular else ''
@@ -320,10 +351,89 @@ def ajax_checkout(request):
         'state': data['uf'],
         'country': 'BRA'
     }
-
     api.set_sender(**sender)
     api.set_shipping(**shipping)
-    if payment_method == 'creditcard':
+    if payment_method == "pix":
+        info_d = OrderedDict(sender)
+        info_d.update(shipping)
+        info = "Nome       : {name}\n" \
+               "CPF        : {cpf}\n" \
+               "DDD        : {area_code}\n" \
+               "Fone       : {phone}\n" \
+               "E-Mail     : {email}\n" \
+               "Endereco   : {street}\n" \
+               "Numero     : {number}\n" \
+               "Complemento: {complement}\n" \
+               "Bairro     : {district}\n" \
+               "Cidade     : {city}\n" \
+               "UF         : {state}\n" \
+               "CEP        : {postal_code}".format(**info_d)
+        try:
+            valor = 1 if request.user.is_superuser else cart.total_payment
+            api = ApiPIX()
+            response = api.create_cob(sender.get("cpf"), sender.get("name"), valor)
+        except Exception as e:
+            ret.update({
+                'error': [str(e)]
+            })
+        else:
+            txid = response["txid"]
+
+            discount = Decimal(0)
+            if Decimal(cart.discount):
+                discount = Decimal(cart.discount)
+
+            now = timezone.now()
+            checkout_obj = Checkout.objects.create(
+                code=txid,
+                cpf=sender.get("cpf"),
+                aluno=aluno,
+                date=now,
+                success=True,
+                transaction_type=1,
+                transaction_status=1,
+                transaction_payment_method_type=6,
+                transaction_extra_amount=discount,
+                transaction_gross_amount=cart.total_payment
+            )
+            Transaction.objects.create(
+                code=checkout_obj.code,
+                checkout=checkout_obj,
+            )
+            for i in cart.items:
+                curso = i.product
+                cursos = curso.cursos.all()
+                if not cursos:
+                    CheckoutItens.objects.create(
+                        checkout=checkout_obj,
+                        curso=i.product,
+                        qtda=1,
+                        valor=i.price
+                    )
+                else:
+                    for c in cursos:
+                        CheckoutItens.objects.create(
+                            checkout=checkout_obj,
+                            curso=c,
+                            qtda=1,
+                            valor=c.valor
+                        )
+            Cobranca.objects.create(
+                txid=txid,
+                checkout=checkout_obj,
+                response=response,
+                copia_cola=response["pixCopiaECola"],
+                qr_code=response["urlImagemQrCode"],
+                valor=cart.total_payment,
+                info=info
+            )
+            cart.clear()
+            ret.update({
+                'link': '/checkout/status/pix/%s' % txid,
+                'code': txid
+            })
+        return JsonResponse(ret)
+    elif payment_method == 'creditcard':
         # CREDITCARD DATA
         quantity, value = data['cc_parcelas'].split(':')
 
@@ -348,7 +458,6 @@ def ajax_checkout(request):
     if not success:
 
         message = xmltodict.parse(message)
-
         errors = message.get('errors').get('error')
         errors_messages = []
         if isinstance(errors, OrderedDict):

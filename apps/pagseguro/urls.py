@@ -6,7 +6,10 @@ urlpatterns = patterns(
     'apps.pagseguro.views',
 
     url(
-        r'^$', 'receive_notification', name='pagseguro_receive_notification'
+        r'^$', 'receive_notification', name='pagseguro_receive_notification',
+    ),
+    url(
+        r'^pix', 'receive_notification_pix', name='pagseguro_receive_notification_pix',
     ),
 
 )

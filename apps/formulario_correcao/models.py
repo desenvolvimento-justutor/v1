@@ -76,14 +76,6 @@ class Formulario(models.Model):
         else:
             return '?'
 
-@python_2_unicode_compatible
-class NotaTabela(models.Model):
-    nota = models.ManyToManyField(
-        verbose_name='Nota', to=Nota
-    )
-    def __str__(self):
-        return str(self.pk)
-
 
 @python_2_unicode_compatible
 class Tabela(models.Model):
@@ -109,7 +101,6 @@ class Tabela(models.Model):
     order = models.PositiveIntegerField(
         verbose_name=u'Ordem'
     )
-    nota_tabela = models.OneToOneField(verbose_name="Notas", to=NotaTabela, null=True, blank=True)
 
     class Meta:
         verbose_name = u'Tabela de correção'

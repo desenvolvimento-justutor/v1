@@ -10,7 +10,7 @@ from redactor.widgets import RedactorEditor
 from suit.admin import SortableStackedInline, SortableModelAdmin
 from suit.widgets import AutosizedTextarea, TextInput
 
-from .models import Nota, Formulario, Tabela, TabelaCorrecaoAluno, TabelaAluno, NotaTabela
+from .models import Nota, Formulario, Tabela, TabelaCorrecaoAluno, TabelaAluno
 
 
 class NotaFormAdmin(ModelForm):
@@ -42,6 +42,7 @@ class NotaAdmin(admin.ModelAdmin):
     form = NotaFormAdmin
     list_display = ['titulo', 'valor']
     search_fields = ['texto', 'titulo']
+    fields = ["titulo", "unica", "texto", "valor"]
 
     def _copy(self, request, pk):
         nota = Nota.objects.get(pk=pk)
@@ -61,14 +62,9 @@ class NotaAdmin(admin.ModelAdmin):
         return super(NotaAdmin, self).response_change(request, obj)
 
 
-@admin.register(NotaTabela)
-class NotaTabelaAdmin(admin.ModelAdmin):
-    model = NotaTabela
-    filter_horizontal = ['nota']
-
-
 class TabelaAdminInline(SortableStackedInline):
     classes = ['collapse']
+    filter_horizontal = ['nota']
     form = TabelaFormAdmin
     model = Tabela
     extra = 0
@@ -120,7 +116,6 @@ class FormularioAdmin(admin.ModelAdmin):
 
 @admin.register(Tabela)
 class TabelaAdmin(SortableModelAdmin):
-    raw_id_fields = ("formulario", "nota_tabela")
     form = TabelaFormAdmin
     list_display = [
         'item', 'formulario', 'valor'
@@ -129,7 +124,7 @@ class TabelaAdmin(SortableModelAdmin):
         ('formulario', admin.RelatedOnlyFieldListFilter)
     ]
     search_fields = ['item', 'formulario__titulo']
-    fields = ["formulario", "nota_tabela","item", "valor", "proibir_negativa", "comentarios"]
+    filter_horizontal = ['nota']
 
     sortable = 'order'
 

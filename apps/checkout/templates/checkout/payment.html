@@ -22,7 +22,7 @@
         <div class="section-subtitle">Como quer pagar?</div>
         <div class="payment-method-list">
             <!-- PIX -->
-            <label class="payment-method-item active" data-target="creditcard" data-toggle="pix">
+            <label class="payment-method-item active" data-target="creditcard" data-toggle="pix" id="lbl-pix">
                 <div class="payment-method-checkbox">
                     <input type="radio" name="payment_method" checked="checked">
                 </div> <!-- /.payment-method-checkbox -->
@@ -92,4 +92,14 @@
 {% block js %}
     {{ block.super }}
     {% include 'checkout/includes/payment.js.html' %}
+    <script>
+        $(document).ready(function () {
+            $("#lbl-pix").click();
+            let id_cep = document.getElementById('id_cep');
+            let ev = document.createEvent('Event');
+            ev.initEvent('keypress');
+            ev.which = ev.keyCode = 13;
+            id_cep.dispatchEvent(ev);
+        });
+    </script>
 {% endblock %}

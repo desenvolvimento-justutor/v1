@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import operator
-
+import re
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Count, Avg
@@ -155,6 +155,11 @@ class Aluno(models.Model):
             return 'Aluno %d' % self.pk
         return self.nome
 
+    @property
+    def get_cep(self):
+        if self.cep:
+            return re.sub('[^0-9]', '', self.cep)
+        return None
     @property
     def get_creditos_detalhe(self):
         totais = Credito.totais(self.pk)

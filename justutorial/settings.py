@@ -100,7 +100,8 @@ INSTALLED_APPS = (
     'apps.formulario_auto_correcao',
     'apps.checkout',
     'apps.financeiro',
-    'apps.nfse'
+    'apps.nfse',
+    "apps.pix"
     # 'debug_toolbar',
     # 'redis_cache',
     # 'cacheops'
@@ -175,7 +176,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'localhost',
-        'NAME': 'justutorsw',
+        'NAME': 'justutor',
         'USER': 'justutor',
         'PASSWORD': '765b85a6ca4dca39ef3a2068',
         'PORT': 5432
@@ -309,7 +310,8 @@ SUIT_CONFIG = {
             'models': (
                 'pagseguro.checkout',
                 'pagseguro.transaction',
-                'curso.checkoutitens'
+                'curso.checkoutitens',
+                "pix.cobranca"
             ),
             'permissions': 'auth.add_permission'
         },
@@ -482,6 +484,12 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'nfse.log'),
             'formatter': 'verbose'
         },
+        'file_pags': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'pagseguro.log'),
+            'formatter': 'verbose'
+        },
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
@@ -509,6 +517,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'pags': {
+            'handlers': ['console', 'file_pags'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
 # ----------------------------------------------------------------------------------------------------------------------
@@ -527,7 +540,7 @@ if PAGSEGURO_FAKE:
     PAGSEGURO_TOKEN = '209ac20b-7221-4c2c-9202-afd8a3b1f07807827b734b2998d9c3b629d621c29abd4503-617f-4a5f-83cc-71b7dfb89fb2'
     PAGSEGURO_EMAIL = 'christian.douglas.alcantara@gmail.com'
 else:
-    PAGSEGURO_TOKEN = '94CFB2E289C744CCAD0AD2A6383A7B81' if PAGSEGURO_SANDBOX else 'b5688bff-6d86-44da-ad8e-cac7c086cf627b8678584a7d814a2983da554e1937b82058-8f98-4010-85ce-eef4c39f8499'
+    PAGSEGURO_TOKEN = '94CFB2E289C744CCAD0AD2A6383A7B81' if PAGSEGURO_SANDBOX else '3e2aa8e1-78fd-4733-b97a-ce7f023fbec921837c7e4ab5b5d98461cd31faf0d977b6da-307a-4f39-9fb5-eaf5a17dec8d'
     PAGSEGURO_EMAIL = 'cristiane@justutor.com.br'
 PAGSEGURO_DATA = {
     'email': PAGSEGURO_EMAIL,

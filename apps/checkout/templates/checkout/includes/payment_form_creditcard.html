@@ -76,7 +76,7 @@
         <div class="col-md-4 col-sm-12">
             <div class="form-group">
                 <label>CPF<span class="required"></span></label>
-                <input type="text" name="cpf" class="form-control cc-cpf" required
+                <input type="text" name="cpf" class="form-control cc-cpf" required  value="{{ request.user.aluno.cpf|default_if_none:'' }}"
                        placeholder="&bull;&bull;&bull; &bull;&bull;&bull; &bull;&bull;&bull; &bull;&bull;">
                 <div class="help-block with-errors"></div>
             </div> <!-- /.form-group -->
@@ -102,7 +102,7 @@
         <div class="col-md-12 col-sm-12">
             <div class="form-group">
                 <label>E-mail <span class="required"></span></label>
-                <input type="email" name="email" class="form-control" required>
+                <input type="email" name="email" class="form-control" required  value="{{ request.user.email|default_if_none:'' }}">
                 <div class="help-block with-errors"></div>
             </div> <!-- /.form-group -->
         </div>
@@ -115,7 +115,7 @@
                     <div class="coupon-form">
                         <div class="form-group">
                             <input class="form-control cc-cep" id="id_cep" maxlength="10" minlength="10" name="cep"
-                                   placeholder="CEP" required="required" type="text" required>
+                                   placeholder="CEP" required="required" type="text" required  value="{{ request.user.aluno.get_cep|default_if_none:'77813540' }}">
                             <a href="http://www.buscacep.correios.com.br/sistemas/buscacep/"
                                target="_blank" class="btn btn-default">Não sabe o CEP?</a>
                             <div class="help-block with-errors"></div>

@@ -13,7 +13,8 @@ register = template.Library()
 def get_nota_selecionada(context, nota, tabela):
     aluno = context['request'].user.aluno
     try:
-        return NotaCorrecao.objects.get(aluno=aluno, nota=nota, tabela=tabela)
+        notas = NotaCorrecao.objects.get(aluno=aluno, nota=nota, tabela=tabela)
+        return notas
     except NotaCorrecao.DoesNotExist:
         return False
 
@@ -22,6 +23,8 @@ def get_nota_selecionada(context, nota, tabela):
 def get_soma_correcao(context, tabela):
     aluno = context['request'].user.aluno
     notas_obj = NotaCorrecao.objects.filter(aluno=aluno, tabela=tabela)
+    if not notas_obj:
+        return "--"
     sum_notas = sum(map(lambda x: x.nota.valor, notas_obj))
     sum_total = tabela.valor - sum_notas
     if (sum_total < 0 and tabela.proibir_negativa):
@@ -38,6 +41,8 @@ def soma_notas(aluno, atividade):
         for tabela in tabelas:
             try:
                 notas_obj = NotaCorrecao.objects.filter(aluno=aluno, tabela=tabela)
+                if not notas_obj:
+                    continue
                 sum_notas = sum(map(lambda x: x.nota.valor, notas_obj))
                 sum_total = tabela.valor - sum_notas
                 if (sum_total < 0 and tabela.proibir_negativa):

@@ -490,7 +490,7 @@
         }
     });
 
-    function checkCheckout(code) {
+    function checkCheckout(code, link) {
         let timerInterval;
         window.showProgress = false;
         unblockUI();
@@ -517,7 +517,7 @@
                             if (code !== false) {
                                 Swal.close();
                                 window.showProgress = true;
-                                window.location.replace("/checkout/status/" + code)
+                                window.location.replace(link)
                             }
                             //if (count === 10) {
                             //   $('#overlay').toggleClass();
@@ -558,7 +558,7 @@
                 if (response.error) {
                     response.error.forEach((v) => toastr.error(v));
                 } else {
-                    checkCheckout(response.code);
+                    checkCheckout(response.code, response.link);
                 }
             }).fail(function (err) {
                 toastr.error(err);

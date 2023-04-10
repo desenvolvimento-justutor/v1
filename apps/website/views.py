@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # Autor: christian
+import logging
+
 import requests
 from allauth.account.signals import user_signed_up
 from django.contrib import messages
@@ -10,7 +12,6 @@ from django.db.models import Q, Count
 from django.dispatch import receiver
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
-from django.template import loader, Context
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
@@ -28,14 +29,14 @@ from apps.enunciado.models import EnunciadoProposta, Resposta
 from apps.pagseguro.models import Checkout, Transaction
 from apps.professor.models import Professor
 from apps.website.models import Anuncio, BannerFooter
+from apps.website.utils import enviar_email
 from carton.cart import Cart
 from justutorial import settings
-from justutorial.settings import SITEADD, EMAIL_HOST_USER, SMARTWEB_MMKT_LIST_ID, SMARTWEB_MMKT_URL, SENDY_API_KEY
-from libs.util.mail import send_mail
+from justutorial.settings import SITEADD, SMARTWEB_MMKT_LIST_ID, SMARTWEB_MMKT_URL, SENDY_API_KEY
 from libs.util.paginar import listing
 from models import Institucional, Noticia, VideoJusTutor, NoticiaLida, ArtigoIndice, Artigo, _get_config_ativa
 from .utils import get_client_ip
-import logging
+
 logger = logging.getLogger('django')
 
 
@@ -100,7 +101,7 @@ def email(request):
 
     payloadStr = json.dumps({'ttl': 300})
     headers = {
-        'Authorization': "Apisecret ZO71azDFg0clQD1VKiXJJQc2Wdima7BouT201XkvczrTR5IUZzE6NpbaFFXl2RJV",
+        'Authorization': "Apisecret QPu1yL7eJ4A6JRzJV3KQbmDo6g5sviTdkzFRlRrhffoN3VbxC94tPYl7qYh7Kzxm",
         'Content-Type': "application/json",
         'Accept': "application/json"
     }
@@ -438,20 +439,20 @@ def busca_aluno(request):
 
 def send_email_contato(nome, email, mensagem):
     logger.info("enviar email contato")
-    t = loader.get_template('email/email_contato.html')
-    c = Context({
+
+    ctx_email = {
         'dominio': SITEADD,
         'nome': nome,
         'email': email,
         'mensagem': mensagem
-    })
-    rendered = t.render(c)
-    send_mail(
+    }
+
+    enviar_email(
+        'email/email_contato.html',
         u'Contato feito pelo site',
-        '',
-        EMAIL_HOST_USER,
-        ['cristiane@justutor.com.br', 'conteudo@justutor.com.br'],
-        html=rendered
+        ['cristiane@justutor.com.br', 'conteudo@justutor.com.br', "desenvolvimento@justutor.com.br"],
+        ctx_email,
+        ead=True
     )
     return True
 

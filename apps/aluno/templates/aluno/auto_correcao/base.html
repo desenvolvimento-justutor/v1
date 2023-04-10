@@ -1,6 +1,24 @@
 {% extends '_base-painel-aluno.html' %}
 {% load formulario_correcao_tags %}
 {% block css %}
+    <style>
+        label {
+            display: block;
+            padding-left: 15px;
+            text-indent: -15px;
+        }
+
+        input {
+            width: 13px;
+            height: 13px;
+            padding: 0;
+            margin: 0;
+            vertical-align: bottom;
+            position: relative;
+            top: -1px;
+            *overflow: hidden;
+        }
+    </style>
 {% endblock %}
 {% block panel_content %}
     <div class="col-lg-12">
@@ -52,10 +70,14 @@
                                             </td>
                                             <td class="text-right status emerald">
                                                 {% get_soma_correcao tabela as soma_correcao %}
-                                                {{ soma_correcao }}
+                                                {% if soma_correcao == "--" %}
+                                                    0,00
+                                                {% else %}
+                                                    {{ soma_correcao }}
+                                                {% endif %}
                                             </td>
                                             <td class="pull-right">
-                                                <button class="btn btn-sm btn-info"
+                                                <button class="btn btn-sm btn-{% if soma_correcao == "--" %}warning{% else %}success{% endif %}"
                                                         title="Responder" data-toggle="modal"
                                                         data-target="#modalCorrigir"
                                                         data-titulo="{{ tabela }}" data-pk="{{ tabela.pk }}">
@@ -78,8 +100,10 @@
 
                         </div>
                     </div>
-                    <div class="project-box-ultrafooter clearfix center">
-
+                    <div class="project-box-ultrafooter clearfix text-center">
+                        <a href="{{ url }}" class="btn btn-info">
+                            Concluir autocorreção
+                        </a>
                     </div>
                 </div>
             </div>

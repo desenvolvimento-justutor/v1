@@ -1,9 +1,10 @@
 {% load thumbnail comments curso static %}
 
 <ul class="nav nav-tabs">
-    <li class="active"><a href="#tab-home" data-toggle="tab">Tutoriais</a></li>
-    <li><a href="#tab-autocorrecao" data-toggle="tab">Minhas Atividades</a></li>
+    <li class="active"><a href="#tab-autocorrecao" data-toggle="tab">Minhas Atividades</a></li>
+    <li><a href="#tab-home" data-toggle="tab">Vídeos</a></li>
     <li><a href="#tab-mural" data-toggle="tab">Mural</a></li>
+    <li><a href="#tab-discuss" data-toggle="tab">Discussão</a></li>
     <li><a href="#tab-help" data-toggle="tab">Biblioteca</a></li>
     <li>
         <a href="#tab-mensagens" data-toggle="tab">
@@ -13,8 +14,12 @@
     </li>
 </ul>
 <div class="tab-content">
+    <!-- TAB MINHAS ATIVIDADES -->
+    <div class="tab-pane fade active in" id="tab-autocorrecao">
+        {% include 'tabs/autocorrecao.html' %}
+    </div>
     <!-- TAB VIDEOS -->
-    <div class="tab-pane fade active in" id="tab-home">
+    <div class="tab-pane fade" id="tab-home">
         {% for video in videos %}
             <div class="col-md-4 col-lg-4">
                 <div class="main-box clearfix">
@@ -38,7 +43,49 @@
             </div>
         {% endfor %}
     </div>
-    <!-- TAB VIDEOS -->
+    <!-- TAB DISCUSSAO -->
+    <div class="tab-pane fade" id="tab-discuss">
+        <div class="main-box no-header clearfix">
+            <div class="main-box-body clearfix">
+                <div class="table-responsive">
+                    <table class="table user-list table-hover">
+                        <thead>
+                        <tr>
+                            <th>Sobre</th>
+                            <th class="text-center">Inicio</th>
+                            <th class="text-center">Término</th>
+                            <th class="text-center">Status</th>
+                            <th>Comentários</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for discuss in submenu.get_discuss %}
+                            <tr>
+                                <td>
+                                    <img src="{{ STATIC_URL }}images/discuss.png" alt=""/>
+                                    <a href="{% url 'aluno:curso-discussao' discuss.pk %}"
+                                       class="user-link">{{ discuss }}</a>
+                                    <span class="user-subhead">{{ discuss.descricao }}</span>
+                                </td>
+                                <td class="text-center">{{ discuss.data_ini|date:"SHORT_DATE_FORMAT" }}</td>
+                                <td class="text-center">{{ discuss.data_fim|date:"SHORT_DATE_FORMAT" }}</td>
+                                <td class="text-center">
+                                    <span class="label label-{{ discuss.status.label }}">{{ discuss.status.status }}</span>
+                                </td>
+                                <td>
+                                    {% get_comment_count for discuss as comment_count %}
+                                    <span class="pull-right">{{ comment_count }} <i
+                                            class="fa fa-comment-o"></i></span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- TAB HELP -->
     <div class="tab-pane fade" id="tab-help">
         <div class="row">
             {% for material in submenu.materials %}
@@ -53,10 +100,6 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
-    <!-- TAB AUTOCORRECAO -->
-    <div class="tab-pane fade" id="tab-autocorrecao">
-        {% include 'tabs/autocorrecao.html' %}
     </div>
     <!-- TAB CRONOGRAMA -->
     <div class="tab-pane fade" id="tab-mural">
