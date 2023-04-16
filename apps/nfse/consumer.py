@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 
 import requests
+# from libs.util.cep import get_cep
 
 url = "https://api.focusnfe.com.br/v2/nfse"
 token = "a7LYZHv1Q4B13trOu6XYJyY53CtPITRC"
@@ -30,6 +31,8 @@ def hook(consulta=True):
 
 def emitir(ref, tomador, descriminacao, valor):
     params = {"ref": ref}
+    cep_data = get_cep(tomador["endereco"]["cep"])
+    tomador["endereco"]["codigo_municipio"] = cep_data["ibge"]
     nfse = {
         "data_emissao": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "prestador": {
@@ -58,4 +61,4 @@ def consultar(ref):
 
 
 if __name__ == "__main__":
-    consultar("f9c21e4a8083486d9b0597c706d7708a")
+    consultar("e2f6c26c25184cd5b32c61a72795de0a")

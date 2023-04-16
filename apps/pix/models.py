@@ -21,8 +21,8 @@ class Cobranca(models.Model):
             ("REMOVIDO_PELO_PSP", "REMOVIDO_PELO_PSP")
         ], default="ATIVA"
     )
-    checkout = models.ForeignKey(
-        verbose_name='Checkout', to=Checkout, on_delete=models.PROTECT)
+    checkout = models.OneToOneField(
+        verbose_name='Checkout', to=Checkout, on_delete=models.PROTECT, related_name="pix")
 
     response = models.TextField(
         verbose_name='Response'
@@ -47,6 +47,25 @@ class Cobranca(models.Model):
 
     def __str__(self):
         return self.txid
+
+    @property
+    def get_endereco(self):
+        try:
+            split_n = self.info.split("\n")
+            lst = [x.split(":") for x in split_n]
+
+            d = dict(lst)
+            return {
+                "logradouro": d.get("Endereco   ")[1:],
+                "numero": d.get("Numero     ")[1:],
+                "complemento": d.get("Complemento")[1:],
+                "bairro": d.get("Bairro     ")[1:],
+                "codigo_municipio": "4106902"[1:],
+                "uf": d.get("UF         ")[1:],
+                "cep": d.get("CEP        ")[1:]
+            }
+        except:
+            return {}
 
 
 a = {

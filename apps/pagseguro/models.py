@@ -181,9 +181,13 @@ class Checkout(models.Model):
     transaction_sender_phone_number = models.CharField(
         verbose_name="Número de telefone do comprador", max_length=50, blank=True, null=True
     )
-    omie_id = models.BigIntegerField(
-        verbose_name="Omie ID", blank=True, null=True
+    nfse = models.OneToOneField(
+        verbose_name="NFSe", to=NSFe, null=True, editable=False
     )
+    data_nfse = models.TextField(
+        verbose_name="Dados da NFSE", blank=True, null=True
+    )
+
 
     def get_sender(self):
         data = None
@@ -203,37 +207,48 @@ class Checkout(models.Model):
 
     def incluir_os(self):
         log_nfse.debug("transaction_status [{}]: {}".format(self.pk, self.transaction_status))
-        if self.transaction_status in ["3", 3]:
+        if self.transaction_status in ["3", 3] and not self.nfse:
             if self.cpf:
                 self.aluno.cpf = self.cpf
                 self.aluno.save()
-
-            sender = self.get_sender()
-
+            # ==========================================================================================================
             # TOTAIS
+            # ==========================================================================================================
             total = Decimal(self.total)
             s_total = "%.2f" % total
             gross_amount = Decimal(self.transaction_gross_amount)
             s_gross_amount = "%.2f" % gross_amount
             desconto = total - gross_amount
             s_desconto = "%.2f" % desconto
+            # ==========================================================================================================
             # DADOS NA NOTA
-            endereco = {
-                "logradouro": ra(sender["street"]),
-                "numero": sender["number"],
-                "complemento": ra(sender["complement"] or "N/A"),
-                "bairro": ra(sender["district"]),
-                "codigo_municipio": "4106902",
-                "uf": sender["state"],
-                "cep": sender["postalCode"]
-            }
+            # ==========================================================================================================
+            if self.transaction_payment_method_type == 6:
+                try:
+                    endereco = self.pix.get_endereco
+                except:
+                    endereco = {}
+            else:
+                sender = self.get_sender()
+                endereco = {
+                    "logradouro": ra(sender["street"]),
+                    "numero": sender["number"],
+                    "complemento": ra(sender["complement"] or "N/A"),
+                    "bairro": ra(sender["district"]),
+                    "codigo_municipio": "4106902",
+                    "uf": sender["state"],
+                    "cep": sender["postalCode"]
+                }
             tomador = {
                 "cpf": self.aluno.cpf,
                 "razao_social": ra(self.aluno.nome_completo or self.aluno.nome),
                 "email": self.aluno.email,
                 "endereco": endereco
             }
+            log_nfse.debug("Tomador %s" % tomador)
+            # ==========================================================================================================
             # DESCRICAO
+            # ==========================================================================================================
             descriminacao = ""
             itens = self.checkoutitens_set.all()
             for item in itens:
@@ -244,25 +259,20 @@ class Checkout(models.Model):
             descriminacao += "\nValor bruto: R$ {:>10}".format(s_total)
             descriminacao += "\nDesconto   : R$ {:>10}".format(s_desconto)
             descriminacao += "\nTotal      : R$ {:>10}".format(s_gross_amount)
-            try:
-                nfse = NSFe.objects.get(checkout=self)
-                log_nfse.debug("nfse gerada: {}".format(nfse.pk))
-            except NSFe.DoesNotExist:
-                nfse = NSFe(aluno=self.aluno, checkout=self)
-                code, response = emitir(nfse.ref.hex, tomador, ra(descriminacao), float(gross_amount))
-                log_nfse.debug("nfse response: {}".format(response))
-                if code == 202:
-                    nfse.status = response.get("status")
-                    nfse.numero_rps = response.get("numero_rps")
-                    nfse.serie_rps = response.get("serie_rps")
-                    # 202
-                    # {u'cnpj_prestador': u'24181548000143',
-                    #  u'numero_rps': u'1',
-                    #  u'ref': u'4b2a17e14e4743e48078ac81deebbc11',
-                    #  u'serie_rps': u'NF',
-                    #  u'status': u'processando_autorizacao',
-                    #  u'tipo_rps': u'RPS'}
+            # ==========================================================================================================
+            # GERAR NFSE
+            # ==========================================================================================================
+            nfse = NSFe(aluno=self.aluno)
+            code, response = emitir(nfse.ref.hex, tomador, ra(descriminacao), float(gross_amount))
+            log_nfse.debug("nfse response: {}".format(response))
+            if code == 202:
+                nfse.status = response.get("status")
+                nfse.numero_rps = response.get("numero_rps")
+                nfse.serie_rps = response.get("serie_rps")
                 nfse.save()
+                self.nfse = nfse
+                self.data_nfse = str(response)
+                self.save()
         else:
             log_nfse.debug("nfse não gerada")
 

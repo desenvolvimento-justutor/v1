@@ -21,7 +21,7 @@ gerar_nfse.short_description = "Gerar NFSe"
 
 
 class CheckoutAdmin(admin.ModelAdmin):
-    readonly_fields = ["omie_id"]
+    readonly_fields = ["data_nfse"]
     raw_id_fields = ['aluno']
     actions = [gerar_nfse]
     list_per_page = 20
@@ -33,6 +33,7 @@ class CheckoutAdmin(admin.ModelAdmin):
         'transaction_status',
         'code',
         'date',
+        'nfse'
     )
     list_display_links = ('id', 'aluno')
     search_fields = ['code', ]

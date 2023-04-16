@@ -19,9 +19,6 @@ class NSFe(models.Model):
     aluno = models.ForeignKey(
         verbose_name="Aluno", to=Aluno, on_delete=models.CASCADE
     )
-    checkout = models.OneToOneField(
-        verbose_name="Checkout", to="pagseguro.Checkout"
-    )
     data_emissao = models.DateTimeField(verbose_name=u"Data de emissão", auto_now=True)
     ref = models.UUIDField(verbose_name="Ref", default=uuid.uuid4)
     status = models.CharField(verbose_name="Status", max_length=24, null=True, blank=True, choices=STATUS)
