@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+import logging
 import os
 import shlex
 import socket
@@ -17,6 +20,7 @@ from django.utils.html import mark_safe
 from django_comments.signals import comment_was_posted
 from filebrowser.fields import FileBrowseField
 from sorl.thumbnail import get_thumbnail
+from sorl.thumbnail import get_thumbnail as _get_thumbnail
 from sorl.thumbnail.fields import ImageField
 
 from apps.autor.models import Simulado
@@ -29,7 +33,6 @@ from libs.signals import create_slug
 from libs.util import shortuuid
 from libs.util.format import currency_format, pretty_date
 from omie.api import OmieAPI
-import logging
 
 logger = logging.getLogger("apps")
 
@@ -364,7 +367,7 @@ class Curso(models.Model):
             return 'curso:curso', ([self.slug])
 
     def get_atividade_correcao_individual(self):
-        return self.atividade_set.filter(tipo_retorno='C')
+        return self.atividades.filter(tipo_retorno='C')
 
     @property
     def meta_comment(self):
@@ -410,7 +413,7 @@ class Curso(models.Model):
 
     def atividades(self):
         now = django.utils.timezone.now()
-        ativs = self.atividade_set.filter(data_ini__lte=now)
+        ativs = self.atividades.filter(data_ini__lte=now)
         return ativs
 
     @property
@@ -617,6 +620,10 @@ class Modulo(models.Model):
 
     curso = models.ForeignKey(Curso, verbose_name=u'Curso')
     nome = models.CharField(verbose_name='Nome', max_length=60)
+    thumbnail = ImageField(
+        verbose_name='Capa', upload_to='videos_thumb/', blank=True, null=True,
+        help_text=u'Miniatura que será exibido, se não escolher será gerado automaticamente'
+    )
     order = models.PositiveIntegerField(verbose_name='Ordem')
 
     def __unicode__(self):
@@ -645,7 +652,7 @@ class PdfModulo(models.Model):
 
 class Atividade(models.Model):
     curso = models.ForeignKey(
-        verbose_name=u'Curso', to=Curso
+        verbose_name=u'Curso', to=Curso, related_name="atividades"
     )
     professores = models.ManyToManyField(
         'professor.Professor', blank=False
@@ -766,7 +773,7 @@ class AtividadeModelo(models.Model):
 class TarefaAtividade(models.Model):
 
     atividade = models.ForeignKey(
-        verbose_name='Atividade', to=Atividade
+        verbose_name='Atividade', to=Atividade, related_name="tarefa_atividades"
     )
     aluno = models.ForeignKey(
         verbose_name='Aluno', to='aluno.Aluno'
@@ -976,9 +983,20 @@ class VideoModulo(models.Model):
             ("p", u"Padrão"), ("v", "VdoCipher"), ("y", "Youtube")
         ]
     )
+    order = models.PositiveIntegerField(verbose_name='Ordem')
+
+    class Meta:
+        ordering = ["order"]
 
     def __unicode__(self):
         return self.titulo
+
+    @property
+    def get_thumbnail(self):
+        thumb = self.thumbnail if self.thumbnail else self.modulo.thumbnail
+        if thumb:
+            return _get_thumbnail(thumb, '620x340', crop='center', quality=99).url
+        return ""
 
     def create_screenshot(self):
         video_file = self.video

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from traceback import format_exc
 import json
 import logging
 import re
@@ -207,74 +207,80 @@ class Checkout(models.Model):
 
     def incluir_os(self):
         log_nfse.debug("transaction_status [{}]: {}".format(self.pk, self.transaction_status))
-        if self.transaction_status in ["3", 3] and not self.nfse:
-            if self.cpf:
-                self.aluno.cpf = self.cpf
-                self.aluno.save()
-            # ==========================================================================================================
-            # TOTAIS
-            # ==========================================================================================================
-            total = Decimal(self.total)
-            s_total = "%.2f" % total
-            gross_amount = Decimal(self.transaction_gross_amount)
-            s_gross_amount = "%.2f" % gross_amount
-            desconto = total - gross_amount
-            s_desconto = "%.2f" % desconto
-            # ==========================================================================================================
-            # DADOS NA NOTA
-            # ==========================================================================================================
-            if self.transaction_payment_method_type == 6:
-                try:
-                    endereco = self.pix.get_endereco
-                except:
-                    endereco = {}
-            else:
-                sender = self.get_sender()
-                endereco = {
-                    "logradouro": ra(sender["street"]),
-                    "numero": sender["number"],
-                    "complemento": ra(sender["complement"] or "N/A"),
-                    "bairro": ra(sender["district"]),
-                    "codigo_municipio": "4106902",
-                    "uf": sender["state"],
-                    "cep": sender["postalCode"]
+        try:
+            if self.transaction_status in ["3", 3] and not self.nfse:
+                if self.cpf:
+                    self.aluno.cpf = self.cpf
+                    self.aluno.save()
+                # ==========================================================================================================
+                # TOTAIS
+                # ==========================================================================================================
+                total = Decimal(self.total)
+                s_total = "%.2f" % total
+                gross_amount = Decimal(self.transaction_gross_amount)
+                s_gross_amount = "%.2f" % gross_amount
+                desconto = total - gross_amount
+                s_desconto = "%.2f" % desconto
+                # ==========================================================================================================
+                # DADOS NA NOTA
+                # ==========================================================================================================
+                if self.transaction_payment_method_type == 6:
+                    try:
+                        endereco = self.pix.get_endereco
+                    except:
+                        endereco = {}
+                else:
+                    sender = self.get_sender()
+                    endereco = {
+                        "logradouro": ra(sender["street"]),
+                        "numero": sender["number"],
+                        "complemento": ra(sender["complement"] or "N/A"),
+                        "bairro": ra(sender["district"]),
+                        "codigo_municipio": "4106902",
+                        "uf": sender["state"],
+                        "cep": sender["postalCode"]
+                    }
+                tomador = {
+                    "cpf": self.aluno.cpf,
+                    "razao_social": ra(self.aluno.nome_completo or self.aluno.nome),
+                    "email": self.aluno.email,
+                    "endereco": endereco
                 }
-            tomador = {
-                "cpf": self.aluno.cpf,
-                "razao_social": ra(self.aluno.nome_completo or self.aluno.nome),
-                "email": self.aluno.email,
-                "endereco": endereco
-            }
-            log_nfse.debug("Tomador %s" % tomador)
-            # ==========================================================================================================
-            # DESCRICAO
-            # ==========================================================================================================
-            descriminacao = ""
-            itens = self.checkoutitens_set.all()
-            for item in itens:
-                valor = "%.2f" % item.valor
-                descriminacao += "{curso:<50}: R${valor:>9}\n".format(
-                    curso=item.curso, valor=valor
-                )
-            descriminacao += "\nValor bruto: R$ {:>10}".format(s_total)
-            descriminacao += "\nDesconto   : R$ {:>10}".format(s_desconto)
-            descriminacao += "\nTotal      : R$ {:>10}".format(s_gross_amount)
-            # ==========================================================================================================
-            # GERAR NFSE
-            # ==========================================================================================================
-            nfse = NSFe(aluno=self.aluno)
-            code, response = emitir(nfse.ref.hex, tomador, ra(descriminacao), float(gross_amount))
-            log_nfse.debug("nfse response: {}".format(response))
-            if code == 202:
-                nfse.status = response.get("status")
-                nfse.numero_rps = response.get("numero_rps")
-                nfse.serie_rps = response.get("serie_rps")
-                nfse.save()
-                self.nfse = nfse
-                self.data_nfse = str(response)
-                self.save()
-        else:
-            log_nfse.debug("nfse não gerada")
+                log_nfse.debug("Tomador %s" % tomador)
+                # ==========================================================================================================
+                # DESCRICAO
+                # ==========================================================================================================
+                descriminacao = ""
+                itens = self.checkoutitens_set.all()
+                for item in itens:
+                    valor = "%.2f" % item.valor
+                    descriminacao += "{curso:<50}: R${valor:>9}\n".format(
+                        curso=item.curso, valor=valor
+                    )
+                descriminacao += "\nValor bruto: R$ {:>10}".format(s_total)
+                descriminacao += "\nDesconto   : R$ {:>10}".format(s_desconto)
+                descriminacao += "\nTotal      : R$ {:>10}".format(s_gross_amount)
+                # ==========================================================================================================
+                # GERAR NFSE
+                # ==========================================================================================================
+                nfse = NSFe(aluno=self.aluno)
+                code, response = emitir(nfse.ref.hex, tomador, ra(descriminacao), float(gross_amount))
+                log_nfse.debug("nfse response: {} - {}".format(code, response))
+                if code == 202:
+                    nfse.status = response.get("status")
+                    nfse.numero_rps = response.get("numero_rps")
+                    nfse.serie_rps = response.get("serie_rps")
+                    nfse.save()
+                    self.nfse = nfse
+                    self.data_nfse = str(response)
+                    self.save()
+            else:
+                log_nfse.debug(u"nfse não gerada")
+        except Exception:
+            log_nfse.error(format_exc())
+            log_nfse.error("-" * 100)
+            log_nfse.error("{} - {}".format(type(self.transaction_gross_amount), repr(self.transaction_gross_amount)))
+            log_nfse.error("-" * 100)
 
     def get_transaction_status(self):
         transaction = self.code

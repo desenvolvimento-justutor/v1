@@ -1,5 +1,6 @@
 {% extends 'professor/_base.html' %}
 {% block panel_content %}
+
     <div class="row">
         <div class="col-lg-12">
             <div class="main-box">
@@ -7,32 +8,55 @@
                     <h2>Filtro</h2>
                 </header>
                 <div class="main-box-body clearfix">
-                    <form class="form-inline" role="form" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label>Tipo</label>
-                            <select class="form-control" name="tipo">
-                                {% with filtro.tipo as tipo %}
-                                <option value="">Tipo</option>
-                                <option value="C" {% ifequal tipo 'C' %}selected{% endifequal %}>Curso</option>
-                                <option value="S" {% ifequal tipo 'S' %}selected{% endifequal %}>Atividade Avulsa</option>
-                                <option value="O" {% ifequal tipo 'O' %}selected{% endifequal %}>OAB 2ª Fase</option>
-                                {% endwith %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Professor</label>
-                            <select class="form-control" name="professor">
-                                {% with filtro.professor as fprofessor %}
-                                    <option value="">---</option>
-                                    {% for professor in professores %}
-                                        <option value="{{ professor.pk }}" {% ifequal fprofessor professor %}selected{% endifequal %}>{{ professor }}</option>
-                                    {% endfor %}
-                                {% endwith %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Ordenar Tarefa</label>
+                <form class="row g-3" method="post">
+                    {% csrf_token %}
+                  <div class="col-md-2">
+                    <label>Tipo</label>
+                    <select class="form-control" name="tipo">
+                        {% with filtro.tipo as tipo %}
+                        <option value="">Tipo</option>
+                        <option value="C" {% ifequal tipo 'C' %}selected{% endifequal %}>Curso</option>
+                        <option value="S" {% ifequal tipo 'S' %}selected{% endifequal %}>Atividade Avulsa</option>
+                        <option value="O" {% ifequal tipo 'O' %}selected{% endifequal %}>OAB 2ª Fase</option>
+                        {% endwith %}
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                    <label>Professor</label>
+                    <select class="form-control" name="professor">
+                        {% with filtro.professor as fprofessor %}
+                            <option value="">---</option>
+                            {% for professor in professores %}
+                                <option value="{{ professor.pk }}" {% ifequal fprofessor professor %}selected{% endifequal %}>{{ professor }}</option>
+                            {% endfor %}
+                        {% endwith %}
+                    </select>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Curso</label>
+                    <select class="form-control" name="curso">
+                        {% with filtro.curso as fcurso %}
+                            <option value="">---</option>
+                            {% for curso in cursos %}
+                                <option value="{{ curso.id }}" {% ifequal fcurso curso.id %}selected{% endifequal %}>{{ curso.nome }}</option>
+                            {% endfor %}
+                        {% endwith %}
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label>Atividade</label>
+                    <select class="form-control" name="atividade">
+                        {% with filtro.atividade as fatividade %}
+                            <option value="">---</option>
+                            {% for atividade in atividades %}
+                                <option value="{{ atividade.id }}" {% ifequal fatividade atividade.id %}selected{% endifequal %}>{{ atividade.nome }}</option>
+                            {% endfor %}
+                        {% endwith %}
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-check">
+                      <label>Ordenar Tarefa</label>
                             <select class="form-control" name="order_by">
                                 {% with filtro.order_by as order_by %}
                                 <option value="atividade" {% ifequal order_by 'atividade' %}selected{% endifequal %}>Atividade</option>
@@ -40,15 +64,18 @@
                                 <option value="-data_conclusao" {% ifequal order_by '-data_conclusao' %}selected{% endifequal %}>Data Conclusão (Decrescente)</option>
                                 {% endwith %}
                             </select>
-                        </div>
-                        <div class="checkbox checkbox-nice">
-                            <input type="checkbox" id="disponivel" {% if filtro.disponivel == 'on' %}checked="checked"{% endif %} name="disponivel">
-                            <label for="disponivel">
-                                Disponível
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-success">Filtar</button>
-                    </form>
+                    </div>
+                  </div>
+                  <div class="col-md-1 checkbox checkbox-nice" style="margin-top: 30px;">
+                          <input type="checkbox" id="disponivel" {% if filtro.disponivel == 'on' %}checked="checked"{% endif %} name="disponivel">
+                          <label for="disponivel">
+                              Disponível
+                          </label>
+                  </div>
+                <div class="col-sm-4" style="margin-top: 22px;">
+                    <button type="submit" class="btn btn-success">Filtar</button>
+                </div>
+                </form>
                 </div>
             </div>
 

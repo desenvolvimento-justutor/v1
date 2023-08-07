@@ -20,10 +20,5 @@ def create_slug(sender, instance, signal, *args, **kwargs):
 
 def tarefa_atividade_save(sender, instance, signal, *args, **kwargs):
     # check for id and attributes
-    print '*' * 100
-    print instance
-    print args
-    print kwargs
-    print '*' * 100
     if instance.concluido:
         instance.data_conclusao = timezone.now()

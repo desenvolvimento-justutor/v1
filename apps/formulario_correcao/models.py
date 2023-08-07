@@ -29,6 +29,9 @@ class Nota(models.Model):
         verbose_name_plural = 'Notas padrão'
 
     def __str__(self):
+        return self.titulo
+
+    def __str__(self):
         return u'%s (%.2f)' % (self.titulo, self.valor)
 
     def get_dot_valor(self):
@@ -95,6 +98,9 @@ class Tabela(models.Model):
     nota = models.ManyToManyField(
         verbose_name='Nota', to=Nota
     )
+    # notas = models.ManyToManyField(
+    #     verbose_name='Notas', through="TabelaNota"
+    # )
     comentarios = models.TextField(
         verbose_name='Comentários', blank=True, null=True
     )
@@ -105,7 +111,7 @@ class Tabela(models.Model):
     class Meta:
         verbose_name = u'Tabela de correção'
         verbose_name_plural = u'Tabelas de correção'
-        ordering = ['order']
+        ordering = ["order"]
 
     def __str__(self):
         return self.item
@@ -117,6 +123,19 @@ class Tabela(models.Model):
     def total(self):
         t = self.tabela_aluno.aggregate(total=Sum('nota'))
         return t.get('total')
+
+
+@python_2_unicode_compatible
+class TabelaNota(models.Model):
+    tabela = models.ForeignKey(verbose_name="Tabela", to=Tabela, on_delete=models.CASCADE, related_name="tbnota_tabelas")
+    nota = models.ForeignKey(verbose_name="Nota", to=Nota, on_delete=models.CASCADE, related_name="tbnota_notas")
+
+    class Meta:
+        verbose_name = u'Tabela de Nota'
+        verbose_name_plural = u'Tabelas de Notas'
+
+    def __str__(self):
+        return self.nota.valor
 
 
 @python_2_unicode_compatible
@@ -152,6 +171,7 @@ class TabelaCorrecaoAluno(models.Model):
             ('analisado', 'Recurso Analisado'),
         ], default='corrigido'
     )
+    pago = models.BooleanField(default=False)
 
     def total(self):
         tabelas = self.tabelas.all()
@@ -174,7 +194,7 @@ class TabelaCorrecaoAluno(models.Model):
             'solicitado': u'Seu recurso foi enviado ao professor e está em fase de análise. Assim que concluída a '
                           u'avaliação de seu recurso, você receberá uma notificação por e-mail.',
             'analise': u'Seu recurso foi enviado ao professor e está em fase de análise. Assim que concluída a '
-                          u'avaliação de seu recurso, você receberá uma notificação por e-mail.',
+                       u'avaliação de seu recurso, você receberá uma notificação por e-mail.',
             'analisado': u'Seu recurso foi analisado. Confira o resultado abaixo.'
         }
         return vals.get(self.status)

@@ -124,7 +124,6 @@ def ajax_responder(request):
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         trace = traceback.format_tb(exc_traceback)
-        print(''.join(trace))
         return JsonResponse(
             data={
                 'err': mark_safe('<br/>'.join(trace))
@@ -188,9 +187,6 @@ def ajax_render_html(request):
     else:
         resposta_questionario_aluno = questionario_aluno.respostas_aluno.first()
 
-    print '>>>', questionario_aluno, questionario_aluno.pk, questionario_aluno_id
-    print '>>>', resposta_questionario_aluno, resposta_questionario_aluno.pk, resposta_questionario_aluno_id
-
     html = get_html(request, questionario_aluno, resposta_questionario_aluno)
     return JsonResponse({
         'html': html
@@ -239,7 +235,6 @@ def ajax_update_timer(request):
         questionario_obj.tempo_esgotado = True
         questionario_obj.save()
         block = True
-    print '>>>', tsplit
     data = {
         'now': timezone.now().strftime('%d/%d/%Y %H:%M:%S'),
         'time_hours': '%02d' % tsplit.get('hours', 0),

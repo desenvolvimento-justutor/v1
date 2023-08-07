@@ -965,7 +965,6 @@ class QuestionarioAluno(models.Model):
             ).order_by('-pontuacao', 'data_conclusao')
         except:
             ranking = QuestionarioAluno.objects.none()
-        print '>>>>>>>.', ranking
         return ranking
 
     @property

@@ -608,3 +608,27 @@ def ranking_top_pontos():
     r.reverse()
     ret = map(lambda x: x[0], r)
     return ret[:12]
+
+
+@python_2_unicode_compatible
+class Cursos(models.Model):
+    aluno = models.ForeignKey(to=Aluno, on_delete=models.DO_NOTHING)
+    curso = models.ForeignKey(to="curso.Curso", related_name="cursos_aluno", on_delete=models.DO_NOTHING)
+    transaction_status = models.PositiveSmallIntegerField(
+        verbose_name="Status da Transação", null=True, blank=True,
+        choices=[
+            (1, "Aguardando pagamento"),
+            (2, "Em análise"),
+            (3, "Paga"),
+            (4, "Disponível"),
+            (5, "Em disputa"),
+            (6, "Devolvida"),
+            (7, "Cancelada")
+        ]
+    )
+    def __str__(self):
+        return self.curso.nome
+    class Meta:
+        verbose_name = "Curso"
+        managed = False
+        db_table = 'aluno_curso'

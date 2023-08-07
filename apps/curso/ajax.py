@@ -92,7 +92,6 @@ def add_to_cart(request, curso_id, codigo=False):
                 messages.success(request, msg)
                 djx.script("window.location = '/carrinho/'")
     except Exception as e:
-        print 'ERRO:', e
         msg = u"msg_erro('Não foi possível adicionar o %s ao Carrinho.')" % tipo_curso
         djx.script(msg)
     djx.script('$.unblockUI()')

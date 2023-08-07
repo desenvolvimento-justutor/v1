@@ -158,3 +158,4 @@ teste.py
 tests/
 !/apps/autor/templates/autor/painel-simulado.html
 node_modules
+/.env

@@ -52,10 +52,6 @@ def professor_required(f):
 
 
 def test_login(user):
-    print("*" * 50)
-    print(user)
-    print(user.professor)
-    print("*" * 50)
     try:
         user.professor
     except:
@@ -70,6 +66,8 @@ def painel(request):
     order_by = 'atividade'
     fprofessor = None
     categoria_tipo = 'C'
+    fcurso = None
+    fatividade = None
     context = {
         'menu': 'painel',
         'professor': professor,
@@ -78,55 +76,74 @@ def painel(request):
             'disponivel': 'on'
         }
     }
+    kwargs = dict(
+        atividade__curso__categoria__tipo=categoria_tipo,
+        atividade__professores=professor,
+        atividade__tipo_retorno='C',
+        corrigido=False,
+        concluido=True,
+        limitada=False,
+    )
+    cursos = Curso.objects.filter(
+        atividades__tarefa_atividades__atividade__curso__categoria__tipo="C",
+        atividades__tarefa_atividades__atividade__tipo_retorno='C',
+        atividades__tarefa_atividades__corrigido=False,
+        atividades__tarefa_atividades__concluido=True,
+        atividades__tarefa_atividades__limitada=False,
+    ).values("id", "nome").distinct().order_by("nome")
+    atividades = Atividade.objects.filter(
+        tarefa_atividades__atividade__curso__categoria__tipo=categoria_tipo,
+        tarefa_atividades__atividade__professores=professor,
+        tarefa_atividades__atividade__tipo_retorno='C',
+        tarefa_atividades__corrigido=False,
+        tarefa_atividades__concluido=True,
+        tarefa_atividades__limitada=False,
+    ).values("id", "nome").distinct().order_by("nome")
     if request.method == 'POST':
 
-        kwargs = {}
         disponivel = request.POST.get('disponivel')
         tipo = request.POST.get('tipo')
         professor_id = request.POST.get('professor')
+        atividade_id = request.POST.get('atividade')
+        curso_id = request.POST.get('curso')
+        order_by = request.POST.get('order_by')
+
+        kwargs['atividade__curso__disponivel'] = True if disponivel else False
+
         if professor_id:
             fprofessor = professor = Professor.objects.get(id=professor_id)
             kwargs['atividade__professores'] = fprofessor
-        order_by = request.POST.get('order_by')
         if tipo:
-            kwargs['categoria__tipo'] = tipo
+            kwargs['atividade__curso__categoria__tipo'] = tipo
             categoria_tipo = tipo
-        kwargs['disponivel'] = True if disponivel else False
-        cursors = Curso.objects.filter(**kwargs).distinct()
+        if curso_id:
+            fcurso = int(curso_id)
+            kwargs['atividade__curso'] = curso_id
+        if atividade_id:
+            fatividade = int(atividade_id)
+            kwargs['atividade'] = atividade_id
+
         filtro = {
             'disponivel': disponivel,
             'tipo': tipo,
             'order_by': order_by,
             'professor': fprofessor,
+            'curso': fcurso,
+            'atividade': fatividade,
         }
     else:
-        cursors = Curso.objects.filter(
-            disponivel=True,
-            categoria__tipo=categoria_tipo,
-            atividade__professores=professor
-        ).distinct()
         filtro = {
             'disponivel': 'on',
             'tipo': 'C',
             'order_by': 'atividade'
         }
     context.update(dict(filtro=filtro))
-    atividades = Atividade.objects.filter(
-        curso__categoria__tipo=categoria_tipo,
-        professores=professor
-    )
-    tarefas = TarefaAtividade.objects.filter(
-        corrigido=False,
-        atividade__curso__categoria__tipo=categoria_tipo,
-        atividade__professores=professor,
-        concluido=True,
-        atividade__tipo_retorno='C',
-        limitada=False,
-    ).order_by(order_by)
+
+    tarefas = TarefaAtividade.objects.filter(**kwargs).order_by(order_by)
     context.update({
         'atividades': atividades,
         'tarefas': tarefas,
-        'cursos': cursors
+        'cursos': cursos
     })
     return render(request, 'professor/painel.html', context)
 
@@ -134,17 +151,22 @@ def painel(request):
 @login_required
 @user_passes_test(test_login)
 def cursos(request):
-    professor = request.user.professor
-    query = professor.curso_set.all()
     get_curso = request.GET.get('curso')
+    filtro = Curso.objects.filter(
+        categoria__nome__in=["Prática de Sentença", "Questões Discursivas"],
+        atividades__tarefa_atividades__isnull=False).values(
+        "id", "nome"
+    ).order_by("nome").distinct()
     if get_curso:
-        curso = Curso.objects.get(pk=get_curso)
+        query = [Curso.objects.get(pk=get_curso)]
     else:
-        curso = query.first()
+        query = Curso.objects.filter(categoria__nome="Prática de Sentença")
+        query = [query.last()]
     context = {
         'menu': 'cursos',
         'cursos': query,
-        'curso': curso
+        'filtro': filtro,
+        'curso': query[0]
     }
     return render(request, 'professor/cursos.html', context)
 
@@ -833,7 +855,7 @@ def formulario_estatistica(request):
                         elif tarefa.arquivo:
                             url = tarefa.arquivo.url
                 except Exception as e:
-                    print '>>>>', e
+                    print '>>>> 1', e
                 notas.append({
                     'aluno': tabela.aluno,
                     'nota': tabela.total_aluno,
@@ -871,7 +893,7 @@ def formulario_estatistica(request):
 @csrf_exempt
 def formulario_estatistica_geral(request):
     curso = Curso.objects.get(pk=request.POST.get('pk'))
-    atividades = curso.atividade_set.all()
+    atividades = curso.atividades.all()
     context = {
         'curso': curso,
         'atividades': atividades
@@ -903,13 +925,19 @@ def formulario_estatistica_geral(request):
                     try:
                         atividade = tabela.formulario.atividade
                         tarefa = TarefaAtividade.objects.get(atividade=atividade, aluno=tabela.aluno)
+                    except tarefa.MultipleObjectsReturned:
+                        tarefas = TarefaAtividade.objects.filter(atividade=atividade, aluno=tabela.aluno)
+                        tarefa = tarefas.first()
+                        print(">>> TAREFAS", tarefas)
+                    except Exception as e:
+                        print '>>>> 2', e
+                    else:
                         if tarefa.atividade.get_status().get('status') == 'Encerrado':
                             if tarefa.resposta:
                                 url = '/curso/atividade/imprimir/%d/?action=resposta&notprint=sim' % tarefa.pk
                             elif tarefa.arquivo:
                                 url = tarefa.arquivo.url
-                    except Exception as e:
-                        print '>>>>', e
+
                     nota = float(tabela.total_aluno)
                     aluno = tabela.aluno
                     ngeral = notas_geral.get(aluno)

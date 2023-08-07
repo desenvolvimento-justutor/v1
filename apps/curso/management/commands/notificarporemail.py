@@ -50,6 +50,10 @@ class Command(BaseCommand):
             datetime.combine(yesterday, time.min),
             datetime.combine(yesterday, time.max)
         )
+        tomorrow_combine = (
+            datetime.combine(tomorrow, time.min),
+            datetime.combine(tomorrow, time.max),
+        )
         self.stdout.write(self.style.URL_NAME(u'HOJE..: %s' % self.style.BOLD(today)))
         self.stdout.write(self.style.URL_NAME(u'ONTEM.: %s' % self.style.BOLD(yesterday)))
         self.stdout.write(self.style.URL_NAME(u'AMANHÃ: %s' % self.style.BOLD(tomorrow)))
@@ -59,7 +63,7 @@ class Command(BaseCommand):
             comentarios = Comment.objects.for_model(Discussao).filter(submit_date__range=dates, object_pk__in=discuss_ids)
             materiais = DocCurso.objects.filter(data_ativo=yesterday, curso=curso)
             atividades = Atividade.objects.filter(data=yesterday, curso=curso)
-            atividades_vencer = Atividade.objects.filter(data_fim=tomorrow, curso=curso)
+            atividades_vencer = Atividade.objects.filter(data_fim__range=tomorrow_combine, curso=curso)
             checkout_item = CheckoutItens.objects.filter(curso=curso).first()
             # EMAILS
             if email_teste:

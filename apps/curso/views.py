@@ -96,12 +96,16 @@ def relatorio(request):
     txt += '================================================================================ =============== ========== ======= ==========\n'
     mes = request.POST.get('mes')
     ano = request.POST.get('ano')
+    curso = request.POST.get('curso')
     if mes:
         filename += '-' + mes
         filtro.append(Q(date__month=mes))
     if ano:
         filename += '-' + ano
         filtro.append(Q(date__year=ano))
+    if curso:
+        filename += '-' + curso
+        filtro.append(Q(checkoutitens__curso_id=curso))
     chks = Checkout.objects.filter(*filtro).order_by('-date')
     for chk in chks:
         try:

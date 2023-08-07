@@ -1,0 +1,6 @@
+{% if original %}
+{%  for nota in original.nota.all %}
+    <span class="label">{{ nota.pk }} ({{ nota.valor }})</span>
+{% endfor %}
+{% endif %}
+</div>

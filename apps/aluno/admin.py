@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.contrib import admin
 from sorl.thumbnail.admin import AdminImageMixin
-from .models import Aluno, FormacaoAcademica, Filtro, Mensagem
+from .models import Aluno, FormacaoAcademica, Filtro, Mensagem, Cursos
 from django.forms import ModelForm
 from suit.widgets import NumberInput
 from django.conf.urls import url
@@ -33,11 +33,19 @@ class FiltroInLine(admin.StackedInline):
     suit_classes = 'suit-tab suit-tab-filtro'
 
 
+class CursosInLine(admin.TabularInline):
+    model = Cursos
+    extra = 0
+    suit_classes = 'suit-tab suit-tab-cursos'
+    readonly_fields = ('curso', 'transaction_status')
+    can_delete = False
+
+
 @admin.register(Aluno)
 class AlunoAdmin(AdminImageMixin, admin.ModelAdmin):
     actions = ['subscribe_aluno']
     raw_id_fields = ['usuario']
-    list_per_page = 10
+    # list_per_page = 10
 
     def subscribe_aluno(self, request, queryset):
         inc = 0
@@ -84,7 +92,7 @@ class AlunoAdmin(AdminImageMixin, admin.ModelAdmin):
 
     subscribe_aluno.short_description = "Inscrever no Newsletter"
 
-    inlines = [FormacaoAcademicaInLine, FiltroInLine]
+    inlines = [FormacaoAcademicaInLine, FiltroInLine, CursosInLine]
     radio_fields = {'sexo': admin.HORIZONTAL}
     fieldsets = [
         (None, {
@@ -112,6 +120,10 @@ class AlunoAdmin(AdminImageMixin, admin.ModelAdmin):
             'fields': ['notificar_correcao', 'notificar_comentario', 'notificar_avaliacao', 'notificar_seguir',
                        'notificar_responder_seguir']}
          ),
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-cursos'),
+            'fields': []}
+         ),
     ]
     suit_form_tabs = (
         ('geral', 'Geral'),
@@ -120,6 +132,7 @@ class AlunoAdmin(AdminImageMixin, admin.ModelAdmin):
         ('formacao', 'Formação'),
         ('notificacao', 'Notificações'),
         ('filtro', 'Filtro'),
+        ('cursos', 'Cursos'),
     )
 
     list_display = (
@@ -132,7 +145,7 @@ class AlunoAdmin(AdminImageMixin, admin.ModelAdmin):
         'cpf',
         'newsletter'
     )
-    list_filter = ('usuario', 'email', 'cpf', 'newsletter')
+    list_filter = ('email', 'cpf', 'newsletter')
     search_fields = ['id', 'nome', 'nome_completo', 'email', 'cpf']
 
 

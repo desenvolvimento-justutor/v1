@@ -39,7 +39,7 @@ from apps.curso.models import (Atividade, Categoria, Certificado, CheckoutItens,
 from apps.enunciado.models import Coletania, ComentarioCorrecao, Correcao, NotaResposta, NotificacoesAluno, Resposta
 from apps.financeiro.models import ConfiguracaoPacote, Credito
 from apps.formulario_auto_correcao.models import Formulario, RespostaAluno
-from apps.formulario_correcao.models import Tabela, NotaCorrecao
+from apps.formulario_correcao.models import Tabela, NotaCorrecao, TabelaCorrecaoAluno
 from apps.formulario_correcao.templatetags.formulario_correcao_tags import soma_notas
 from apps.professor.models import Mensagem as PMensagem
 from carton.cart import Cart
@@ -338,7 +338,7 @@ def cursos(request, **kwargs):
                     submenu=curso,
                     is_tutorial=curso.is_tutorial,
                     menu='Prática Dinâmica' if curso.is_tutorial else 'cursos',
-                    atividades=curso.atividade_set.filter().order_by('data_ini'),
+                    atividades=curso.atividades.filter().order_by('data_ini'),
                     tarefas=TarefaAtividade.objects.filter(aluno=aluno).exclude(correcao__exact="").exclude(
                         correcao__isnull=True)
                 ))
@@ -396,7 +396,7 @@ def tutorial(request):
                     msg_naolidas=PMensagem.objects.filter(curso=curso, aluno=aluno, lido=False, resposta=True).count(),
                     videos=videos,
                     submenu=curso,
-                    atividades=curso.atividade_set.all().order_by('data_ini'),
+                    atividades=curso.atividades.all().order_by('data_ini'),
                     tarefas=TarefaAtividade.objects.filter(aluno=aluno).exclude(correcao__exact="").exclude(
                         correcao__isnull=True)
                 ))
@@ -501,7 +501,7 @@ def simulados(request):
                     msg_naolidas=PMensagem.objects.filter(curso=curso, aluno=aluno, lido=False, resposta=True).count(),
                     videos=videos,
                     submenu=curso,
-                    atividades=curso.atividade_set.all().order_by('data_ini'),
+                    atividades=curso.atividades.all().order_by('data_ini'),
                     tarefas=TarefaAtividade.objects.filter(aluno=aluno).exclude(correcao__exact="").exclude(
                         correcao__isnull=True)
                 ))
@@ -890,7 +890,7 @@ def certificado_solicitar(request, cid):
         'curso': curso
     }
     # VALIDAR
-    atividades_obrigatorias = curso.atividade_set.filter(resolucao_obrigatorio=True).count()
+    atividades_obrigatorias = curso.atividades.filter(resolucao_obrigatorio=True).count()
     tarefas = TarefaAtividade.objects.filter(aluno=aluno, atividade__curso=curso,
                                              atividade__resolucao_obrigatorio=True).count()
     cursos_do_aluno = curso.get_alunos

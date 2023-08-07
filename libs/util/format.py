@@ -69,6 +69,5 @@ def timedelta_str(duration, seconds=True):
         ret = '{hours:02d}:{minutes:02d}:{seconds:02d}'.format(**convert_timedelta(duration))
     else:
         time_c = convert_timedelta(duration)
-        print '>>>>>>>>', time_c
         ret = '{:02d}:{:02d}'.format(time_c['hours'], time_c['minutes'])
     return ret

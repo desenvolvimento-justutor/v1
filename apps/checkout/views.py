@@ -26,6 +26,7 @@ from apps.pix.models import Cobranca
 from carton.cart import Cart
 from .forms import CartForm
 from .utils import adicionar_cupom
+from ..cupom.models import Cupom
 
 ERRORS = {
     '5003': "Falha de comunicação com a instituição financeira.",
@@ -313,6 +314,13 @@ def ajax_checkout(request):
     phone = celular[2:] if celular else ''
 
     cart = Cart(request.session)
+    cod_cupom = cart.cupom
+    cupom = None
+    if cod_cupom:
+        try:
+            cupom = Cupom.objects.get(codigo=cart.cupom)
+        except Cupom.DoesNotExist:
+            pass
     api = PagSeguroApiTransparent()
     api.set_notification_url('https://www.justutor.com.br/pagseguro/')
     api.set_reference(
@@ -403,21 +411,19 @@ def ajax_checkout(request):
             for i in cart.items:
                 curso = i.product
                 cursos = curso.cursos.all()
-                if not cursos:
+                CheckoutItens.objects.create(
+                    checkout=checkout_obj,
+                    curso=i.product,
+                    qtda=1,
+                    valor=i.price
+                )
+                for c in cursos:
                     CheckoutItens.objects.create(
                         checkout=checkout_obj,
-                        curso=i.product,
+                        curso=c,
                         qtda=1,
-                        valor=i.price
+                        valor=0
                     )
-                else:
-                    for c in cursos:
-                        CheckoutItens.objects.create(
-                            checkout=checkout_obj,
-                            curso=c,
-                            qtda=1,
-                            valor=c.valor
-                        )
             Cobranca.objects.create(
                 txid=txid,
                 checkout=checkout_obj,
@@ -428,6 +434,9 @@ def ajax_checkout(request):
                 info=info
             )
             cart.clear()
+            if cupom:
+                cupom.qte_usada += 1
+                cupom.save()
             ret.update({
                 'link': '/checkout/status/pix/%s' % txid,
                 'code': txid
@@ -515,6 +524,9 @@ def ajax_checkout(request):
                     credito.pacote_id = item.pacote
                 credito.save()
         cart.clear()
+        if cupom:
+            cupom.qte_usada += 1
+            cupom.save()
     return JsonResponse(ret)
 
 

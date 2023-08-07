@@ -1,6 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static admin_list admin_urls suit_list suit_tags %}
 {% load get_checkout_years from curso %}
+{% load get_checkout_cursos from curso %}
 {% load url from suit_compat %}
 
 {% block extrastyle %}
@@ -94,6 +95,13 @@
                                 <option value="{{ y.year.year }}">{{ y.year.year }}</option>
                             {% endfor %}
                         </select>
+                        <select style="max-width: 122px" name="curso">
+                            {% get_checkout_cursos as cursos %}
+                            <option value="">Selecione o Curso</option>
+                            {% for c in cursos %}
+                                <option value="{{ c.id }}">{{ c.nome }}</option>
+                            {% endfor %}
+                        </select>
                         <button type="submit" href="{% url 'curso:relatorio' %}" class="btn btn-primary">
                         <i class="icon-filter icon-white"></i>&nbsp;Relatorio</button>
                     </form>
@@ -108,8 +116,14 @@
                         <button type="submit" class="btn btn-primary">
                         <i class="icon-filter icon-white"></i>&nbsp;Lista</button>
                     </form>
+                {% elif opts.model_name == 'tabelacorrecaoaluno' %}
+                    <form class="form-inline" action="{% url 'formulario_correcao:relatorio' %}" method="post" style="display: inline">
+                        {% csrf_token %}
+                        <input type="hidden" id="professor_id" name="professor_id"/>
+                        <button type="submit" class="btn btn-primary">
+                        <i class="icon-filter icon-white"></i>&nbsp;Relatório</button>
+                    </form>
                 {% endif %}
-
               {% endblock %}
             </div>
           {% endblock %}
@@ -176,4 +190,13 @@
       </div>
     </div>
   </div>
+{% endblock %}
+{% block extrajs %}
+    {{ block.super }}
+    <script>
+        $('[data-name="professor"]').change(function(){
+            console.log($(this).val());
+            $("#professor_id").val($(this).val())
+        })
+    </script>
 {% endblock %}

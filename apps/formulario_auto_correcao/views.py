@@ -45,7 +45,6 @@ def ajax_responder(request):
 
 
 def baixar_correcao(request, pk):
-    print('***', request.GET)
     ctx = {}
     aluno = request.user.aluno
     formulario = get_object_or_404(Formulario, pk=pk)

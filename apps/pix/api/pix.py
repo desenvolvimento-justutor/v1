@@ -42,7 +42,6 @@ class ApiPIX:
             "scope": "cob.read cob.write payloadlocation.read payloadlocation.write pix.read pix.write webhook.read webhook.write"
         })
         response = self.request("POST", "/pix/oauth2", payload)
-        print response.text
         return response.json()["access_token"]
 
     def get_cob(self, txid):
@@ -97,4 +96,3 @@ class ApiPIX:
 if __name__ == "__main__":
     api = ApiPIX()
     a = api.get_webhook()
-    print(a)

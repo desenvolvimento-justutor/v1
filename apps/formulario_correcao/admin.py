@@ -11,6 +11,7 @@ from suit.admin import SortableStackedInline, SortableModelAdmin
 from suit.widgets import AutosizedTextarea, TextInput
 
 from .models import Nota, Formulario, Tabela, TabelaCorrecaoAluno, TabelaAluno
+from django.contrib import messages
 
 
 class NotaFormAdmin(ModelForm):
@@ -40,7 +41,7 @@ class FormularioFormAdmin(ModelForm):
 @admin.register(Nota)
 class NotaAdmin(admin.ModelAdmin):
     form = NotaFormAdmin
-    list_display = ['titulo', 'valor']
+    list_display = ['titulo', 'valor', "unica"]
     search_fields = ['texto', 'titulo']
     fields = ["titulo", "unica", "texto", "valor"]
 
@@ -69,7 +70,7 @@ class TabelaAdminInline(SortableStackedInline):
     model = Tabela
     extra = 0
     fields = [
-        'item', 'valor',  #, 'comentarios', 'valor', 'nota'
+        'item', 'valor',  # , 'comentarios', 'valor', 'nota'
     ]
     show_change_link = True
 
@@ -116,7 +117,21 @@ class FormularioAdmin(admin.ModelAdmin):
 
 @admin.register(Tabela)
 class TabelaAdmin(SortableModelAdmin):
+    list_per_page = 50
     form = TabelaFormAdmin
+    # fieldsets = [
+    #     ("Geral", {
+    #         'classes': ('suit-tab', 'suit-tab-general',),
+    #         'fields': ['formulario', 'item', 'valor', 'proibir_negativa', 'comentarios']
+    #     }),
+    #     ('Notas', {
+    #         'classes': ('suit-tab', 'suit-tab-notas',),
+    #         'fields': ['nota']}),
+    # ]
+    # suit_form_tabs = (('general', 'Geral'), ('notas', 'Notas'))
+    # suit_form_includes = (
+    #     ('formulario_corecao/admin/notas.html', 'top', 'notas'),
+    # )
     list_display = [
         'item', 'formulario', 'valor'
     ]
@@ -124,7 +139,7 @@ class TabelaAdmin(SortableModelAdmin):
         ('formulario', admin.RelatedOnlyFieldListFilter)
     ]
     search_fields = ['item', 'formulario__titulo']
-    filter_horizontal = ['nota']
+    raw_id_fields = ['nota']
 
     sortable = 'order'
 
@@ -134,13 +149,17 @@ class TabelaAdmin(SortableModelAdmin):
             response = redirect('/admin/formulario_correcao/formulario/%s/' % obj.formulario.id)
         return response
 
+    def get_queryset(self, request):
+        qs = super(TabelaAdmin, self).get_queryset(request)
+        return qs.prefetch_related("nota")
+
 @admin.register(TabelaAluno)
 class TabelaAlunoAdmin(admin.ModelAdmin):
     form = FormularioFormAdmin
-    filter_horizontal = ['notas']
-    list_filter = [
-        'tabela_correcao', 'tabela'
-    ]
+    raw_id_fields = ['notas']
+    # list_filter = [
+    #     ('tabela_correcao', admin.RelatedOnlyFieldListFilter)
+    # ]
     list_display = ['tabela_correcao', 'tabela', 'nota']
 
 
@@ -149,6 +168,14 @@ class TabelaAlunoInline(admin.TabularInline):
     model = TabelaAluno
     fields = ['notas', 'nota']
     extra = 0
+
+
+def make_paid(modeladmin, request, queryset):
+    queryset.update(pago=True)
+    messages.success(request, u"{} Registro(s) marcado(s) como pago.".format(queryset.count()))
+
+
+make_paid.short_description = "Marcar como pago"
 
 
 @admin.register(TabelaCorrecaoAluno)
@@ -162,7 +189,9 @@ class TabelaCorrecaoAlunoAdmin(admin.ModelAdmin):
         ('professor', admin.RelatedOnlyFieldListFilter),
         ('formulario', admin.RelatedOnlyFieldListFilter),
         'formulario__sentenca_avulca__curso__categoria__tipo',
-        'corrigido'
+        'corrigido',
+        'pago',
+        'data_correcao'
     ]
     search_fields = [
         'aluno__nome', 'formulario__titulo', 'texto'
@@ -171,5 +200,8 @@ class TabelaCorrecaoAlunoAdmin(admin.ModelAdmin):
         'aluno',
         'formulario',
         'corrigido',
-        'professor'
+        'data_correcao',
+        'professor',
+        'pago'
     ]
+    actions = [make_paid]

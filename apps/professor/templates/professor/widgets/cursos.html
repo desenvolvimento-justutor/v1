@@ -140,7 +140,7 @@
                                                 <!-- *********** ATIVIDADES *************-->
                                                 <div class="tab-pane fade" id="tab-atividades-{{ atividade.pk }}">
                                                     <div data-scroll="slimscroll">
-                                                    {% for tarefa in atividade.tarefaatividade_set.all %}
+                                                    {% for tarefa in atividade.tarefa_atividades.all %}
                                                         <ul class="widget-products">
                                                             <li class="col-sm-6">
                                                                 <span class="img">

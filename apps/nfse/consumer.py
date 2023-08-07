@@ -3,6 +3,9 @@ import json
 from datetime import datetime
 
 import requests
+
+from libs.util.cep import get_cep
+
 # from libs.util.cep import get_cep
 
 url = "https://api.focusnfe.com.br/v2/nfse"
@@ -26,7 +29,6 @@ def hook(consulta=True):
         r = requests.post(url, data=json.dumps(data), auth=(token, ""))
 
     # Mostra na tela o codigo HTTP da requisicao e a mensagem de retorno da API
-    print(r.status_code, r.text)
 
 
 def emitir(ref, tomador, descriminacao, valor):
@@ -51,7 +53,10 @@ def emitir(ref, tomador, descriminacao, valor):
         }
     }
     r = requests.post(url, params=params, data=json.dumps(nfse), auth=(token, ""))
-    return r.status_code, r.json()
+    if r.status_code == 202:
+        return r.status_code, r.json()
+    else:
+        return r.status_code, r.text
 
 
 def consultar(ref):

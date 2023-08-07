@@ -155,7 +155,6 @@ def seguir(request, aid, acao):
 
 @dajaxice_register(method='GET')
 def enviar_mensagem(request, aid, mensagem):
-    print '************', aid, mensagem
     x = Dajax()
     try:
         de = request.user.aluno
@@ -164,7 +163,6 @@ def enviar_mensagem(request, aid, mensagem):
         msg.save()
         x.script('_toastr("Sua mensagem foi enviada.","top-right","success",false);')
     except Exception as e:
-        print '************', e
         raise e
         # import os
         # from justutorial.settings import BASE_DIR

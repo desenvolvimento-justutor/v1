@@ -33,21 +33,21 @@
         {% for video in videos %}
             <div class="col-md-4 col-lg-4">
                 <div class="main-box clearfix">
-                    <header class="main-box-header clearfix" style="min-height: 80px;">
-                        <h2>{{ video }}</h2>
+                    <header class="main-box-header clearfix" style="min-height: 80px; border-bottom: 3px solid #F9F9F9;">
+                        <h2 class="text-primary" style="font-weight: 400">{{ video }}</h2>
                     </header>
                     <div class="main-box-body clearfix">
                         <div class="embed-responsive embed-responsive-16by9">
                             <a href="{% url 'aluno:curso-video' video.id %}">
-                                {% thumbnail video.thumbnail "310x170" crop="center" as im %}
-                                    <img src="{{ im.url }}">
-                                    {% empty %}
-                                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
-                                {% endthumbnail %}
+{#                                {% thumbnail video.modulo.thumbnail "310x170" crop="center" as im %}#}
+                                    <img src="{{ video.get_thumbnail }}">
+{#                                    {% empty %}#}
+{#                                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">#}
+{#                                {% endthumbnail %}#}
                             </a>
                         </div>
-                        <a href="{% url 'aluno:curso-video' video.id %}"
-                           class="btn btn-success fa fa-play pull-right"> Play</a>
+                        <a href="{% url 'aluno:curso-video' video.id %}" style="margin-top: 6px"
+                           class="btn btn-success btn-block fa fa-play pull-right"> Play</a>
                     </div>
                 </div>
             </div>

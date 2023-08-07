@@ -367,6 +367,18 @@ SUIT_CONFIG = {
             "permissions": "auth.add_permission",
         },
         {
+            "label": "Importar Notas",
+            "icon": "icon-question-sign",
+            "url": "/admin/gerarnotas",
+            "permissions": "auth.add_permission",
+        },
+        {
+            "label": "Importar Formulário Correção",
+            "icon": "icon-question-sign",
+            "url": "/admin/import_formulario_correcao",
+            "permissions": "auth.add_permission",
+        },
+        {
             "label": "Cadastro",
             "icon": "icon-edit",
             "models": (
@@ -663,19 +675,4 @@ CKEDITOR_CONFIGS = {
         "removePlugins": ",".join(["image"]),
     },
 }
-def print_env():
-    print "*" * 100
-    print "DEBUG", DEBUG
-    print "SECRET_KEY", SECRET_KEY
-    print "DATABASE_URL", DATABASE_URL
-    print "PAGSEGURO_SANDBOX", PAGSEGURO_SANDBOX
-    print "PAGSEGURO_TOKEN_SANDBOX",PAGSEGURO_TOKEN_SANDBOX
-    print "PAGSEGURO_TOKEN", PAGSEGURO_TOKEN
-    print "PAGSEGURO_EMAIL", PAGSEGURO_EMAIL
-    print "AWS_ACCESS_KEY_ID", AWS_ACCESS_KEY_ID
-    print "AWS_SECRET_ACCESS_KEY", AWS_SECRET_ACCESS_KEY
-    print "SES_REGION_NAME", SES_REGION_NAME
-    print "EMAIL_HOST", EMAIL_HOST
-    print "EMAIL_HOST_USER", EMAIL_HOST_USER
-    print "EMAIL_HOST_PASSWORD", EMAIL_HOST_PASSWORD
-    print "*" * 100
+

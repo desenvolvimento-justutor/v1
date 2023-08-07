@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^sentry-debug/$', trigger_error),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/gerarcupons/$', 'apps.cupom.views.gerarcupons'),
+    url(r'^admin/import_formulario_correcao/$', 'apps.formulario_correcao.views.import_formulario_correcao'),
+    url(r'^admin/gerarnotas/$', 'apps.formulario_correcao.views.gerarnotas'),
     url(r'^robots\.txt$', include('robots.urls')),
     url(r'^admin/filebrowser/', include('filebrowser.urls')),
     url(r'', include('apps.website.urls', namespace='website')),
@@ -45,6 +47,7 @@ urlpatterns = [
     url(r'^curso/', include('apps.curso.urls', namespace='curso')),
     url(r'^enunciado/', include('apps.enunciado.urls', namespace='enunciado')),
     url(r'^financeiro/', include('apps.financeiro.urls', namespace='financeiro')),
+    url(r'^formulario_correcao/', include('apps.formulario_correcao.urls', namespace='formulario_correcao')),
     # PAGSEGURO
     url(r'^nfse/', include('apps.nfse.urls', namespace='nfse')),
     url(r'^pagseguro/', include('apps.pagseguro.urls', namespace='pagseguro')),

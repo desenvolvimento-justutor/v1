@@ -25,6 +25,7 @@ from models import (Categoria, Curso, Destaque, Modulo, VideoModulo, PdfModulo, 
                     SentencaModelo, SentencaOAB, SentencaModeloOAB, SentencaOABAvulsaAluno, AtividadeModelo,
                     Certificado, Livro, Autor, Colecao, CursoCredito, Combo, ComboAluno, LiberarCompraCurso, Simulado,
                     Cortesia)
+from django.contrib.admin import SimpleListFilter
 
 
 class CortesiaForm(ModelForm):
@@ -241,7 +242,7 @@ class CursoCreditoAdmin(SortableModelAdmin):
 class ComboAlunoAdmin(SortableModelAdmin):
     form = CursoFormAdmin
     filter_horizontal = ['cursos']
-    list_filter = ['aluno', 'status']
+    list_filter = ['status']
     list_display = ['nome', 'aluno', 'status']
     fieldsets = [
         (None, {
@@ -300,7 +301,7 @@ class AtividadeAdmin(admin.ModelAdmin):
     inlines = [AtividadeModeloAdmin]
     filter_horizontal = ['professores']
     list_display = ['nome', 'curso', 'data_ini', 'data_fim', 'tipo_retorno', 'resolucao_obrigatorio']
-    list_filter = ['curso', 'tipo_retorno', 'resolucao_obrigatorio']
+    list_filter = ['curso', 'tipo_retorno', 'resolucao_obrigatorio', 'data_fim']
     search_fields = ['nome', 'curso__nome', 'tarefa', 'gabarito']
     fieldsets = [
         (None, {
@@ -372,7 +373,7 @@ class TarefaAtividadeAdmin(admin.ModelAdmin):
 
     list_filter = [
         'atividade__curso__categoria',
-        'aluno',
+        ('aluno', admin.RelatedOnlyFieldListFilter),
         'concluido',
         'corrigido'
     ]
@@ -382,9 +383,25 @@ class TarefaAtividadeAdmin(admin.ModelAdmin):
         'aluno__nome',
     ]
 
+    raw_id_fields = ("atividade", "aluno")
+
+
 @admin.register(Cortesia)
 class CortesiaAdmin(admin.ModelAdmin):
     list_display = ["curso", "codigo", "aluno", "utilizado"]
+
+
+class ComboFilter(SimpleListFilter):
+    title = 'Combos'
+    parameter_name = 'combos'
+
+    def lookups(self, request, model_admin):
+        return [('n', "Não"), ('s', "Sim")]
+
+    def queryset(self, request, queryset):
+        if self.value() == "n":
+            return queryset.exclude(categoria__tipo="B")
+        return queryset
 
 @admin.register(Curso)
 class CursoAdmin(AdminImageMixin, SortableModelAdmin):
@@ -397,7 +414,7 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     list_display = ('nome', 'categoria', 'valor', 'data_ini', 'data_fim', 'disponivel', 'matriculas', 'matriculados',
                     'is_video_curso', 'is_tutorial', 'order')
     list_editable = ('order',)
-    list_filter = ('categoria', 'disponivel')
+    list_filter = ('categoria', 'disponivel', ComboFilter)
     search_fields = ['nome']
     filter_horizontal = ['professores', 'blocos']
     fieldsets = [
@@ -489,6 +506,8 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
         return redirect('/admin/cupom/cupom/%d/' % cupom.pk)
 
     subscribe_aluno.short_description = "Inscrever no Newsletter"
+
+
 
     def _copy(self, request, pk):
         curso = Curso.objects.get(pk=pk)
@@ -687,7 +706,7 @@ class SimuladoAdmin(AdminImageMixin, SortableModelAdmin):
         return super(SimuladoAdmin, self).response_change(request, obj)
 
 
-class VideoAdminInline(admin.TabularInline):
+class VideoAdminInline(SortableTabularInline):
     model = VideoModulo
     extra = 0
     suit_classes = 'suit-tab suit-tab-videos'
@@ -706,10 +725,11 @@ class ModuloAdmin(SortableModelAdmin):
     inlines = (VideoAdminInline, PdfAdminInline)
     list_filter = ('curso__nome',)
     search_fields = ['nome']
+    raw_id_fields = ["curso"]
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-geral'),
-            'fields': ['curso', 'nome']
+            'fields': ['curso', 'nome', 'thumbnail']
         }),
         (None, {
             'classes': ('suit-tab', 'suit-tab-videos'),

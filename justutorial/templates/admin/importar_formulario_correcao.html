@@ -1,0 +1,49 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+    <div id="content-main" class="inner-two-columns">
+        <form action="" method="post" id="artigoindice_form" class="form-horizontal" enctype="multipart/form-data">
+            <div class="inner-right-column">
+                <div class="box save-box">
+                    <div class="submit-row clearfix">
+                        <button type="submit" class="btn btn-high btn-info" name="_save">Importar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="inner-center-column">
+                {% csrf_token %}
+                <div class="tab-content tab-content-main">
+                    <fieldset class="module aligned first ">
+                        <div class="control-group form-row field-tipo ">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required">Formulário:</label>
+                                </div>
+                                <div class="controls">
+                                    <input type="number" name="formulario_id" required/>
+                                    <span class="help-inline">Informe o ID do Formulário</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="tab-content tab-content-main">
+                    <fieldset class="module aligned first ">
+                        <div class="control-group form-row field-tipo ">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required">Arquivo:</label>
+                                </div>
+                                <div class="controls">
+                                    <input type="file" name="html_file" accept=".html, .htm" required/>
+
+                                    <span class="help-inline">Selecione o arquivo .html</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

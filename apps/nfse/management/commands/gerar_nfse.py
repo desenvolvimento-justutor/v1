@@ -9,21 +9,35 @@ from apps.pagseguro.models import Checkout
 class Command(BaseCommand):
     help = 'Gerar e enviar NFSe'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--gerar', '-g', action='store', dest='gerar'
+        )
+        parser.add_argument(
+            '--delete', '-d', action='store', dest='delete'
+        )
+
     def handle(self, *args, **options):
         self.style = color_style()
+        gerar = options.get('gerar')
+        delete = options.get('delete')
 
         del_chechouts = Checkout.objects.filter(
             aluno__isnull=True,
             transaction_type__isnull=True,
             transaction_status__isnull=True)
         self.stdout.write(self.style.URL_NAME(u'Deletadas..: %s' % self.style.BOLD(del_chechouts.count())))
+
+        if delete:
+            del_chechouts.delete()
         chechouts = Checkout.objects.filter(
-            date__gte="2023-04-13 00:00:00",
+            date__gte="2023-07-01 00:00:00",
             transaction_status=3,
             nfse__isnull=True
         )
         for checkout in chechouts:
             self.stdout.write(
                 self.style.URL_NAME(u'Enviando...: %s' % self.style.BOLD("%s - %s" % (checkout.id, checkout.date))))
-            checkout.incluir_os()
+            if gerar == "y":
+                checkout.incluir_os()
         self.stdout.write(self.style.URL_NAME(u'Total......: %s' % self.style.BOLD(chechouts.count())))

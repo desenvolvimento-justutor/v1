@@ -1,32 +1,17 @@
-<!DOCTYPE html>
-<html>
-<body>
-<h1>* {{ otp }} *</h1>
-<div id="embedBox" style="width:1280px;max-width:100%;height:auto;"></div>
+{% extends 'email/_base.html' %}
+{% block titulo1 %}<h3>Seu carrinho está te esperando!</h3>{% endblock %}
 
+{% block texto1 %}
+    <div style="text-align: center; align-content: center; margin-bottom: 20px">
+        <p>OS CURSOS PODEM FICAR INDISPONÍVEIS, NÃO ESPERE MAIS!</p>
+        <br/>
+        <br/>
+        <a href="https://justutor.com.br/checkout/carrinho/">CLIQUE AQUI PARA FINALIZAR SUA COMPRA</a>
+    </div>
+{% endblock %}
 
-</body>
-<script>
-    (function (v, i, d, e, o) {
-            v[o] = v[o] || {};
-            v[o].add = v[o].add || function V(a) {
-                (v[o].d = v[o].d || []).push(a);
-            };
-            if (!v[o].l) {
-                v[o].l = 1 * new Date();
-                a = i.createElement(d);
-                m = i.getElementsByTagName(d)[0];
-                a.async = 1;
-                a.src = e;
-                m.parentNode.insertBefore(a, m);
-            }
-        })(window, document, "script",
-            "https://player.vdocipher.com/playerAssets/1.6.10/vdo.js", "vdo");
-        vdo.add({
-            otp: "{{ otp }}",
-            playbackInfo: "{{ playbackInfo }}",
-            theme: "9ae8bbe8dd964ddc9bdb932cca1cb59a",
-            container: document.querySelector("#embedBox"),
-        });
-</script>
-</html>
+{% block titulo2 %}{% endblock %}
+
+{% block texto2 %}
+    <p>Equipe JusTutor</p>
+{% endblock %}

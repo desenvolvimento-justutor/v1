@@ -75,7 +75,6 @@ def populate_profile(sender, **kwargs):
 def index(request):
     sleep_cookie = True if request.COOKIES.get('ssp_sleep') else False
     d = timezone.now()
-    print 'slide', request.GET.get('slide')
     # rnk = ranking_top_pontos()
     context = {
         'video': VideoJusTutor.objects.filter(Q(data_ini__lte=timezone.now()) | Q(data_ini=None)).first(),
@@ -450,7 +449,7 @@ def send_email_contato(nome, email, mensagem):
     enviar_email(
         'email/email_contato.html',
         u'Contato feito pelo site',
-        ['cristiane@justutor.com.br', 'conteudo@justutor.com.br', "desenvolvimento@justutor.com.br"],
+        ["desenvolvimento@justutor.com.br"],
         ctx_email,
         ead=True
     )
@@ -503,7 +502,6 @@ def create_or_update_checkout(request, code, clear_cart=False):
 
 @login_required
 def pagseguro_checkout(request):
-    print '>>>', request.POST
     cart = Cart(request.session)
     aluno = request.user.aluno
     ret = {
@@ -548,7 +546,6 @@ def pagseguro_checkout(request):
     except Exception as e:
         ret['errors'] = [str(e)]
         ret['erro'] = True
-        print 'ERRRRR', e
     if request.method == 'GET':
         return HttpResponseRedirect('https://pagseguro.uol.com.br/v2/checkout/payment.html?code=%s' % ret['code'])
 
@@ -557,8 +554,8 @@ def pagseguro_checkout(request):
 
 @login_required
 def pagseguro_set_transaction(request):
-    #code = request.POST.get('trans')
-    #create_or_update_checkout(request, code, True)
+    # code = request.POST.get('trans')
+    # create_or_update_checkout(request, code, True)
     Cart(request.session).clear()
     messages.success(
         request,
@@ -594,6 +591,7 @@ def pagseguro_transaction(request, code=None):
     except:
         pass
     return render(request, 'website/transaction.html', ctx)
+
 
 def checkout_itens(request):
     cart = Cart(request.session)

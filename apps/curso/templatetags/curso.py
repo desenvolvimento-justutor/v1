@@ -52,6 +52,13 @@ def get_correcao_tarefa(atividade, aluno):
             aluno=aluno,
             corrigido=True
         )
+    except TarefaAtividade.MultipleObjectsReturned:
+        tarefas = TarefaAtividade.objects.filter(
+            atividade=atividade,
+            aluno=aluno,
+            corrigido=True
+        )
+        tarefa = tarefas.first()
     except TarefaAtividade.DoesNotExist:
         tarefa = False
     return tarefa
@@ -122,8 +129,8 @@ def get_atividades(curso, professor=None):
     if not curso:
         return None
     if professor:
-        return curso.atividade_set.filter(professores=professor)
-    return curso.atividade_set.all()
+        return curso.atividades.filter(professores=professor)
+    return curso.atividades.all()
 
 
 @register.assignment_tag
@@ -146,6 +153,15 @@ def get_checkout_years():
         'year': truncate_date}
     )
     ret = qs.values('year').annotate(Count('pk')).order_by('year')
+    return ret
+
+
+@register.assignment_tag
+def get_checkout_cursos():
+    ret = Curso.objects.filter(
+        categoria__tipo__in=['C', 'S', 'O'],
+        checkoutitens__isnull=False
+    ).values("id", "nome").distinct().order_by("nome")
     return ret
 
 

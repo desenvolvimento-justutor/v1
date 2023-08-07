@@ -54,7 +54,7 @@
                                 {% endif %}
                             </span>
                         </span><br>
-                        {% if item.curso.atividade_set.all.count %}
+                        {% if item.curso.atividades.all.count %}
                         <span class="text-center">
                             <a href="{% url 'aluno:certificado-solicitar' item.curso.pk  %}" class="btn btn-primary btn-sm"> <span class="fa fa-graduation-cap"></span> Solicitar Certificado</a><br><br>
                         </span>

@@ -8,8 +8,8 @@
             <div class="form-group form-group-select2" style="margin-left: 10px">
                 <select id="sel2" name="curso">
                     <option></option>
-                    {% for curso in cursos %}
-                        <option value="{{ curso.pk }}">{{ curso }}</option>
+                    {% for fcurso in filtro %}
+                        <option value="{{ fcurso.id }}" {% ifequal curso.id fcurso.id %}selected{% endifequal %} >{{ fcurso.nome }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -29,7 +29,7 @@
 {% block js %}
     <script>
         $('#sel2').select2({
-            placeholder: "Selecion um Curso",
+            placeholder: "Selecion um Curso dentre os {{ filtro.count }}",
             allowClear: true
         });
     </script>

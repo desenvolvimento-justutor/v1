@@ -1,0 +1,33 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+    <div id="content-main" class="inner-two-columns">
+        <form action="" method="post" id="artigoindice_form" class="form-horizontal" enctype="multipart/form-data">
+            <div class="inner-right-column">
+                <div class="box save-box">
+                    <div class="submit-row clearfix">
+                        <button type="submit" class="btn btn-high btn-info" name="_save">Importar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="inner-center-column">
+                {% csrf_token %}
+                <div class="tab-content tab-content-main">
+                    <fieldset class="module aligned first ">
+                        <div class="control-group form-row field-tipo ">
+                            <div>
+                                <div class="control-label">
+                                    <label class="required" for="id_tipo">Arquivo:</label>
+                                </div>
+                                <div class="controls">
+                                    <input type="file" name="csv_file" accept=".csv" />
+                                    <span class="help-inline">Selecione o arquivo .csv</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
