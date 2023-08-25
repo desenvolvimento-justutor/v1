@@ -1,6 +1,6 @@
 <form id="formCreditCard">
     {% csrf_token %}
-    <input type="hidden" name="senderHash">
+    <input type="hidden" name="senderHash" id="hash_creditcard">
     <input type="hidden" name="brand">
     <input type="hidden" name="token">
     <input type="hidden" name="paymentmethod" value="creditcard">

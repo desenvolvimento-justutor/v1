@@ -1,6 +1,6 @@
 <form id="formPIX">
     {% csrf_token %}
-    <input type="hidden" name="senderHash">
+    <input type="hidden" name="senderHash" id="hash_pix">
     <input type="hidden" name="payment_method" value="pix">
         <div class="section-subtitle">Dados do portador</div>
     <div class="row">

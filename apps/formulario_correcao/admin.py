@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import copy
+import csv
 
 from django.contrib import admin
 from django.contrib import messages
 from django.db import models
 from django.forms import ModelForm
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from redactor.widgets import RedactorEditor
 from suit.admin import SortableStackedInline, SortableModelAdmin
@@ -12,7 +14,7 @@ from suit.widgets import AutosizedTextarea, TextInput
 
 from .models import Nota, Formulario, Tabela, TabelaCorrecaoAluno, TabelaAluno
 from django.contrib import messages
-
+from libs.util import textify
 
 class NotaFormAdmin(ModelForm):
     class Meta:
@@ -112,6 +114,22 @@ class FormularioAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         if request.POST.get("_copy"):
             return self._copy(request, obj.id)
+        if request.POST.get("_exportar_notas"):
+            response = HttpResponse(
+                content_type="text/csv",
+            )
+            response["Content-Disposition"] = 'attachment; filename="formulario_%d.csv"' % obj.pk
+            writer = csv.writer(response, delimiter=";")
+            writer.writerow(["unica", "titulo", "texto", "valor"])
+            for tabela in obj.tabelas.all():
+                for nota in tabela.nota.all():
+                    writer.writerow([
+                        int(nota.unica),
+                        nota.titulo.encode("utf-8"),
+                        textify(nota.texto),
+                        str(nota.valor).replace(".", ",").encode("utf-8")
+                    ])
+            return response
         return super(FormularioAdmin, self).response_change(request, obj)
 
 
@@ -139,7 +157,7 @@ class TabelaAdmin(SortableModelAdmin):
         ('formulario', admin.RelatedOnlyFieldListFilter)
     ]
     search_fields = ['item', 'formulario__titulo']
-    raw_id_fields = ['nota']
+    filter_horizontal = ["nota"]
 
     sortable = 'order'
 
@@ -185,7 +203,7 @@ class TabelaCorrecaoAlunoAdmin(admin.ModelAdmin):
         models.TextField: {'widget': RedactorEditor()}
     }
     list_filter = [
-        ('aluno', admin.RelatedOnlyFieldListFilter),
+        # ('aluno', admin.RelatedOnlyFieldListFilter),
         ('professor', admin.RelatedOnlyFieldListFilter),
         ('formulario', admin.RelatedOnlyFieldListFilter),
         'formulario__sentenca_avulca__curso__categoria__tipo',

@@ -10,6 +10,8 @@ from justutorial import settings
 from datetime import datetime
 from os.path import join
 from libs.util.decorators import threaded
+import re
+from django.utils.html import strip_tags
 
 BASE64_KEY = getattr(settings, 'BASE64_KEY', 'RlIuMzg3eWZh')
 EMAIL_SENDER = getattr(settings, 'DEFAULT_FROM_EMAIL', 'EMAIL_HOST_USER')
@@ -33,7 +35,8 @@ class EmailThread(threading.Thread):
         msg.send(self.fail_silently)
 
 
-def send_mail(subject, recipient_list, html, body='', from_email=EMAIL_SENDER, headers=None, fail_silently=False, *args,
+def send_mail(subject, recipient_list, html, body='', from_email=EMAIL_SENDER, headers=None, fail_silently=False,
+              *args,
               **kwargs):
     if not headers: headers = {'Reply-To': ','.join(recipient_list)}
     EmailThread(subject, html, body, from_email, recipient_list, headers, fail_silently).start()
@@ -92,7 +95,8 @@ class SMSThread(threading.Thread):
 def send_sms(phone, text): SMSThread(phone, text).start()
 
 
-def send_mail(subject, recipient_list, html, body='', from_email=EMAIL_SENDER, headers=None, fail_silently=False, *args,
+def send_mail(subject, recipient_list, html, body='', from_email=EMAIL_SENDER, headers=None, fail_silently=False,
+              *args,
               **kwargs):
     if not headers: headers = {'Reply-To': ','.join(recipient_list)}
     EmailThread(subject, html, body, from_email, recipient_list, headers, fail_silently).start()
@@ -151,3 +155,10 @@ class D2O(dict):
                 self.__setitem__(k, v)
             else:
                 self.__setitem__(k, D2O(v))
+
+
+def textify(html):
+    # Remove html tags and continuous whitespaces
+    text_only = re.sub('[ \t]+', ' ', strip_tags(html))
+    # Strip single spaces in the beginning of each line
+    return text_only.replace('\n ', '\n').strip().encode("utf-8")

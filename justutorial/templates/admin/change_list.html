@@ -120,6 +120,7 @@
                     <form class="form-inline" action="{% url 'formulario_correcao:relatorio' %}" method="post" style="display: inline">
                         {% csrf_token %}
                         <input type="hidden" id="professor_id" name="professor_id"/>
+                        <input type="hidden" id="pago_id" name="pago_id"/>
                         <button type="submit" class="btn btn-primary">
                         <i class="icon-filter icon-white"></i>&nbsp;Relatório</button>
                     </form>
@@ -195,8 +196,10 @@
     {{ block.super }}
     <script>
         $('[data-name="professor"]').change(function(){
-            console.log($(this).val());
             $("#professor_id").val($(this).val())
+        })
+        $('[data-name="pago"]').change(function(){
+            $("#pago_id").val($(this).val())
         })
     </script>
 {% endblock %}

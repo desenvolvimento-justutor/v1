@@ -270,6 +270,7 @@
             return false;
         }
         var hash = response.senderHash; //Hash estará disponível nesta variável.
+        console.log("SENDERHAS", hash)
         $('#formCreditCard input[name=senderHash]').val(hash);
     });
     const pagSeguro = {
@@ -341,6 +342,7 @@
             } else {
                 var data = $("#formCreditCard").serializeArray();
                 checkout(data);
+                console.log("DATA:", data)
             }
         }
     });
@@ -556,6 +558,7 @@
         })
             .done(function (response) {
                 if (response.error) {
+                    console.log("ERRO", response.error)
                     response.error.forEach((v) => toastr.error(v));
                 } else {
                     checkCheckout(response.code, response.link);

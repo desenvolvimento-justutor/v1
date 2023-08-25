@@ -125,17 +125,17 @@ class Tabela(models.Model):
         return t.get('total')
 
 
-@python_2_unicode_compatible
-class TabelaNota(models.Model):
-    tabela = models.ForeignKey(verbose_name="Tabela", to=Tabela, on_delete=models.CASCADE, related_name="tbnota_tabelas")
-    nota = models.ForeignKey(verbose_name="Nota", to=Nota, on_delete=models.CASCADE, related_name="tbnota_notas")
-
-    class Meta:
-        verbose_name = u'Tabela de Nota'
-        verbose_name_plural = u'Tabelas de Notas'
-
-    def __str__(self):
-        return self.nota.valor
+# @python_2_unicode_compatible
+# class TabelaNota(models.Model):
+#     tabela = models.ForeignKey(verbose_name="Tabela", to=Tabela, on_delete=models.CASCADE, related_name="tbnota_tabelas")
+#     nota = models.ForeignKey(verbose_name="Nota", to=Nota, on_delete=models.CASCADE, related_name="tbnota_notas")
+#
+#     class Meta:
+#         verbose_name = u'Tabela de Nota'
+#         verbose_name_plural = u'Tabelas de Notas'
+#
+#     def __str__(self):
+#         return self.nota.valor
 
 
 @python_2_unicode_compatible

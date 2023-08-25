@@ -94,7 +94,10 @@
     {% include 'checkout/includes/payment.js.html' %}
     <script>
         $(document).ready(function () {
-            $("#lbl-creditcard").click()
+            $("#lbl-creditcard").click();
+            $("#hash_pix").val(PagSeguroDirectPayment.getSenderHash());
+            $("#hash_boleto").val(PagSeguroDirectPayment.getSenderHash());
+            $("#hash_creditcard").val(PagSeguroDirectPayment.getSenderHash());
         });
     </script>
 {% endblock %}

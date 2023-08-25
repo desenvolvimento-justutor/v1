@@ -472,7 +472,11 @@ def ajax_checkout(request):
         if isinstance(errors, OrderedDict):
             errors = [errors]
         for erro in errors:
-            errors_messages.append(ERRORS.get(erro.get('code')))
+            # errors_messages.append(ERRORS.get(erro.get('code')))
+            erro_msg = ERRORS.get(erro.get('code'))
+            if not erro_msg:
+                erro_msg = erro.get("message")
+            errors_messages.append(erro_msg)
         ret.update({
             'error': errors_messages
         })

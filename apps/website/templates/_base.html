@@ -3,7 +3,11 @@
 <html class="no-js" lang="pt-br" xmlns="http://www.w3.org/1999/html">
 <head>
     <!-- Google Tag Manager -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-32LMZ4TRL3"></script>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WXWKK57L');</script>
     <!-- End Google Tag Manager -->
     <meta name="theme-color" content="#449D44">
     <meta charset="utf-8">
@@ -14,6 +18,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="{{ STATIC_URL }}images/logos/favicon.png" type="image/x-icon"/>
     <!-- Facebook Metadata /-->
+    <meta name="facebook-domain-verification" content="4t1d59p3xaxq7zsis35klmk0vt6d2o"/>
     {% block fb_metadata %}
     <meta property="fb:page_id" content=""/>
     <meta property="og:image" content="https://justutor.com.br/static/images/logos/just-tuto-vertical-300.png"/>
@@ -46,7 +51,7 @@
 </head>
 <body id="body">
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVVW6TF"
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WXWKK57L"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 {% block body %}
@@ -185,11 +190,6 @@
 {#https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js#}
 
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-32LMZ4TRL3');
     /* BLOCK UI */
     function block(msg){
         if (msg == undefined) {

@@ -1,6 +1,5 @@
 {% load i18n enunciado %}
 <div class="submit-row clearfix">
-<p>{{ opts.model_name }}</p>
   {% if show_save %}<button type="submit" class="btn btn-high btn-info" name="_save">{% trans 'Save' %}</button>{% endif %}
   {% if show_save_and_continue %}<button type="submit" name="_continue" class=" btn btn-high">{% trans 'Save and continue editing' %}</button>{% endif %}
   {% if show_save_as_new %}<button type="submit" name="_saveasnew" class="btn">{% trans 'Save as new' %}</button>{%endif%}
@@ -11,11 +10,13 @@
 {#    <p>{{ opts.model_name }}</p>#}
   <hr style="margin: 10px 0"/>
   {% if opts.model_name in 'curso,livro,simulado' %}
-    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-info"  name="_lista_emails" class="btn" value="True">Lista de email's</button>{% endif %}
+    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-info"  name="_lista_emails" value="True">Lista de email's</button>{% endif %}
   {% elif opts.model_name in 'questaoc,questaom' %}
-    {% if show_save_and_add_another and original.situacao == 'E' %}<button type="submit" class="btn btn-high btn-info"  name="_send_approve" class="btn" value="True">Solicitar Aprovação</button>{% endif %}
+    {% if show_save_and_add_another and original.situacao == 'E' %}<button type="submit" class="btn btn-high btn-info"  name="_send_approve" value="True">Solicitar Aprovação</button>{% endif %}
   {% elif opts.model_name in 'tabela' %}
-    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-info"  name="_send_back" class="btn" value="True">Salvar e ver formulário</button>{% endif %}
+    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-info"  name="_send_back" value="True">Salvar e ver formulário</button>{% endif %}
+  {% elif opts.model_name in 'formulario' %}
+    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-primary"  name="_exportar_notas" value="True">Exportar Notas</button>{% endif %}
   {% endif %}
 </div>
 

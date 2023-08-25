@@ -1,6 +1,6 @@
 <form id="formBoleto">
     {% csrf_token %}
-    <input type="hidden" name="senderHash">
+    <input type="hidden" name="senderHash" id="hash_boleto">
     <input type="hidden" name="payment_method" value="boleto">
         <div class="section-subtitle">Dados do portador</div>
     <div class="row">

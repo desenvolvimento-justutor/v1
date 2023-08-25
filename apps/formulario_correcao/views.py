@@ -18,12 +18,16 @@ from .models import Nota
 
 @login_required
 def relatorio(request):
-    kwargs = {"corrigido": False}
+    kwargs = {"corrigido": True}
     if request.method == "POST":
         professor_id = request.POST.get("professor_id")
+        pago_id = request.POST.get("pago_id")
         if professor_id:
             kwargs["professor_id"] = professor_id
-
+        if pago_id:
+            kwargs["pago"] = True if pago_id == "1" else False
+        print(">>>>", kwargs)
+        print(">>>>", request.POST)
         tabelas = TabelaCorrecaoAluno.objects.filter(
             **kwargs
         ).values('professor__nome', 'formulario__titulo').annotate(
@@ -43,7 +47,7 @@ def relatorio(request):
         txt += "{} {} {}\n".format("=" * 40, "=" * 110, "=====")
         txt += "{:40s} {:>110} {:05d}".format("", "Total:", count)
         response = HttpResponse(txt, content_type='text/plain; charset=utf8')
-        response['Content-Disposition'] = 'attachment; filename="{}.txt"'.format("filename.txt")
+        response['Content-Disposition'] = 'attachment; filename="{}.txt"'.format("relatorio")
         return response
     else:
         return HttpResponseRedirect("/admin/formulario_correcao/tabelacorrecaoaluno/")
@@ -109,6 +113,7 @@ def import_formulario_correcao(request):
                 soup = BeautifulSoup(contents, 'lxml')
 
                 tables = soup.find_all("table")
+                order = 0
                 for table in tables:
                     tds = table.find_all("td")
                     titulo = remove_chars(tds[0].text)
@@ -135,10 +140,11 @@ def import_formulario_correcao(request):
                                 valor=valor,
                                 item=titulo,
                                 comentarios=comentario,
-                                order=0
+                                order=order
                             )
                             if notas:
                                 tabela.nota.add(*notas)
+                            order += 1
                     except Exception as e:
                         messages.error(request, "1: " + str(e))
             except Exception as e:
