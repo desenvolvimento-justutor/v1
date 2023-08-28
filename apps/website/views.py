@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Autor: christian
+import json
 import logging
+import re
 
 import requests
 from allauth.account.signals import user_signed_up
@@ -8,6 +10,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db.models import Q, Count
 from django.dispatch import receiver
 from django.http import JsonResponse
@@ -19,7 +23,7 @@ from django.views.generic import TemplateView
 from django.views.generic.base import ContextMixin
 from pysendy import Sendy, AlreadySubscribedException
 from xmltodict import parse
-
+from django.db import IntegrityError
 from apps.aluno.forms import CadastroAlunoForm
 from apps.aluno.models import Aluno
 from apps.aluno.views import split_name
@@ -34,7 +38,8 @@ from carton.cart import Cart
 from justutorial import settings
 from justutorial.settings import SITEADD, SMARTWEB_MMKT_LIST_ID, SMARTWEB_MMKT_URL, SENDY_API_KEY
 from libs.util.paginar import listing
-from models import Institucional, Noticia, VideoJusTutor, NoticiaLida, ArtigoIndice, Artigo, _get_config_ativa
+from models import (Institucional, Noticia, VideoJusTutor, NoticiaLida, ArtigoIndice, Artigo, _get_config_ativa,
+                    WhatsAppGroup, WhatsAppInscritos)
 from .utils import get_client_ip
 
 logger = logging.getLogger('django')
@@ -374,6 +379,52 @@ def artigo_indice(request):
         'artigos': artigos
     })
     return render(request, 'artigo-indice.html', context)
+
+
+def whatsapp(request):
+    context = {}
+    if request.method == 'POST':
+        pass
+    else:
+        grupos = WhatsAppGroup.objects.filter(ativo=True)
+        context["grupos"] = grupos
+    return render(request, 'whatsapp.html', context)
+
+@csrf_exempt
+def whatsapp_inscrever(request):
+    success = True,
+    message = u"Pré-inscrição Efetuada!"
+    status = 200
+
+    data = json.loads(request.body)
+    celular = re.sub('[^0-9]', '', data.get("celular"))
+    if len(celular) != 11:
+        success = False
+        message = u"Informe um celular válido."
+
+    email = data.get("email")
+    try:
+        validate_email(email)
+    except ValidationError as e:
+        success = False
+        message = u"Inform um email válido."
+    if success:
+        try:
+            whats_app_inscritos = WhatsAppInscritos.objects.create(
+                whatsapp_group_id=data["group_id"],
+                nome=data["nome"],
+                email=email,
+                celular=celular
+            )
+        except IntegrityError:
+            success = False
+            message = u"Você já assinou essa pré-inscrição."
+    messages.success(request, message)
+    response = {
+        "success": success,
+        "message": message
+    }
+    return JsonResponse(data=response, status=status)
 
 
 @require_GET

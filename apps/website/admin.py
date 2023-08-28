@@ -9,15 +9,18 @@ from suit.admin import SortableModelAdmin
 from suit.admin import SortableStackedInline
 from suit.widgets import SuitSplitDateTimeWidget, EnclosedInput, AutosizedTextarea, HTML5Input, TextInput, Textarea
 
-from .models import (Institucional, Banner, BannerFooter,Configuracao, Endereco, Imagem, Noticia, VideoJusTutor, Anuncio,
-                     ArtigoIndice, Artigo, PacoteDesconto)
+from .models import (Institucional, Banner, BannerFooter, Configuracao, Endereco, Imagem, Noticia, VideoJusTutor,
+                     Anuncio,
+                     ArtigoIndice, Artigo, PacoteDesconto, WhatsAppGroup, WhatsAppInscritos)
 
 toolbar_Full = [
-    {'name': 'document', 'items': ['Source', '-', 'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
+    {'name': 'document',
+     'items': ['Source', '-', 'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
     {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
     {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt']},
-    {'name': 'forms', 'items': ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton',
-                                'HiddenField']},
+    {'name': 'forms',
+     'items': ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton',
+               'HiddenField']},
     '/',
     {'name': 'basicstyles',
      'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']},
@@ -53,7 +56,7 @@ class MetaFieldsForm(ModelForm):
             'meta_description': EnclosedInput(prepend='icon-comment', attrs={'class': 'input-xxlarge'}),
             'meta_keywords': EnclosedInput(prepend='icon-tag', attrs={'class': 'input-xxlarge'}),
             'nota_rodape': RedactorEditor(),
-            #'subs_texto': RedactorEditor(),
+            # 'subs_texto': RedactorEditor(),
             'subs_bgcolor': HTML5Input(input_type='color'),
             'subs_buttonbgcolor': HTML5Input(input_type='color'),
             'subs_buttoncolor': HTML5Input(input_type='color'),
@@ -156,6 +159,7 @@ class BannerFormAdmin(ModelForm):
             'ativo_fim': SuitSplitDateTimeWidget,
         }
 
+
 @admin.register(BannerFooter)
 class BannerFooterAdmin(AdminImageMixin, SortableModelAdmin):
     sortable = 'order'
@@ -233,9 +237,11 @@ class VideoAdmin(admin.ModelAdmin):
 
 @admin.register(Anuncio)
 class AnuncioAdmin(AdminImageMixin, admin.ModelAdmin):
-    list_display = ('titulo', 'imagem_', 'pag_atividades', 'pag_cursos', 'pag_curso_gratis', 'pag_enunciados', 'pag_resultado_busca',
-                    'pag_conteudo', 'pag_videos', 'pag_roteiro', 'pag_noticias', 'pag_temas', 'pag_populares', 'ativo')
-    list_filter = ['pag_atividades', 'pag_cursos', 'pag_curso_gratis', 'pag_enunciados', 'pag_resultado_busca', 'pag_conteudo',
+    list_display = (
+    'titulo', 'imagem_', 'pag_atividades', 'pag_cursos', 'pag_curso_gratis', 'pag_enunciados', 'pag_resultado_busca',
+    'pag_conteudo', 'pag_videos', 'pag_roteiro', 'pag_noticias', 'pag_temas', 'pag_populares', 'ativo')
+    list_filter = ['pag_atividades', 'pag_cursos', 'pag_curso_gratis', 'pag_enunciados', 'pag_resultado_busca',
+                   'pag_conteudo',
                    'pag_videos', 'pag_roteiro', 'pag_noticias', 'pag_temas', 'pag_populares']
     search_fields = ['titulo']
 
@@ -254,6 +260,18 @@ class ArtigoAdmin(admin.ModelAdmin):
     list_display = ('nome', 'indice', 'autor')
     list_filter = ['indice']
     search_fields = ['nome', 'autor']
+
+
+@admin.register(WhatsAppGroup)
+class WhatsAppGroupAdmin(admin.ModelAdmin):
+    list_display = ("titulo", "link", "ativo")
+    list_filter = ("ativo",)
+
+
+@admin.register(WhatsAppInscritos)
+class WhatsAppInscritoAdmin(admin.ModelAdmin):
+    list_display = ("nome", "email", "celular")
+    search_fields = ("nome",)
 
 
 admin.site.register(Institucional, InstitucionalAdmin)

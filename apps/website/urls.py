@@ -33,6 +33,8 @@ urlpatterns = patterns(
 
     url(r'^checkout/itens/$', 'checkout_itens', name='checkout_itens'),
     url(r'^checkout/pagamento/$', 'checkout_itens', name='checkout_pagamentos'),
+    url(r'^whatsapp/$', 'whatsapp', name='whatsapp'),
+    url(r'^whatsapp/inscrever/$', 'whatsapp_inscrever', name='whatsapp-inscrever'),
 )
 
 urlpatterns += [

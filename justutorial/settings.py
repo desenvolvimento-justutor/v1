@@ -201,6 +201,12 @@ SUIT_CONFIG = {
             "permissions": "auth.add_permission",
         },
         {
+            "label": "WhatsApp",
+            "icon": "icon-star",
+            "models": ("website.WhatsAppGroup", "website.WhatsAppInscritos"),
+            "permissions": "auth.add_permission",
+        },
+        {
             "label": "Textos & Artigos",
             "icon": "icon-pencil",
             "models": ("website.artigoindice", "website.artigo"),

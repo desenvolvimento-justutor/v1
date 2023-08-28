@@ -4,6 +4,7 @@ import django
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from mptt.models import MPTTModel, TreeForeignKey
 from sorl.thumbnail import get_thumbnail
 from sorl.thumbnail.fields import ImageField
@@ -35,6 +36,7 @@ class Configuracao(models.Model):
         verbose_name = u'Configuração'
         verbose_name_plural = u'Configurações'
         unique_together = ('ativo',)
+
     ativo = models.BooleanField(verbose_name=u'Ativo', default=False, help_text=u'Somente uma configuração estará '
                                                                                 u'ativa. É obrigatório que haja uma '
                                                                                 u'configuração ativa para o '
@@ -48,8 +50,8 @@ class Configuracao(models.Model):
     favicon = ImageField(verbose_name=u'Ícone', help_text=u'Ícone do site', blank=True, null=True, upload_to='images')
     # SUBSCRIBE
     subs_ativo = models.BooleanField(
-            verbose_name='Ativo', default=False, help_text='Se ativo será exibido a janela SUBSCRIBE na página '
-                                                           'inicial.')
+        verbose_name='Ativo', default=False, help_text='Se ativo será exibido a janela SUBSCRIBE na página '
+                                                       'inicial.')
     subs_titulo = models.CharField(
         verbose_name=u'Título', max_length=150, blank=True, null=True
     )
@@ -288,6 +290,7 @@ class Institucional(models.Model):
 
     def url(self):
         return '<a href="{0}" target="_blank">{0}</a>'.format(self.get_absolute_url())
+
     url.allow_tags = True
 
 
@@ -314,7 +317,8 @@ class VideoJusTutor(models.Model):
         verbose_name=u'Título', max_length=200
     )
     descricao = models.TextField(verbose_name=u'Apresentação', blank=True, null=True)
-    data_ini = models.DateTimeField(verbose_name=u'Data ínicio', default=django.utils.timezone.now, null=True, blank=True,
+    data_ini = models.DateTimeField(verbose_name=u'Data ínicio', default=django.utils.timezone.now, null=True,
+                                    blank=True,
                                     help_text=u'A partir dessa data o sistema automaticamente '
                                               u'colocará o vídeo no site')
     video = models.URLField(
@@ -366,6 +370,7 @@ class Noticia(models.Model):
 
     def url(self):
         return '<a href="{0}" target="_blank">{0}</a>'.format(self.get_absolute_url())
+
     url.allow_tags = True
 
     @property
@@ -393,6 +398,7 @@ class Noticia(models.Model):
 class NoticiaLida(models.Model):
     class Meta:
         unique_together = ['noticia', 'ip']
+
     noticia = models.ForeignKey(Noticia)
     ip = models.IPAddressField()
 
@@ -424,6 +430,7 @@ class BannerFooter(models.Model):
     @property
     def banner(self):
         return u"Banner No. %03d" % self.pk
+
 
 class Banner(models.Model):
     class Meta:
@@ -583,6 +590,43 @@ class Artigo(models.Model):
 
     def __unicode__(self):
         return self.nome
+
+
+@python_2_unicode_compatible
+class WhatsAppGroup(models.Model):
+    titulo = models.CharField(verbose_name=u"Título", max_length=150)
+    descricao = models.TextField(verbose_name=u"Descrição")
+    link = models.URLField(verbose_name="Link do Grupo")
+    ativo = models.BooleanField(verbose_name="Ativo")
+
+    class Meta:
+        verbose_name = "Grupo do WhatsApp"
+        verbose_name_plural = "Grupos do WhatsApp"
+
+    def __str__(self):
+        return self.titulo
+
+
+@python_2_unicode_compatible
+class WhatsAppInscritos(models.Model):
+    whatsapp_group = models.ForeignKey(
+        verbose_name="Grupo",
+        to=WhatsAppGroup,
+        on_delete=models.PROTECT,
+        related_name="inscritos"
+    )
+    nome = models.CharField(verbose_name="Nome", max_length=150)
+    email = models.EmailField(verbose_name="E-Mail")
+    celular = models.EmailField(verbose_name="Celular", max_length=11)
+
+    class Meta:
+        verbose_name = "Inscrito"
+        verbose_name_plural = "Inscritos"
+        unique_together = ("celular", "whatsapp_group")
+
+    def __str__(self):
+        return self.nome
+
 
 
 models.signals.post_save.connect(create_slug, sender=Artigo)
