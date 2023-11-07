@@ -21,7 +21,8 @@ from suit_ckeditor.widgets import CKEditorWidget
 
 from apps.cupom.models import Cupom
 from models import (Categoria, Curso, Destaque, Modulo, VideoModulo, PdfModulo, Serie, CursoGratis, VideoGratis,
-                    DocCurso, CheckoutItens, Discussao, Atividade, TarefaAtividade, SentencaAvulsa, SentencaAvulsaAluno,
+                    DocCurso, CheckoutItens, Discussao, Atividade, TarefaAtividade, SentencaAvulsa,
+                    SentencaAvulsaAluno,
                     SentencaModelo, SentencaOAB, SentencaModeloOAB, SentencaOABAvulsaAluno, AtividadeModelo,
                     Certificado, Livro, Autor, Colecao, CursoCredito, Combo, ComboAluno, LiberarCompraCurso, Simulado,
                     Cortesia)
@@ -58,7 +59,6 @@ class CortesiaInLine(admin.TabularInline):
     fields = [
         'codigo', 'aluno', 'email', 'utilizado'
     ]
-
 
 
 @admin.register(CheckoutItens)
@@ -150,12 +150,11 @@ class CursoFormAdmin(ModelForm):
             'economia': EnclosedInput(prepend='R$'),
             'parcelas': Select(attrs={'class': 'input-small'}),
             'tipo_duracao': Select(attrs={'class': 'input-small'}),
-            'saiba_mais': RedactorEditor(),
-            'cronograma': RedactorEditor(),
-            'mural': RedactorEditor(),
+            'saiba_mais': CKEditorWidget(),
+            'cronograma': CKEditorWidget(),
+            'mural': CKEditorWidget(),
             'certificado': CKEditorWidget(editor_options={'startupFocus': True})
         }
-
 
 
 class LivroFormAdmin(ModelForm):
@@ -306,7 +305,8 @@ class AtividadeAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-geral'),
-            'fields': ['curso', 'professores', 'tipo_retorno', 'nome', 'descricao', 'caracteres', 'data', 'data_ini', 'data_fim',
+            'fields': ['curso', 'professores', 'tipo_retorno', 'nome', 'descricao', 'caracteres', 'data', 'data_ini',
+                       'data_fim',
                        'resposta_padrao_data', 'resolucao_obrigatorio']
         }),
         (None, {
@@ -340,14 +340,15 @@ class AtividadeAdmin(admin.ModelAdmin):
         atividade_cp.resposta_padra = atividade.resposta_padra
 
         atividade_cp.save()
-        # Add produtos
         for modelo in atividade.atividademodelo_set.all():
             modelo = AtividadeModelo(
                 atividade=atividade_cp,
                 arquivo=modelo.arquivo
             )
             modelo.save()
-
+        formulario = getattr(atividade, "formulario", None)
+        if formulario:
+            messages.info(request, u"Formulario ID: [{0}]".format(formulario.pk))
         messages.success(request, u"Atividade [{}], Duplicada com sucesso.".format(atividade_cp))
         return redirect('/admin/curso/atividade/%d/' % atividade_cp.id)
 
@@ -403,6 +404,7 @@ class ComboFilter(SimpleListFilter):
             return queryset.exclude(categoria__tipo="B")
         return queryset
 
+
 @admin.register(Curso)
 class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     actions = ['subscribe_aluno', 'gerar_cupons']
@@ -420,7 +422,8 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-geral'),
-            'fields': ['is_video_curso', 'is_tutorial', 'categoria', 'sentenca_avulsa', 'sentenca_oab', 'nome', 'descricao', 'valor', 'video',
+            'fields': ['is_video_curso', 'is_tutorial', 'categoria', 'sentenca_avulsa', 'sentenca_oab', 'nome',
+                       'descricao', 'valor', 'video',
                        'disponivel', 'inicio_gratis', 'imagem', 'thumbnail', 'data_ini', 'data_fim', 'blocos', 'slug',
                        'status']
         }),
@@ -506,8 +509,6 @@ class CursoAdmin(AdminImageMixin, SortableModelAdmin):
         return redirect('/admin/cupom/cupom/%d/' % cupom.pk)
 
     subscribe_aluno.short_description = "Inscrever no Newsletter"
-
-
 
     def _copy(self, request, pk):
         curso = Curso.objects.get(pk=pk)
@@ -745,6 +746,38 @@ class ModuloAdmin(SortableModelAdmin):
         ('videos', 'Videos'),
         ('pdf', 'Arquivos PDF')
     )
+
+    def _copy(self, request, pk):
+        modulo = Modulo.objects.get(pk=pk)
+        modulo_cp = copy.copy(modulo)
+
+        modulo_cp.id = None
+        modulo_cp.curso = None
+        modulo_cp.nome = '[COPIA] %s' % modulo.nome
+        modulo_cp.thumbnail = modulo.thumbnail
+        modulo_cp.order = modulo.order
+        modulo_cp.save()
+        # Duplicar Videos
+        for video in modulo.videomodulo_set.all():
+            mv = copy.copy(video)
+            mv.id = None
+            mv.modulo = modulo_cp
+            mv.save()
+        # Duplicar Arquivos PDF
+        for pdfmodulo in modulo.pdfmodulo_set.all():
+            pm = copy.copy(pdfmodulo)
+            pm.id = None
+            pm.modulo = modulo_cp
+            pm.save()
+
+        messages.success(request, u"Modulo {}, Duplicado com sucesso.".format(modulo_cp.pk))
+        return redirect('/admin/curso/modulo/%d/' % modulo_cp.pk)
+
+    def response_change(self, request, obj):
+        if request.POST.get("_copy"):
+            return self._copy(request, obj.id)
+
+        return super(ModuloAdmin, self).response_change(request, obj)
 
 
 @admin.register(Destaque)

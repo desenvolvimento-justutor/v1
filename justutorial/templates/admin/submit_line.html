@@ -4,7 +4,7 @@
   {% if show_save_and_continue %}<button type="submit" name="_continue" class=" btn btn-high">{% trans 'Save and continue editing' %}</button>{% endif %}
   {% if show_save_as_new %}<button type="submit" name="_saveasnew" class="btn">{% trans 'Save as new' %}</button>{%endif%}
   {% if show_save_and_add_another %}<button type="submit" name="_addanother" class="btn">{% trans 'Save and add another' %}</button>{% endif %}
-  {% if opts.model_name in 'simulado,assuntogeral,assuntoespecifico,nota,atividade,cupom,enunciadopropostasentenca,enunciadopropostapratica,enunciadopropostadiscursiva,curso,formulario,sentencaavulsa' %}
+  {% if opts.model_name in 'modulo,simulado,assuntogeral,assuntoespecifico,nota,atividade,cupom,enunciadopropostasentenca,enunciadopropostapratica,enunciadopropostadiscursiva,curso,formulario,sentencaavulsa' %}
     {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-success"  name="_copy" class="btn" value="True">Salvar e Duplicar</button>{% endif %}
   {% endif %}
 {#    <p>{{ opts.model_name }}</p>#}

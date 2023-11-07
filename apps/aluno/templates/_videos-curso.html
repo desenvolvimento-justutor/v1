@@ -38,7 +38,8 @@
     <div class="tabs-wrapper">
         {% if submenu.is_tutorial %}
             {% include "tabs/tutoriais.html" %}
-
+        {% elif  submenu.is_video_curso %}
+            {% include "tabs/videos.html" %}
         {% else %}
             {% include "tabs/cursos.html" %}
         {% endif %}

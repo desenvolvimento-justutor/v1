@@ -391,7 +391,7 @@ class Curso(models.Model):
 
     @property
     def is_video(self):
-        return self.doccurso_set.count()
+        return self.doccurso_set.exists()
 
     @property
     def ativo(self):
@@ -399,6 +399,10 @@ class Curso(models.Model):
         if not self.data_fim:
             return True
         return self.data_fim >= now
+
+    @property
+    def is_pre(self):
+        return self.whatsappgroup.ativo
 
     @property
     def timeout(self):
@@ -618,7 +622,7 @@ class Modulo(models.Model):
     class Meta:
         verbose_name = u"Módulo"
 
-    curso = models.ForeignKey(Curso, verbose_name=u'Curso')
+    curso = models.ForeignKey(Curso, verbose_name=u'Curso', null=True)
     nome = models.CharField(verbose_name='Nome', max_length=60)
     thumbnail = ImageField(
         verbose_name='Capa', upload_to='videos_thumb/', blank=True, null=True,

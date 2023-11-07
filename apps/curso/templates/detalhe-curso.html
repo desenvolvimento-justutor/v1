@@ -11,6 +11,7 @@
         .label {
             border: #fff 1px solid;
         }
+
         .black-table-area {
             background-color: #1A1B20;
             color: #fff;
@@ -200,9 +201,10 @@
         }
 
         .small-table .single-pricing-table .pricing-table-heading h2 {
-            color: #656565;
+            color: #00A859;
             text-transform: uppercase;
-            font-size: 18px;
+            font-size: 16px;
+            font-weight: bolder;
         }
 
         .small-table .single-pricing-table .pricing-table-heading p {
@@ -220,146 +222,215 @@
         }
     </style>
 
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12">
-           <h3 class="text-center mg-bot20" style="font-weight: bolder">{{ curso }}</h3>
-        </div>
-        <div class="col-sm-7">
-            <div class="clear"></div>
-            <section class="conteudo-curso mg-top20">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="text-center mg-bot20" style="font-weight: bolder">{{ curso }}</h3>
+            </div>
+            <div class="col-sm-7">
+                <div class="clear"></div>
+                <section class="conteudo-curso mg-top20">
+                    {% if curso.saiba_mais %}
+                        <div id="id_saiba_mais">
+                            <h3 class="text-center mg-bot20">Saiba mais</h3>
+                            <div class="linha-aba mg-bot20"></div>
+                            {{ curso.saiba_mais|safe }}
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+            <div class="col-sm-5 mg-top20">
+                <h3>{% if curso.categoria.tipo == 'B' %}Como funciona{% else %}Sobre o Curso{% endif %}</h3>
+                <div class="linha-aba mg-bot20"></div>
+                {% if not curso.aluno %}
+                    {% if curso.imagem %}
+                        <img src="{{ curso.imagem.url }}" class="img-thumbnail" style="width: 100%; alignment: center">
+                    {% else %}
+                        <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg" style="width: 100%; alignment: center">
+                    {% endif %}
+                {% endif %}
+                <div class="conteudo-vantagens" style="text-align: justify">
+                    {{ curso.descricao }}
+                </div>
+                <div class="text-center">
+                    {% if curso.saiba_mais %}
+                        <a class="btn btn-success" href="#id_saiba_mais"><b>Saiba</b> &nbsp;<i class="fa fa-plus"></i></a>{% endif %}
+                </div>
+                <div class="clear"></div>
+                {% if curso.inicio_gratis %}
+                    <div class="categoria-curso">
+                        Início Grátis
+                    </div>
+                {% endif %}
+                <!-- VALOR -->
+                <hr class="mg-top20"/>
+                <div class="mg-top20"></div>
+
+                <div class="gg-pricing-table small-table col-md-12 mb-top20" id="id_valor">
+                    <!-- Single Table -->
+                    <div class="col-md-12">
+                        <div class="single-pricing-table text-center clearfix">
+                            {% if curso.is_pre %}
+                                <div class="pricing-table-heading">
+                                    <h2 class="text-warning">Cadastre-se na lista de espera e ganhe 10% DE DESCONTO na compra do curso</h2>
+                                </div>
+                            {% else %}
+                                <!-- Price -->
+                                <div class="price">
+                                    <span>{{ curso.valor|moeda }}</span>
+                                </div>
+                                <!-- Heading -->
+                                <div class="pricing-table-heading">
+                                    <h2>À vista ou parcele no cartão</h2>
+                                    {% if curso.economia %}
+                                        <p>Economia de <strong class="text-danger">{{ curso.economia|moeda }}</strong>
+                                        </p>{% endif %}
+                                </div>
+                                <!-- Button -->
+                            {% endif %}
+                            <div class="pricing-button">
+                                {% if curso.is_pre %}
+                                    <form method="post" action="{% url 'website:whatsapp-inscrever' curso.pk %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="curso_id" value="{{ curso.pk }}">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="nome"
+                                                   placeholder="Nome completo"
+                                                   required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" name="email"
+                                                   placeholder="Informe seu e-mail" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="tel" class="form-control" name="celular"
+                                                   placeholder="Informe o número do seu Whatsapp" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-block">QUERO ENTRAR PARA A
+                                            LISTA
+                                            DE ESPERA
+                                        </button>
+                                    </form>
+
+                                {% else %}
+                                    {% if curso.ativo == False %}
+                                        <a href="javascript:void(0);" class="comprar" style="background-color: red">
+                                            Inscrições encerradas
+                                        </a><br>
+                                    {% endif %}
+                                    {% if request.user.aluno %}
+                                        {% if checkout.transaction_status == 3 or checkout.transaction_status == 4 %}
+                                            <a href="{% url 'aluno:cursos' %}" class="comprar"
+                                               style="background-color: orangered">
+                                                ACESSAR O {% if curso.categoria.tipo == 'B' %}Pacote{% else %}
+                                                Curso{% endif %}
+                                            </a>
+                                        {% else %}
+                                            {% if curso.ativo %}
+                                                <a onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ curso.id }}});block()"
+                                                   href="javascript:void(0);" class="btn btn-pricing">
+                                                    <i class="fa fa-cart-plus"></i> COMPRAR ESTE
+                                                    {% if curso.categoria.tipo == 'B' %}Pacote{% else %}
+                                                        Curso{% endif %}
+                                                </a>
+                                            {% else %}
+                                                {% get_codigo_liberacao request.user.aluno curso as codigo %}
+                                                {% if codigo %}
+                                                    {% include '_liberar_curso.html' with codigo=codigo %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                        <a onclick="login()" href="javascript:void(0);" class="comprar">
+                                            Efetue Login ou seu Cadastramento para poder comprar o curso
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Single Table -->
+                </div>
+
+            </div>
+            <div id="id_saiba_mais" class="col-sm-12">
                 {% if curso.categoria.tipo == 'C' %}
                     <h3>Conteúdo dos vídeos disponibilizados</h3>
                     <div class="linha-aba mg-bot20"></div>
                     {% for modulo in curso.modulo_set.all %}
-                    <table class="table table-striped tabela-curso mg-bot20">
-                        <thead>
+                        <table class="table table-striped tabela-curso mg-bot20">
+                            <thead>
                             <tr>
                                 <td style="width: 30px">{{ forloop.counter|stringformat:"02d" }}</td>
                                 <td>{{ modulo }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             {% for video in modulo.videomodulo_set.all %}
-                            <tr>
-                                <td colspan="2">
-                                    <span class="laranja">Vídeo {{ forloop.counter|stringformat:"02d" }} - </span>
-                                    {{ video }}
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="laranja">Vídeo {{ forloop.counter|stringformat:"02d" }} - </span>
+                                        {{ video }}
+                                    </td>
+                                </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
                     {% endfor %}
                 {% else %}
                     <h3>O que está incluído no pacote:</h3><br>
                     {% for curso in curso.cursos.all %}
-                    <table class="table table-striped tabela-curso mg-bot20">
-                        <thead>
+                        <table class="table table-striped tabela-curso mg-bot20">
+                            <thead>
                             <tr>
-                                <td style="width: 84px">{{ forloop.counter|stringformat:"02d" }} {{ curso.sentenca_avulsa.span_nivel|safe }}</td>
-                                <td>{{ curso }} <a class="pull-right btn btn-link" href="{{ curso.get_absolute_url }}"><small style="color: yellow">Saiba <i class="fa fa-plus"></i></small></a></td>
+                                <td style="width: 84px">
+                                    {{ forloop.counter|stringformat:"02d" }} {{ curso.sentenca_avulsa.span_nivel|safe }}</td>
+                                <td>{{ curso }} <a class="pull-right btn btn-link" href="{{ curso.get_absolute_url }}"><small
+                                        style="color: yellow">Saiba <i class="fa fa-plus"></i></small></a></td>
                             </tr>
-                        </thead>
-                    </table>
+                            </thead>
+                        </table>
                     {% endfor %}
                 {% endif %}
-            </section>
-        </div>
-        <div class="col-sm-5 mg-top20">
-            <h3>{% if curso.categoria.tipo == 'B' %}Como funciona{% else %}Sobre o Curso{% endif %}</h3>
-            <div class="linha-aba mg-bot20"></div>
-            {% if not curso.aluno %}
-                {% if curso.imagem %}
-                    <img src="{{ curso.imagem.url }}" class="img-thumbnail" style="width: 100%; alignment: center">
-                {% else %}
-                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg" style="width: 100%; alignment: center">
-                {% endif %}
-            {% endif %}
-            <div class="conteudo-vantagens" style="text-align: justify">
-                {{ curso.descricao }}
-            </div>
-            <div class="text-center">
-                {% if curso.saiba_mais %}<a class="btn btn-success" href="#id_saiba_mais"><b>Saiba</b> &nbsp;<i class="fa fa-plus"></i></a>{% endif %}
-            </div>
-            <div class="clear"></div>
-            {% if curso.inicio_gratis %}
-            <div class="categoria-curso">
-                Início Grátis
-            </div>
-            {% endif %}
-            <!-- VALOR -->
-            <hr class="mg-top20"/>
-            <div class="mg-top20"></div>
-
-            <div class="gg-pricing-table small-table col-md-12 mb-top20" id="id_valor">
-                <!-- Single Table -->
-                <div class="col-md-12">
-                    <div class="single-pricing-table text-center clearfix">
-                        <!-- Price -->
-                        <div class="price">
-                            <span>{{ curso.valor|moeda }}</span>
-                        </div>
-                        <!-- Heading -->
-                        <div class="pricing-table-heading">
-                            <h2>À vista ou parcele no cartão</h2>
-                            {% if curso.economia %}<p>Economia de <strong class="text-danger">{{ curso.economia|moeda }}</strong> </p>{% endif %}
-                        </div>
-                        <!-- Button -->
-                        <div class="pricing-button">
-                            {% if curso.ativo == False %}
-                                <a href="javascript:void(0);" class="comprar" style="background-color: red">
-                                    Inscrições encerradas
-                                </a><br>
-                            {% endif %}
-                            {% if request.user.aluno %}
-                                {% if checkout.transaction_status == 3 or checkout.transaction_status == 4 %}
-                                <a href="{% url 'aluno:cursos' %}" class="comprar" style="background-color: orangered">
-                                    ACESSAR O {% if curso.categoria.tipo == 'B' %}Pacote{% else %}Curso{% endif %}
-                                </a>
-                                {% else %}
-                                    {% if curso.ativo %}
-                                    <a onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ curso.id }}});block()" href="javascript:void(0);" class="btn btn-pricing">
-                                        <i class="fa fa-cart-plus"></i> COMPRAR ESTE {% if curso.categoria.tipo == 'B' %}Pacote{% else %}Curso{% endif %}
-                                    </a>
-                                    {% else %}
-                                        {% get_codigo_liberacao request.user.aluno curso as codigo %}
-                                        {% if codigo %}
-                                            {% include '_liberar_curso.html' with codigo=codigo %}
-                                        {% endif %}
-                                    {% endif %}
-                                {% endif %}
-                            {% else %}
-                                <a onclick="login()" href="javascript:void(0);" class="comprar">
-                                    Efetue Login ou seu Cadastramento para poder comprar o curso
-                                </a>
-                            {% endif %}
+                {% if curso.is_pre %}
+                <div class="gg-pricing-table small-table col-md-12 mb-top20" id="id_valor">
+                    <div class="col-md-12">
+                        <div class="single-pricing-table text-center clearfix">
+                            <div class="pricing-table-heading">
+                                <h2>Cadastre-se na lista de espera e ganhe 10% DE DESCONTO na compra do curso</h2>
+                            </div>
+                            <div class="pricing-button">
+                                <form class="form-inline" method="post" action="{% url 'website:whatsapp-inscrever' curso.pk %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="nome" placeholder="Nome completo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" name="email" placeholder="Informe seu e-mail" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="tel" class="form-control" name="celular" placeholder="Nº do Whatsapp" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">QUERO ENTRAR PARA A LISTA DE ESPERA</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- Single Table -->
+                {% endif %}
             </div>
-
         </div>
-        {% if curso.saiba_mais %}
-        <div id="id_saiba_mais" class="col-sm-12">
-           <h3 class="text-center mg-bot20">Saiba mais</h3>
-            <div class="linha-aba mg-bot20"></div>
-            {{ curso.saiba_mais|safe }}
-        </div>
-        <div class="arrow bounce">
-          <a class="fa fa-arrow-down fa-2x" href="#"></a>
-        </div>
-        {% endif %}
     </div>
-</div>
 
 {% endblock %}
 {% block extra_js %}
-<script>
-    $('#modalBody').slimScroll({
-        start: 'top',
-        height: '200px'
-    });
-</script>
+    <script>
+        $('#modalBody').slimScroll({
+            start: 'top',
+            height: '200px'
+        });
+        $(document).ready(function () {
+            $("[name='celular']").mask('(99)99999-9999');
+        })
+    </script>
 {% endblock %}

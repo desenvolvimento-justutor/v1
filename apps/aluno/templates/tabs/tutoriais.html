@@ -21,7 +21,7 @@
     <!-- TAB VIDEOS -->
     <div class="tab-pane fade" id="tab-home">
         {% for video in videos %}
-            <div class="col-md-4 col-lg-4">
+            <div class="col-md-3 col-lg-3 col-12">
                 <div class="main-box clearfix">
                     <header class="main-box-header clearfix" style="min-height: 80px;">
                         <h2>{{ video }}</h2>
@@ -30,9 +30,9 @@
                         <div class="embed-responsive embed-responsive-16by9">
                             <a href="{% url 'aluno:curso-video' video.id %}">
                                 {% thumbnail video.thumbnail "310x170" crop="center" as im %}
-                                    <img src="{{ im.url }}">
+                                    <img src="{{ im.url }}" width="100%">
                                     {% empty %}
-                                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg">
+                                    <img src="{{ STATIC_URL }}assets/fotos/curso01.jpg" width="100%">
                                 {% endthumbnail %}
                             </a>
                         </div>

@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import os
 import environ
 import pusher
-from justutorial.conf.suit import *
 
 env = environ.Env(
     # set casting, default value

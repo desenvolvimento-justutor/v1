@@ -33,7 +33,7 @@ from apps.pagseguro.api import PagSeguroApiTransparent, PagSeguroItem
 from apps.pagseguro.models import Checkout, Transaction
 from apps.pagseguro.settings import TRANSACTION_STATUS
 from apps.professor.models import Professor
-from apps.website.models import Anuncio
+from apps.website.models import Anuncio, WhatsAppGroup
 from apps.website.utils import enviar_email, enviar_email_old
 from carton.cart import Cart
 from libs.util.tipos import ESTADOS_BRASILEIROS_NOMES
@@ -311,6 +311,16 @@ def curso(request, slug):
     return render(request, 'detalhe-curso.html', context)
 
 
+def pre_inscricao(request):
+    now = timezone.now()
+    grupos = WhatsAppGroup.objects.filter(ativo=True)
+    cursos = [x.curso for x in grupos]
+    context = {
+        "cursos": cursos
+    }
+    return render(request, 'pre_inscricao.html', context=context)
+
+
 def livro(request, slug):
     obj_livro = get_object_or_404(Curso, slug=slug)
 
@@ -392,7 +402,12 @@ class CursoSimuladoListView(ListView):
 
 
 def cursos(request):
-    return render(request, 'listagem-cursos.html', {})
+    now = timezone.now()
+    cursos = Curso.objects.filter(data_ini__gt=now).exclude(categoria__tipo="B")
+    context = {
+        "cursos": cursos
+    }
+    return render(request, 'listagem-cursos.html', context=context)
 
 
 def carrinho(request):

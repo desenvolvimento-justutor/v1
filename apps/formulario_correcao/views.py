@@ -125,11 +125,15 @@ def import_formulario_correcao(request):
                     valor = 0
                     notas = []
                     if len(tds) == 3:
-                        nota_code, valor_text = remove_chars(tds[2].text).split(";")
+                        try:
+                            nota_code, valor_text = remove_chars(tds[2].text).split(";")
+                        except ValueError:
+                            messages.error(request, u"Verifique a linha: %s" % tds[2].text)
+                            continue
                         notas = Nota.objects.filter(titulo__startswith=nota_code)
                         valor = Decimal(valor_text)
                         if not notas:
-                            messages.error(request, u"Nota com o código [%s] não encontrada." % nota_code)
+                            messages.warning(request, u"Nota com o código [%s] não encontrada." % nota_code)
                     else:
                         messages.warning(request, u"Tabela [%s] não possui a linha com a Nota." % titulo)
 

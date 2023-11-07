@@ -202,6 +202,7 @@
             position: relative;
             top: -50px;
             margin-bottom: -50px;
+            padding-bottom: 50px;
         }
 
         .card.hovercard .avatar img {
@@ -257,37 +258,35 @@
         <div class="container">
             <section class="col-sm-12">
                 <div class="titulo-home mg-bot20">
-                    <h4 class="pd-home titulo-home bold">Grupos</h4>
+                    <h4 class="pd-home titulo-home bold">Grupo: {{ grupo.curso }}</h4>
                     <div class="linha-aba mg-bot20"></div>
                 </div>
             </section>
             <div class="row">
-                {% for grupo in grupos %}
-                    <div class="col-lg-6 col-sm-6">
-
-                        <div class="card hovercard">
-                            <div class="cardheader">
-                            </div>
-                            <div class="avatar">
-                                <img alt="" src="{{ STATIC_URL }}assets/images/whatsapp.png">
-                            </div>
-                            <div class="info">
-                                <div class="title">
-                                    {{ grupo }}
-                                </div>
-                                <div class="desc">{{ grupo.descricao }}</div>
-                            </div>
-                            <div class="bottom">
-                                <button class="btn btn-success btn-twitter btn-sm" data-name="inscrever"
-                                        data-id="{{ grupo.id }}">
-                                    <i class="fa fa-whatsapp"></i>&nbsp;&nbsp;Participar
-                                </button>
-                            </div>
+                <div class="col-sm-12">
+                    <div class="card hovercard">
+                        <div class="cardheader">
                         </div>
-
+                        <div class="avatar">
+                            <img alt="" src="{{ STATIC_URL }}assets/images/whatsapp.png">
+                        </div>
+                        <div class="info">
+                            <div class="alert alert-info" role="alert">
+                                Clique no botão abaixo e entre no Grupo Exclusivo do WhatsApp para ficar por dentro de todas as atualizações.
+                            </div>
+                            <div class="title">
+{#                                {{ grupo }}#}
+                            </div>
+{#                            <div class="desc">{{ grupo.descricao }}</div>#}
+                        </div>
+                        <div class="bottom">
+                            <a href="{{ grupo.link }}" target="_blank" class="btn btn-success btn-lg btn-sm" data-name="inscrever"
+                                    data-id="{{ grupo.id }}">
+                                <i class="fa fa-whatsapp"></i>&nbsp;&nbsp;ENTRAR NO GRUPO DE WHATSAPP
+                            </a>
+                        </div>
                     </div>
-                {% endfor %}
-
+                </div>
             </div>
         </div>
     </section>
@@ -295,62 +294,6 @@
 
 {% block extra_js %}
     <script>
-        $("[data-name='inscrever']").click(function (e) {
-            const elm = $(e.target)
-            let group_id = elm.attr("data-id")
-            inscrever(group_id)
-        })
 
-        function inscrever(group_id) {
-            Swal.fire({
-                title: 'Participar',
-                html: `<input type="text" id="nome" class="swal2-input" placeholder="Nome">
-                       <input type="email" id="email" class="swal2-input" placeholder="Email">
-                       <input type="tel" id="celular" class="swal2-input" placeholder="Celular">`,
-                confirmButtonText: 'Inscrever',
-                focusConfirm: false,
-                preConfirm: () => {
-                    const nome = Swal.getPopup().querySelector('#nome').value
-                    const email = Swal.getPopup().querySelector('#email').value
-                    const celular = Swal.getPopup().querySelector('#celular').value
-                    if (!nome || !email || !celular) {
-                        Swal.showValidationMessage(`Preencha todos os campos`)
-                    }
-                    return {nome: nome, email: email, celular: celular}
-                },
-                onOpen: () => {
-                    console.log("OPEN")
-                    $("#celular").mask("(99)-99999-9999");
-            }
-            }).then((result) => {
-                const nome = result.value.nome;
-                const email = result.value.email;
-                const celular = result.value.celular;
-                let data = JSON.stringify({
-                        "nome": nome,
-                        "email": email,
-                        "celular": celular,
-                        "group_id": group_id
-                    })
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'website:whatsapp-inscrever' %}",
-                    data: data,
-                    contentType: "application/json",
-                    success: function (result) {
-                        let mtype = "success"
-                        if (!result.success) {
-                            mtype = "error"
-                        };
-                        console.log(result);
-                        Swal.fire('JusTutor', result.message, mtype);
-                    },
-                    error: function (result, status) {
-                        console.log(result);
-                    }
-                });
-
-            })
-        }
     </script>
 {% endblock %}

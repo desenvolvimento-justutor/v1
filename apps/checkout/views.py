@@ -239,7 +239,9 @@ class StatusView(TemplateView):
     def render_to_response(self, context, **response_kwargs):
         code = context.get('code')
         checkout = get_object_or_404(Checkout, code=code)
-        context.update(checkout=checkout, title='Conclusão', code=code)
+        cursos_slug = [x.curso.slug for x in checkout.checkoutitens_set.all()]
+
+        context.update(checkout=checkout, title='Conclusão', code=code, cursos_slug=cursos_slug)
         return super(StatusView, self).render_to_response(context, **response_kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -252,7 +254,11 @@ class StatusPixView(TemplateView):
     def render_to_response(self, context, **response_kwargs):
         code = context.get('code')
         cobranca = get_object_or_404(Cobranca, txid=code)
-        context.update(cobranca=cobranca, title='Conclusão', code=code)
+        try:
+            cursos_slug = [x.curso.slug for x in cobranca.checkout.checkoutitens_set.all()]
+        except:
+            pass
+        context.update(cobranca=cobranca, title='Conclusão', code=code, cursos_slug=cursos_slug)
         return super(StatusPixView, self).render_to_response(context, **response_kwargs)
 
     def get(self, request, *args, **kwargs):

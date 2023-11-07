@@ -47,6 +47,12 @@
                                 <i class="fa fa-money"></i> {{ item.total }}
                             </span>
                             <span class="warranty">
+                                {% if item.curso.is_video_curso %}
+                                    <i class="fa fa-video-camera text-success" style="color: rgb(210,78,78)"></i>
+                                {% else %}
+                                    <i class="fa fa-file-pdf-o text-primary" style="color: rgb(152,90,63)"></i>
+                                {% endif %}
+                                &nbsp;
                                 {% if checkout.transaction.status in 'pago,disponivel' %}
                                     <i class="fa fa-unlock" style="color: green"></i> Liberado
                                 {% else %}

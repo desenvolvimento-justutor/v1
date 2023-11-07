@@ -35,9 +35,19 @@ class Command(BaseCommand):
             transaction_status=3,
             nfse__isnull=True
         )
+        count = error = 0
         for checkout in chechouts:
             self.stdout.write(
                 self.style.URL_NAME(u'Enviando...: %s' % self.style.BOLD("%s - %s" % (checkout.id, checkout.date))))
             if gerar == "y":
-                checkout.incluir_os()
-        self.stdout.write(self.style.URL_NAME(u'Total......: %s' % self.style.BOLD(chechouts.count())))
+                try:
+                    nfse = checkout.incluir_os()
+                    if nfse:
+                        count += 1
+                    else:
+                        error += 1
+                except Exception as e:
+                    error += 1
+                    self.stdout.write(self.style.WARN(u'%s' % str(e)))
+        self.stdout.write(self.style.INFO(u'Total......: %s' % self.style.BOLD(count)))
+        self.stdout.write(self.style.WARN(u'Erros......: %s' % self.style.BOLD(error)))

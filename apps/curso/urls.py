@@ -7,6 +7,7 @@ urlpatterns = patterns(
     'apps.curso.views',
     url(r'^categoria/(?P<slug>[-\w]+)/$', views.categoria, name='categoria'),
     url(r'^curso/(?P<slug>[-\w]+)/$', views.curso, name='curso'),
+    url(r'^pre-inscricao/$', views.pre_inscricao, name='pre-inscricao'),
     url(r'^montar-pacote/$', views.montar_pacote, name='montar-pacote'),
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
     url(r'^sentenca/(?P<slug>[-\w]+)/$', views.curso_sentenca, name='curso-sentenca'),  # Curso de sentença

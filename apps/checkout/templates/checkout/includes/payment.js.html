@@ -272,6 +272,8 @@
         var hash = response.senderHash; //Hash estará disponível nesta variável.
         console.log("SENDERHAS", hash)
         $('#formCreditCard input[name=senderHash]').val(hash);
+        $('#formBoleto input[name=senderHash]').val(hash);
+        $('#formPIX input[name=senderHash]').val(hash);
     });
     const pagSeguro = {
         createCardToken: function (params) {
@@ -551,6 +553,7 @@
     }
 
     function checkout(data) {
+        data["senderHash"] = PagSeguroDirectPayment.getSenderHash();
         $.ajax({
             method: "POST",
             url: "{% url 'checkout:ajax_checkout' %}",

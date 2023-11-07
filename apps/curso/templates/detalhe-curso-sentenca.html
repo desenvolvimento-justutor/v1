@@ -131,6 +131,7 @@
                                 </button>
                             </form>
                         {% else %}
+
                             {% if curso.valor %}
                                 <a onclick="Dajaxice.apps.curso.add_to_cart(Dajax.process, {'curso_id': {{ curso.id }}});block()" href="javascript:void(0);" class="comprar">
                                     {% if curso.categoria.tipo == 'D' %}

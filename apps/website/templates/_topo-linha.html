@@ -14,10 +14,13 @@
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
-                <!--li class="menu-item active"><a href="#">About </a></li-->
                 <!-- CURSOS E AULAS -->
                 <li disabled class="menu-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"> Cursos <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li class="menu-item dropdown">
+                            <a href="" onclick="window.location = '{% url 'curso:pre-inscricao' %}';" class="dropdown-toggle" data-toggle="dropdown"><span class="text-warning"></span> Pré inscrição </a>
+                        </li>
+                        <li class="divider"></li>
                         {% for categoria in proc_curso.categorias %}
                             <li class="menu-item dropdown"><a href="" onclick="window.location = '{{ categoria.get_absolute_url }}';" class="dropdown-toggle" data-toggle="dropdown">{{ categoria.titulo_menu }}</a>
                         {% endfor %}

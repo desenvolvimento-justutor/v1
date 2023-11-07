@@ -274,6 +274,7 @@ class Checkout(models.Model):
                     self.nfse = nfse
                     self.data_nfse = str(response)
                     self.save()
+                    return self
             else:
                 log_nfse.debug(u"nfse não gerada")
         except Exception:
@@ -281,7 +282,7 @@ class Checkout(models.Model):
             log_nfse.error("-" * 100)
             log_nfse.error("{} - {}".format(type(self.transaction_gross_amount), repr(self.transaction_gross_amount)))
             log_nfse.error("-" * 100)
-
+        return False
     def get_transaction_status(self):
         transaction = self.code
 

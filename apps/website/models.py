@@ -594,6 +594,7 @@ class Artigo(models.Model):
 
 @python_2_unicode_compatible
 class WhatsAppGroup(models.Model):
+    curso = models.OneToOneField(verbose_name="Curso", to="curso.Curso", on_delete=models.CASCADE)
     titulo = models.CharField(verbose_name=u"Título", max_length=150)
     descricao = models.TextField(verbose_name=u"Descrição")
     link = models.URLField(verbose_name="Link do Grupo")

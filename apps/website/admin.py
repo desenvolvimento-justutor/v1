@@ -264,14 +264,16 @@ class ArtigoAdmin(admin.ModelAdmin):
 
 @admin.register(WhatsAppGroup)
 class WhatsAppGroupAdmin(admin.ModelAdmin):
-    list_display = ("titulo", "link", "ativo")
-    list_filter = ("ativo",)
+    list_display = ("titulo", "curso", "link", "ativo")
+    list_filter = ("ativo", "curso")
+    raw_id_fields = ("curso",)
 
 
 @admin.register(WhatsAppInscritos)
 class WhatsAppInscritoAdmin(admin.ModelAdmin):
     list_display = ("nome", "email", "celular")
     search_fields = ("nome",)
+    list_filter = ("whatsapp_group",)
 
 
 admin.site.register(Institucional, InstitucionalAdmin)

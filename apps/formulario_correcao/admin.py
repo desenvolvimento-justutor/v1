@@ -86,7 +86,7 @@ class FormularioAdmin(admin.ModelAdmin):
     raw_id_fields = ['atividade', 'sentenca_avulca']
     list_display = ['titulo', 'atividade', 'sentenca_avulca']
     list_filter = ['atividade', 'sentenca_avulca']
-    search_fields = ['titulo', 'texto']
+    search_fields = ['titulo', 'texto', 'atividade__id']
 
     def _copy(self, request, pk):
         formulario = Formulario.objects.get(pk=pk)

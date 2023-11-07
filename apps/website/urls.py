@@ -33,8 +33,8 @@ urlpatterns = patterns(
 
     url(r'^checkout/itens/$', 'checkout_itens', name='checkout_itens'),
     url(r'^checkout/pagamento/$', 'checkout_itens', name='checkout_pagamentos'),
-    url(r'^whatsapp/$', 'whatsapp', name='whatsapp'),
-    url(r'^whatsapp/inscrever/$', 'whatsapp_inscrever', name='whatsapp-inscrever'),
+    url(r'^whatsapp/(?P<grupo_id>[-\w]+)/$', 'whatsapp', name='whatsapp'),
+    url(r'^whatsapp/inscrever/(?P<curso_id>[-\w]+)/$', 'whatsapp_inscrever', name='whatsapp-inscrever'),
 )
 
 urlpatterns += [

@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.core.validators import validate_email
 from django.db.models import Q, Count
 from django.dispatch import receiver
@@ -18,7 +19,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import TemplateView
 from django.views.generic.base import ContextMixin
 from pysendy import Sendy, AlreadySubscribedException
@@ -381,22 +382,19 @@ def artigo_indice(request):
     return render(request, 'artigo-indice.html', context)
 
 
-def whatsapp(request):
-    context = {}
-    if request.method == 'POST':
-        pass
-    else:
-        grupos = WhatsAppGroup.objects.filter(ativo=True)
-        context["grupos"] = grupos
-    return render(request, 'whatsapp.html', context)
+def whatsapp(request, grupo_id):
+    grupo = get_object_or_404(WhatsAppGroup, pk=grupo_id, ativo=True)
+    return render(request, 'whatsapp.html', context={"grupo": grupo})
 
-@csrf_exempt
-def whatsapp_inscrever(request):
+
+@require_POST
+def whatsapp_inscrever(request, curso_id):
     success = True,
     message = u"Pré-inscrição Efetuada!"
-    status = 200
+    curso = get_object_or_404(Curso, pk=curso_id)
+    data = request.POST
+    print(">>>", data)
 
-    data = json.loads(request.body)
     celular = re.sub('[^0-9]', '', data.get("celular"))
     if len(celular) != 11:
         success = False
@@ -407,24 +405,21 @@ def whatsapp_inscrever(request):
         validate_email(email)
     except ValidationError as e:
         success = False
-        message = u"Inform um email válido."
+        message = u"Informe um email válido."
     if success:
         try:
-            whats_app_inscritos = WhatsAppInscritos.objects.create(
-                whatsapp_group_id=data["group_id"],
+            WhatsAppInscritos.objects.create(
+                whatsapp_group=curso.whatsappgroup,
                 nome=data["nome"],
                 email=email,
                 celular=celular
             )
         except IntegrityError:
-            success = False
-            message = u"Você já assinou essa pré-inscrição."
-    messages.success(request, message)
-    response = {
-        "success": success,
-        "message": message
-    }
-    return JsonResponse(data=response, status=status)
+            pass
+        return HttpResponseRedirect(reverse("website:whatsapp", args=[curso.whatsappgroup.pk]))
+
+    messages.error(request, message)
+    return HttpResponseRedirect(reverse("curso:curso", args=[curso.slug]))
 
 
 @require_GET

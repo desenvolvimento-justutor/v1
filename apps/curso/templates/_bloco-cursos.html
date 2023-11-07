@@ -22,23 +22,27 @@
         {% if user.is_superuser %}
             {{ curso.timeout }}
         {% endif %}
-        {% if curso.ativo == False %}
-            {% get_codigo_liberacao request.user.aluno curso as codigo %}
-            <div class="categoria-curso" style="background-color: {% if codigo %}orange{% else %}red{% endif %}">
-                {% if codigo %}
-                    Inscrição disponível até <strong>{{ codigo.data|date:"SHORT_DATE_FORMAT" }}</strong>
-                {% else %}
-                    Inscrições encerradas
-                {% endif %}
-        </div>
+        {% if curso.is_pre %}
+            <div class="categoria-curso">Inscreva-se pelo Whatsapp</div>
         {% else %}
-        <div class="categoria-curso">
-            {% if curso.categoria.tipo == 'B' %}
-                Adquirir este pacote
+            {% if curso.ativo == False %}
+                {% get_codigo_liberacao request.user.aluno curso as codigo %}
+                <div class="categoria-curso" style="background-color: {% if codigo %}orange{% else %}red{% endif %}">
+                    {% if codigo %}
+                        Inscrição disponível até <strong>{{ codigo.data|date:"SHORT_DATE_FORMAT" }}</strong>
+                    {% else %}
+                        Inscrições encerradas
+                    {% endif %}
+                </div>
             {% else %}
-                Inscrições abertas
+            <div class="categoria-curso">
+                {% if curso.categoria.tipo == 'B' %}
+                    Adquirir este pacote
+                {% else %}
+                    Inscrições abertas
+                {% endif %}
+            </div>
             {% endif %}
-        </div>
         {% endif %}
         <div class="preco-curso">
             <div class="preco-geral">
