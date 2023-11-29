@@ -307,7 +307,7 @@ class AtividadeAdmin(admin.ModelAdmin):
             'classes': ('suit-tab', 'suit-tab-geral'),
             'fields': ['curso', 'professores', 'tipo_retorno', 'nome', 'descricao', 'caracteres', 'data', 'data_ini',
                        'data_fim',
-                       'resposta_padrao_data', 'resolucao_obrigatorio']
+                       'resposta_padrao_data', 'resolucao_obrigatorio', 'video_id']
         }),
         (None, {
             'classes': ('suit-tab', 'suit-tab-tarefa'),

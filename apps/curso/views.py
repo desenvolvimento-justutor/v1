@@ -8,6 +8,7 @@ import uuid
 from collections import OrderedDict
 from decimal import Decimal
 
+import requests
 import xmltodict
 from dateutil import parser
 from django.contrib import messages
@@ -42,6 +43,22 @@ from .models import (Atividade, Categoria, CheckoutItens, ComboAluno, Cortesia, 
 import logging
 
 logger = logging.getLogger("django")
+
+@login_required
+def vdo_view(request, vdo_id):
+    url = "https://dev.vdocipher.com/api/videos/%s/otp" % vdo_id
+
+    payloadStr = json.dumps({"ttl": 300})
+    headers = {
+        "Authorization": "Apisecret QPu1yL7eJ4A6JRzJV3KQbmDo6g5sviTdkzFRlRrhffoN3VbxC94tPYl7qYh7Kzxm",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+
+    response = requests.post(url, data=payloadStr, headers=headers)
+    data = response.json()
+    return render(request, "vdo_modal.html", {"data": data})
+
 
 def get_curso_url(curso):
     categoria_obj = curso.categoria

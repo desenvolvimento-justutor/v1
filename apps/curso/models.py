@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
 import logging
 import os
 import shlex
@@ -11,6 +12,7 @@ import uuid
 from datetime import datetime, timedelta
 
 import django
+import requests
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
@@ -299,6 +301,10 @@ class Curso(models.Model):
 
     def __str__(self):
         return u'{}'.format(self.nome)
+
+    @property
+    def is_vdo(self):
+        return self.atividades.filter(video_id__isnull=False).exists()
 
     def incluir_cadastro_servico(self):
         api = OmieAPI()
@@ -703,6 +709,13 @@ class Atividade(models.Model):
     )
     caracteres = models.PositiveIntegerField(
         default=20000
+    )
+    video_id = models.CharField(
+       verbose_name="Vídeo",
+       max_length=250,
+       blank=True,
+       null=True,
+       help_text="ID do vídeo (VDOCipher)",
     )
 
     def __unicode__(self):
@@ -1172,6 +1185,13 @@ class SentencaAvulsa(models.Model):
     titulo = models.CharField(verbose_name="Título", max_length=150, help_text="Identificação")
     cod_youtube = models.CharField(verbose_name='Cód. Youtube', max_length=50, default='0',
                                    help_text="Código do vídeo no Youtube")
+    video_id = models.CharField(
+       verbose_name="Vídeo",
+       max_length=250,
+       blank=True,
+       null=True,
+       help_text="ID do vídeo (VDOCipher)",
+    )
     esfera_especifica = models.ForeignKey(verbose_name="Esfera Específica", to=EsferaEspecifica)
     tipo_procedimento = models.ForeignKey(verbose_name="Tipo de Procedimento", to=TipoProcedimento, null=True)
     disciplina = models.ForeignKey(verbose_name="Disciplina", to=Disciplina, null=True)

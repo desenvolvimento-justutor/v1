@@ -544,7 +544,12 @@ def sentencas_avulsas(request):
     professores = [x.curso.sentenca_avulsa.professor for x in query_itens if
                    x.curso.sentenca_avulsa.professor not in professores and not professores.append(
                        x.curso.sentenca_avulsa.professor)]
-
+    context['is_vdo'] = query_itens.filter(curso__sentenca_avulsa__video_id=True).exists()
+    context["is_vdo"] = (
+        query_itens.exclude(curso__sentenca_avulsa__video_id__isnull=True)
+        .exclude(curso__sentenca_avulsa__video_id__exact="")
+        .exists()
+    )
     context['itens'] = query_itens
     context['professores'] = professores
     context['categorias'] = Categoria.objects.filter(tipo='S')

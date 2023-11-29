@@ -70,6 +70,9 @@
                                             <thead>
                                             <tr>
                                                 <th><span>Curso</span></th>
+                                                {% if is_vdo %}
+                                                <th class="text-center"><span>Vídeo</span></th>
+                                                {% endif %}
                                                 <th><span>Nível</span></th>
                                                 <th><span>Data</span>/<span>Prazo</span></th>
                                                 <th><span>Professor</span></th>
@@ -96,6 +99,16 @@
                                                             </a>
                                                             {{ curso }}
                                                         </td>
+                                                        {% if is_vdo %}
+                                                        <td class="text-center">
+                                                            {% if sentenca.video_id %}
+                                                                <button type="button"
+                                                                   class="btn btn-sm btn-primary"
+                                                                   onclick="window.open('{% url 'curso:vdo_view' sentenca.video_id %}', 'popup', 'width=640, height=380'); return false;"
+                                                                >Assistir</button>
+                                                            {% endif %}
+                                                        </td>
+                                                        {% endif %}
                                                         <td width="10%">{{ sentenca.span_nivel|safe }}</td>
                                                         <td width="10%">
                                                             <strong class="text-success">{{ item.checkout.transaction.last_event_date|date:"SHORT_DATE_FORMAT" }}</strong>

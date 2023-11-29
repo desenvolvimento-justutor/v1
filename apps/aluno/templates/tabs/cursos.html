@@ -142,6 +142,9 @@
                                         <tr>
                                             <th><span>ID</span></th>
                                             <th><span>Descrição</span></th>
+                                            {% if submenu.is_vdo %}
+                                            <th class="text-center"><span>Vídeo</span></th>
+                                            {% endif %}
                                             <th class="text-center"><span>Tipo de Retorno</span></th>
                                             <th class="text-center">
                                                 <span>Início</span>
@@ -172,6 +175,16 @@
                                                     style="cursor: pointer" {% endif %}>{{ atividade }}
                                                     {% if atividade.descricao %}
                                                         <i class="fa fa-info-circle"></i>{% endif %} </td>
+                                                {% if submenu.is_vdo %}
+                                                <td class="text-center">
+                                                    {% if atividade.video_id %}
+                                                        <button type="button"
+                                                           class="btn btn-primary"
+                                                           onclick="window.open('{% url 'curso:vdo_view' atividade.video_id %}', 'popup', 'width=640, height=380'); return false;"
+                                                        >Assistir</button>
+                                                    {% endif %}
+                                                </td>
+                                                {% endif %}
                                                 <td class="text-center" data-toggle="tooltip" data-container="body"
                                                     data-original-title="{{ atividade.get_tipo_retorno_display }}">
                                                     <span style="cursor: pointer"
