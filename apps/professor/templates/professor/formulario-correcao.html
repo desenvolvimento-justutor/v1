@@ -31,7 +31,7 @@
                         {% endif %}
                     </h2>
                     <strong class="text-primary">
-                        <span class="badge badge-warning">{{ tabela_correcao.pk }}</span>
+                        <a href="/admin/formulario_correcao/tabelacorrecaoaluno/{{ tabela_correcao.pk }}" target="_blank"><span class="badge badge-warning">{{ tabela_correcao.pk }}</span></a>
                         <span class="text-danger">{{ tarefa.aluno.nome_completo }}</span>
                         <small class="text-info">&lt;{{ tarefa.aluno }}: {{ tarefa.aluno.email }}&gt;</small>
                     </strong>

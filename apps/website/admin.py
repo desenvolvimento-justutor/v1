@@ -189,6 +189,9 @@ class BannerAdmin(AdminImageMixin, SortableModelAdmin):
             'fields': ('configuracao', 'exibir_caixa', 'titulo', 'legendas', 'imagem', 'link', 'texto_link')
         }),
         (None, {
+            'fields': ('banner', 'link_v2')
+        }),
+        (None, {
             'fields': ('ativo_inicio', 'ativo_fim')
         }),
     )

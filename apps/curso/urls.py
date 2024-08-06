@@ -47,6 +47,6 @@ urlpatterns = patterns(
     url(r'^ajax-search-simulado$', views.ajax_search_simulado, name='ajax-search-simulado'),
     url(r'^ajax-gerar-cortesia', views.ajax_gerar_cortesia, name='ajax-gerar-cortesia'),
     url(r'^ajax-validar-cortesia', views.ajax_validar_cortesia, name='ajax-validar-cortesia'),
-    url(r"^vdo_modal/(?P<vdo_id>[-\w]+)/$", views.vdo_view, name="vdo_view"),
+    url(r"^vdo_modal/(?P<vdo_id>[:\w]+)/$", views.vdo_view, name="vdo_view"),
 
 )

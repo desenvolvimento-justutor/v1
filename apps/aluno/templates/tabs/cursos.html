@@ -180,7 +180,7 @@
                                                     {% if atividade.video_id %}
                                                         <button type="button"
                                                            class="btn btn-primary"
-                                                           onclick="window.open('{% url 'curso:vdo_view' atividade.video_id %}', 'popup', 'width=640, height=380'); return false;"
+                                                           onclick="window.open('{% url 'curso:vdo_view' atividade.video_id %}', 'popup', 'width=640, height=480'); return false;"
                                                         >Assistir</button>
                                                     {% endif %}
                                                 </td>
@@ -294,7 +294,7 @@
                                                                                 </a>
                                                                             </li>
                                                                         {% else %}
-                                                                            {% if atividade.gabarito %}
+                                                                            {% if atividade.gabarito_liberado %}
                                                                                 <li>
                                                                                     <a target="_blank"
                                                                                        href="{% url 'curso:baixar-correcao' tar.pk %}?action=gabarito">

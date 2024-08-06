@@ -119,11 +119,24 @@ def update_checkout(data, transaction):
     if ':' in reference:
         aluno_pk, cpf = reference.split(':')
         try:
-            checkout.aluno = Aluno.objects.get(pk=aluno_pk)
+            aluno = Aluno.objects.get(pk=aluno_pk)
+            checkout.aluno = aluno
+            if transaction.status in ["pago", "disponivel"]:
+                enviar_email(
+                    'curso/email/compra-efetuada.html',
+                    'Bem-vindo ao JusTutor!',
+                    [aluno.email],
+                    context={
+                        "aluno": aluno.nome
+                    },
+                    ead=False
+                )
         except:
             pass
         checkout.cpf = cpf
     checkout.save()
+
+
     if not transaction.checkout:
         transaction.checkout = checkout
         transaction.save()

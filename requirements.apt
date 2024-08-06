@@ -1,2 +1,4 @@
 apt-get install pkg-config libicu-dev
 sudo apt-get install python-dev build-essential libpq-dev postgresql postgresql-contrib nginx curl
+sudo dnf install make automake gcc gcc-c++ kernel-devel
+sudo dnf groupinstall "Development Tools" "Development Libraries"

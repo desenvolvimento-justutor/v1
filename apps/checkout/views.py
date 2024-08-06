@@ -328,7 +328,7 @@ def ajax_checkout(request):
         except Cupom.DoesNotExist:
             pass
     api = PagSeguroApiTransparent()
-    api.set_notification_url('https://www.justutor.com.br/pagseguro/')
+    # api.set_notification_url('https://justutor.com.br/pagseguro/')
     api.set_reference(
         '{}:{}'.format(
             aluno.pk, somente_numeros(data['cpf'])

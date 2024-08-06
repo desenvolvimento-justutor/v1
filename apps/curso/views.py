@@ -46,18 +46,22 @@ logger = logging.getLogger("django")
 
 @login_required
 def vdo_view(request, vdo_id):
-    url = "https://dev.vdocipher.com/api/videos/%s/otp" % vdo_id
+    tipo, video_id = vdo_id.split(":")
+    if tipo == "VDO":
+        url = "https://dev.vdocipher.com/api/videos/%s/otp" % video_id
 
-    payloadStr = json.dumps({"ttl": 300})
-    headers = {
-        "Authorization": "Apisecret QPu1yL7eJ4A6JRzJV3KQbmDo6g5sviTdkzFRlRrhffoN3VbxC94tPYl7qYh7Kzxm",
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
+        payloadStr = json.dumps({"ttl": 300})
+        headers = {
+            "Authorization": "Apisecret QPu1yL7eJ4A6JRzJV3KQbmDo6g5sviTdkzFRlRrhffoN3VbxC94tPYl7qYh7Kzxm",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
 
-    response = requests.post(url, data=payloadStr, headers=headers)
-    data = response.json()
-    return render(request, "vdo_modal.html", {"data": data})
+        response = requests.post(url, data=payloadStr, headers=headers)
+        data = response.json()
+        return render(request, "vdo_modal.html", {"data": data})
+    else:
+        return render(request, "ytb_modal.html", {"vdo_id": video_id})
 
 
 def get_curso_url(curso):
@@ -138,16 +142,20 @@ def relatorio(request):
         except:
             aluno_nome = 'N/A'
             aluno_email = 'N/A'
-
+        vlr_desc = Decimal(chk.get_desconto)
+        if vlr_desc > 1:
+            vlr_desc *= -1
+        desc += vlr_desc
         txt += u'{0:80s} {1:15s} {2} {3:7f} {4:10s}\n'.format(
             u'{0} ({1})'.format(aluno_nome, aluno_email), chk.cpf or '', chk.date.strftime('%d/%m/%Y'),
             chk.total, transc.get_status_display()
         )
         txt += u'{0:107s} {1:7.2f} {2:10.2f}\n'.format(
-            '', Decimal(chk.get_desconto), chk.total + Decimal(chk.get_desconto)
+            '', vlr_desc, chk.total + vlr_desc
         )
         total += chk.total
-        desc += Decimal(chk.get_desconto)
+
+        print(">>>>", desc)
         endereco = chk.get_endereco_ps
         if endereco['logradouro']:
             txt += u'{0}, {1} - {2}\n'.format(endereco['logradouro'], endereco['numero'], endereco['bairro'])

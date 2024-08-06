@@ -55,6 +55,7 @@ class Checkout(models.Model):
     )
 
     aluno = models.ForeignKey(
+        on_delete=models.CASCADE,
         verbose_name='Aluno',
         to='aluno.Aluno',
         null=True
@@ -182,6 +183,7 @@ class Checkout(models.Model):
         verbose_name="Número de telefone do comprador", max_length=50, blank=True, null=True
     )
     nfse = models.OneToOneField(
+        on_delete=models.SET_NULL,
         verbose_name="NFSe", to=NSFe, null=True, editable=False
     )
     data_nfse = models.TextField(
@@ -234,7 +236,7 @@ class Checkout(models.Model):
                     endereco = {
                         "logradouro": ra(sender["street"]),
                         "numero": sender["number"],
-                        "complemento": ra(sender["complement"] or "N/A"),
+                        "complemento": "N/A",
                         "bairro": ra(sender["district"]),
                         "codigo_municipio": "4106902",
                         "uf": sender["state"],
@@ -283,6 +285,7 @@ class Checkout(models.Model):
             log_nfse.error("{} - {}".format(type(self.transaction_gross_amount), repr(self.transaction_gross_amount)))
             log_nfse.error("-" * 100)
         return False
+
     def get_transaction_status(self):
         transaction = self.code
 
