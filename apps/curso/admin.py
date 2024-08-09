@@ -348,6 +348,7 @@ class TarefaAtividadeForm(ModelForm):
             "parametros_correcao": RedactorEditor(),
             "exemplos_correcao": RedactorEditor(),
             "instrucoes_gpt": RedactorEditor(),
+            "instrucoes_recurso": RedactorEditor(),
             "descricao": AutosizedTextarea(attrs={"rows": 3, "class": "span10"}),
         }
 
@@ -418,6 +419,7 @@ class AtividadeAdmin(admin.ModelAdmin):
             {
                 "classes": ("suit-tab", "suit-tab-gpt"),
                 "fields": [
+                    "enable_gpt",
                     "gpt_model",
                     "temperature",
                     "max_tokens",
@@ -429,6 +431,7 @@ class AtividadeAdmin(admin.ModelAdmin):
                     "parametros_correcao",
                     "exemplos_correcao",
                     "instrucoes_gpt",
+                    "instrucoes_recurso",
                 ],
             },
         ),

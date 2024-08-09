@@ -746,6 +746,11 @@ class Atividade(models.Model):
         help_text="ID do vídeo (VDOCipher)",
     )
     # CHATGPT
+    enable_gpt = models.BooleanField(
+        verbose_name="Habilitar GPT",
+        default=False,
+        help_text="Habilitar correção pelo GPT",
+    )
     enunciado = models.TextField(verbose_name="Enunciado", blank=True, null=True)
     padrao_resposta = models.TextField(
         verbose_name="Padrão de Resposta", blank=True, null=True
@@ -757,10 +762,16 @@ class Atividade(models.Model):
         verbose_name="Exemplos de Correção", blank=True, null=True
     )
     instrucoes_gpt = models.TextField(
-        verbose_name="Instruções",
+        verbose_name="Instruções GPT",
         blank=True,
         null=True,
         help_text="Instruções para o GPT",
+    )
+    instrucoes_recurso = models.TextField(
+        verbose_name="Instruções Recurso",
+        blank=True,
+        null=True,
+        help_text="Instruções para análise do recurso",
     )
     gpt_model = models.CharField(
         max_length=20,
@@ -776,26 +787,26 @@ class Atividade(models.Model):
     )
     max_tokens = models.IntegerField(
         default=256,
-        help_text=u"Especifique o número máximo de tokens na resposta. Deve ser um número inteiro.",
+        help_text="Especifique o número máximo de tokens na resposta. Deve ser um número inteiro.",
     )
     top_p = models.DecimalField(
         max_digits=4,
         decimal_places=2,
         default=0.9,
-        help_text=u"Especifica a fração da probabilidade cumulativa a ser considerada paraa resposta." \
-                  u" Valores entre 0  e 1 são aceitos. Ex.: 0.50",
+        help_text="Especifica a fração da probabilidade cumulativa a ser considerada paraa resposta."
+        " Valores entre 0  e 1 são aceitos. Ex.: 0.50",
     )
     frequency_penalty = models.DecimalField(
         max_digits=4,
         decimal_places=2,
         default=0.0,
-        help_text=u"Penalidade para a frequência de termos repetidos. Valores entre 0 e 1 são aceitos. Ex.: 0.50",
+        help_text="Penalidade para a frequência de termos repetidos. Valores entre 0 e 1 são aceitos. Ex.: 0.50",
     )
     presence_penalty = models.DecimalField(
         max_digits=4,
         decimal_places=2,
         default=0.0,
-        help_text=u"Penalidade para a presença de termos específicos. Valores entre 0 e 1 são aceitos. Ex.: 0.50",
+        help_text="Penalidade para a presença de termos específicos. Valores entre 0 e 1 são aceitos. Ex.: 0.50",
     )
 
     def __unicode__(self):

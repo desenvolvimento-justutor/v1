@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.dispatch import Signal
 
-from dateutil.parser import parse
 import json
-from apps.website.utils import enviar_email
-
-from .settings import TRANSACTION_STATUS
-from apps.aluno.models import Aluno
 import logging
 
-logger = logging.getLogger("apps")
+from dateutil.parser import parse
+from django.dispatch import Signal
+
+from apps.aluno.models import Aluno
+from apps.website.utils import enviar_email
+from .settings import TRANSACTION_STATUS
+
+logger = logging.getLogger("pags")
 
 checkout_realizado = Signal(providing_args=['data'])
 checkout_realizado_com_sucesso = Signal(providing_args=['data'])
@@ -131,11 +132,24 @@ def update_checkout(data, transaction):
                     },
                     ead=False
                 )
-        except:
-            pass
+        except Exception as e:
+            logger.error(e)
         checkout.cpf = cpf
-    checkout.save()
-
+        checkout.save()
+    else:
+        try:
+            aluno = checkout.aluno
+            enviar_email(
+                'curso/email/compra-efetuada.html',
+                'Bem-vindo ao JusTutor!',
+                [aluno.email],
+                context={
+                    "aluno": aluno.nome
+                },
+                ead=False
+            )
+        except Exception as e:
+            logger.error(e)
 
     if not transaction.checkout:
         transaction.checkout = checkout
@@ -160,7 +174,7 @@ def update_checkout(data, transaction):
 
 
 def update_transaction(sender, transaction, **kwargs):
-    from .models import Transaction, TransactionHistory, Checkout
+    from .models import Transaction, TransactionHistory
 
     trans = transaction
 
