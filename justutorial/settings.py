@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import os
+
 import environ
 import pusher
 
@@ -80,7 +82,7 @@ INSTALLED_APPS = (
     "apps.checkout",
     "apps.financeiro",
     "apps.nfse",
-    "apps.pix"
+    "apps.pix",
     # 'debug_toolbar',
     # 'redis_cache',
     # 'cacheops'
@@ -194,7 +196,7 @@ SUIT_CONFIG = {
         "django_comments",
         "threadedcomments",
         {
-            "label": u"Segurança",
+            "label": "Segurança",
             "icon": "icon-lock",
             "models": ("auth.user", "auth.group"),
             "permissions": "auth.add_permission",
@@ -266,6 +268,7 @@ SUIT_CONFIG = {
                 "website.videojustutor",
                 "website.noticia",
                 "website.anuncio",
+                "website.gptmmodels",
             ),
             "permissions": "auth.add_permission",
         },
@@ -547,10 +550,9 @@ push = pusher.Pusher(
 )
 
 # NEWSLETTER
-SMARTWEB_MMKT_LIST_ID = "oPeEzyP03txLXAlKIzoLFQ"
+SMARTWEB_MMKT_LIST_ID = "dVj0tVml87zSUbLY9tlDZg"
 SMARTWEB_MMKT_URL = "http://justutorial.com.br/"
-SENDY_API_KEY = "Stv8mmGM9xFhU7x62cGI"
-
+SENDY_API_KEY = "dImKU64JK1KSEvu1p83X"
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
@@ -680,4 +682,3 @@ CKEDITOR_CONFIGS = {
         "removePlugins": ",".join(["image"]),
     },
 }
-

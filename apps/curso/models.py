@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
 import logging
 import os
 import shlex
@@ -12,7 +11,6 @@ import uuid
 from datetime import datetime, timedelta
 
 import django
-import requests
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
@@ -33,7 +31,7 @@ from apps.enunciado.models import (
     TipoPecaPratica,
 )
 from apps.formulario_correcao.models import TabelaCorrecaoAluno
-from apps.website.models import PacoteDesconto
+from apps.website.models import PacoteDesconto, GPTMModels
 from apps.website.utils import enviar_email
 from justutorial.settings import MEDIA_ROOT
 from libs.signals import create_slug
@@ -773,11 +771,12 @@ class Atividade(models.Model):
         null=True,
         help_text="Instruções para análise do recurso",
     )
-    gpt_model = models.CharField(
-        max_length=20,
-        choices=GPT_MODELS,
-        default="GPT-3",
+    gptmodel = models.ForeignKey(
+        verbose_name="Modelo GPT",
         help_text="Selecione o modelo GPT a ser usado.",
+        to=GPTMModels,
+        on_delete=models.PROTECT,
+        null=True
     )
     temperature = models.DecimalField(
         max_digits=4,

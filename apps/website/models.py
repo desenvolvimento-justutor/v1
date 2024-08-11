@@ -815,6 +815,18 @@ class WhatsAppInscritos(models.Model):
         return self.nome
 
 
+@python_2_unicode_compatible
+class GPTMModels(models.Model):
+    model = models.CharField(verbose_name="Modelo", max_length=150, unique=True)
+
+    class Meta:
+        verbose_name = "Modelo GPT"
+        verbose_name_plural = "Modelos GPT"
+
+    def __str__(self):
+        return self.model
+
+
 models.signals.post_save.connect(create_slug, sender=Artigo)
 models.signals.post_save.connect(create_slug, sender=Institucional)
 models.signals.post_save.connect(create_slug, sender=Noticia)

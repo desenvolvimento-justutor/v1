@@ -420,7 +420,7 @@ class AtividadeAdmin(admin.ModelAdmin):
                 "classes": ("suit-tab", "suit-tab-gpt"),
                 "fields": [
                     "enable_gpt",
-                    "gpt_model",
+                    "gptmodel",
                     "temperature",
                     "max_tokens",
                     "top_p",
