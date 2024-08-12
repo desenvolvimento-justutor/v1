@@ -776,7 +776,8 @@ class Atividade(models.Model):
         help_text="Selecione o modelo GPT a ser usado.",
         to=GPTMModels,
         on_delete=models.PROTECT,
-        null=True
+        null=True,
+        blank=True,
     )
     temperature = models.DecimalField(
         max_digits=4,

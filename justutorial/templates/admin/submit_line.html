@@ -17,6 +17,8 @@
     {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-info"  name="_send_back" value="True">Salvar e ver formulário</button>{% endif %}
   {% elif opts.model_name in 'formulario' %}
     {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-primary"  name="_exportar_notas" value="True">Exportar Notas</button>{% endif %}
+  {% elif opts.model_name == 'tarefaatividade' %}
+    {% if show_save_and_add_another %}<button type="submit" class="btn btn-high btn-primary"  name="_corrigir_gpt" value="True">Corrigir GPT </button>{% endif %}
   {% endif %}
 </div>
 

@@ -7,6 +7,7 @@ import csv
 
 from django.contrib import admin
 from django.contrib import messages
+from django.contrib.admin import SimpleListFilter
 from django.db import models
 from django.forms import ModelForm, TextInput, Select, ModelChoiceField
 from django.http import HttpResponse
@@ -59,7 +60,7 @@ from models import (
     Simulado,
     Cortesia,
 )
-from django.contrib.admin import SimpleListFilter
+from services.gpt.openia import GPT
 
 
 class CortesiaForm(ModelForm):
@@ -497,6 +498,37 @@ class TarefaAtividadeAdmin(admin.ModelAdmin):
     ]
 
     raw_id_fields = ("atividade", "aluno")
+
+    def response_change(self, request, obj):
+        if request.POST.get("_corrigir_gpt"):
+            atividade = obj.atividade
+            if not obj.resposta:
+                self.message_user(request, "A Tarefa precisa ser respondida!", messages.ERROR)
+                return redirect("/admin/curso/tarefaatividade/%s/" % obj.id)
+            gpt_api = GPT(
+                modelo=atividade.gptmodel.model,
+                max_tokens=atividade.max_tokens,
+                temperature=atividade.temperature,
+                top_p=atividade.top_p,
+            )
+            prompt = gpt_api.gerar_prompt(
+                enunciado=atividade.enunciado,
+                padrao_resposta=atividade.padrao_resposta,
+                frases_de_correcao=atividade.parametros_correcao,
+                instrucoes_adicionais=atividade.instrucoes_gpt,
+                resposta_aluno=obj.resposta,
+                exemplos_de_correcao=atividade.exemplos_correcao,
+            )
+            correcao = gpt_api.corrigir_resposta(prompt)
+
+            if correcao:
+                obj.gabarito = correcao
+                obj.save()
+                self.message_user(request, "Correção efetuada!", messages.SUCCESS)
+            else:
+                self.message_user(request, "Erro ao efetuar a correção pelo GPT", messages.ERROR)
+            return redirect("/admin/curso/tarefaatividade/%s/" % obj.id)
+        return super(TarefaAtividadeAdmin, self).response_change(request, obj)
 
 
 @admin.register(Cortesia)

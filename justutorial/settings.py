@@ -20,6 +20,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
+# GPT
+API_KEY_GPT = env("API_KEY_GPT")
 
 ALLOWED_HOSTS = [".justutor.com.br", "69.164.212.28"]
 if DEBUG:
