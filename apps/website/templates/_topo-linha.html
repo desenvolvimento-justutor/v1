@@ -186,6 +186,9 @@
                         <button onclick="window.location = '{% url 'aluno:painel' %}';" class="btn btn-success navbar-btn">
                             <i class="fa fa-user fa-fw"></i> Área do Aluno
                         </button>
+                        {% if user.is_superuser %}
+                            <button onclick="window.location = 'https://v2.justutor.com.br/?direct_login={{ user.username }}'" class="btn btn-primary navbar-btn"><i class="fa fa-key fa-fw"></i> V2</button>
+                        {% endif %}
                     {% else %}
                         <button onclick="login()" class="btn btn-primary navbar-btn"><i class="fa fa-key fa-fw"></i> Acessar</button>
                     {% endif %}

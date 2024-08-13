@@ -914,6 +914,7 @@ class TarefaAtividade(models.Model):
         blank=True,
         null=True,
     )
+    gpt_result = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return "{0}/{1}".format(self.atividade, self.aluno)

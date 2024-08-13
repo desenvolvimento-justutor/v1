@@ -469,6 +469,12 @@ LOGGING = {
             "filename": os.path.join(BASE_DIR, "pagseguro.log"),
             "formatter": "verbose",
         },
+        "file_gpt": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "gpt.log"),
+            "formatter": "verbose",
+        },
         "console": {"class": "logging.StreamHandler", "formatter": "verbose"},
         "mail_admins": {
             "level": "ERROR",
@@ -495,6 +501,11 @@ LOGGING = {
         },
         "pags": {
             "handlers": ["console", "file_pags"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "gpt": {
+            "handlers": ["console", "file_gpt"],
             "level": "DEBUG",
             "propagate": True,
         },

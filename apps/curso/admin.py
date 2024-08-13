@@ -427,6 +427,7 @@ class AtividadeAdmin(admin.ModelAdmin):
                     "top_p",
                     "frequency_penalty",
                     "presence_penalty",
+                    #
                     "enunciado",
                     "padrao_resposta",
                     "parametros_correcao",
@@ -510,19 +511,23 @@ class TarefaAtividadeAdmin(admin.ModelAdmin):
                 max_tokens=atividade.max_tokens,
                 temperature=atividade.temperature,
                 top_p=atividade.top_p,
+                frequency_penalty=atividade.frequency_penalty,
+                presence_penalty=atividade.presence_penalty,
             )
             prompt = gpt_api.gerar_prompt(
-                enunciado=atividade.enunciado,
-                padrao_resposta=atividade.padrao_resposta,
-                frases_de_correcao=atividade.parametros_correcao,
-                instrucoes_adicionais=atividade.instrucoes_gpt,
-                resposta_aluno=obj.resposta,
-                exemplos_de_correcao=atividade.exemplos_correcao,
+                atividade.enunciado,
+                atividade.padrao_resposta,
+                atividade.parametros_correcao,
+                atividade.exemplos_correcao,
+                obj.resposta,
+                atividade.instrucoes_gpt,
+                atividade.instrucoes_recurso,
             )
             correcao = gpt_api.corrigir_resposta(prompt)
 
             if correcao:
                 obj.gabarito = correcao
+                obj.gpt_result = gpt_api.gpt_result
                 obj.save()
                 self.message_user(request, "Correção efetuada!", messages.SUCCESS)
             else:

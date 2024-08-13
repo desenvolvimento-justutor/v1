@@ -1,53 +1,75 @@
 # -*- coding: utf-8 -*-
-import json
+from __future__ import unicode_literals
 
+import json
+from logging import getLogger
 import html2text
 import requests
 from django.conf import settings
 
+logger = getLogger("gpt")
+
 
 class GPT:
-    def __init__(self, modelo="gpt-4", max_tokens=600, temperature=0.5, top_p=0.9):
+    def __init__(
+        self,
+        modelo="gpt-4",
+        max_tokens=600,
+        temperature=0.5,
+        top_p=0.9,
+        frequency_penalty=0.5,
+        presence_penalty=0.5,
+    ):
         self.api_key = settings.API_KEY_GPT
         # PARAMS
         self.modelo = modelo
         self.max_tokens = max_tokens
-        self.temperature = temperature
-        self.top_p = top_p
+        self.temperature = float(temperature)
+        self.top_p = float(top_p)
+        self.frequency_penalty = float(frequency_penalty)
+        self.presence_penalty = float(presence_penalty)
 
         self.url = "https://api.openai.com/v1/chat/completions"
         self.headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer {}".format(self.api_key),
         }
-
-    def gerar_prompt(
-        self,
-        enunciado,
-        padrao_resposta,
-        frases_de_correcao,
-        instrucoes_adicionais,
-        resposta_aluno,
-        exemplos_de_correcao=None,
-    ):
-
-        prompt = "{enunciado}\n\nResposta do aluno:\n{resposta_aluno}\n\n{padrao_resposta}\n".format(
-            enunciado=enunciado.encode("utf-8"),
-            resposta_aluno=resposta_aluno.encode("utf-8"),
-            padrao_resposta=padrao_resposta.encode("utf-8"),
-        )
-
-        if exemplos_de_correcao:
-            prompt += "\n{}\n".format(exemplos_de_correcao.encode("utf-8"))
-        prompt += "\n{}\n\n{}\n\nCorreção do JusTutor:".format(
-            frases_de_correcao.encode("utf-8"), instrucoes_adicionais.encode("utf-8")
-        )
-
-        return prompt
+        self.gpt_result = None
 
     @staticmethod
-    def _html2text(html):
-        return html2text.html2text(html)
+    def gerar_prompt(
+        enunciado,
+        padrao_resposta,
+        parametros_correcao,
+        exemplos_correcao,
+        resposta,
+        instrucoes_gpt,
+        instrucoes_recurso,
+        optimize_tokens=True
+    ):
+        prompts_map = {
+            "enunciado": enunciado,
+            "padrao_resposta": padrao_resposta,
+            "parametros_correcao": parametros_correcao,
+            "exemplos_correcao": exemplos_correcao,
+            "resposta": resposta,
+            "instrucoes_gpt": instrucoes_gpt,
+            "instrucoes_recurso": instrucoes_recurso,
+        }
+
+        prompts = []
+        for key, value in prompts_map.iteritems():
+            if not value:
+                logger.debug("%s não informado: %r", *(key, value))
+                continue
+            if optimize_tokens:
+                prompts.append(html2text.html2text(value))
+            else:
+                prompts.append(value)
+
+        prompt = "\n\n".join(prompts)
+        logger.debug("PROMPT \n%sprompt", prompt)
+        return prompt
 
     def corrigir_resposta(self, prompt):
         data = {
@@ -57,30 +79,30 @@ class GPT:
                     "role": "system",
                     "content": "Você é um assistente útil que corrige respostas de alunos.",
                 },
-                {"role": "user", "content": prompt},
+                {"role": "assistant", "content": prompt},
             ],
-            "max_tokens": 600,
-            "n": 1,
-            "stop": ["\n\n", "END"],
-            "temperature": 0.5,
-            "top_p": 0.9,
-            "frequency_penalty": 0.5,
+            "max_tokens": self.max_tokens,
+            # "n": 1,
+            # "stop": ["\n\n", "END"],
+            "temperature": self.temperature,
+            "top_p": self.top_p,
+            "frequency_penalty": self.frequency_penalty,
+            "presence_penalty": self.presence_penalty,
         }
-
+        logger.debug("CORRIGIR RESPOSTA: %s", data)
         # Enviando a requisição POST para a API da OpenAI
         response = requests.post(self.url, headers=self.headers, data=json.dumps(data))
 
         # Verificando a resposta e tratando erros
         if response.status_code == 200:
             result = response.json()
-            print("*" * 100)
-            print(result)
-            print("*" * 100)
+            logger.debug("GPT RESULT: %s", result)
+            self.gpt_result = str(result)
             return result["choices"][0]["message"]["content"].strip()
         else:
-            print("Erro:", response.status_code)
-            print(response.text)
-            return None
+            result = response.text
+            logger.debug("GPT ERROR: %s", result)
+            return result
 
 
 if __name__ == "__main__":
