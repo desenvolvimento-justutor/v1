@@ -4,7 +4,7 @@ import openai
 
 # Defina sua chave de API da OpenAI
 
-openai.api_key = "sk-proj-ejl6g38uoKOlCS82IGC7T3BlbkFJZ1NZfy8rbX2d4pYk3Js4"
+openai.api_key = None
 
 
 # Função para gerar o prompt
