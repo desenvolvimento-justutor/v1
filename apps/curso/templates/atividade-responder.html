@@ -65,7 +65,7 @@
                         </div>
                         {% endif %}
                     {% endif %}
-                    {% if not tarefa.concluido%}
+                    {% if not tarefa.concluido and not atividade.enable_gpt %}
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label class="control-label">Enviar arquivo com resposta manuscrita:</label>
@@ -77,6 +77,14 @@
                         </div>
                     </form>
                     {% endif %}
+                    {% if tarefa.gabarito and tarefa.corrigido and atividade.enable_gpt %}
+                        <a target="_blank" class="btn btn-sm btn-info btn-block"
+                           href="{% url 'curso:baixar-correcao' tarefa.pk %}">
+                            <i class="fa fa-download"></i>
+                            Baixar Correção
+                        </a>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
@@ -169,13 +177,21 @@
             if (finalizar) {
                 Swal.fire({
                     title: "Deseja Finalizar sua tarefa?",
-                    type: "warning",
+                    icon: "warning",
                     showCancelButton: true,
                     cancelButtonText: 'Não. Vou continuar editando.',
                     confirmButtonText: "Finalizar!",
                     closeOnConfirm: false,
                 }).then(function (result) {
                     if (result.value) {
+                        Swal.fire({
+                            title: 'Aguarde enquanto a IA do JusTutor efetua a correção',
+                            allowEscapeKey: false,
+                            allowOutsideClick: false,
+                            onOpen: () => {
+                              swal.showLoading();
+                            }
+                          });
                         finalizarResposta(finalizar);
                     }
                 });
@@ -194,9 +210,15 @@
               }
             })
               .done(function( msg ) {
-                  window.safe = true;
-                  $('#btn-salvar').attr('disabled', true);
                   if (show_msg) {
+                      Swal.fire({
+                          title: 'Concluído!',
+                          icon: 'success',
+                          timer: 3000,
+                          showConfirmButton: true
+                        });
+                      window.safe = true;
+                      $('#btn-salvar').attr('disabled', true);
                       _toastr(msg.msg, "top-center", msg.flag, false);
                   }
                   if (msg.finalizar) {

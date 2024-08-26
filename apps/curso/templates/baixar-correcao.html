@@ -15,15 +15,21 @@
 {% else %}
     <h1>{{ atividade }}</h1>
     {{ atividade.tarefa|safe }}
-
+    <hr/>
+    <h1>Gabarito</h1>
+    {% if atividade.enable_gpt %}
+        {{ atividade.gabarito|safe }}
+    {% endif %}
+    <hr/>
     <h1>Resposta</h1>
     {{ tarefa.resposta|safe }}
-
+    <hr/>
     <h1>Correção</h1>
-    {{ tarefa.render_gabarito|safe }}
+    {% if atividade.enable_gpt %}
+        {{ tarefa.gabarito|safe }}
+    {% else %}
+        {{ tarefa.render_gabarito|safe }}
+    {% endif %}
 {% endif %}
-<script>
-    window.print()
-</script>
 </body>
 </html>

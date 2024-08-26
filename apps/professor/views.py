@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Autor: christian
+from __future__ import unicode_literals
 import operator
 from decimal import Decimal
 from operator import itemgetter
@@ -15,7 +16,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import loader, Context
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-
+from logging import getLogger
 from apps.aluno.models import Aluno
 from apps.curso.models import (
     Curso,
@@ -36,6 +37,7 @@ from apps.professor.models import Professor
 from apps.website.utils import enviar_email
 from .models import Mensagem
 
+logger = getLogger("apps")
 
 def professor_required(f):
     def wrap(request, *args, **kwargs):
@@ -829,123 +831,61 @@ def formulario_recorrer(request):
 def formulario_estatistica(request):
     atividade = Atividade.objects.get(pk=request.POST.get('pk'))
     context = {
-        'atividade': atividade
+        'atividade': atividade,
+        'is_gpt': False
     }
     average = []
     notas = []
     total = 0
     media_total = 0
     msg = False
-    tabelas = TabelaCorrecaoAluno.objects.filter(corrigido=True, formulario__atividade=atividade)
     rendered = False
-    try:
-        formulario = atividade.formulario
-    except Formulario.DoesNotExist:
-        formulario = False
-    if formulario:
-        try:
-            for tabela in tabelas:
-                url = None
-                try:
-                    atividade = tabela.formulario.atividade
-                    tarefa = TarefaAtividade.objects.get(atividade=atividade, aluno=tabela.aluno)
-                    if tarefa.atividade.get_status().get('status') == 'Encerrado':
-                        if tarefa.resposta:
-                            url = '/curso/atividade/imprimir/%d/?action=resposta&notprint=sim' % tarefa.pk
-                        elif tarefa.arquivo:
-                            url = tarefa.arquivo.url
-                except Exception as e:
-                    print '>>>> 1', e
+    if atividade.enable_gpt:
+        tarefas = atividade.tarefa_atividades.filter(corrigido=True)
+        for tarefa in tarefas:
+            url = None
+            if tarefa.corrigido:
+                nota = tarefa.nota
+                aluno = tarefa.aluno
+
                 notas.append({
-                    'aluno': tabela.aluno,
-                    'nota': tabela.total_aluno,
+                    'aluno': aluno,
+                    'nota': nota,
                     'url': url,
-                    'tabela_pk': tabela.pk
                 })
 
-            for tbl in atividade.formulario.tabelas.all():
-                media = TabelaAluno.objects.filter(
-                    tabela__formulario__atividade=atividade, tabela_correcao__corrigido=True, tabela=tbl
-                ).aggregate(total=Avg('nota')).get('total')
-                media = media if media else 0
-                average.append({
-                    'tabela': tbl,
-                    'avg': '%.02f' % media
-                })
-                total += tbl.valor
-                media_total += media
-
-            context.update({
-                'notas': sorted(notas, key=itemgetter('nota'), reverse=True),
-                'medias': average,
-                'total': '%.02f' % total,
-                'media_total': '%.02f' % media_total
-            })
-            t = loader.get_template('professor/formulario-estatistica.html')
-            c = Context(context)
-            rendered = t.render(c)
-        except Exception as e:
-            msg = str(e)
-            raise e
-    return JsonResponse({'html': rendered, 'message': msg})
-
-
-@csrf_exempt
-def formulario_estatistica_geral(request):
-    curso = Curso.objects.get(pk=request.POST.get('pk'))
-    atividades = curso.atividades.all()
-    context = {
-        'curso': curso,
-        'atividades': atividades
-    }
-    notas_geral = {}
-    media_geral = []
-    total_geral = 0
-    media_geral_total = 0
-    for atividade in atividades:
-        average = []
-        notas = []
-        total = 0
-        media_total = 0
-        msg = False
-        tabelas = TabelaCorrecaoAluno.objects.filter(
-            corrigido=True,
-            formulario__atividade=atividade,
-            formulario__atividade__resolucao_obrigatorio=True
-        )
-        rendered = False
+        context.update({
+            'is_gpt': True,
+            'notas': sorted(notas, key=itemgetter('nota'), reverse=True),
+            'medias': average,
+            'total': '%.02f' % total,
+            'media_total': '%.02f' % media_total
+        })
+        t = loader.get_template('professor/formulario-estatistica.html')
+        c = Context(context)
+        rendered = t.render(c)
+    else:
         try:
             formulario = atividade.formulario
         except Formulario.DoesNotExist:
             formulario = False
         if formulario:
+            tabelas = TabelaCorrecaoAluno.objects.filter(corrigido=True, formulario__atividade=atividade)
             try:
                 for tabela in tabelas:
                     url = None
                     try:
                         atividade = tabela.formulario.atividade
                         tarefa = TarefaAtividade.objects.get(atividade=atividade, aluno=tabela.aluno)
-                    except tarefa.MultipleObjectsReturned:
-                        tarefas = TarefaAtividade.objects.filter(atividade=atividade, aluno=tabela.aluno)
-                        tarefa = tarefas.first()
-                        print(">>> TAREFAS", tarefas)
-                    except Exception as e:
-                        print '>>>> 2', e
-                    else:
                         if tarefa.atividade.get_status().get('status') == 'Encerrado':
                             if tarefa.resposta:
                                 url = '/curso/atividade/imprimir/%d/?action=resposta&notprint=sim' % tarefa.pk
                             elif tarefa.arquivo:
                                 url = tarefa.arquivo.url
-
-                    nota = float(tabela.total_aluno)
-                    aluno = tabela.aluno
-                    ngeral = notas_geral.get(aluno)
-                    if ngeral:
-                        notas_geral[aluno] = ngeral + nota
-                    else:
-                        notas_geral[aluno] = nota
+                    except Exception as e:
+                        logger.error(e)
                     notas.append({
+                        'is_gpt': True,
                         'aluno': tabela.aluno,
                         'nota': tabela.total_aluno,
                         'url': url,
@@ -957,30 +897,157 @@ def formulario_estatistica_geral(request):
                         tabela__formulario__atividade=atividade, tabela_correcao__corrigido=True, tabela=tbl
                     ).aggregate(total=Avg('nota')).get('total')
                     media = media if media else 0
-                    # average.append({
-                    #     'tabela': tbl,
-                    #     'avg': '%.02f' % media
-                    # })
+                    average.append({
+                        'tabela': tbl,
+                        'avg': '%.02f' % media
+                    })
                     total += tbl.valor
                     media_total += media
-                ctxm = {
-                    # 'notas': sorted(notas, key=itemgetter('nota'), reverse=True),
-                    'atividade': atividade,
-                    # 'medias': average,
-                    'total': total,
-                    'media_total': media_total
-                }
-                media_geral_total += media_total
-                total_geral += total
-                media_geral.append(ctxm)
+
+                context.update({
+                    'notas': sorted(notas, key=itemgetter('nota'), reverse=True),
+                    'medias': average,
+                    'total': '%.02f' % total,
+                    'media_total': '%.02f' % media_total
+                })
+                t = loader.get_template('professor/formulario-estatistica.html')
+                c = Context(context)
+                rendered = t.render(c)
             except Exception as e:
-                msg = str(e)
                 raise e
+    return JsonResponse({'html': rendered, 'message': msg})
+
+
+def formata_nota(nota):
+    n = 0
+    if isinstance(nota, (str, unicode)):
+        try:
+            n = float(nota.replace(",", "."))
+        except Exception as e:
+            print("Erro ao formatar a nota: %r" % nota)
+    return n
+
+@csrf_exempt
+def formulario_estatistica_geral(request):
+    curso = Curso.objects.get(pk=request.POST.get('pk'))
+    atividades = curso.atividades.all()
+    context = {
+        'curso': curso,
+        'atividades': atividades,
+        'is_gpt': False
+    }
+    notas_geral = {}
+    media_geral = []
+    total_geral = 0
+    media_geral_total = 0
+    for atividade in atividades:
+        notas = []
+        total = 0
+        media_total = 0
+        msg = False
+        if atividade.enable_gpt:
+            context['is_gpt'] = True
+            tarefas = atividade.tarefa_atividades.filter(corrigido=True)
+            for tarefa in tarefas:
+                url = None
+                if tarefa.resposta:
+                    url = '/curso/atividade/imprimir/%d/?action=resposta&notprint=sim' % tarefa.pk
+                elif tarefa.arquivo:
+                    url = tarefa.arquivo.url
+
+                if tarefa.corrigido:
+                    nota = tarefa.nota
+                    aluno = tarefa.aluno
+                    ngeral = notas_geral.get(aluno)
+                    if ngeral:
+                        notas_geral[aluno] = ngeral + nota
+                    else:
+                        notas_geral[aluno] = nota
+                    notas.append({
+                        'aluno': aluno,
+                        'nota': nota,
+                        'url': url,
+                        # 'tabela_pk': tabela.pk
+                    })
+        else:
+            tabelas = TabelaCorrecaoAluno.objects.filter(
+                corrigido=True,
+                formulario__atividade=atividade,
+                formulario__atividade__resolucao_obrigatorio=True
+            )
+
+            try:
+                formulario = atividade.formulario
+            except Formulario.DoesNotExist:
+                formulario = False
+            if formulario:
+                try:
+                    for tabela in tabelas:
+                        url = None
+                        try:
+                            atividade = tabela.formulario.atividade
+                            tarefa = TarefaAtividade.objects.get(atividade=atividade, aluno=tabela.aluno)
+                        except tarefa.MultipleObjectsReturned:
+                            tarefas = TarefaAtividade.objects.filter(atividade=atividade, aluno=tabela.aluno)
+                            tarefa = tarefas.first()
+                        except Exception as e:
+                            logger.error(e)
+                        else:
+                            if tarefa.atividade.get_status().get('status') == 'Encerrado':
+                                if tarefa.resposta:
+                                    url = '/curso/atividade/imprimir/%d/?action=resposta&notprint=sim' % tarefa.pk
+                                elif tarefa.arquivo:
+                                    url = tarefa.arquivo.url
+
+                        nota = float(tabela.total_aluno)
+                        aluno = tabela.aluno
+                        ngeral = notas_geral.get(aluno)
+                        if ngeral:
+                            notas_geral[aluno] = ngeral + nota
+                        else:
+                            notas_geral[aluno] = nota
+                        notas.append({
+                            'aluno': aluno,
+                            'nota': tabela.total_aluno,
+                            'url': url,
+                            'tabela_pk': tabela.pk
+                        })
+
+                    for tbl in atividade.formulario.tabelas.all():
+                        media = TabelaAluno.objects.filter(
+                            tabela__formulario__atividade=atividade, tabela_correcao__corrigido=True, tabela=tbl
+                        ).aggregate(total=Avg('nota')).get('total')
+                        media = media if media else 0
+                        # average.append({
+                        #     'tabela': tbl,
+                        #     'avg': '%.02f' % media
+                        # })
+                        total += tbl.valor
+                        media_total += media
+                    ctxm = {
+                        # 'notas': sorted(notas, key=itemgetter('nota'), reverse=True),
+                        'atividade': atividade,
+                        # 'medias': average,
+                        'total': total,
+                        'media_total': media_total
+                    }
+                    media_geral_total += media_total
+                    total_geral += total
+                    media_geral.append(ctxm)
+                except Exception as e:
+                    logger.error(e)
+                    raise e
 
     context['notas'] = sorted(notas_geral.items(), key=operator.itemgetter(1), reverse=True)
     context['medias_geral'] = sorted(media_geral, key=itemgetter('media_total'), reverse=True),
-    context['media_geral_total'] = media_geral_total / len(media_geral)
-    context['total_geral'] = total_geral / len(media_geral)
+    try:
+        context['media_geral_total'] = media_geral_total / len(media_geral)
+    except ZeroDivisionError:
+        context['media_geral_total'] = 0
+    try:
+        context['total_geral'] = total_geral / len(media_geral)
+    except ZeroDivisionError:
+        context['total_geral'] = 0
     t = loader.get_template('professor/formulario-estatistica-geral.html')
     c = Context(context)
     rendered = t.render(c)

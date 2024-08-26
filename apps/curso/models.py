@@ -915,6 +915,7 @@ class TarefaAtividade(models.Model):
         null=True,
     )
     gpt_result = models.TextField(null=True, blank=True)
+    nota = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
 
     def __unicode__(self):
         return "{0}/{1}".format(self.atividade, self.aluno)

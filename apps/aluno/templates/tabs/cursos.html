@@ -205,6 +205,7 @@
                                                 </td>
                                                 <td class="text-center" data-container="body" data-toggle="tooltip"
                                                     data-original-title="{% if atividade.resolucao_obrigatorio %}É obrigatório{% else %}Não é obrigatório{% endif %}">
+                                                <div>
                                                     {% if atividade.resolucao_obrigatorio %}
                                                         <span class="label label-danger"
                                                               style="cursor: pointer">S</span>
@@ -223,6 +224,16 @@
                                                     {% else %}
                                                         <span class="label label-danger">Pendente</span>
                                                     {% endif %}
+                                                </div>
+                                                <div style="padding-top: 8px">
+                                                    {% if tar.gabarito and tar.corrigido %}
+                                                        <a target="_blank" class="btn btn-sm btn-link"
+                                                           href="{% url 'curso:baixar-correcao' tar.pk %}">
+                                                            <i class="fa fa-download"></i>
+                                                            Baixar Correção
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
                                                 </td>
                                                 <td class="text-left">
                                                     {% if atividade.get_status.status == 'Aguarde' %}

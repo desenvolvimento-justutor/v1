@@ -490,7 +490,7 @@ LOGGING = {
             "propagate": True,
         },
         "apps": {
-            "handlers": ["console"],
+            "handlers": ["console", "file"],
             "level": "DEBUG",
             "propagate": True,
         },
