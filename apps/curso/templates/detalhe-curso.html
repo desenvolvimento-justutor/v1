@@ -345,6 +345,15 @@
                                             Efetue Login ou seu Cadastramento para poder comprar o curso
                                         </a>
                                     {% endif %}
+                                    {% get_codigo_cortesia request.user.aluno curso as codigo %}
+                                    {% if codigo %}
+                                    <div style="margin-top: 14px">
+                                        <button data-toogle="cortesia" data-curso="{{ curso.pk }}" class="btn btn-sm btn-warning btn-block" style="border-radius: unset">
+                                            <i class="fa fa-tag fa-fw"></i>
+                                             Possui um código de cortesia? Clique aqui
+                                        </button>
+                                    </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -429,8 +438,63 @@
             start: 'top',
             height: '200px'
         });
+
         $(document).ready(function () {
             $("[name='celular']").mask('(99)99999-9999');
+        })
+
+        $('[data-toogle=cortesia]').on('click', function (e) {
+            eml = $(e.target)
+            var curso_pk = eml.data('curso');
+            Swal.fire({
+                icon: 'info',
+                title: 'Informe o código',
+                input: 'text',
+                showCancelButton: true,
+                inputAttributes: {
+                    maxlength: 5,
+                    minlength: 5,
+                    autocapitalize: 'word'
+                },
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Informe o código'
+                    }
+                    if (value.length != 5) {
+                        return 'O código possui 5 caracteres.'
+                    }
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                showLoaderOnConfirm: true,
+                preConfirm: (code) => {
+                    return fetch(`{% url 'curso:ajax-validar-cortesia' %}?pk=${curso_pk}&code=${code}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(response.statusText)
+                            }
+                            return response.json()
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(
+                                `${error}`
+                            )
+                        })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.value) {
+                    console.log('res', result);
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${result.value.message}`,
+                        onAfterClose: () => {
+                            window.location.href = `/aluno/cursos/`
+                        }
+                    })
+                }
+            })
         })
     </script>
 {% endblock %}

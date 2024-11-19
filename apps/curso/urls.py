@@ -30,6 +30,7 @@ urlpatterns = patterns(
     url(r'^post-correcao/(?P<pk>[0-9]+)/$', views.post_correcao, name='post-correcao'),
 
     url(r'^atividade/responder/(?P<pk>[0-9]+)/$', views.atividade_responder, name='atividade-responder'),
+
     url(r'^atividade/imprimir/(?P<pk>[0-9]+)/$', views.imprimir, name='atividade-imprimir'),
 
     url(r'^baixar/correcao/(?P<pk>[0-9]+)/$', views.baixar_correcao, name='baixar-correcao'),
@@ -39,7 +40,7 @@ urlpatterns = patterns(
     url(r'^post-sentenca/(?P<pk>[0-9]+)/$', views.post_sentenca, name='post-sentenca'),
 
     url(r'^pecas-oab/responder/(?P<pk>[0-9]+)/$', views.sentenca_oab_responder, name='sentenca-oab-responder'),
-    url(r'^post-sentenca-oab/(?P<pk>[0-9]+)/$', views.post_sentenca_oab, name='post-sentenca-oab'),
+    url(r'^post-sentenca-oab/(?P<pk>[0-9]+)/$', views.post_sentenca_oab, name='post-sentenca-oarab'),
 
     url(r'^download/tarefa/(?P<pk>[0-9]+)/$', views.download_tarefa, name='download-tarefa'),
     url(r'^enviar/correcao/$', views.enviar_correcao, name='enviar-correcao'),
@@ -47,6 +48,7 @@ urlpatterns = patterns(
     url(r'^ajax-search-simulado$', views.ajax_search_simulado, name='ajax-search-simulado'),
     url(r'^ajax-gerar-cortesia', views.ajax_gerar_cortesia, name='ajax-gerar-cortesia'),
     url(r'^ajax-validar-cortesia', views.ajax_validar_cortesia, name='ajax-validar-cortesia'),
+    url(r'^ajax-desistir-tarefa', views.ajax_desistir_tarefa, name='ajax-desistir-tarefa'),
     url(r"^vdo_modal/(?P<vdo_id>[:\w]+)/$", views.vdo_view, name="vdo_view"),
 
 )

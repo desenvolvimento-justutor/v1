@@ -14,7 +14,6 @@ from mptt.models import MPTTModel
 from smart_selects.db_fields import ChainedForeignKey
 from sorl.thumbnail.fields import ImageField
 
-from apps.aluno.models import Aluno
 from apps.enunciado.models import Disciplina, EsferaGeral, EsferaEspecifica, \
     Cargo, OrgaoEntidade, Concurso, AreaProfissional, Organizador, Localidade
 from libs.util.format import timedelta_str, convert_timedelta
@@ -716,7 +715,7 @@ class QuestionarioAluno(models.Model):
         verbose_name_plural = "Questionários do Aluno"
 
     aluno = models.ForeignKey(
-        verbose_name="Aluno", to=Aluno,
+        verbose_name="Aluno", to="aluno.Aluno",
         on_delete=models.CASCADE, related_name='aluno_questionario'
     )
     simulado = models.ForeignKey(
@@ -1394,7 +1393,7 @@ class Resultado(models.Model):
         verbose_name='Data de conclusão'
     )
     aluno = models.ForeignKey(
-        verbose_name="Aluno", to=Aluno,
+        verbose_name="Aluno", to="aluno.Aluno",
         on_delete=models.CASCADE, related_name='ralunos'
     )
     simulado = models.ForeignKey(

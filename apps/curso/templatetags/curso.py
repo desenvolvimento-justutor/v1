@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import locale
 from decimal import Decimal
 
@@ -13,7 +15,7 @@ from apps.website.models import PacoteDesconto
 from ..models import (
     TarefaAtividade, Categoria, Serie, ComboAluno,
     Curso, LiberarCompraCurso, SentencaAvulsaAluno,
-    CheckoutItens
+    CheckoutItens, Cortesia
 )
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
@@ -222,8 +224,17 @@ def get_codigo_liberacao(aluno, curso):
         codigo = LiberarCompraCurso.objects.get(
             aluno=aluno, curso=curso, data__gte=now, ativo=True
         )
-    except:
+    except LiberarCompraCurso.DoesNotExist:
         codigo = None
+    return codigo
+
+
+@register.assignment_tag
+def get_codigo_cortesia(aluno, curso):
+    args = [Q(curso=curso), Q(utilizado=False)]
+    if aluno:
+        args.append(Q(aluno=aluno))
+    codigo = Cortesia.objects.filter(*args).first()
     return codigo
 
 

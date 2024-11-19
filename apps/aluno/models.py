@@ -18,6 +18,7 @@ from pysendy import Sendy, AlreadySubscribedException
 from sorl.thumbnail import get_thumbnail
 from sorl.thumbnail.fields import ImageField
 
+from apps.curso.models import Cortesia
 from apps.enunciado import FLAG_PONTOS_RESPONDER, FLAG_PONTOS_CORRIGIR, FLAG_PONTOS_CORRIGIREM
 from apps.enunciado.models import (EnunciadoProposta, AvaliacaoCorrecao, NotaResposta, Correcao, NotificacoesAluno,
                                    Resposta)
@@ -369,7 +370,13 @@ def aluno_save(sender, **kwargs):
             "Seja bem-vindo ao JusTutor!",
             [aluno.email], {}
         )
-
+        try:
+            cortesias = Cortesia.objects.filter(email=aluno.email, aluno__isnull=True)
+            for cortesia in cortesias:
+                cortesia.aluno = aluno
+                cortesia.save()
+        except Exception as e1:
+            logger.error(str(e1))
         # t = loader.get_template('email/email-cadastro-aluno.html')
         # c = Context({
         #     'dominio': SITEADD,

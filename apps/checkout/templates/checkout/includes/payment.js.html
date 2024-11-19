@@ -504,7 +504,7 @@
             icon: 'info',
             title: 'Processando!',
             html: 'Aguardando retorno do Pagseguro: <b></b>',
-            timer: 15000,
+            timer: 30000,
             timerProgressBar: true,
             width: 600,
             onBeforeOpen: () => {
@@ -534,7 +534,7 @@
                         //console.log('err', err);
                         //clearInterval(check);
                     });
-                }, 1000)
+                }, 3000)
             },
             onClose: () => {
                 clearInterval(timerInterval);

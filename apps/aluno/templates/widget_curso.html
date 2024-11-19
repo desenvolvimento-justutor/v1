@@ -1,32 +1,6 @@
 {% load thumbnail %}
 <div class="col-sm-6">
     <div class="main-box clearfix">
-        <header class="main-box-header clearfix">
-            <h2>
-                {% if checkout.get_curso_ativo %}
-                    <i class="fa fa-check-circle" style="color: #8BC34A; cursor: pointer" data-toggle="tooltip" title="Curso em andamento."></i>
-                {% else %}
-                    <i class="fa fa-circle text-danger" style="color: #E84E40; cursor: pointer" data-toggle="tooltip" title="Curso encerrado."></i>
-                {% endif %}
-                <small><strong>ID: </strong></small>{{ checkout }}</h2>
-            <span class="warranty">
-                {% if checkout.transaction %}
-                    {% with  checkout.transaction.status as status %}
-                        {% if status in 'pago,disponivel' %}
-                            <span class="label label-success">{{ checkout.transaction.get_status_display }}</span>
-                        {% elif status in 'aguardando,em_analise' %}
-                            <span class="label label-warning">{{ checkout.transaction.get_status_display }}</span>
-                        {% else %}
-                            <span class="label label-danger">{{ checkout.transaction.get_status_display }}</span>
-                        {% endif %}
-                    {% endwith %}
-                {% else %}
-                    <span class="label label-warning">Aguardando transação do PagSeguro</span>
-                {% endif %}
-                <span class="pull-right text-primary">{{ checkout.date|date:"SHORT_DATE_FORMAT" }}</span>
-            </span>
-
-        </header>
         <div class="main-box-body clearfix">
             <ul class="widget-products">
                 {% for item in cursos %}
@@ -43,20 +17,11 @@
                             <span class="name">
                                 {{ item }}
                             </span>
-                            <span class="price">
-                                <i class="fa fa-money"></i> {{ item.total }}
-                            </span>
                             <span class="warranty">
                                 {% if item.curso.is_video_curso %}
                                     <i class="fa fa-video-camera text-success" style="color: rgb(210,78,78)"></i>
                                 {% else %}
                                     <i class="fa fa-file-pdf-o text-primary" style="color: rgb(152,90,63)"></i>
-                                {% endif %}
-                                &nbsp;
-                                {% if checkout.transaction.status in 'pago,disponivel' %}
-                                    <i class="fa fa-unlock" style="color: green"></i> Liberado
-                                {% else %}
-                                    <i class="fa fa-lock" style="color: orangered"></i> Bloqueado
                                 {% endif %}
                             </span>
                         </span>
@@ -64,7 +29,7 @@
                 </li>
                 {% endfor %}
             </ul>
-            <div class="pull-right"><strong>Total:</strong> R$ {{ checkout.total }}</div>
+            <span class="pull-right text-primary">{{ checkout.date|date:"SHORT_DATE_FORMAT" }}</span>
         </div>
     </div>
 </div>

@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from redactor.widgets import RedactorEditor
 from sorl.thumbnail.admin import AdminImageMixin
-from suit.admin import SortableModelAdmin, SortableTabularInline
+from suit.admin import SortableModelAdmin, SortableTabularInline, SortableStackedInline
 from suit.widgets import (
     AutosizedTextarea,
     SuitSplitDateTimeWidget,
@@ -129,8 +129,15 @@ class ModuloAdminInline(SortableTabularInline):
     sortable = "order"
 
 
-class DocCursoInline(SortableTabularInline):
-    formfield_overrides = {models.DateField: {"widget": SuitDateWidget}}
+class DocCursoInline(SortableStackedInline):
+    formfield_overrides = {
+        models.DateField: {"widget": SuitDateWidget},
+        models.CharField: {
+            "widget": TextInput(
+                attrs={"class": "span12", "style": "width: 100%;"}
+            )
+        },
+    }
     model = DocCurso
     extra = 0
     suit_classes = "suit-tab suit-tab-material"
@@ -489,6 +496,7 @@ class TarefaAtividadeAdmin(admin.ModelAdmin):
     list_filter = [
         "atividade__curso__categoria",
         ("aluno", admin.RelatedOnlyFieldListFilter),
+        "desistiu",
         "concluido",
         "corrigido",
     ]
@@ -539,6 +547,7 @@ class TarefaAtividadeAdmin(admin.ModelAdmin):
 @admin.register(Cortesia)
 class CortesiaAdmin(admin.ModelAdmin):
     list_display = ["curso", "codigo", "aluno", "utilizado"]
+    search_fields = ["codigo"]
 
 
 class ComboFilter(SimpleListFilter):

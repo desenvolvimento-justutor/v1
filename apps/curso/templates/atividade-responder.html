@@ -28,7 +28,7 @@
                         <a id="btn-salvar" disabled="true" href="javascript:saveResposta(finalizar=false)" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Salvar sua resposta" data-trigger="hover">
                             <i class="fa fa-save"></i> Salvar
                         </a>
-                        <a id="btn-finalizar" href="javascript:saveResposta(finalizar=true)" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Marcar como concluído" data-trigger="hover">
+                        <a id="btn-finalizar" href="javascript:saveResposta(finalizar=true, isGPT='{{ atividade.enable_gpt|safe }}')" class="btn pull-left" data-container="body" data-toggle="popover" data-placement="left" data-content="Marcar como concluído" data-trigger="hover">
                             <i class="fa fa-check"></i> Finalizar
                         </a>
                     </div>
@@ -82,6 +82,12 @@
                            href="{% url 'curso:baixar-correcao' tarefa.pk %}">
                             <i class="fa fa-download"></i>
                             Baixar Correção
+                        </a>
+                    {% elif atividade.enable_gpt and not tarefa.concluido %}
+                        <a class="btn btn-sm btn-info btn-block"
+                           href="javascript:desistir()">
+                            <i class="fa fa-stop"></i>
+                            Desistir de responder e acessar gabarito
                         </a>
                     {% endif %}
 
@@ -171,9 +177,13 @@
                 }, 5000);
             });
         });
-        function saveResposta(finalizar) {
+        function saveResposta(finalizar, isGPT='False') {
             $('#timer').timer('pause');
             finalizarResposta(false, false)
+            let msg = 'Aguarde enquanto a resposta é finalizada.'
+            if (isGPT==='True') {
+               let msg = 'Aguarde enquanto a IA do JusTutor efetua a correção'
+            }
             if (finalizar) {
                 Swal.fire({
                     title: "Deseja Finalizar sua tarefa?",
@@ -185,7 +195,7 @@
                 }).then(function (result) {
                     if (result.value) {
                         Swal.fire({
-                            title: 'Aguarde enquanto a IA do JusTutor efetua a correção',
+                            title: msg,
                             allowEscapeKey: false,
                             allowOutsideClick: false,
                             onOpen: () => {
@@ -198,6 +208,46 @@
             } else {
                 _toastr("Resposta salva com sucesso!!!", "top-center", 'success', false);
             }
+        }
+        function desistir() {
+            Swal.fire({
+                icon: "info",
+                title: "Desistir de responder e acessar gabarito",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                showLoaderOnConfirm: true,
+                preConfirm: async () => {
+                    try {
+                        const githubUrl = '{% url "curso:ajax-desistir-tarefa" %}?pk={{ tarefa.pk }}';
+                        const response = await fetch(githubUrl);
+                        if (!response.ok) {
+                            console.log(response.statusText)
+                            return Swal.showValidationMessage(response.statusText);
+                        }
+                        return response.json();
+                    } catch (error) {
+                        Swal.showValidationMessage(`Request failed: ${error}`);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Concluido!",
+                        text: "Deseja acessar o gabarito?",
+                        icon: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Sim"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.open("{% url 'curso:baixar-correcao' tarefa.pk %}", '_blank');
+                        }
+                        window.location.reload();
+                    });
+                }
+            });
         }
         function finalizarResposta(finalizar, show_msg=true) {
             $.ajax({
@@ -212,8 +262,8 @@
               .done(function( msg ) {
                   if (show_msg) {
                       Swal.fire({
-                          title: 'Concluído!',
-                          icon: 'success',
+                          title: msg.msg,
+                          icon: msg.flag,
                           timer: 3000,
                           showConfirmButton: true
                         });

@@ -30,8 +30,9 @@
 <div class="tab-content">
     <!-- TAB VIDEOS -->
     <div class="tab-pane fade {% if not submenu.is_doc %}active in{% endif %}" id="tab-home">
+        <div class="row">
         {% for video in videos %}
-            <div class="col-md-3 col-lg-3 col-12">
+            <div class="col-md-4 col-lg-4 col-12">
                 <div class="main-box clearfix">
                     <header class="main-box-header clearfix" style="min-height: 80px; border-bottom: 3px solid #F9F9F9;">
                         <h2 class="text-primary" style="font-weight: 400">{{ video }}</h2>
@@ -47,11 +48,12 @@
                             </a>
                         </div>
                         <a href="{% url 'aluno:curso-video' video.id %}" style="margin-top: 6px"
-                           class="btn btn-success btn-block fa fa-play pull-right"> Play</a>
+                           class="btn btn-success btn-block fa fa-play pull-right"> Play {{ video.order }}</a>
                     </div>
                 </div>
             </div>
         {% endfor %}
+        </div>
     </div>
     {% if submenu.is_doc %}
         <!-- TAB VIDEOS -->
@@ -215,9 +217,13 @@
                                                     {% endif %}
                                                     {% if tar %}
                                                         {% if tar.corrigido and atividade.tipo_retorno == 'C' %}
-                                                            <span class="label label-primary">Corrigido</span>
+                                                            {% if tar.desistiu %}
+                                                                <span class="label label-danger">Abstenção</span>
+                                                            {% else %}
+                                                                <span class="label label-primary">Corrigido</span>
+                                                            {% endif %}
                                                         {% elif tar.concluido %}
-                                                            <span class="label label-success">Finalizada</span>
+                                                                <span class="label label-success">Finalizada</span>
                                                         {% else %}
                                                             <span class="label label-warning">Iniciada</span>
                                                         {% endif %}
@@ -226,11 +232,15 @@
                                                     {% endif %}
                                                 </div>
                                                 <div style="padding-top: 8px">
-                                                    {% if tar.gabarito and tar.corrigido %}
+                                                    {% if tar.gabarito and tar.corrigido or tar.desistiu %}
                                                         <a target="_blank" class="btn btn-sm btn-link"
                                                            href="{% url 'curso:baixar-correcao' tar.pk %}">
                                                             <i class="fa fa-download"></i>
-                                                            Baixar Correção
+                                                            {% if tar.desistiu %}
+                                                                Baixar Gabarito
+                                                            {% else %}
+                                                                Baixar Correção
+                                                            {% endif %}
                                                         </a>
                                                     {% endif %}
                                                 </div>

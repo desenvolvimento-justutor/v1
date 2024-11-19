@@ -758,7 +758,7 @@ def post_resposta(request, pk):
             flag = "error"
             finalizar = False
         else:
-            if data.get("concluido") == "true":
+            if data.get("concluido") == "true" and not tarefa.concluido:
                 tarefa.concluido = True
                 tarefa.data_conclusao = timezone.now()
                 # CORREÇÃO GTP
@@ -813,6 +813,12 @@ def post_resposta(request, pk):
                         "disponibilizado, para esta atividade, apenas o gabarito criado pelo professor."
                     )
                     flag = "error"
+            else:
+                msg = (
+                    "A Tarefa já foi finalizada."
+                )
+                flag = "error"
+                finalizar = False
     except Exception as e:
         msg = str(e)
         flag = "error"
@@ -1268,6 +1274,34 @@ def ajax_search_simulado(request):
     return JsonResponse(values, safe=False)
 
 
+def gerar_checkout_cortesia(cortesia, aluno):
+    check_items = CheckoutItens.objects.filter(checkout__aluno=aluno, curso=cortesia.curso)
+    if check_items.exists():
+        return None
+
+    checkout = Checkout.objects.create(
+        code=cortesia.codigo,
+        aluno=aluno,
+        date=datetime.datetime.now(),
+        transaction_status=3,
+    )
+    checkout.save()
+    transaction = Transaction.objects.create(
+        code=cortesia.codigo,
+        checkout=checkout,
+        status="pago",
+    )
+    transaction.save()
+    items = CheckoutItens.objects.create(
+        checkout=checkout,
+        curso=cortesia.curso,
+        qtda=1,
+        valor=Decimal(0),
+    )
+    items.save()
+    return checkout
+
+
 def ajax_gerar_cortesia(request):
     data = request.GET
     try:
@@ -1362,13 +1396,16 @@ def ajax_validar_cortesia(request):
         aluno = request.user.aluno
 
         def aplicar(c):
+            gerar_checkout_cortesia(c, c.aluno)
             c.aluno = aluno
             c.utilizado = True
             c.save()
 
         try:
             c = Cortesia.objects.get(curso_id=data["pk"], codigo=data["code"])
-            simulado = c.curso.simulado.pk
+            simulado = None
+            if c.curso.simulado:
+                simulado = c.curso.simulado.pk
             status = 500
             if c.utilizado:
                 message = "Cortesia nao disponivel"
@@ -1389,7 +1426,8 @@ def ajax_validar_cortesia(request):
             status = 500
     except Exception as e:
         status = 500
-        message = "Nao foi possivel aplicar a cortesia"
+        message = str(e)
+        logger.error(message)
 
     response = JsonResponse(
         data={
@@ -1401,5 +1439,34 @@ def ajax_validar_cortesia(request):
         status=status,
     )
     if status == 500:
+        response.reason_phrase = message
+    return response
+
+
+def ajax_desistir_tarefa(request):
+    data = request.GET
+    print(":::::", data)
+    status = 200
+    error = False
+    message = "Codigo aplicado"
+    try:
+        tarefa_atividade = get_object_or_404(TarefaAtividade, pk=data["pk"])
+        tarefa_atividade.desistiu = True
+        tarefa_atividade.concluido = True
+        tarefa_atividade.corrigido = True
+        tarefa_atividade.save()
+    except TarefaAtividade.DoesNotExist:
+        status = 500
+        message = "Nao foi possivel aplicar a tarefa"
+
+    response = JsonResponse(
+        data={
+            "message": message,
+            "statusText": message,
+            "error": error,
+        },
+        status=status,
+    )
+    if status >= 400:
         response.reason_phrase = message
     return response

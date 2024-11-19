@@ -337,6 +337,10 @@ class Curso(models.Model):
         return "{}".format(self.nome)
 
     @property
+    def cortesia_exists(self):
+        return self.cortesias.filter(utilizado=False).exists()
+
+    @property
     def is_vdo(self):
         return self.atividades.filter(video_id__isnull=False).exists()
 
@@ -475,7 +479,12 @@ class Cortesia(models.Model):
         ordering = ["id", "utilizado", "aluno"]
         unique_together = ["curso", "aluno"]
 
-    curso = models.ForeignKey(verbose_name="Curso", to=Curso, related_name="cortesias")
+    curso = models.ForeignKey(
+        verbose_name="Curso",
+        to=Curso,
+        related_name="cortesias",
+        on_delete=models.PROTECT,
+    )
     codigo = models.CharField("Código", max_length=150, default=uuid5)
     aluno = models.ForeignKey(
         verbose_name="Aluno", to="aluno.Aluno", null=True, blank=True
@@ -587,7 +596,7 @@ class CursoAvaliacao(models.Model):
     class Meta:
         unique_together = ("user", "curso")
 
-    curso = models.ForeignKey(verbose_name="Curso", to=Curso)
+    curso = models.ForeignKey(verbose_name="Curso", to=Curso, on_delete=models.PROTECT)
     user = models.ForeignKey(verbose_name="Usuário", to=User)
     avaliacao = models.CharField(
         verbose_name="Avaliação",
@@ -605,7 +614,7 @@ class Discussao(models.Model):
         verbose_name = "Discussão"
         verbose_name_plural = "Discussões"
 
-    curso = models.ForeignKey(verbose_name="Curso", to=Curso)
+    curso = models.ForeignKey(verbose_name="Curso", to=Curso, on_delete=models.PROTECT)
     titulo = models.CharField("Título", max_length=150)
     descricao = models.TextField("Descrição", blank=True, null=True)
     data_ini = models.DateField(
@@ -698,7 +707,12 @@ class PdfModulo(models.Model):
 
 class Atividade(models.Model):
 
-    curso = models.ForeignKey(verbose_name="Curso", to=Curso, related_name="atividades")
+    curso = models.ForeignKey(
+        verbose_name="Curso",
+        to=Curso,
+        related_name="atividades",
+        on_delete=models.PROTECT,
+    )
     professores = models.ManyToManyField("professor.Professor", blank=False)
     nome = models.CharField(verbose_name="Título", max_length=150)
     descricao = models.TextField(
@@ -881,6 +895,7 @@ class TarefaAtividade(models.Model):
     aluno = models.ForeignKey(verbose_name="Aluno", to="aluno.Aluno")
     resposta = models.TextField(verbose_name="Resposta", blank=True, default="")
     concluido = models.BooleanField(verbose_name="Concluído?", default=False)
+    desistiu = models.BooleanField(verbose_name="Desistiu?", default=False)
     tempo = models.PositiveSmallIntegerField(verbose_name="Tempo", default=0)
     data_criacao = models.DateTimeField(
         verbose_name="Data de criação", editable=False, blank=True, auto_now_add=True
@@ -997,7 +1012,10 @@ class TarefaAtividade(models.Model):
 
 class Certificado(models.Model):
     curso = models.ForeignKey(
-        verbose_name="Curso", to=Curso, related_name="certificados"
+        verbose_name="Curso",
+        to=Curso,
+        related_name="certificados",
+        on_delete=models.PROTECT,
     )
     aluno = models.ForeignKey(verbose_name="Aluno", to="aluno.Aluno")
     chave = models.CharField(verbose_name="Chave", max_length=32, unique=True)
@@ -1022,7 +1040,7 @@ class DocCurso(models.Model):
         verbose_name_plural = "Materiais"
 
     curso = models.ForeignKey(Curso, verbose_name="Curso")
-    titulo = models.CharField(verbose_name="Título", max_length=50)
+    titulo = models.CharField(verbose_name="Título", max_length=120)
     file = models.FileField(verbose_name="Documento", upload_to="materiais")
     data_ativo = models.DateField(
         verbose_name="Data ativo",
@@ -1236,7 +1254,9 @@ class VideoGratis(models.Model):
         verbose_name_plural = "Vídeos Grátis"
         ordering = ["-data_ini"]
 
-    curso = models.ForeignKey(verbose_name="Curso", to=CursoGratis)
+    curso = models.ForeignKey(
+        verbose_name="Curso", to=CursoGratis, on_delete=models.PROTECT
+    )
     titulo = models.CharField(verbose_name="Título", max_length=200)
     descricao = models.TextField(verbose_name="Apresentação", blank=True, null=True)
     data_ini = models.DateTimeField(
@@ -1272,7 +1292,7 @@ class VideoGratis(models.Model):
 @python_2_unicode_compatible
 class CheckoutItens(models.Model):
     checkout = models.ForeignKey(to="pagseguro.Checkout")
-    curso = models.ForeignKey(to=Curso)
+    curso = models.ForeignKey(to=Curso, on_delete=models.PROTECT)
     qtda = models.PositiveSmallIntegerField()
     valor = models.DecimalField(max_digits=9, decimal_places=2)
 

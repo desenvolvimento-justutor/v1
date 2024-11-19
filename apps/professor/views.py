@@ -841,7 +841,7 @@ def formulario_estatistica(request):
     msg = False
     rendered = False
     if atividade.enable_gpt:
-        tarefas = atividade.tarefa_atividades.filter(corrigido=True)
+        tarefas = atividade.tarefa_atividades.filter(corrigido=True, desistiu=False)
         for tarefa in tarefas:
             url = None
             if tarefa.corrigido:
@@ -947,7 +947,7 @@ def formulario_estatistica_geral(request):
         msg = False
         if atividade.enable_gpt:
             context['is_gpt'] = True
-            tarefas = atividade.tarefa_atividades.filter(corrigido=True)
+            tarefas = atividade.tarefa_atividades.filter(corrigido=True, desistiu=False)
             for tarefa in tarefas:
                 url = None
                 if tarefa.resposta:

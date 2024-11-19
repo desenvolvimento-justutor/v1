@@ -183,7 +183,7 @@
             <ul id="signInDropdown" class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     {% if aluno %}
-                        <button onclick="window.location = '{% url 'aluno:painel' %}';" class="btn btn-success navbar-btn">
+                        <button onclick="window.location = '{% url 'aluno:cursos' %}';" class="btn btn-success navbar-btn">
                             <i class="fa fa-user fa-fw"></i> Área do Aluno
                         </button>
                         {% if user.is_superuser %}
@@ -270,7 +270,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         {% if aluno %}
-                            <li><a href="{% url 'aluno:perfil' %}">Área do Aluno</a></li>
+                            <li><a href="{% url 'aluno:cursos' %}">Área do Aluno</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{% url 'logout' %}">Encerrar sessão</a></li>
                         {% else %}

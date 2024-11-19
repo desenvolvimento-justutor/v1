@@ -2,7 +2,6 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
-from apps.aluno.models import Aluno
 from decimal import Decimal
 from django.db.models import Sum
 from datetime import timedelta
@@ -148,7 +147,7 @@ class TabelaCorrecaoAluno(models.Model):
         blank=True, null=True
     )
     aluno = models.ForeignKey(
-        verbose_name='Aluno', to=Aluno, on_delete=models.PROTECT,
+        verbose_name='Aluno', to="aluno.Aluno", on_delete=models.PROTECT,
     )
     formulario = models.ForeignKey(
         verbose_name=u'Formulário', to=Formulario, on_delete=models.CASCADE
@@ -292,7 +291,7 @@ class NotaCorrecao(models.Model):
         verbose_name=u"Nota", to=Nota, on_delete=models.PROTECT, related_name="nota_correcao"
     )
     aluno = models.ForeignKey(
-        verbose_name=u"Aluno", to=Aluno, on_delete=models.CASCADE
+        verbose_name=u"Aluno", to="aluno.Aluno", on_delete=models.CASCADE
     )
 
     def __str__(self):

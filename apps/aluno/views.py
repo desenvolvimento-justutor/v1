@@ -324,9 +324,8 @@ def cursos(request, **kwargs):
                 request.session['curso_id'] = curso.pk
 
                 alunos = checkout_item.curso.get_alunos
-                modulos = curso.modulo_set.all()
+                modulos = curso.modulo_set.all().order_by('order')
                 videos = VideoModulo.objects.filter(modulo__in=modulos)
-
                 if aluno not in alunos:
                     messages.error(request, 'Você não participa deste curso')
                     raise PermissionDenied

@@ -27,6 +27,9 @@ from carton.cart import Cart
 from .forms import CartForm
 from .utils import adicionar_cupom
 from ..cupom.models import Cupom
+from logging import getLogger
+
+logger = getLogger("pags")
 
 ERRORS = {
     '5003': "Falha de comunicação com a instituição financeira.",
@@ -158,6 +161,15 @@ class CartView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
         cart = Cart(self.request.session)
+        for item in cart.items:
+            product = item.product
+            if not product.ativo:
+                cart.remove(product)
+                messages.error(
+                    self.request,
+                    "O item [%s] foi removido porque o prazo de inscrição já foi encerrado." % product
+                )
+
         cursos = Curso.objects.none()
         if cart.is_empty:
             now = timezone.now()
@@ -354,6 +366,9 @@ def ajax_checkout(request):
         'email': data['email'],
         'cpf': re.sub('[^0-9]', '', data['cpf'])
     }
+    logger.debug("SENDER INFORMATION ---------------------------------------------------------")
+    logger.debug(sender)
+    logger.debug("============================================================================")
     # SHIPPING
     shipping = {
         'street': data['logradouro'],
@@ -365,6 +380,9 @@ def ajax_checkout(request):
         'state': data['uf'],
         'country': 'BRA'
     }
+    logger.debug("SHIPPING INFORMATION -------------------------------------------------------")
+    logger.debug(shipping)
+    logger.debug("============================================================================")
     api.set_sender(**sender)
     api.set_shipping(**shipping)
     if payment_method == "pix":
@@ -469,9 +487,8 @@ def ajax_checkout(request):
     data_api = api.checkout()
     success = data_api.get('success')
     message = data_api.get('message')
-
+    logger.debug("Metodo de pagamento: [%s]" % payment_method)
     if not success:
-
         message = xmltodict.parse(message)
         errors = message.get('errors').get('error')
         errors_messages = []
@@ -486,42 +503,13 @@ def ajax_checkout(request):
         ret.update({
             'error': errors_messages
         })
+        logger.error(errors_messages)
     else:
         code = data_api.get('code')
         ret.update({
             'link': '/checkout/status/%s' % code,
             'code': code
         })
-        # try:
-        #     chk = Checkout.objects.get(code=code)
-        #     chk.aluno = request.user.aluno
-        #     chk.date = data_api.get('date')
-        #     chk.success = data_api.get('success')
-        #     chk.message = data_api.get('response')
-        #     chk.cpf = data['cpf']
-        #     chk.save()
-        # except Checkout.DoesNotExist:
-        #     chk = Checkout(
-        #         code=data_api.get('code'),
-        #         aluno=request.user.aluno,
-        #         date=data_api.get('date'),
-        #         success=data_api.get('success'),
-        #         message=data_api.get('response'),
-        #         cpf=data['cpf']
-        #     )
-        #     chk.save()
-        #     for i in cart.items:
-        #         item = CheckoutItens(
-        #             checkout=chk,
-        #             curso=i.product,
-        #             valor=i.price,
-        #             qtda=i.quantity
-        #         )
-        #         item.save()
-        #         # p = item.product
-        #         # if p.aluno:
-        #         #     p.state = 'F'
-        #         #     p.save()
         for item in cart.items:
             if item.configuracao_pacote:
                 credito = Credito(
@@ -537,6 +525,7 @@ def ajax_checkout(request):
         if cupom:
             cupom.qte_usada += 1
             cupom.save()
+    logger.debug("RESPONSE: %s" % ret)
     return JsonResponse(ret)
 
 

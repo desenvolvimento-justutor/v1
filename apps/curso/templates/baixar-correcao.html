@@ -9,26 +9,33 @@
     <img align="middle" src="https://justutor.com.br/static/images/logos/justuto-horizontal.png">
     <hr>
 </div>
-{% if gabarito %}
-    <h1>Gabarito Preliminar</h1>
+{% if tarefa.desistiu %}
+    <h1>Enunciado</h1>
+    {{ atividade.tarefa|safe }}
+    <h1>Gabarito</h1>
     {{ atividade.gabarito|safe }}
 {% else %}
-    <h1>{{ atividade }}</h1>
-    {{ atividade.tarefa|safe }}
-    <hr/>
-    <h1>Gabarito</h1>
-    {% if atividade.enable_gpt %}
+    {% if gabarito %}
+        <h1>Gabarito Preliminar</h1>
         {{ atividade.gabarito|safe }}
-    {% endif %}
-    <hr/>
-    <h1>Resposta</h1>
-    {{ tarefa.resposta|safe }}
-    <hr/>
-    <h1>Correção</h1>
-    {% if atividade.enable_gpt %}
-        {{ tarefa.gabarito|safe }}
     {% else %}
-        {{ tarefa.render_gabarito|safe }}
+        <h1>{{ atividade }}</h1>
+        {{ atividade.tarefa|safe }}
+        <hr/>
+        <h1>Gabarito</h1>
+        {% if atividade.enable_gpt %}
+            {{ atividade.gabarito|safe }}
+        {% endif %}
+        <hr/>
+        <h1>Resposta</h1>
+        {{ tarefa.resposta|safe }}
+        <hr/>
+        <h1>Correção</h1>
+        {% if atividade.enable_gpt %}
+            {{ tarefa.gabarito|safe }}
+        {% else %}
+            {{ tarefa.render_gabarito|safe }}
+        {% endif %}
     {% endif %}
 {% endif %}
 </body>
