@@ -61,12 +61,11 @@
             <div class="row">
                 {% for material in submenu.materials %}
                     <div class="col-lg-4 col-sm-6 col-xs-12">
-                        <div class="main-box infographic-box colored emerald-bg">
-                            <i class="fa fa-file-archive-o"></i>
-                            <span class="headline">{{ material }}</span>
-                            <span class="value"><a target="_blank" href="{{ material.file.url }}"
-                                                   style="color: white"><small>Abrir</small></a></span>
-                            <p style="padding-top: 10px">{{ material.data_ativo }}</p>
+                        <div class="main-box" style="padding: 10px">
+                            <span class="badge pull-left">{{ forloop.counter }}</span>
+                            <a target="_blank" href="{{ material.file.url }}" >
+                               <span style="font-weight: bold">&nbsp;&nbsp;{{ material }}</span>
+                            </a>
                         </div>
                     </div>
                 {% endfor %}
@@ -147,7 +146,6 @@
                                             {% if submenu.is_vdo %}
                                             <th class="text-center"><span>Vídeo</span></th>
                                             {% endif %}
-                                            <th class="text-center"><span>Tipo de Retorno</span></th>
                                             <th class="text-center">
                                                 <span>Início</span>
                                                 <span style="display: block;">Término</span>
@@ -174,9 +172,22 @@
                                                 <td {% if atividade.descricao %}data-toggle="tooltip"
                                                     data-original-title="{{ atividade.descricao|safe }}"
                                                     data-container="body"
-                                                    style="cursor: pointer" {% endif %}>{{ atividade }}
+                                                    style="cursor: pointer" {% endif %}>
+                                                        {% if atividade.get_status.status == 'Aguarde' %}
+                                                            <a href="javascript:Swal.fire('JusTutor', 'Disponível após a data de início.', 'error');"
+                                                               class="btn btn-link" title="Responder" style="color: black">
+                                                                {{ atividade }}
+                                                            </a>
+                                                        {% else %}
+                                                            <a href="{% url 'curso:atividade-responder' atividade.id %}"
+                                                               class="btn btn-link" title="Responder" style="color: black">
+                                                                {{ atividade }}
+                                                            </a>
+                                                        {% endif %}
                                                     {% if atividade.descricao %}
-                                                        <i class="fa fa-info-circle"></i>{% endif %} </td>
+                                                        <i class="fa fa-info-circle"></i>
+                                                    {% endif %}
+                                                </td>
                                                 {% if submenu.is_vdo %}
                                                 <td class="text-center">
                                                     {% if atividade.video_id %}
@@ -187,18 +198,6 @@
                                                     {% endif %}
                                                 </td>
                                                 {% endif %}
-                                                <td class="text-center" data-toggle="tooltip" data-container="body"
-                                                    data-original-title="{{ atividade.get_tipo_retorno_display }}">
-                                                    <span style="cursor: pointer"
-                                                          class="badge badge-{{ atividade.tipo_retorno_label }}">{{ atividade.tipo_retorno }}</span>
-                                                    {% if atividade.get_resposta_padrao %}
-                                                        <a target="_blank" href="{{ atividade.resposta_padra.url }}"
-                                                           class="table-link">
-                                                            <i class="fa fa-download" data-toggle="tooltip"
-                                                               data-original-title="Download da resposta"></i>
-                                                        </a>
-                                                    {% endif %}
-                                                </td>
                                                 <td class="text-center">
                                                     <strong class="text-success">
                                                         {{ atividade.data_ini|date:"SHORT_DATETIME_FORMAT" }}</strong>

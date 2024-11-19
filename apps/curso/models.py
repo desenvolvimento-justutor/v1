@@ -457,7 +457,7 @@ class Curso(models.Model):
 
     def materials(self):
         now = django.utils.timezone.now()
-        docs = self.doccurso_set.filter(data_ativo__lte=now)
+        docs = self.doccurso_set.filter(data_ativo__lte=now).order_by("titulo")
         return docs
 
     def atividades(self):
@@ -1059,7 +1059,7 @@ class DocCurso(models.Model):
 
     @property
     def file_extension(self):
-        return os.path.splitext(self.file.name)[-1]
+        return os.path.splitext(self.file.name)[-1].replace(".", "")
 
     @property
     def fileinfo(self):
